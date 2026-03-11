@@ -1,0 +1,30 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Java
+target/
+*.class
+*.jar
+
+# .Net
+bin/
+obj/
+*.user
+
+# Angular/React
+dist/
+.angular/
+
+# IDE
+.idea/
+.vscode/
+*.DS_Store
+
+# Env files (nunca commitear secrets)
+.env
+.env.local
+.env.*.local
+
+# SOFIA — logs de ejecución de agentes (no son artefactos oficiales)
+.sofia/logs/
