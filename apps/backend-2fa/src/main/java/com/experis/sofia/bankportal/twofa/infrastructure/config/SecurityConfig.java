@@ -1,5 +1,6 @@
 package com.experis.sofia.bankportal.twofa.infrastructure.config;
 
+import com.experis.sofia.bankportal.twofa.infrastructure.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -10,15 +11,24 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * Configuración de Spring Security — módulo 2FA.
  *
  * <p>Política: stateless (sin sesión HTTP), JWT para autenticación.
- * El JwtAuthenticationFilter se agrega en US-002 cuando esté disponible.
- * Esta configuración representa el estado final de US-006 (setup infraestructura).</p>
+ * El {@link JwtAuthenticationFilter} se registra antes del filtro de
+ * autenticación estándar de Spring.</p>
  *
- * <p>FEAT-001 | US-006</p>
+ * <p>Endpoints públicos:
+ * <ul>
+ *   <li>{@code POST /auth/login} — genera token o pre-auth token</li>
+ *   <li>{@code POST /2fa/verify} — valida OTP con pre-auth token</li>
+ *   <li>{@code GET /actuator/health} — health check sin auth</li>
+ * </ul>
+ * </p>
+ *
+ * <p>FEAT-001 | US-002</p>
  *
  * @since 1.0.0
  */
@@ -27,13 +37,20 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
     /**
      * Cadena de filtros de seguridad HTTP.
      *
      * <ul>
      *   <li>CSRF deshabilitado (API REST stateless)</li>
      *   <li>Sesión: STATELESS (sin HttpSession)</li>
-     *   <li>Endpoints públicos: {@code /auth/login}, actuator health</li>
+     *   <li>JwtAuthenticationFilter antes del filtro estándar</li>
+     *   <li>Endpoints {@code /auth/login}, {@code /2fa/verify} y health: públicos</li>
      *   <li>Todos los demás endpoints requieren autenticación</li>
      * </ul>
      *
@@ -48,12 +65,17 @@ public class SecurityConfig {
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/login", "/actuator/health").permitAll()
+                .requestMatchers(
+                    "/auth/login",
+                    "/2fa/verify",
+                    "/actuator/health"
+                ).permitAll()
                 .anyRequest().authenticated()
+            )
+            .addFilterBefore(
+                jwtAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter.class
             );
-
-        // TODO(US-002): agregar JwtAuthenticationFilter antes de UsernamePasswordAuthenticationFilter
-        // http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
