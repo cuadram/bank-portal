@@ -28,10 +28,22 @@ export class OtpInputComponent {
   @Output() otpChange = new EventEmitter<string>();
 
   readonly length = environment.otpInputLength;
+
+  /**
+   * CR-NC-008 FIX: indices como propiedad readonly calculada una sola vez,
+   * no como getter que crea un nuevo Array en cada ciclo de detección de cambios.
+   */
+  readonly indices: number[] = Array.from({ length: this.length }, (_, i) => i);
+
   readonly digits = signal<string[]>(Array(this.length).fill(''));
   readonly currentOtp = computed(() => this.digits().join(''));
-  readonly isComplete = computed(() => this.currentOtp().length === this.length &&
-    this.digits().every(d => d !== ''));
+
+  /**
+   * CR-NC-003 FIX: isComplete evaluaba currentOtp().length === this.length
+   * que siempre es true (el array tiene siempre `length` slots, incluidos vacíos).
+   * La condición correcta es que todos los slots sean no-vacíos.
+   */
+  readonly isComplete = computed(() => this.digits().every(d => d !== ''));
 
   @ViewChildren('digitInput') digitInputs!: QueryList<ElementRef<HTMLInputElement>>;
 
@@ -107,10 +119,5 @@ export class OtpInputComponent {
       const inputs = this.digitInputs?.toArray();
       inputs?.[index]?.nativeElement.focus();
     }, 0);
-  }
-
-  /** Índices para el template */
-  get indices(): number[] {
-    return Array.from({ length: this.length }, (_, i) => i);
   }
 }

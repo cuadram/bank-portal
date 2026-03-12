@@ -4,8 +4,8 @@
  * US-001 — T-004 | FEAT-001 | BankPortal — Banco Meridian
  */
 import {
-  Component, inject, OnInit,
-  ChangeDetectionStrategy, signal
+  Component, inject,
+  ChangeDetectionStrategy, signal, effect
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -21,21 +21,31 @@ type SetupView = 'STATUS' | 'QR_ENROLL' | 'DISABLE';
   templateUrl: './two-factor-setup.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TwoFactorSetupComponent implements OnInit {
+export class TwoFactorSetupComponent {
 
   readonly store = inject(TwoFactorStore);
   private readonly router = inject(Router);
 
   readonly currentView = signal<SetupView>('STATUS');
 
-  ngOnInit(): void {
-    // Si status ya está en memoria, no re-fetch
-    // En implementación futura: cargar status desde backend al iniciar
-  }
+  /**
+   * CR-NC-001 FIX: navegar a QR_ENROLL solo cuando el store ha recibido
+   * el QR del backend (pendingQrBase64 presente). Evita mostrar la vista
+   * vacía si el backend falla o tarda.
+   *
+   * CR-NC-007 FIX: eliminado implements OnDestroy + ngOnDestroy vacío.
+   * Los effects creados dentro del injection context de un componente
+   * se destruyen automáticamente al destruirse el componente (Angular 17+).
+   */
+  private readonly enrollEffect = effect(() => {
+    if (this.store.pendingQrBase64() && this.store.status() === 'PENDING') {
+      this.currentView.set('QR_ENROLL');
+    }
+  });
 
   onActivate2FA(): void {
+    // Solo dispara la llamada al backend — la navegación la gestiona enrollEffect
     this.store.startEnroll(undefined as unknown as void);
-    this.currentView.set('QR_ENROLL');
   }
 
   onDeactivate2FA(): void {
@@ -43,7 +53,6 @@ export class TwoFactorSetupComponent implements OnInit {
   }
 
   onEnrollConfirmed(): void {
-    // Navegar a recovery codes tras enrolamiento exitoso
     this.router.navigate(['/security/2fa/recovery-codes']);
   }
 

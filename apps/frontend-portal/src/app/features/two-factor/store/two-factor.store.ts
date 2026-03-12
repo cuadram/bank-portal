@@ -14,7 +14,7 @@ import { inject } from '@angular/core';
 import { TwoFactorService } from '../services/two-factor.service';
 import { tapResponse } from '@ngrx/operators';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, switchMap, tap } from 'rxjs';
+import { pipe, switchMap, exhaustMap, tap } from 'rxjs';
 
 export type TwoFactorStatus = 'DISABLED' | 'PENDING' | 'ENABLED';
 
@@ -45,7 +45,10 @@ export const TwoFactorStore = signalStore(
   withState(initialState),
   withMethods((store, svc = inject(TwoFactorService)) => ({
 
-    /** Iniciar enrolamiento: POST /2fa/enroll */
+    /**
+     * Iniciar enrolamiento: POST /2fa/enroll
+     * switchMap: cancela llamadas previas si el usuario re-dispara (esperado en enroll).
+     */
     startEnroll: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { isLoading: true, error: null })),
@@ -67,11 +70,19 @@ export const TwoFactorStore = signalStore(
       )
     ),
 
-    /** Confirmar enrolamiento con OTP: POST /2fa/enroll/confirm */
+    /**
+     * Confirmar enrolamiento con OTP: POST /2fa/enroll/confirm
+     *
+     * CR-NC-005 FIX: exhaustMap en lugar de switchMap.
+     * Los OTP TOTP son de un solo uso (RFC 6238). Si el usuario hace doble-click
+     * y switchMap cancela la primera petición, el backend puede haberla procesado
+     * ya (OTP consumido). La segunda petición fallaría con OTP inválido.
+     * exhaustMap ignora los eventos subsiguientes mientras hay una petición en vuelo.
+     */
     confirmEnroll: rxMethod<string>(
       pipe(
         tap(() => patchState(store, { isLoading: true, error: null })),
-        switchMap((otp) =>
+        exhaustMap((otp) =>
           svc.confirmEnroll(otp).pipe(
             tapResponse({
               next: (res) =>

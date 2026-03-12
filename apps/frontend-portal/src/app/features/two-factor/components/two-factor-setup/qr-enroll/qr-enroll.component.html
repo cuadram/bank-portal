@@ -29,25 +29,36 @@
   <!-- Secreto manual -->
   <details class="qr-enroll__manual" *ngIf="store.pendingQrUri()">
     <summary>¿No puedes escanear el QR? Configura manualmente</summary>
+    <!-- CR-NC-009 INFO: el URI contiene el secreto TOTP; se advierte al usuario -->
+    <p class="qr-enroll__manual-warning" role="note">
+      ⚠ No compartas este código con nadie. Introdúcelo manualmente en tu aplicación autenticadora.
+    </p>
     <p class="qr-enroll__manual-uri">
       <code>{{ store.pendingQrUri() }}</code>
     </p>
   </details>
 
   <!-- OTP Input -->
+  <!--
+    CR-NC-004 FIX: label asociada al grupo OTP mediante aria-labelledby en el
+    contenedor del componente bp-otp-input. El campo compuesto ya expone
+    aria-label por dígito internamente. El id 'otp-group-label' conecta la
+    descripción visible con el role="group" del componente.
+  -->
   <div class="qr-enroll__otp-section">
-    <label class="qr-enroll__otp-label">
+    <p id="otp-group-label" class="qr-enroll__otp-label">
       Introduce el código de verificación
-    </label>
+    </p>
 
     <bp-otp-input
       [hasError]="otpHasError()"
       [disabled]="store.isLoading()"
+      aria-labelledby="otp-group-label"
       (otpChange)="onOtpChange($event)"
       (otpComplete)="onOtpComplete($event)"
     />
 
-    <p *ngIf="otpHasError()" class="qr-enroll__error" role="alert">
+    <p *ngIf="otpHasError()" class="qr-enroll__error" role="alert" id="otp-error">
       El código debe tener 6 dígitos.
     </p>
 
