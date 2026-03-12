@@ -1,0 +1,24 @@
+# Configuración para tests unitarios — NO usar en producción
+# FEAT-001 | Sprint 01
+spring:
+  config:
+    activate:
+      on-profile: test
+
+totp:
+  # Clave Base64 de 32 bytes para tests: "01234567890123456789012345678901"
+  aes-key: MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=
+  issuer: BankMeridianTest
+  period: 30
+  code-digits: 6
+  tolerance: 1
+
+jwt:
+  secret: test-jwt-secret-also-must-be-long-enough-for-hs256-algorithm-here
+  pre-auth-secret: test-pre-auth-secret-for-unit-tests-must-be-long-enough-for-hs256-algorithm-ok
+  pre-auth-ttl-seconds: 300
+
+rate-limit:
+  capacity: 5
+  window-minutes: 10
+  block-minutes: 15
