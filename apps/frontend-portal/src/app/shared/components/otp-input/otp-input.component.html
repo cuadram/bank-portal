@@ -1,0 +1,27 @@
+<!-- otp-input.component.html -->
+<!-- Componente OTP reutilizable — 6 campos individuales con auto-focus -->
+<!-- autocomplete="one-time-code" — PCI-DSS + accesibilidad WCAG 2.1 AA -->
+<div
+  class="otp-input-container"
+  role="group"
+  aria-label="Código de verificación de 6 dígitos"
+>
+  <input
+    *ngFor="let _ of indices; let i = index"
+    #digitInput
+    type="text"
+    inputmode="numeric"
+    pattern="[0-9]*"
+    maxlength="1"
+    autocomplete="one-time-code"
+    [attr.aria-label]="'Dígito ' + (i + 1) + ' de ' + length"
+    [value]="digits()[i]"
+    [disabled]="disabled"
+    [class.otp-digit]="true"
+    [class.otp-digit--filled]="!!digits()[i]"
+    [class.otp-digit--error]="hasError"
+    (input)="onInput($event, i)"
+    (keydown)="onKeydown($event, i)"
+    (focus)="onFocus($event)"
+  />
+</div>
