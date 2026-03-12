@@ -1,0 +1,54 @@
+# Perfil de integración — Testcontainers + PostgreSQL real
+# FEAT-001 | US-007 | Sprint 01
+#
+# La datasource NO se configura aquí: @ServiceConnection en AbstractIntegrationTest
+# la inyecta automáticamente desde el PostgreSQLContainer.
+# Flyway aplica las migraciones V1-V4 sobre el contenedor al arrancar.
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+
+# TOTP — misma clave de test que application.yml (profile=test)
+# AES key Base64 de "01234567890123456789012345678901" (32 bytes exactos)
+totp:
+  aes-key: MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=
+  issuer: BankMeridianIntTest
+  period: 30
+  code-digits: 6
+  tolerance: 1   # ±1 ventana = tolera hasta 30s de drift de reloj en tests
+
+# JWT — secretos de longitud suficiente para HS256 (mínimo 256 bits = 32 bytes)
+jwt:
+  secret: integration-test-jwt-secret-must-be-at-least-256-bits-long-for-hs256-ok
+  pre-auth-secret: integration-test-pre-auth-secret-must-be-at-least-256-bits-long-ok
+  pre-auth-ttl-seconds: 300
+
+# Rate limiting — valores de producción para test E2E realista
+rate-limit:
+  capacity: 5
+  window-minutes: 10
+  block-minutes: 15
+
+server:
+  port: 0   # Puerto aleatorio para evitar conflictos entre tests paralelos
+  error:
+    include-message: always   # En tests sí queremos ver los mensajes de error
+    include-stacktrace: never
+    include-binding-errors: always
+
+logging:
+  level:
+    root: WARN
+    com.experis.sofia.bankportal: DEBUG
+    org.flywaydb: INFO
+    org.testcontainers: WARN
