@@ -13,7 +13,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.UUID;
 
 /**
  * Filtro de autenticación JWT — procesa cada request una sola vez.
@@ -22,13 +21,8 @@ import java.util.UUID;
  * lo valida mediante {@link JwtTokenProvider} y establece el contexto
  * de seguridad de Spring ({@link SecurityContextHolder}).</p>
  *
- * <p>Endpoints excluidos (gestionados en {@code SecurityConfig}):
- * <ul>
- *   <li>{@code POST /auth/login} — pública, genera el primer token</li>
- *   <li>{@code POST /2fa/verify} — usa pre-auth token, no JWT completo</li>
- *   <li>{@code GET /actuator/health} — health check sin auth</li>
- * </ul>
- * </p>
+ * <p><strong>RV-007 fix:</strong> Usa {@link JwtTokenProvider#validateAndExtract(String)}
+ * para obtener userId y username en una sola operación de parseo/verificación JWT.</p>
  *
  * <p>FEAT-001 | US-002</p>
  *
@@ -54,8 +48,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader(AUTH_HEADER);
 
-        // Si no hay header Authorization, continuar sin autenticar
-        // (los endpoints públicos lo permiten; los privados fallarán en el authz)
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
@@ -64,26 +56,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = authHeader.substring(BEARER_PREFIX.length());
 
         try {
-            UUID userId = jwtTokenProvider.validateAndExtractUserId(token);
-            String username = jwtTokenProvider.extractUsername(token);
+            // RV-007 fix: una sola verificación de firma por request
+            JwtTokenProvider.JwtClaims claims = jwtTokenProvider.validateAndExtract(token);
 
-            // Solo establecer autenticación si aún no está establecida
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
                 UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
-                        username,   // principal
-                        null,       // credentials (no se necesitan tras validación JWT)
-                        Collections.emptyList() // authorities (roles — scope futuro)
+                        claims.username(),
+                        null,
+                        Collections.emptyList()
                     );
                 authentication.setDetails(
                     new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // Agregar userId como detalle adicional para uso en controllers
-                request.setAttribute("authenticatedUserId", userId);
+                request.setAttribute("authenticatedUserId", claims.userId());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (JwtTokenProvider.JwtTokenInvalidException e) {
-            // Token inválido: limpiar contexto y dejar que el framework retorne 401
             SecurityContextHolder.clearContext();
         }
 

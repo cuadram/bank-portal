@@ -1,7 +1,7 @@
 package com.experis.sofia.bankportal.twofa.infrastructure.security;
 
-import com.bucket4j.Bandwidth;
-import com.bucket4j.Bucket;
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Bucket;
 import com.experis.sofia.bankportal.twofa.infrastructure.config.RateLimitProperties;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +18,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * {@link #tryConsume(UUID)} retorna {@code false} y {@link #isBlocked(UUID)}
  * retorna {@code true} hasta que se llame a {@link #reset(UUID)}.</p>
  *
+ * <p><strong>NC-BANKPORTAL-004 fix (RV-004):</strong> Los imports se corrigieron
+ * a {@code io.github.bucket4j.*} — el package correcto para Bucket4j 8.x.</p>
+ *
+ * <p><strong>RV-009 fix:</strong> {@link #isBlocked(UUID)} usa una sola operación
+ * atómica para evitar la race condition del check-then-get.</p>
+ *
  * <p><strong>Deuda técnica DEBT-001:</strong> Esta implementación es in-process
  * (ConcurrentHashMap por JVM). En despliegue multi-instancia los buckets no se
  * comparten entre réplicas. Solución: Bucket4j + Redis (Redisson).</p>
@@ -29,9 +35,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class RateLimiterService {
 
-    // TODO(TECH-DEBT): reemplazar por Bucket4j + Redis para soporte multi-instancia.
+    // TODO(DEBT-001): reemplazar por Bucket4j + Redis para soporte multi-instancia.
     // Impacto: Alto — en k8s con múltiples pods, cada pod tiene su propio estado.
-    // Ticket: DEBT-001
     private final Map<UUID, Bucket> buckets = new ConcurrentHashMap<>();
 
     private final long capacity;
@@ -44,7 +49,7 @@ public class RateLimiterService {
      * @param props propiedades de configuración (capacity, windowMinutes, blockMinutes)
      */
     public RateLimiterService(RateLimitProperties props) {
-        this.capacity     = props.capacity();
+        this.capacity      = props.capacity();
         this.windowMinutes = props.windowMinutes();
         this.blockMinutes  = props.blockMinutes();
     }
@@ -62,14 +67,15 @@ public class RateLimiterService {
     /**
      * Verifica si el bucket del usuario está agotado (usuario bloqueado).
      *
+     * <p><strong>RV-009 fix:</strong> Usa una sola operación atómica {@code get()}
+     * para evitar la race condition del patrón containsKey + get.</p>
+     *
      * @param userId UUID del usuario
      * @return {@code true} si no quedan tokens disponibles
      */
     public boolean isBlocked(UUID userId) {
-        if (!buckets.containsKey(userId)) {
-            return false;
-        }
-        return buckets.get(userId).getAvailableTokens() == 0;
+        Bucket bucket = buckets.get(userId);
+        return bucket != null && bucket.getAvailableTokens() == 0;
     }
 
     /**

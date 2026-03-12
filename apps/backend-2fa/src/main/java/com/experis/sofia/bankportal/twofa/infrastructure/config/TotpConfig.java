@@ -1,5 +1,6 @@
 package com.experis.sofia.bankportal.twofa.infrastructure.config;
 
+import com.experis.sofia.bankportal.twofa.domain.service.CryptoService;
 import dev.samstevens.totp.code.CodeGenerator;
 import dev.samstevens.totp.code.CodeVerifier;
 import dev.samstevens.totp.code.DefaultCodeGenerator;
@@ -19,6 +20,10 @@ import org.springframework.context.annotation.Configuration;
  * <p>Utiliza la librería {@code dev.samstevens.totp} con configuración RFC 6238:
  * HMAC-SHA1, ventana 30s, 6 dígitos, tolerancia ±1 ventana.</p>
  *
+ * <p><strong>NC-BANKPORTAL-003 fix (RV-003):</strong> Este @Configuration actúa como
+ * adaptador hexagonal: provee la clave AES como {@code String} al {@link CryptoService}
+ * del dominio, rompiendo la dependencia directa domain→infrastructure.</p>
+ *
  * <p>FEAT-001 | US-006 | ADR-004</p>
  *
  * @since 1.0.0
@@ -30,6 +35,19 @@ public class TotpConfig {
 
     public TotpConfig(TotpProperties totpProperties) {
         this.totpProperties = totpProperties;
+    }
+
+    /**
+     * Bean {@link CryptoService} — inyecta la clave AES como String Base64.
+     *
+     * <p>El dominio recibe solo el valor de la clave, nunca la clase TotpProperties.
+     * Esto mantiene el dominio libre de dependencias de infraestructura (RV-003 fix).</p>
+     *
+     * @return instancia de CryptoService con clave AES-256 validada
+     */
+    @Bean
+    public CryptoService cryptoService() {
+        return new CryptoService(totpProperties.aesKey());
     }
 
     /**

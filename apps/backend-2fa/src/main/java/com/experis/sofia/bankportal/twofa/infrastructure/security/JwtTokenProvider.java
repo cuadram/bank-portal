@@ -15,19 +15,12 @@ import java.util.UUID;
 /**
  * Proveedor de JWT de sesión completa (full-auth token).
  *
- * <p>Complemento a {@link PreAuthTokenProvider}: este componente emite
- * tokens JWT de sesión válidos, firmados con el secreto principal
- * ({@code jwt.secret}). A diferencia del pre-auth token, este token
- * NO tiene el claim {@code pre_auth} y habilita acceso a todos los
- * endpoints protegidos.</p>
+ * <p><strong>RV-007 fix:</strong> Se reemplazaron los métodos {@code validateAndExtractUserId}
+ * y {@code extractUsername} por {@link #validateAndExtract(String)} que retorna un record
+ * {@link JwtClaims} con userId + username en una sola operación de parseo/verificación.</p>
  *
- * <p>El token incluye:
- * <ul>
- *   <li>{@code sub} — userId (UUID)</li>
- *   <li>{@code preferred_username} — username del usuario</li>
- *   <li>{@code iat}, {@code exp} — issued-at y expiration</li>
- * </ul>
- * </p>
+ * <p><strong>RV-008 fix:</strong> El TTL de sesión es ahora configurable via
+ * {@code jwt.session-ttl-seconds} (env var {@code JWT_SESSION_TTL_SECONDS}, default 28800 = 8h).</p>
  *
  * <p>FEAT-001 | US-002 | ADR-001</p>
  *
@@ -37,27 +30,27 @@ import java.util.UUID;
 public class JwtTokenProvider {
 
     private static final String CLAIM_USERNAME = "preferred_username";
-    /** TTL por defecto: 8 horas — jornada laboral bancaria típica. */
-    private static final long DEFAULT_TTL_MS = 8L * 60 * 60 * 1000;
 
     private final SecretKey signingKey;
+    private final long sessionTtlMillis;
 
     /**
-     * Construye el provider con el secreto de firma principal.
+     * Construye el provider con el secreto de firma y TTL de sesión configurados.
      *
-     * @param jwtProperties propiedades JWT — usa {@code secret}
+     * @param jwtProperties propiedades JWT — usa {@code secret} y {@code sessionTtlSeconds}
      */
     public JwtTokenProvider(JwtProperties jwtProperties) {
-        this.signingKey = Keys.hmacShaKeyFor(
+        this.signingKey       = Keys.hmacShaKeyFor(
             jwtProperties.secret().getBytes(StandardCharsets.UTF_8));
+        this.sessionTtlMillis = jwtProperties.sessionTtlSeconds() * 1000L;
     }
 
     /**
      * Genera un JWT de sesión completa para el usuario autenticado.
      *
      * @param userId   UUID del usuario
-     * @param username nombre de usuario (se incluye como claim)
-     * @return JWT firmado con HS256, TTL=8h
+     * @param username nombre de usuario (se incluye como claim {@code preferred_username})
+     * @return JWT firmado con HS256, TTL configurable (default 8h)
      */
     public String generate(UUID userId, String username) {
         long now = System.currentTimeMillis();
@@ -65,26 +58,31 @@ public class JwtTokenProvider {
             .subject(userId.toString())
             .claim(CLAIM_USERNAME, username)
             .issuedAt(new Date(now))
-            .expiration(new Date(now + DEFAULT_TTL_MS))
+            .expiration(new Date(now + sessionTtlMillis))
             .signWith(signingKey)
             .compact();
     }
 
     /**
-     * Valida un JWT de sesión y extrae el userId.
+     * Valida un JWT de sesión y extrae userId y username en una sola operación.
+     *
+     * <p><strong>RV-007 fix:</strong> Una sola verificación de firma por request.
+     * Reemplaza el patrón de dos llamadas separadas (validateAndExtractUserId + extractUsername).</p>
      *
      * @param token JWT a validar
-     * @return UUID del usuario si el token es válido
+     * @return {@link JwtClaims} con userId y username extraídos
      * @throws JwtTokenInvalidException si el token es inválido, expirado o malformado
      */
-    public UUID validateAndExtractUserId(String token) {
+    public JwtClaims validateAndExtract(String token) {
         try {
             Claims claims = Jwts.parser()
                 .verifyWith(signingKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-            return UUID.fromString(claims.getSubject());
+            UUID userId   = UUID.fromString(claims.getSubject());
+            String username = claims.get(CLAIM_USERNAME, String.class);
+            return new JwtClaims(userId, username);
         } catch (ExpiredJwtException e) {
             throw new JwtTokenInvalidException("Token de sesión expirado. Inicie sesión nuevamente.");
         } catch (Exception e) {
@@ -93,22 +91,12 @@ public class JwtTokenProvider {
     }
 
     /**
-     * Extrae el username del claim {@code preferred_username} sin validar firma.
+     * Claims extraídos de un JWT de sesión válido.
      *
-     * <p><strong>Solo usar después de {@link #validateAndExtractUserId(String)}.</strong>
-     * Este método asume que el token ya fue validado.</p>
-     *
-     * @param token JWT ya validado
-     * @return username del usuario
+     * @param userId   UUID del usuario autenticado
+     * @param username nombre de usuario
      */
-    public String extractUsername(String token) {
-        return Jwts.parser()
-            .verifyWith(signingKey)
-            .build()
-            .parseSignedClaims(token)
-            .getPayload()
-            .get(CLAIM_USERNAME, String.class);
-    }
+    public record JwtClaims(UUID userId, String username) {}
 
     /**
      * Excepción lanzada cuando el JWT de sesión no supera la validación.
