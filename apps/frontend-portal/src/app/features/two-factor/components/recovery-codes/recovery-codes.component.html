@@ -1,0 +1,225 @@
+<!-- recovery-codes.component.html -->
+<!--
+  US-003: Gestión de códigos de recuperación
+  Soporta dos contextos: post-enrolamiento (auto-generate) y regeneración (con confirmación).
+  Accesibilidad: WCAG 2.1 AA — aria-labelledby, aria-live, role=alert,
+  role=status, aria-busy, type=button, aria-pressed, aria-describedby.
+-->
+<main
+  class="recovery-codes"
+  aria-labelledby="recovery-codes-title"
+>
+
+  <!-- ─── ESTADO: CARGANDO ─────────────────────────────────────────────── -->
+  <ng-container *ngIf="view() === 'LOADING'">
+    <div
+      class="recovery-codes__loading"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <span class="recovery-codes__spinner" aria-hidden="true"></span>
+      <p>Generando códigos de recuperación…</p>
+    </div>
+  </ng-container>
+
+  <!-- ─── ESTADO: CONFIRMAR REGENERACIÓN ──────────────────────────────── -->
+  <ng-container *ngIf="view() === 'CONFIRM_REGENERATE'">
+    <header class="recovery-codes__header">
+      <h1 id="recovery-codes-title" class="recovery-codes__title">
+        Regenerar códigos de recuperación
+      </h1>
+    </header>
+
+    <div
+      class="recovery-codes__warning-box"
+      role="alert"
+      aria-labelledby="regen-warning-title"
+    >
+      <h2 id="regen-warning-title" class="recovery-codes__warning-title">
+        ⚠️ Atención — Esta acción es irreversible
+      </h2>
+      <p class="recovery-codes__warning-text">
+        Tienes actualmente
+        <strong>{{ previousCodesCount() }} código(s)</strong> de recuperación disponibles.
+      </p>
+      <p class="recovery-codes__warning-text">
+        Al generar nuevos códigos, <strong>todos los anteriores quedarán invalidados</strong>
+        de forma permanente. Si los tenías guardados, deberás actualizarlos.
+      </p>
+    </div>
+
+    <div class="recovery-codes__actions">
+      <button
+        type="button"
+        class="btn btn--danger"
+        [disabled]="store.isLoading()"
+        (click)="onConfirmRegenerate()"
+        aria-describedby="regen-warning-title"
+      >
+        Sí, generar nuevos códigos
+      </button>
+      <button
+        type="button"
+        class="btn btn--secondary"
+        [disabled]="store.isLoading()"
+        (click)="onCancelRegenerate()"
+      >
+        Cancelar
+      </button>
+    </div>
+  </ng-container>
+
+  <!-- ─── ESTADO: MOSTRAR CÓDIGOS ──────────────────────────────────────── -->
+  <ng-container *ngIf="view() === 'DISPLAY'">
+    <header class="recovery-codes__header">
+      <h1 id="recovery-codes-title" class="recovery-codes__title">
+        Códigos de recuperación
+      </h1>
+      <p
+        class="recovery-codes__subtitle"
+        id="recovery-codes-desc"
+        role="note"
+      >
+        Guarda estos códigos en un lugar seguro. Cada código es de un solo uso.
+        <strong>No volverás a verlos una vez que salgas de esta página.</strong>
+      </p>
+    </header>
+
+    <!-- Lista de códigos -->
+    <section
+      class="recovery-codes__list-section"
+      aria-labelledby="recovery-codes-list-label"
+      aria-describedby="recovery-codes-desc"
+    >
+      <p id="recovery-codes-list-label" class="sr-only">
+        Lista de {{ codes().length }} códigos de recuperación
+      </p>
+
+      <ol
+        class="recovery-codes__list"
+        aria-label="Códigos de recuperación"
+      >
+        <li
+          *ngFor="let code of codes(); let i = index"
+          class="recovery-codes__item"
+        >
+          <span class="recovery-codes__index" aria-hidden="true">{{ i + 1 }}.</span>
+          <code
+            class="recovery-codes__code"
+            [attr.aria-label]="'Código ' + (i + 1) + ': ' + code"
+          >{{ code }}</code>
+        </li>
+      </ol>
+    </section>
+
+    <!-- Acciones sobre los códigos -->
+    <div class="recovery-codes__code-actions">
+
+      <!-- Copiar al portapapeles -->
+      <button
+        type="button"
+        class="btn btn--secondary"
+        [disabled]="copyFeedback() !== 'idle'"
+        (click)="onCopyAll()"
+        aria-live="polite"
+        [attr.aria-label]="copyFeedback() === 'success'
+          ? 'Códigos copiados al portapapeles'
+          : copyFeedback() === 'error'
+          ? 'Error al copiar. Usa la descarga en su lugar.'
+          : 'Copiar todos los códigos al portapapeles'"
+      >
+        <ng-container *ngIf="copyFeedback() === 'idle'">
+          Copiar todos
+        </ng-container>
+        <ng-container *ngIf="copyFeedback() === 'success'">
+          ✓ Copiados
+        </ng-container>
+        <ng-container *ngIf="copyFeedback() === 'error'">
+          Error al copiar
+        </ng-container>
+      </button>
+
+      <!-- Descargar como .txt -->
+      <button
+        type="button"
+        class="btn btn--secondary"
+        (click)="onDownload()"
+        aria-label="Descargar códigos como archivo de texto"
+      >
+        Descargar .txt
+      </button>
+
+    </div>
+
+    <!-- Confirmación de lectura -->
+    <div class="recovery-codes__acknowledge">
+      <label class="recovery-codes__checkbox-label">
+        <input
+          type="checkbox"
+          class="recovery-codes__checkbox"
+          [checked]="codesAcknowledged()"
+          (change)="codesAcknowledged.set(!codesAcknowledged())"
+          id="codes-acknowledged"
+          aria-describedby="acknowledged-hint"
+        />
+        He guardado mis códigos de recuperación en un lugar seguro.
+      </label>
+      <p id="acknowledged-hint" class="recovery-codes__hint">
+        Debes confirmar que guardaste los códigos antes de continuar.
+      </p>
+    </div>
+
+    <!-- Botón continuar -->
+    <div class="recovery-codes__actions">
+      <button
+        type="button"
+        class="btn btn--primary"
+        [disabled]="!codesAcknowledged()"
+        [attr.aria-disabled]="!codesAcknowledged()"
+        (click)="onContinue()"
+        aria-describedby="acknowledged-hint"
+      >
+        Continuar
+      </button>
+    </div>
+
+  </ng-container>
+
+  <!-- ─── ESTADO: ERROR ────────────────────────────────────────────────── -->
+  <ng-container *ngIf="view() === 'ERROR'">
+    <header class="recovery-codes__header">
+      <h1 id="recovery-codes-title" class="recovery-codes__title">
+        Códigos de recuperación
+      </h1>
+    </header>
+
+    <div
+      class="recovery-codes__error-box"
+      role="alert"
+      aria-live="assertive"
+    >
+      <p class="recovery-codes__error-text">
+        {{ store.error() ?? 'Error al generar los códigos de recuperación.' }}
+      </p>
+    </div>
+
+    <div class="recovery-codes__actions">
+      <button
+        type="button"
+        class="btn btn--primary"
+        (click)="onRetry()"
+      >
+        Reintentar
+      </button>
+      <button
+        type="button"
+        class="btn btn--secondary"
+        (click)="onCancelRegenerate()"
+      >
+        Volver a configuración
+      </button>
+    </div>
+  </ng-container>
+
+</main>

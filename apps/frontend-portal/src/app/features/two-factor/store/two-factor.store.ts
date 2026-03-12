@@ -6,7 +6,7 @@
  * Reglas de seguridad (LLD §6):
  *  - access_token NUNCA en localStorage: solo en store (memoria)
  *  - pre_auth_token solo en sessionStorage, limpiado tras verificación exitosa
- *  - pendingRecoveryCodes limpiados tras mostrar al usuario
+ *  - pendingRecoveryCodes limpiados tras mostrar al usuario (clearPendingRecoveryCodes)
  *  - pendingQrUri/qrBase64 limpiados al salir del componente
  */
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
@@ -28,7 +28,10 @@ export interface TwoFactorState {
   /** Solo en memoria durante el flujo de enrolamiento — nunca persistido */
   pendingQrUri: string | null;
   pendingQrBase64: string | null;
-  /** Limpiado inmediatamente tras mostrar los códigos al usuario */
+  /**
+   * Códigos de recuperación en texto plano — en memoria únicamente.
+   * Limpiado por RecoveryCodesComponent en ngOnDestroy (LLD §6).
+   */
   pendingRecoveryCodes: string[] | null;
   /**
    * US-002: access_token obtenido tras verificación OTP exitosa.
@@ -56,7 +59,7 @@ export const TwoFactorStore = signalStore(
 
     /**
      * Iniciar enrolamiento: POST /2fa/enroll
-     * switchMap: cancela llamadas previas si el usuario re-dispara (esperado en enroll).
+     * switchMap: cancela llamadas previas si el usuario re-dispara.
      */
     startEnroll: rxMethod<void>(
       pipe(
@@ -80,7 +83,7 @@ export const TwoFactorStore = signalStore(
     ),
 
     /**
-     * Confirmar enrolamiento con OTP: POST /2fa/enroll/confirm
+     * Confirmar enrolamiento: POST /2fa/enroll/confirm
      * exhaustMap: OTP TOTP de un solo uso (RFC 6238) — evita doble submit.
      */
     confirmEnroll: rxMethod<string>(
@@ -108,12 +111,9 @@ export const TwoFactorStore = signalStore(
     /**
      * US-002: Verificar OTP o recovery code tras login: POST /2fa/verify
      *
-     * exhaustMap: igual que confirmEnroll — OTP de un solo uso.
-     * En éxito:
-     *   - Guarda access_token en memoria (nunca en localStorage).
-     *   - Limpia pre_auth_token de sessionStorage (LLD §6).
-     * En error:
-     *   - Mantiene el pre_auth_token para reintentos (dentro del TTL).
+     * exhaustMap: OTP de un solo uso — evita doble submit.
+     * En éxito: guarda access_token en memoria, limpia pre_auth_token.
+     * En error: conserva pre_auth_token para reintentos dentro del TTL.
      */
     verifyLogin: rxMethod<VerifyOtpRequest>(
       pipe(
@@ -122,7 +122,6 @@ export const TwoFactorStore = signalStore(
           svc.verifyOtp(request).pipe(
             tapResponse({
               next: (res) => {
-                // Seguridad LLD §6: limpiar pre_auth_token inmediatamente tras éxito
                 sessionStorage.removeItem(environment.preAuthTokenSessionKey);
                 patchState(store, {
                   isLoading: false,
@@ -139,9 +138,37 @@ export const TwoFactorStore = signalStore(
     ),
 
     /**
-     * Cerrar sesión / limpiar contexto de autenticación.
-     * Elimina access_token de memoria y pre_auth_token de sessionStorage.
+     * US-003: Generar (o regenerar) códigos de recuperación: POST /2fa/recovery-codes/generate
+     *
+     * switchMap: si el componente dispara la llamada varias veces (p.ej. doble render),
+     * cancela la anterior. En regeneración el usuario solo puede disparar una vez
+     * (botón deshabilitado durante isLoading), por lo que switchMap es seguro.
+     *
+     * En éxito: guarda los códigos en texto plano en pendingRecoveryCodes (solo en memoria).
+     *   Actualiza availableRecoveryCodes con el total generado.
+     * En error: no modifica pendingRecoveryCodes — el componente puede reintentar.
      */
+    generateRecoveryCodes: rxMethod<void>(
+      pipe(
+        tap(() => patchState(store, { isLoading: true, error: null })),
+        switchMap(() =>
+          svc.generateRecoveryCodes().pipe(
+            tapResponse({
+              next: (res) =>
+                patchState(store, {
+                  isLoading: false,
+                  pendingRecoveryCodes: res.codes,
+                  availableRecoveryCodes: res.codes.length,
+                }),
+              error: (err: Error) =>
+                patchState(store, { isLoading: false, error: err.message }),
+            })
+          )
+        )
+      )
+    ),
+
+    /** Cerrar sesión — elimina access_token de memoria y pre_auth_token de sessionStorage */
     clearSession(): void {
       sessionStorage.removeItem(environment.preAuthTokenSessionKey);
       patchState(store, { accessToken: null, error: null });
@@ -157,12 +184,15 @@ export const TwoFactorStore = signalStore(
       });
     },
 
-    /** Establecer códigos de recuperación en memoria (llamado tras confirmEnroll) */
+    /** Establecer códigos de recuperación en memoria (uso externo / testing) */
     setPendingRecoveryCodes(codes: string[]): void {
       patchState(store, { pendingRecoveryCodes: codes });
     },
 
-    /** Limpiar códigos de recuperación de memoria (llamado tras mostrarlos al usuario) */
+    /**
+     * Limpiar códigos de recuperación de memoria.
+     * Llamado por RecoveryCodesComponent.ngOnDestroy() — LLD §6.
+     */
     clearPendingRecoveryCodes(): void {
       patchState(store, { pendingRecoveryCodes: null });
     },
