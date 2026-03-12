@@ -52,7 +52,7 @@ export class OtpVerificationComponent implements OnDestroy {
   /** Estado de error visual en OtpInputComponent */
   readonly otpHasError = signal(false);
 
-  /** Error de validación local (recovery code vacío, formato incorrecto) */
+  /** Error de validación local (recovery code vacío) */
   readonly localError = signal<string | null>(null);
 
   /**
@@ -82,9 +82,23 @@ export class OtpVerificationComponent implements OnDestroy {
     this.otpValue.set(otp);
   }
 
+  /**
+   * CR-NC-001 FIX: eliminado .toUpperCase() del handler.
+   *
+   * El problema original: `toUpperCase()` + `[value]="recoveryValue()"` +
+   * `ChangeDetectionStrategy.OnPush` provocaba que Angular actualizara
+   * `input.value` en el siguiente tick de CD, moviendo el cursor al final
+   * del campo en cada keystroke de letra minúscula.
+   *
+   * Fix: el signal almacena el valor tal como lo escribe el usuario.
+   * La normalización (.trim().toUpperCase()) se aplica únicamente en
+   * onVerify() al momento de enviar, nunca durante la edición.
+   * El CSS `text-transform: uppercase` ofrece feedback visual inmediato
+   * sin afectar la posición del cursor.
+   */
   onRecoveryChange(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
-    this.recoveryValue.set(value.trim().toUpperCase());
+    this.recoveryValue.set(value);
     if (this.localError()) this.localError.set(null);
     if (this.store.error()) this.store.clearError();
   }
@@ -98,7 +112,8 @@ export class OtpVerificationComponent implements OnDestroy {
       this.verifyAttempted = true;
       this.store.verifyLogin({ otp: this.otpValue() });
     } else {
-      const code = this.recoveryValue().trim();
+      // Normalización en el punto de envío: trim + uppercase
+      const code = this.recoveryValue().trim().toUpperCase();
       if (!code) {
         this.localError.set('Introduce el código de recuperación.');
         return;
@@ -109,7 +124,6 @@ export class OtpVerificationComponent implements OnDestroy {
   }
 
   onToggleMode(): void {
-    // Limpiar estado al cambiar de modo
     this.otpValue.set('');
     this.recoveryValue.set('');
     this.otpHasError.set(false);
@@ -119,14 +133,12 @@ export class OtpVerificationComponent implements OnDestroy {
   }
 
   onCancel(): void {
-    // Limpiar pre_auth_token y estado si el usuario cancela
     this.store.clearSession();
     this.router.navigate(['/auth/login']);
   }
 
   ngOnDestroy(): void {
-    // Si el componente se destruye sin haber completado el flujo (p.ej. navegación manual),
-    // limpiar el error para no contaminar el estado global.
+    // Limpiar error global al destruir el componente (navegación manual sin completar flujo)
     this.store.clearError();
   }
 }
