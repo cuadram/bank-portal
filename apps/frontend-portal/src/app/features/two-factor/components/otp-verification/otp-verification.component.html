@@ -1,0 +1,173 @@
+<!-- otp-verification.component.html -->
+<!--
+  US-002: Verificación OTP en flujo de login
+  Soporta dos modos: OTP estándar y código de recuperación.
+  Accesibilidad: WCAG 2.1 AA — role=main, aria-live, role=alert,
+  aria-labelledby, type=button, autocomplete=one-time-code.
+-->
+<main
+  class="otp-verification"
+  role="main"
+  aria-labelledby="otp-verify-title"
+>
+
+  <header class="otp-verification__header">
+    <h1 id="otp-verify-title" class="otp-verification__title">
+      Verificación en dos pasos
+    </h1>
+
+    <!-- Descripción dinámica según modo -->
+    <p class="otp-verification__subtitle" aria-live="polite">
+      <ng-container *ngIf="mode() === 'OTP'">
+        Introduce el código de 6 dígitos de tu aplicación autenticadora.
+      </ng-container>
+      <ng-container *ngIf="mode() === 'RECOVERY'">
+        Introduce uno de tus códigos de recuperación.
+      </ng-container>
+    </p>
+  </header>
+
+  <!-- ─── MODO OTP ─────────────────────────────────────────────────────── -->
+  <section
+    *ngIf="mode() === 'OTP'"
+    class="otp-verification__section"
+    aria-labelledby="otp-section-label"
+  >
+    <p id="otp-section-label" class="otp-verification__field-label">
+      Código de verificación
+    </p>
+
+    <bp-otp-input
+      [hasError]="otpHasError()"
+      [disabled]="store.isLoading()"
+      aria-labelledby="otp-section-label"
+      (otpChange)="onOtpChange($event)"
+      (otpComplete)="onOtpComplete($event)"
+    />
+
+    <p
+      *ngIf="otpHasError()"
+      class="otp-verification__error"
+      role="alert"
+      id="otp-format-error"
+    >
+      El código debe tener 6 dígitos.
+    </p>
+  </section>
+
+  <!-- ─── MODO RECOVERY CODE ───────────────────────────────────────────── -->
+  <section
+    *ngIf="mode() === 'RECOVERY'"
+    class="otp-verification__section"
+    aria-labelledby="recovery-section-label"
+  >
+    <label
+      id="recovery-section-label"
+      for="recovery-input"
+      class="otp-verification__field-label"
+    >
+      Código de recuperación
+    </label>
+
+    <input
+      id="recovery-input"
+      type="text"
+      class="otp-verification__recovery-input"
+      [class.otp-verification__recovery-input--error]="!!localError()"
+      autocomplete="off"
+      placeholder="XXXX-XXXX"
+      [disabled]="store.isLoading()"
+      [value]="recoveryValue()"
+      aria-describedby="recovery-hint recovery-error"
+      (input)="onRecoveryChange($event)"
+    />
+
+    <p id="recovery-hint" class="otp-verification__hint">
+      Cada código de recuperación es de un solo uso.
+    </p>
+
+    <p
+      *ngIf="localError()"
+      id="recovery-error"
+      class="otp-verification__error"
+      role="alert"
+    >
+      {{ localError() }}
+    </p>
+  </section>
+
+  <!-- ─── ERROR DE BACKEND ─────────────────────────────────────────────── -->
+  <div
+    *ngIf="store.error()"
+    class="otp-verification__backend-error"
+    role="alert"
+    aria-live="assertive"
+  >
+    <span class="otp-verification__backend-error-text">
+      {{ store.error() }}
+    </span>
+    <button
+      type="button"
+      class="btn btn--link"
+      (click)="store.clearError()"
+      aria-label="Cerrar mensaje de error"
+    >
+      Cerrar
+    </button>
+  </div>
+
+  <!-- ─── ACCIONES ─────────────────────────────────────────────────────── -->
+  <div class="otp-verification__actions">
+
+    <button
+      type="button"
+      class="btn btn--primary"
+      [disabled]="store.isLoading()"
+      (click)="onVerify()"
+      aria-describedby="verify-hint"
+    >
+      <span *ngIf="store.isLoading()" aria-live="polite" aria-busy="true">
+        Verificando…
+      </span>
+      <span *ngIf="!store.isLoading()">
+        Verificar
+      </span>
+    </button>
+
+    <button
+      type="button"
+      class="btn btn--secondary"
+      [disabled]="store.isLoading()"
+      (click)="onCancel()"
+    >
+      Cancelar
+    </button>
+
+  </div>
+
+  <p id="verify-hint" class="otp-verification__verify-hint">
+    El código expira en 5 minutos.
+  </p>
+
+  <!-- ─── TOGGLE MODO ───────────────────────────────────────────────────── -->
+  <div class="otp-verification__toggle">
+    <button
+      type="button"
+      class="btn btn--link"
+      [disabled]="store.isLoading()"
+      (click)="onToggleMode()"
+      [attr.aria-label]="mode() === 'OTP'
+        ? 'Usar código de recuperación en su lugar'
+        : 'Usar código de autenticador en su lugar'"
+    >
+      <ng-container *ngIf="mode() === 'OTP'">
+        ¿No tienes acceso a tu autenticador?
+        <strong>Usa un código de recuperación</strong>
+      </ng-container>
+      <ng-container *ngIf="mode() === 'RECOVERY'">
+        ← Volver a usar el código del autenticador
+      </ng-container>
+    </button>
+  </div>
+
+</main>

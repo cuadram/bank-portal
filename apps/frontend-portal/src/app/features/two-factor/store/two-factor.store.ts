@@ -5,16 +5,18 @@
  *
  * Reglas de seguridad (LLD §6):
  *  - access_token NUNCA en localStorage: solo en store (memoria)
- *  - pre_auth_token solo en sessionStorage, limpiado tras verificación
+ *  - pre_auth_token solo en sessionStorage, limpiado tras verificación exitosa
  *  - pendingRecoveryCodes limpiados tras mostrar al usuario
  *  - pendingQrUri/qrBase64 limpiados al salir del componente
  */
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
 import { inject } from '@angular/core';
 import { TwoFactorService } from '../services/two-factor.service';
+import { VerifyOtpRequest } from '../models/verify.model';
 import { tapResponse } from '@ngrx/operators';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, exhaustMap, tap } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 export type TwoFactorStatus = 'DISABLED' | 'PENDING' | 'ENABLED';
 
@@ -28,6 +30,12 @@ export interface TwoFactorState {
   pendingQrBase64: string | null;
   /** Limpiado inmediatamente tras mostrar los códigos al usuario */
   pendingRecoveryCodes: string[] | null;
+  /**
+   * US-002: access_token obtenido tras verificación OTP exitosa.
+   * NUNCA en localStorage — solo en memoria (LLD §6).
+   * Limpiado al cerrar sesión o refrescar la página.
+   */
+  accessToken: string | null;
 }
 
 const initialState: TwoFactorState = {
@@ -38,6 +46,7 @@ const initialState: TwoFactorState = {
   pendingQrUri: null,
   pendingQrBase64: null,
   pendingRecoveryCodes: null,
+  accessToken: null,
 };
 
 export const TwoFactorStore = signalStore(
@@ -72,12 +81,7 @@ export const TwoFactorStore = signalStore(
 
     /**
      * Confirmar enrolamiento con OTP: POST /2fa/enroll/confirm
-     *
-     * CR-NC-005 FIX: exhaustMap en lugar de switchMap.
-     * Los OTP TOTP son de un solo uso (RFC 6238). Si el usuario hace doble-click
-     * y switchMap cancela la primera petición, el backend puede haberla procesado
-     * ya (OTP consumido). La segunda petición fallaría con OTP inválido.
-     * exhaustMap ignora los eventos subsiguientes mientras hay una petición en vuelo.
+     * exhaustMap: OTP TOTP de un solo uso (RFC 6238) — evita doble submit.
      */
     confirmEnroll: rxMethod<string>(
       pipe(
@@ -100,6 +104,48 @@ export const TwoFactorStore = signalStore(
         )
       )
     ),
+
+    /**
+     * US-002: Verificar OTP o recovery code tras login: POST /2fa/verify
+     *
+     * exhaustMap: igual que confirmEnroll — OTP de un solo uso.
+     * En éxito:
+     *   - Guarda access_token en memoria (nunca en localStorage).
+     *   - Limpia pre_auth_token de sessionStorage (LLD §6).
+     * En error:
+     *   - Mantiene el pre_auth_token para reintentos (dentro del TTL).
+     */
+    verifyLogin: rxMethod<VerifyOtpRequest>(
+      pipe(
+        tap(() => patchState(store, { isLoading: true, error: null })),
+        exhaustMap((request) =>
+          svc.verifyOtp(request).pipe(
+            tapResponse({
+              next: (res) => {
+                // Seguridad LLD §6: limpiar pre_auth_token inmediatamente tras éxito
+                sessionStorage.removeItem(environment.preAuthTokenSessionKey);
+                patchState(store, {
+                  isLoading: false,
+                  accessToken: res.access_token,
+                  error: null,
+                });
+              },
+              error: (err: Error) =>
+                patchState(store, { isLoading: false, error: err.message }),
+            })
+          )
+        )
+      )
+    ),
+
+    /**
+     * Cerrar sesión / limpiar contexto de autenticación.
+     * Elimina access_token de memoria y pre_auth_token de sessionStorage.
+     */
+    clearSession(): void {
+      sessionStorage.removeItem(environment.preAuthTokenSessionKey);
+      patchState(store, { accessToken: null, error: null });
+    },
 
     /** Limpiar estado pendiente de enrolamiento (al salir del QR sin confirmar) */
     clearPendingEnroll(): void {
