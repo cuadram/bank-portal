@@ -140,9 +140,11 @@ export const TwoFactorStore = signalStore(
     /**
      * US-003: Generar (o regenerar) códigos de recuperación: POST /2fa/recovery-codes/generate
      *
-     * switchMap: si el componente dispara la llamada varias veces (p.ej. doble render),
-     * cancela la anterior. En regeneración el usuario solo puede disparar una vez
-     * (botón deshabilitado durante isLoading), por lo que switchMap es seguro.
+     * exhaustMap (NC-001 CR v1.0): el endpoint invalida los códigos anteriores en el
+     * backend en cuanto se ejecuta la operación. Si switchMap cancelara la respuesta
+     * en vuelo, el usuario quedaría sin códigos válidos sin ninguna notificación de error.
+     * exhaustMap ignora nuevas emisiones mientras hay una request activa — es el
+     * comportamiento correcto para operaciones destructivas con efecto irrecuperable.
      *
      * En éxito: guarda los códigos en texto plano en pendingRecoveryCodes (solo en memoria).
      *   Actualiza availableRecoveryCodes con el total generado.
@@ -151,7 +153,7 @@ export const TwoFactorStore = signalStore(
     generateRecoveryCodes: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { isLoading: true, error: null })),
-        switchMap(() =>
+        exhaustMap(() =>
           svc.generateRecoveryCodes().pipe(
             tapResponse({
               next: (res) =>

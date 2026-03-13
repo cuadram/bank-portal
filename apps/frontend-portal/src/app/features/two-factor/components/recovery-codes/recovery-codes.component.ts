@@ -61,11 +61,13 @@ export class RecoveryCodesComponent implements OnInit, OnDestroy {
   readonly copyFeedback = signal<'idle' | 'success' | 'error'>('idle');
 
   /**
-   * En modo REGENERATE, el conteo de códigos activos ANTES de generar nuevos.
-   * Se captura en ngOnInit para mostrar el aviso de invalidación correctamente
-   * aunque availableRecoveryCodes cambie tras la generación.
+   * NC-002 CR v1.0: eliminada propiedad privada codesCountBeforeRegenerate (dead code).
+   * El signal previousCodesCount cumple la misma función y es lo que usa el template.
+   *
+   * En modo REGENERATE, captura el conteo de códigos activos ANTES de generar nuevos
+   * para mostrar el aviso de invalidación correctamente aunque availableRecoveryCodes
+   * cambie tras la generación.
    */
-  private codesCountBeforeRegenerate = 0;
   readonly previousCodesCount = signal(0);
 
   /** Códigos actuales como array desde el store */
@@ -99,7 +101,6 @@ export class RecoveryCodesComponent implements OnInit, OnDestroy {
     if (currentCodes > 0 && this.store.pendingRecoveryCodes() === null) {
       // Contexto B: regeneración — el usuario ya tiene códigos activos.
       // Guardar el conteo para el aviso de invalidación y pedir confirmación.
-      this.codesCountBeforeRegenerate = currentCodes;
       this.previousCodesCount.set(currentCodes);
       this.view.set('CONFIRM_REGENERATE');
     } else if (this.store.pendingRecoveryCodes() !== null) {
@@ -133,6 +134,10 @@ export class RecoveryCodesComponent implements OnInit, OnDestroy {
    * Copiar todos los códigos al portapapeles.
    * Clipboard API solo disponible en contextos seguros (HTTPS / localhost).
    * Feedback visual durante 2 segundos.
+   *
+   * RV-003 (Sprint 02): los handles de setTimeout deberían cancelarse en ngOnDestroy.
+   * En Angular 17+ con signals el riesgo de error post-destroy es bajo, pero es
+   * buena práctica para evitar actualizaciones sobre componentes destruidos.
    */
   onCopyAll(): void {
     const text = this.codes().join('\n');
