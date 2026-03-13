@@ -111,14 +111,12 @@
     />
   </ng-container>
 
-  <!-- Vista: DISABLE — desactivación (placeholder US-004) -->
+  <!-- Vista: DISABLE — desactivación 2FA (US-004) -->
   <ng-container *ngIf="currentView() === 'DISABLE'">
-    <div class="two-factor-setup__placeholder" role="status">
-      <p>La desactivación de 2FA estará disponible en US-004.</p>
-      <button type="button" class="btn btn--secondary" (click)="currentView.set('STATUS')">
-        Volver
-      </button>
-    </div>
+    <bp-disable-two-factor
+      (disableConfirmed)="onDisableConfirmed()"
+      (cancelled)="onDisableCancelled()"
+    />
   </ng-container>
 
 </div>

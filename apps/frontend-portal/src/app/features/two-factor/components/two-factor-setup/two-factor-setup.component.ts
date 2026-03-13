@@ -1,7 +1,7 @@
 /**
  * components/two-factor-setup/two-factor-setup.component.ts
  * Contenedor principal — Activa/desactiva 2FA, muestra estado actual
- * US-001 — T-004 | FEAT-001 | BankPortal — Banco Meridian
+ * US-001 — T-004 | US-004 — T-010 | FEAT-001 | BankPortal — Banco Meridian
  */
 import {
   Component, inject,
@@ -11,13 +11,14 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TwoFactorStore } from '../../store/two-factor.store';
 import { QrEnrollComponent } from './qr-enroll/qr-enroll.component';
+import { DisableTwoFactorComponent } from './disable-two-factor/disable-two-factor.component';
 
 type SetupView = 'STATUS' | 'QR_ENROLL' | 'DISABLE';
 
 @Component({
   selector: 'bp-two-factor-setup',
   standalone: true,
-  imports: [CommonModule, QrEnrollComponent],
+  imports: [CommonModule, QrEnrollComponent, DisableTwoFactorComponent],
   templateUrl: './two-factor-setup.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -44,7 +45,6 @@ export class TwoFactorSetupComponent {
   });
 
   onActivate2FA(): void {
-    // Solo dispara la llamada al backend — la navegación la gestiona enrollEffect
     this.store.startEnroll(undefined as unknown as void);
   }
 
@@ -62,5 +62,15 @@ export class TwoFactorSetupComponent {
 
   onRegenerateRecoveryCodes(): void {
     this.router.navigate(['/security/2fa/recovery-codes']);
+  }
+
+  /** US-004: el usuario ha desactivado 2FA exitosamente — volver a STATUS */
+  onDisableConfirmed(): void {
+    this.currentView.set('STATUS');
+  }
+
+  /** US-004: el usuario cancela la desactivación — volver a STATUS */
+  onDisableCancelled(): void {
+    this.currentView.set('STATUS');
   }
 }

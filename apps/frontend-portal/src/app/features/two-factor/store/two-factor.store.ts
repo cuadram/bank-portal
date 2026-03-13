@@ -20,6 +20,15 @@ import { environment } from '../../../../environments/environment';
 
 export type TwoFactorStatus = 'DISABLED' | 'PENDING' | 'ENABLED';
 
+/**
+ * US-004: Payload para desactivar 2FA.
+ * Corresponde al body de DELETE /2fa/disable (LLD backend §6).
+ */
+export interface DisableRequest {
+  password: string;
+  otp: string;
+}
+
 export interface TwoFactorState {
   status: TwoFactorStatus;
   availableRecoveryCodes: number;
@@ -145,10 +154,6 @@ export const TwoFactorStore = signalStore(
      * en vuelo, el usuario quedaría sin códigos válidos sin ninguna notificación de error.
      * exhaustMap ignora nuevas emisiones mientras hay una request activa — es el
      * comportamiento correcto para operaciones destructivas con efecto irrecuperable.
-     *
-     * En éxito: guarda los códigos en texto plano en pendingRecoveryCodes (solo en memoria).
-     *   Actualiza availableRecoveryCodes con el total generado.
-     * En error: no modifica pendingRecoveryCodes — el componente puede reintentar.
      */
     generateRecoveryCodes: rxMethod<void>(
       pipe(
@@ -161,6 +166,43 @@ export const TwoFactorStore = signalStore(
                   isLoading: false,
                   pendingRecoveryCodes: res.codes,
                   availableRecoveryCodes: res.codes.length,
+                }),
+              error: (err: Error) =>
+                patchState(store, { isLoading: false, error: err.message }),
+            })
+          )
+        )
+      )
+    ),
+
+    /**
+     * US-004: Desactivar 2FA: DELETE /2fa/disable
+     *
+     * exhaustMap: operación destructiva e irreversible. El backend elimina el secreto
+     * TOTP e invalida todos los recovery codes. Si switchMap cancelara la response en
+     * vuelo, el estado del frontend quedaría desincronizado con el backend (2FA
+     * desactivado en servidor, aparentemente activo en cliente). exhaustMap garantiza
+     * que solo se procesa una petición de desactivación a la vez.
+     *
+     * En éxito:
+     *   - status → 'DISABLED'
+     *   - availableRecoveryCodes → 0
+     *   - Limpia pendingRecoveryCodes y error
+     * En error: conserva status 'ENABLED' — el componente puede reintentar.
+     */
+    disableTwoFactor: rxMethod<DisableRequest>(
+      pipe(
+        tap(() => patchState(store, { isLoading: true, error: null })),
+        exhaustMap((request) =>
+          svc.disable(request.otp, request.password).pipe(
+            tapResponse({
+              next: () =>
+                patchState(store, {
+                  status: 'DISABLED',
+                  isLoading: false,
+                  availableRecoveryCodes: 0,
+                  pendingRecoveryCodes: null,
+                  error: null,
                 }),
               error: (err: Error) =>
                 patchState(store, { isLoading: false, error: err.message }),
