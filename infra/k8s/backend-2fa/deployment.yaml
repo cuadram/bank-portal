@@ -1,0 +1,185 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# BankPortal — backend-2fa — Kubernetes Deployment
+# SOFIA DevOps Agent — FEAT-001 v1.0.0
+# Target: namespace bankportal (PROD) / bankportal-stg / bankportal-dev
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-2fa
+  namespace: bankportal        # reemplazar por bankportal-stg / bankportal-dev según target
+  labels:
+    app: backend-2fa
+    project: bankportal
+    client: banco-meridian
+    managed-by: sofia-devops
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    sofia.experis.com/feature: "FEAT-001"
+    sofia.experis.com/version: "v1.0.0"
+spec:
+  replicas: 2                  # mínimo 2 para zero downtime
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0        # nunca bajar réplicas disponibles durante update
+      maxSurge: 1              # crear 1 réplica extra durante el rollout
+  selector:
+    matchLabels:
+      app: backend-2fa
+  template:
+    metadata:
+      labels:
+        app: backend-2fa
+        version: "v1.0.0"
+    spec:
+      # Usuario no-root — creado en el Dockerfile
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+
+      containers:
+        - name: backend-2fa
+          image: ${REGISTRY}/backend-2fa:v1.0.0    # reemplazado por pipeline
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8081
+              protocol: TCP
+
+          # Secrets inyectados desde Kubernetes Secret (NUNCA hardcodeados)
+          envFrom:
+            - secretRef:
+                name: backend-2fa-secrets           # crear manualmente en cada namespace
+
+          # Variables de entorno no sensibles
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "kubernetes"
+            - name: SERVER_PORT
+              value: "8081"
+            - name: TOTP_ISSUER
+              value: "BankPortal - Banco Meridian"
+            - name: RATE_LIMIT_MAX_ATTEMPTS
+              value: "5"
+            - name: RATE_LIMIT_BLOCK_MINUTES
+              value: "15"
+            - name: JWT_FULL_EXPIRY_HOURS
+              value: "8"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+
+          # Liveness: el servicio está vivo (reiniciar si falla)
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8081
+            initialDelaySeconds: 45
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 5
+
+          # Readiness: el servicio puede recibir tráfico
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8081
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 3
+
+          # Recursos calibrados para Spring Boot con JWT + AES-256 operations
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+
+          # Filesystem read-only para seguridad
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+
+          # Directorio temporal escribible para Spring Boot
+          volumeMounts:
+            - name: tmp-volume
+              mountPath: /tmp
+
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
+
+      # Política de pull de imagen privada
+      imagePullSecrets:
+        - name: registry-credentials
+
+      # Distribución de pods en nodos distintos (alta disponibilidad)
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values: ["backend-2fa"]
+                topologyKey: kubernetes.io/hostname
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-2fa
+  namespace: bankportal
+  labels:
+    app: backend-2fa
+spec:
+  selector:
+    app: backend-2fa
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8081
+      protocol: TCP
+  type: ClusterIP
+
+---
+# Horizontal Pod Autoscaler — escala automáticamente según CPU
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: backend-2fa-hpa
+  namespace: bankportal
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend-2fa
+  minReplicas: 2
+  maxReplicas: 8
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
