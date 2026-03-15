@@ -1,0 +1,122 @@
+<!-- two-factor-setup.component.html -->
+<!-- Contenedor principal del flujo de configuración 2FA -->
+<div class="two-factor-setup" role="main" aria-labelledby="2fa-setup-title">
+
+  <!-- Vista: STATUS — muestra el estado actual y las acciones disponibles -->
+  <ng-container *ngIf="currentView() === 'STATUS'">
+
+    <h1 id="2fa-setup-title" class="two-factor-setup__title">
+      Autenticación en dos pasos (2FA)
+    </h1>
+
+    <!-- Estado: DISABLED -->
+    <ng-container *ngIf="store.status() === 'DISABLED'">
+      <div class="two-factor-setup__status two-factor-setup__status--disabled"
+           role="status" aria-live="polite">
+        <span class="status-badge status-badge--inactive" aria-label="Estado: inactivo">
+          ● Inactivo
+        </span>
+        <p class="two-factor-setup__description">
+          La autenticación de dos factores no está activada en tu cuenta.
+          Actívala para añadir una capa adicional de seguridad.
+        </p>
+      </div>
+
+      <div class="two-factor-setup__actions">
+        <button
+          type="button"
+          class="btn btn--primary"
+          (click)="onActivate2FA()"
+          [disabled]="store.isLoading()"
+          aria-describedby="activate-hint"
+        >
+          Activar autenticación 2FA
+        </button>
+        <p id="activate-hint" class="two-factor-setup__hint">
+          Necesitarás una aplicación autenticadora en tu teléfono.
+        </p>
+      </div>
+    </ng-container>
+
+    <!-- Estado: PENDING -->
+    <ng-container *ngIf="store.status() === 'PENDING'">
+      <div class="two-factor-setup__status two-factor-setup__status--pending"
+           role="status" aria-live="polite">
+        <span class="status-badge status-badge--pending" aria-label="Estado: pendiente de confirmar">
+          ◎ Pendiente de confirmación
+        </span>
+        <p class="two-factor-setup__description">
+          Escanea el código QR con tu aplicación autenticadora y confirma con el código generado.
+        </p>
+      </div>
+      <button type="button" class="btn btn--primary" (click)="currentView.set('QR_ENROLL')">
+        Continuar configuración
+      </button>
+    </ng-container>
+
+    <!-- Estado: ENABLED -->
+    <ng-container *ngIf="store.status() === 'ENABLED'">
+      <div class="two-factor-setup__status two-factor-setup__status--enabled"
+           role="status" aria-live="polite">
+        <span class="status-badge status-badge--active" aria-label="Estado: activo">
+          ✓ Activo
+        </span>
+        <p class="two-factor-setup__description">
+          La autenticación de dos factores está activada.
+          Tu cuenta está protegida con una capa adicional de seguridad.
+        </p>
+        <p *ngIf="store.availableRecoveryCodes() > 0" class="two-factor-setup__recovery-info">
+          Tienes <strong>{{ store.availableRecoveryCodes() }}</strong> códigos de recuperación disponibles.
+        </p>
+        <p *ngIf="store.availableRecoveryCodes() === 0" class="two-factor-setup__recovery-warning"
+           role="alert">
+          ⚠ No tienes códigos de recuperación disponibles. Genera nuevos para garantizar el acceso.
+        </p>
+      </div>
+
+      <div class="two-factor-setup__actions">
+        <button
+          type="button"
+          class="btn btn--secondary"
+          (click)="onRegenerateRecoveryCodes()"
+        >
+          Ver / Regenerar códigos de recuperación
+        </button>
+
+        <button
+          type="button"
+          class="btn btn--danger"
+          (click)="onDeactivate2FA()"
+        >
+          Desactivar 2FA
+        </button>
+      </div>
+    </ng-container>
+
+    <!-- Error global -->
+    <div *ngIf="store.error()" class="two-factor-setup__error" role="alert">
+      {{ store.error() }}
+      <button type="button" class="btn btn--link" (click)="store.clearError()">
+        Cerrar
+      </button>
+    </div>
+
+  </ng-container>
+
+  <!-- Vista: QR_ENROLL — enrolamiento con QR -->
+  <ng-container *ngIf="currentView() === 'QR_ENROLL'">
+    <bp-qr-enroll
+      (enrollConfirmed)="onEnrollConfirmed()"
+      (cancelled)="onEnrollCancelled()"
+    />
+  </ng-container>
+
+  <!-- Vista: DISABLE — desactivación 2FA (US-004) -->
+  <ng-container *ngIf="currentView() === 'DISABLE'">
+    <bp-disable-two-factor
+      (disableConfirmed)="onDisableConfirmed()"
+      (cancelled)="onDisableCancelled()"
+    />
+  </ng-container>
+
+</div>

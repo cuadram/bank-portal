@@ -1,0 +1,97 @@
+<!-- qr-enroll.component.html -->
+<!-- Paso 2 del enrolamiento: escanear QR y confirmar con primer OTP -->
+<div class="qr-enroll" role="main" aria-labelledby="qr-enroll-title">
+
+  <h2 id="qr-enroll-title" class="qr-enroll__title">
+    Configurar autenticador
+  </h2>
+
+  <p class="qr-enroll__instructions">
+    Escanea este código QR con tu aplicación autenticadora (Google Authenticator, Authy, etc.)
+    y luego introduce el código de 6 dígitos que muestre.
+  </p>
+
+  <!-- QR Code -->
+  <div class="qr-enroll__qr-container" aria-label="Código QR para configurar el autenticador">
+    <img
+      *ngIf="qrSrc"
+      [src]="qrSrc"
+      alt="Código QR para configurar la autenticación de dos factores"
+      class="qr-enroll__qr-image"
+      width="200"
+      height="200"
+    />
+    <div *ngIf="!qrSrc" class="qr-enroll__qr-placeholder" aria-busy="true">
+      Cargando QR...
+    </div>
+  </div>
+
+  <!-- Secreto manual -->
+  <details class="qr-enroll__manual" *ngIf="store.pendingQrUri()">
+    <summary>¿No puedes escanear el QR? Configura manualmente</summary>
+    <!-- CR-NC-009 INFO: el URI contiene el secreto TOTP; se advierte al usuario -->
+    <p class="qr-enroll__manual-warning" role="note">
+      ⚠ No compartas este código con nadie. Introdúcelo manualmente en tu aplicación autenticadora.
+    </p>
+    <p class="qr-enroll__manual-uri">
+      <code>{{ store.pendingQrUri() }}</code>
+    </p>
+  </details>
+
+  <!-- OTP Input -->
+  <!--
+    CR-NC-004 FIX: label asociada al grupo OTP mediante aria-labelledby en el
+    contenedor del componente bp-otp-input. El campo compuesto ya expone
+    aria-label por dígito internamente. El id 'otp-group-label' conecta la
+    descripción visible con el role="group" del componente.
+  -->
+  <div class="qr-enroll__otp-section">
+    <p id="otp-group-label" class="qr-enroll__otp-label">
+      Introduce el código de verificación
+    </p>
+
+    <bp-otp-input
+      [hasError]="otpHasError()"
+      [disabled]="store.isLoading()"
+      aria-labelledby="otp-group-label"
+      (otpChange)="onOtpChange($event)"
+      (otpComplete)="onOtpComplete($event)"
+    />
+
+    <p *ngIf="otpHasError()" class="qr-enroll__error" role="alert" id="otp-error">
+      El código debe tener 6 dígitos.
+    </p>
+
+    <p *ngIf="store.error()" class="qr-enroll__error" role="alert">
+      {{ store.error() }}
+    </p>
+  </div>
+
+  <!-- Acciones -->
+  <div class="qr-enroll__actions">
+    <button
+      type="button"
+      class="btn btn--secondary"
+      (click)="onCancel()"
+      [disabled]="store.isLoading()"
+    >
+      Cancelar
+    </button>
+
+    <button
+      type="button"
+      class="btn btn--primary"
+      (click)="onConfirm()"
+      [disabled]="store.isLoading() || otpValue().length !== 6"
+      aria-describedby="qr-enroll-confirm-hint"
+    >
+      <span *ngIf="store.isLoading()">Verificando…</span>
+      <span *ngIf="!store.isLoading()">Confirmar activación</span>
+    </button>
+  </div>
+
+  <p id="qr-enroll-confirm-hint" class="qr-enroll__hint">
+    Asegúrate de guardar tus códigos de recuperación una vez activado el 2FA.
+  </p>
+
+</div>

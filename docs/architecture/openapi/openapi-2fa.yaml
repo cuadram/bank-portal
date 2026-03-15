@@ -1,0 +1,491 @@
+openapi: 3.0.3
+info:
+  title: BankPortal — 2FA API
+  description: |
+    API de Autenticación de Doble Factor (TOTP/RFC 6238) para BankPortal — Banco Meridian.
+    Gestiona enrolamiento, verificación OTP, códigos de recuperación, desactivación y estado 2FA.
+
+    ## Autenticación
+    Todos los endpoints requieren un Bearer JWT en el header `Authorization`.
+    - **JWT parcial** (`scope: "2fa-pending"`): emitido por el módulo de login tras validar credenciales.
+      Requerido en: `/enroll`, `/activate`, `/verify`, `/verify-recovery`.
+    - **JWT completo** (`scope: "full-session"`): requerido en: `/recovery-codes/generate`, `/deactivate`, `/status`.
+
+    ## Rate Limiting
+    El endpoint `/verify` aplica rate limiting: máximo 5 intentos fallidos por usuario+IP
+    en una ventana temporal. Al superar el límite, se retorna HTTP 429 con `retryAfterSeconds`.
+  version: 1.0.0
+  contact:
+    name: SOFIA — Software Factory IA — Experis
+  license:
+    name: Interno Experis — Confidencial
+
+servers:
+  - url: https://api.bankportal.meridian.com/v1
+    description: Producción
+  - url: https://api-staging.bankportal.meridian.com/v1
+    description: Staging
+  - url: http://localhost:8081/v1
+    description: Local desarrollo
+
+tags:
+  - name: enrollment
+    description: Enrolamiento y activación de 2FA
+  - name: verification
+    description: Verificación OTP en flujo de login
+  - name: recovery
+    description: Gestión de códigos de recuperación
+  - name: management
+    description: Desactivación y estado del 2FA
+
+paths:
+
+  /api/2fa/enroll:
+    post:
+      tags: [enrollment]
+      summary: Iniciar enrolamiento 2FA
+      description: |
+        Genera un secreto TOTP único para el usuario y devuelve la URI para generar
+        el código QR que el usuario escaneará con su app autenticadora (Google Authenticator, Authy, etc.).
+        El 2FA NO queda activo hasta confirmar con `/activate`.
+      operationId: enroll2fa
+      security:
+        - bearerJwtPartial: []
+      responses:
+        '200':
+          description: QR URI generada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollResponse'
+              example:
+                qrUri: "otpauth://totp/BankPortal%20-%20Banco%20Meridian:usuario@banco.com?secret=JBSWY3DPEHPK3PXP&issuer=BankPortal%20-%20Banco%20Meridian&algorithm=SHA1&digits=6&period=30"
+                secret: "JBSWY3DPEHPK3PXP"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: El usuario ya tiene 2FA activo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "TWO_FA_ALREADY_ACTIVE"
+                message: "El usuario ya tiene 2FA activo. Desactívelo antes de re-enrolar."
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/2fa/activate:
+    post:
+      tags: [enrollment]
+      summary: Confirmar activación 2FA con primer OTP
+      description: |
+        Confirma el enrolamiento verificando el primer código OTP generado por la app autenticadora.
+        Si el código es válido:
+        - Almacena el secreto TOTP cifrado con AES-256 en base de datos
+        - Genera 10 códigos de recuperación one-time
+        - Registra evento `2FA_ACTIVATED` en auditoría
+        
+        El usuario DEBE mostrar los códigos de recuperación al usuario antes de cerrar la pantalla.
+      operationId: activate2fa
+      security:
+        - bearerJwtPartial: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivateRequest'
+            example:
+              otpCode: "123456"
+      responses:
+        '200':
+          description: 2FA activado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivateResponse'
+              example:
+                recoveryCodes:
+                  - "ABCD-1234"
+                  - "EFGH-5678"
+                  - "IJKL-9012"
+                  - "MNOP-3456"
+                  - "QRST-7890"
+                  - "UVWX-1234"
+                  - "YZAN-5678"
+                  - "BCDE-9012"
+                  - "FGHI-3456"
+                  - "JKLM-7890"
+        '400':
+          description: Código OTP inválido o expirado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "INVALID_OTP"
+                message: "Código incorrecto. Verifica que tu app esté sincronizada."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/2fa/verify:
+    post:
+      tags: [verification]
+      summary: Verificar OTP en flujo de login
+      description: |
+        Verifica el código OTP generado por la app autenticadora durante el flujo de login.
+        Si es válido, emite un JWT de sesión completa (`scope: "full-session"`).
+        
+        **Rate limiting:** máximo 5 intentos fallidos por cuenta+IP → bloqueo 15 minutos.
+        Tolerancia TOTP: ±1 período (±30 segundos).
+      operationId: verifyOtp
+      security:
+        - bearerJwtPartial: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyRequest'
+            example:
+              otpCode: "654321"
+      responses:
+        '200':
+          description: OTP válido — sesión completa emitida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyResponse'
+        '400':
+          description: OTP inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpErrorResponse'
+              example:
+                code: "INVALID_OTP"
+                message: "Código incorrecto. Intento 3 de 5."
+                attemptsRemaining: 2
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          description: Rate limit alcanzado — cuenta bloqueada temporalmente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponse'
+              example:
+                code: "RATE_LIMIT_EXCEEDED"
+                message: "Demasiados intentos fallidos. Intenta de nuevo en 15 minutos."
+                retryAfterSeconds: 900
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/2fa/verify-recovery:
+    post:
+      tags: [recovery]
+      summary: Verificar código de recuperación como alternativa al OTP
+      description: |
+        Usa un código de recuperación one-time para completar el login cuando el usuario
+        no tiene acceso a su app autenticadora.
+        Si el código es válido, queda invalidado permanentemente (one-time use).
+      operationId: verifyRecoveryCode
+      security:
+        - bearerJwtPartial: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecoveryVerifyRequest'
+            example:
+              recoveryCode: "ABCD-1234"
+      responses:
+        '200':
+          description: Código de recuperación válido — sesión completa emitida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyResponse'
+        '400':
+          description: Código de recuperación inválido o ya usado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "INVALID_RECOVERY_CODE"
+                message: "Este código ya fue utilizado o no es válido."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/2fa/recovery-codes/generate:
+    post:
+      tags: [recovery]
+      summary: Regenerar códigos de recuperación
+      description: |
+        Invalida todos los códigos de recuperación existentes y genera 10 nuevos.
+        Requiere JWT de sesión completa. El usuario debe confirmar con su contraseña actual.
+      operationId: generateRecoveryCodes
+      security:
+        - bearerJwtFull: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmPasswordRequest'
+      responses:
+        '200':
+          description: Nuevos códigos de recuperación generados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivateResponse'
+        '400':
+          description: Contraseña incorrecta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/2fa/deactivate:
+    delete:
+      tags: [management]
+      summary: Desactivar 2FA
+      description: |
+        Desactiva el 2FA del usuario. Requiere confirmación con contraseña actual.
+        Elimina el secreto TOTP y todos los códigos de recuperación de la base de datos.
+        Registra evento `2FA_DEACTIVATED` en auditoría.
+      operationId: deactivate2fa
+      security:
+        - bearerJwtFull: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeactivateRequest'
+            example:
+              currentPassword: "miContraseñaActual123"
+      responses:
+        '204':
+          description: 2FA desactivado correctamente
+        '400':
+          description: Contraseña incorrecta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "INVALID_PASSWORD"
+                message: "Contraseña incorrecta. La desactivación no se ha completado."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/2fa/status:
+    get:
+      tags: [management]
+      summary: Obtener estado 2FA del usuario
+      description: Devuelve si el 2FA está activo y cuántos códigos de recuperación disponibles tiene el usuario.
+      operationId: get2faStatus
+      security:
+        - bearerJwtFull: []
+      responses:
+        '200':
+          description: Estado 2FA del usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TwoFaStatusResponse'
+              example:
+                enabled: true
+                codesRemaining: 7
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+components:
+  schemas:
+
+    EnrollResponse:
+      type: object
+      required: [qrUri, secret]
+      properties:
+        qrUri:
+          type: string
+          description: URI otpauth:// para generar el código QR en el frontend
+          example: "otpauth://totp/BankPortal:usuario@banco.com?secret=JBSWY3DPEHPK3PXP&issuer=BankPortal"
+        secret:
+          type: string
+          description: Secreto TOTP en texto plano para entrada manual (mostrar solo una vez)
+          example: "JBSWY3DPEHPK3PXP"
+
+    ActivateRequest:
+      type: object
+      required: [otpCode]
+      properties:
+        otpCode:
+          type: string
+          minLength: 6
+          maxLength: 6
+          pattern: '^\d{6}$'
+          description: Código OTP de 6 dígitos generado por la app autenticadora
+          example: "123456"
+
+    ActivateResponse:
+      type: object
+      required: [recoveryCodes]
+      properties:
+        recoveryCodes:
+          type: array
+          items:
+            type: string
+            pattern: '^[A-Z0-9]{4}-[A-Z0-9]{4}$'
+          minItems: 10
+          maxItems: 10
+          description: 10 códigos de recuperación one-time. Mostrar una única vez al usuario.
+
+    VerifyRequest:
+      type: object
+      required: [otpCode]
+      properties:
+        otpCode:
+          type: string
+          minLength: 6
+          maxLength: 6
+          pattern: '^\d{6}$'
+          example: "654321"
+
+    VerifyResponse:
+      type: object
+      required: [token]
+      properties:
+        token:
+          type: string
+          description: JWT de sesión completa con scope "full-session"
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+    RecoveryVerifyRequest:
+      type: object
+      required: [recoveryCode]
+      properties:
+        recoveryCode:
+          type: string
+          pattern: '^[A-Z0-9]{4}-[A-Z0-9]{4}$'
+          description: Código de recuperación one-time
+          example: "ABCD-1234"
+
+    DeactivateRequest:
+      type: object
+      required: [currentPassword]
+      properties:
+        currentPassword:
+          type: string
+          minLength: 8
+          description: Contraseña actual del usuario para confirmar la desactivación
+
+    ConfirmPasswordRequest:
+      type: object
+      required: [currentPassword]
+      properties:
+        currentPassword:
+          type: string
+          minLength: 8
+
+    TwoFaStatusResponse:
+      type: object
+      required: [enabled, codesRemaining]
+      properties:
+        enabled:
+          type: boolean
+          description: true si el usuario tiene 2FA activo
+        codesRemaining:
+          type: integer
+          minimum: 0
+          maximum: 10
+          description: Número de códigos de recuperación disponibles (no usados)
+
+    OtpErrorResponse:
+      type: object
+      required: [code, message, attemptsRemaining]
+      properties:
+        code:
+          type: string
+          example: "INVALID_OTP"
+        message:
+          type: string
+          example: "Código incorrecto. Intento 3 de 5."
+        attemptsRemaining:
+          type: integer
+          minimum: 0
+          maximum: 4
+
+    RateLimitResponse:
+      type: object
+      required: [code, message, retryAfterSeconds]
+      properties:
+        code:
+          type: string
+          example: "RATE_LIMIT_EXCEEDED"
+        message:
+          type: string
+          example: "Demasiados intentos fallidos. Intenta de nuevo en 15 minutos."
+        retryAfterSeconds:
+          type: integer
+          example: 900
+
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          description: Código de error interno
+        message:
+          type: string
+          description: Mensaje legible para mostrar al usuario
+
+  responses:
+    Unauthorized:
+      description: JWT inválido, expirado o con scope incorrecto
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: "UNAUTHORIZED"
+            message: "Token inválido o expirado."
+    InternalError:
+      description: Error interno del servidor
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: "INTERNAL_ERROR"
+            message: "Ha ocurrido un error inesperado. Contacte soporte."
+
+  securitySchemes:
+    bearerJwtPartial:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT de sesión parcial (`scope=2fa-pending`) emitido por el módulo de login
+    bearerJwtFull:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT de sesión completa (`scope=full-session`) emitido tras verificación 2FA exitosa

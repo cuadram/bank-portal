@@ -1,0 +1,33 @@
+<!-- otp-input.component.html -->
+<!-- Componente OTP reutilizable — 6 campos individuales con auto-focus -->
+<!--
+  CR-NC-008 FIX: autocomplete="one-time-code" solo en el primer input (index 0).
+  Según HTML Living Standard §4.10.18.7, el atributo aplica al campo que recibe
+  el código completo. En un input multi-slot, ponerlo en todos causa que algunos
+  navegadores (Safari, Chrome) intenten autofill en cada slot individualmente.
+  Los inputs restantes usan autocomplete="off".
+-->
+<div
+  class="otp-input-container"
+  role="group"
+  aria-label="Código de verificación de 6 dígitos"
+>
+  <input
+    *ngFor="let _ of indices; let i = index"
+    #digitInput
+    type="text"
+    inputmode="numeric"
+    pattern="[0-9]*"
+    maxlength="1"
+    [attr.autocomplete]="i === 0 ? 'one-time-code' : 'off'"
+    [attr.aria-label]="'Dígito ' + (i + 1) + ' de ' + length"
+    [value]="digits()[i]"
+    [disabled]="disabled"
+    [class.otp-digit]="true"
+    [class.otp-digit--filled]="!!digits()[i]"
+    [class.otp-digit--error]="hasError"
+    (input)="onInput($event, i)"
+    (keydown)="onKeydown($event, i)"
+    (focus)="onFocus($event)"
+  />
+</div>

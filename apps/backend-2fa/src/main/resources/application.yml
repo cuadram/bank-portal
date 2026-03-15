@@ -1,0 +1,80 @@
+# BankPortal — Backend 2FA | Banco Meridian
+# FEAT-001 | Sprint 01 | SOFIA Software Factory — Experis
+#
+# SEGURIDAD: ningún secreto está hardcodeado aquí.
+# Todas las variables sensibles deben definirse como variables de entorno.
+# Ver: docs/architecture/FEAT-001-LLD-backend.md §Variables de entorno
+
+spring:
+  application:
+    name: bankportal-backend-2fa
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/bankportal}
+    username: ${DB_USERNAME:bankportal_app}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+
+# TOTP — ADR-004
+# TOTP_ISSUER: nombre visible en apps authenticator (ej. "BankMeridian") — obligatorio en producción.
+# TOTP_AES_KEY: clave AES-256 en Base64 (32 bytes = 44 chars Base64) — obligatorio en producción.
+totp:
+  issuer: ${TOTP_ISSUER:BankMeridian}
+  aes-key: ${TOTP_AES_KEY}
+  period: 30
+  code-digits: 6
+  tolerance: 1
+
+# JWT — ADR-001
+# JWT_SECRET           : secreto para JWT de sesión completa (HS256 — mín. 32 bytes)
+# JWT_PRE_AUTH_SECRET  : secreto independiente para pre-auth tokens (ADR-001)
+# JWT_PRE_AUTH_TTL_SECONDS: TTL del pre-auth token en segundos (default: 300 = 5 min)
+#                           NOTA: la unidad es SEGUNDOS — no minutos (RV-005 fix)
+# JWT_SESSION_TTL_SECONDS : TTL del JWT de sesión en segundos (default: 28800 = 8h)
+jwt:
+  secret: ${JWT_SECRET}
+  pre-auth-secret: ${JWT_PRE_AUTH_SECRET}
+  pre-auth-ttl-seconds: ${JWT_PRE_AUTH_TTL_SECONDS:300}
+  session-ttl-seconds: ${JWT_SESSION_TTL_SECONDS:28800}
+
+# Rate Limiting — ADR-002
+rate-limit:
+  capacity: ${RATE_LIMIT_MAX_ATTEMPTS:5}
+  window-minutes: ${RATE_LIMIT_WINDOW_MIN:10}
+  block-minutes: ${RATE_LIMIT_BLOCK_MIN:15}
+
+server:
+  port: 8080
+  error:
+    include-message: never
+    include-stacktrace: never
+    include-binding-errors: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  level:
+    root: INFO
+    com.experis.sofia.bankportal: DEBUG
+    org.springframework.security: WARN

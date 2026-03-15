@@ -1,0 +1,90 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# BankPortal — Docker Compose (entorno local y DEV)
+# SOFIA DevOps Agent — FEAT-001 v1.0.0
+# ─────────────────────────────────────────────────────────────────────────────
+# USO:
+#   cp .env.example .env       # copiar y rellenar valores
+#   docker-compose up -d       # levantar stack completo
+#   docker-compose down -v     # bajar y eliminar volúmenes
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: bankportal
+
+services:
+
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: bankportal-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       bankportal
+      POSTGRES_USER:     bankportal_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bankportal_user -d bankportal"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bankportal-net
+
+  # ── backend-2fa ─────────────────────────────────────────────────────────────
+  backend-2fa:
+    image: ${REGISTRY:-localhost}/backend-2fa:${IMAGE_TAG:-latest-dev}
+    container_name: bankportal-backend-2fa
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL:      jdbc:postgresql://postgres:5432/bankportal
+      SPRING_DATASOURCE_USERNAME: bankportal_user
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_PROFILES_ACTIVE:     compose
+      TOTP_ISSUER:                "BankPortal - Banco Meridian"
+      RATE_LIMIT_MAX_ATTEMPTS:    "5"
+      RATE_LIMIT_BLOCK_MINUTES:   "15"
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL",
+             "wget -qO- http://localhost:8081/actuator/health/readiness || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
+    networks:
+      - bankportal-net
+
+  # ── frontend-portal ─────────────────────────────────────────────────────────
+  frontend-portal:
+    image: ${REGISTRY:-localhost}/frontend-portal:${IMAGE_TAG:-latest-dev}
+    container_name: bankportal-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      backend-2fa:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:80/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - bankportal-net
+
+volumes:
+  postgres-data:
+    driver: local
+
+networks:
+  bankportal-net:
+    driver: bridge

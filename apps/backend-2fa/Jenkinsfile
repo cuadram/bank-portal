@@ -1,0 +1,302 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// BankPortal — backend-2fa — Jenkins Pipeline Declarativo
+// SOFIA DevOps Agent — FEAT-001 v1.0.0
+// ─────────────────────────────────────────────────────────────────────────────
+pipeline {
+  agent { label 'sofia-agent' }
+
+  environment {
+    SERVICE_NAME    = 'backend-2fa'
+    REGISTRY        = "${env.DOCKER_REGISTRY}"
+    IMAGE_TAG       = "${env.GIT_COMMIT[0..7]}"
+    K8S_NAMESPACE   = 'bankportal'
+    SONAR_PROJECT   = 'bankportal-backend-2fa'
+  }
+
+  options {
+    timeout(time: 30, unit: 'MINUTES')
+    buildDiscarder(logRotator(numToKeepStr: '20'))
+    disableConcurrentBuilds()
+  }
+
+  triggers {
+    // Solo en feature/* y develop — el tag v* tiene su propio trigger
+    pollSCM('H/5 * * * *')
+  }
+
+  stages {
+
+    // ── MONOREPO PATH FILTER ─────────────────────────────────────────────────
+    stage('Path Filter') {
+      steps {
+        script {
+          def changes = sh(
+            script: "git diff --name-only HEAD~1 HEAD | grep '^apps/${SERVICE_NAME}/' | wc -l",
+            returnStdout: true
+          ).trim().toInteger()
+          if (changes == 0 && !env.TAG_NAME) {
+            currentBuild.result = 'NOT_BUILT'
+            error("No changes in ${SERVICE_NAME} — pipeline skipped")
+          }
+          echo "Changes detected in ${SERVICE_NAME}: ${changes} files"
+        }
+      }
+    }
+
+    // ── CI ───────────────────────────────────────────────────────────────────
+    stage('Unit Tests') {
+      steps {
+        dir("apps/${SERVICE_NAME}") {
+          sh 'mvn test -Dsurefire.failIfNoSpecifiedTests=false -q'
+        }
+      }
+      post {
+        always {
+          junit "apps/${SERVICE_NAME}/target/surefire-reports/**/*.xml"
+          jacoco(
+            execPattern: "apps/${SERVICE_NAME}/target/jacoco.exec",
+            classPattern:  "apps/${SERVICE_NAME}/target/classes",
+            sourcePattern: "apps/${SERVICE_NAME}/src/main/java",
+            minimumLineCoverage: '80'
+          )
+        }
+      }
+    }
+
+    stage('SAST — SonarQube') {
+      steps {
+        dir("apps/${SERVICE_NAME}") {
+          withSonarQubeEnv('sonarqube-sofia') {
+            sh """
+              mvn sonar:sonar \
+                -Dsonar.projectKey=${SONAR_PROJECT} \
+                -Dsonar.projectName='BankPortal :: backend-2fa' \
+                -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+                -q
+            """
+          }
+        }
+      }
+    }
+
+    stage('Quality Gate') {
+      steps {
+        timeout(time: 5, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
+        }
+      }
+    }
+
+    stage('Build Docker Image') {
+      steps {
+        dir("apps/${SERVICE_NAME}") {
+          // Build del JAR antes de construir la imagen
+          sh 'mvn package -DskipTests -q'
+        }
+        sh """
+          docker build \
+            --build-arg BUILD_DATE=\$(date -u +%Y-%m-%dT%H:%M:%SZ) \
+            --build-arg GIT_COMMIT=${env.GIT_COMMIT} \
+            --build-arg VERSION=${env.TAG_NAME ?: IMAGE_TAG} \
+            -t ${REGISTRY}/${SERVICE_NAME}:${IMAGE_TAG} \
+            -t ${REGISTRY}/${SERVICE_NAME}:latest-dev \
+            -f apps/${SERVICE_NAME}/Dockerfile \
+            apps/${SERVICE_NAME}/
+        """
+      }
+    }
+
+    stage('Vulnerability Scan — Trivy') {
+      steps {
+        sh """
+          trivy image \
+            --exit-code 1 \
+            --severity CRITICAL,HIGH \
+            --no-progress \
+            --format table \
+            ${REGISTRY}/${SERVICE_NAME}:${IMAGE_TAG}
+        """
+      }
+    }
+
+    // ── CD DEV ───────────────────────────────────────────────────────────────
+    stage('Push & Deploy — DEV') {
+      when { branch 'develop' }
+      steps {
+        withCredentials([usernamePassword(
+            credentialsId: 'docker-registry-creds',
+            usernameVariable: 'REG_USER',
+            passwordVariable: 'REG_PASS')]) {
+          sh "docker login ${REGISTRY} -u ${REG_USER} -p ${REG_PASS}"
+          sh "docker push ${REGISTRY}/${SERVICE_NAME}:${IMAGE_TAG}"
+          sh "docker push ${REGISTRY}/${SERVICE_NAME}:latest-dev"
+        }
+        // Rolling update en namespace DEV
+        sh """
+          kubectl set image deployment/${SERVICE_NAME} \
+            ${SERVICE_NAME}=${REGISTRY}/${SERVICE_NAME}:${IMAGE_TAG} \
+            -n ${K8S_NAMESPACE}-dev
+          kubectl rollout status deployment/${SERVICE_NAME} \
+            -n ${K8S_NAMESPACE}-dev \
+            --timeout=120s
+        """
+      }
+    }
+
+    stage('Smoke Tests — DEV') {
+      when { branch 'develop' }
+      steps {
+        sh """
+          # Health check básico post-deploy
+          for i in 1 2 3 4 5; do
+            STATUS=\$(curl -s -o /dev/null -w '%{http_code}' \
+              http://backend-2fa.bankportal-dev.svc/actuator/health/readiness)
+            if [ "\$STATUS" = "200" ]; then
+              echo "Smoke test PASS — HTTP \$STATUS"
+              exit 0
+            fi
+            echo "Attempt \$i — HTTP \$STATUS — retrying in 10s..."
+            sleep 10
+          done
+          echo "Smoke test FAILED — service not healthy after 50s"
+          exit 1
+        """
+      }
+    }
+
+    // ── CD STG / PROD (disparado por tag vX.Y.Z) ────────────────────────────
+    stage('Push Release Image') {
+      when { tag 'v*' }
+      steps {
+        withCredentials([usernamePassword(
+            credentialsId: 'docker-registry-creds',
+            usernameVariable: 'REG_USER',
+            passwordVariable: 'REG_PASS')]) {
+          sh "docker login ${REGISTRY} -u ${REG_USER} -p ${REG_PASS}"
+          sh "docker tag ${REGISTRY}/${SERVICE_NAME}:${IMAGE_TAG} ${REGISTRY}/${SERVICE_NAME}:${env.TAG_NAME}"
+          sh "docker push ${REGISTRY}/${SERVICE_NAME}:${env.TAG_NAME}"
+        }
+      }
+    }
+
+    stage('Deploy — STG') {
+      when { tag 'v*' }
+      steps {
+        sh """
+          kubectl set image deployment/${SERVICE_NAME} \
+            ${SERVICE_NAME}=${REGISTRY}/${SERVICE_NAME}:${env.TAG_NAME} \
+            -n ${K8S_NAMESPACE}-stg
+          kubectl rollout status deployment/${SERVICE_NAME} \
+            -n ${K8S_NAMESPACE}-stg --timeout=180s
+        """
+      }
+    }
+
+    stage('Regression Tests — STG') {
+      when { tag 'v*' }
+      steps {
+        dir("apps/${SERVICE_NAME}") {
+          sh 'mvn verify -Pintegration-tests -Dtest.env=stg -q'
+        }
+      }
+      post {
+        always {
+          junit "apps/${SERVICE_NAME}/target/failsafe-reports/**/*.xml"
+        }
+      }
+    }
+
+    // ── GATE MANUAL — PROD ───────────────────────────────────────────────────
+    stage('🔒 Go/No-Go — PROD') {
+      when { tag 'v*' }
+      steps {
+        script {
+          // El release-manager recibe tarea en Jira/Teams via Workflow Manager
+          // y aprueba directamente en este input de Jenkins
+          def approval = input(
+            message: "Deploy ${SERVICE_NAME}:${env.TAG_NAME} to PRODUCTION?",
+            submitter: 'release-manager',
+            parameters: [
+              choice(
+                name: 'ACTION',
+                choices: ['Go', 'No-Go'],
+                description: 'Decisión de release'
+              ),
+              text(
+                name: 'NOTES',
+                defaultValue: '',
+                description: 'Notas del release-manager (obligatorio en No-Go)'
+              )
+            ]
+          )
+          if (approval['ACTION'] == 'No-Go') {
+            error("Release rechazado por release-manager: ${approval['NOTES']}")
+          }
+          echo "Release aprobado: ${env.TAG_NAME}"
+        }
+      }
+    }
+
+    stage('Deploy — PROD') {
+      when { tag 'v*' }
+      steps {
+        sh """
+          kubectl set image deployment/${SERVICE_NAME} \
+            ${SERVICE_NAME}=${REGISTRY}/${SERVICE_NAME}:${env.TAG_NAME} \
+            -n ${K8S_NAMESPACE}
+          kubectl rollout status deployment/${SERVICE_NAME} \
+            -n ${K8S_NAMESPACE} --timeout=300s
+        """
+      }
+    }
+
+    stage('Post-Deploy Health Check — PROD') {
+      when { tag 'v*' }
+      steps {
+        sh """
+          for i in 1 2 3 4 5 6; do
+            STATUS=\$(curl -s -o /dev/null -w '%{http_code}' \
+              https://api.bankportal.meridian.com/actuator/health/readiness)
+            if [ "\$STATUS" = "200" ]; then
+              echo "Health check PASS — PROD operativo"
+              exit 0
+            fi
+            echo "Attempt \$i — HTTP \$STATUS — waiting 15s..."
+            sleep 15
+          done
+          echo "PROD health check FAILED — iniciando rollback automático"
+          kubectl rollout undo deployment/${SERVICE_NAME} -n ${K8S_NAMESPACE}
+          exit 1
+        """
+      }
+    }
+
+  } // end stages
+
+  post {
+    success {
+      script {
+        if (env.TAG_NAME) {
+          echo "Release ${env.TAG_NAME} desplegado en PROD exitosamente"
+          // Notificar al SM para cierre del gate en Workflow Manager
+          sh """
+            curl -s -X POST "${env.TEAMS_WEBHOOK}" \
+              -H 'Content-Type: application/json' \
+              -d '{"text":"✅ PROD deploy exitoso: ${SERVICE_NAME} ${env.TAG_NAME} — BankPortal"}'
+          """
+        }
+      }
+    }
+    failure {
+      sh """
+        curl -s -X POST "${env.TEAMS_WEBHOOK}" \
+          -H 'Content-Type: application/json' \
+          -d '{"text":"🔴 Pipeline FAILED: ${SERVICE_NAME} build #${env.BUILD_NUMBER} — ${env.BUILD_URL}"}'
+      """
+    }
+    always {
+      // Limpiar imágenes locales para no saturar el agente
+      sh "docker rmi ${REGISTRY}/${SERVICE_NAME}:${IMAGE_TAG} || true"
+    }
+  }
+}
