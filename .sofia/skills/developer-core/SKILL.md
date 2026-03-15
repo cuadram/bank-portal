@@ -258,6 +258,117 @@ GIT
 
 ---
 
+## Patrones de seguridad validados en producción SOFIA
+
+Estos patrones surgieron del dry run FEAT-001 (BankPortal). Aplicar siempre
+en los stacks indicados.
+
+### Patrón 1 — Secreto temporal en cache server-side (Java/Node.js)
+
+Cuando un flujo de N pasos necesita pasar un valor sensible entre el paso 1 y el paso 2,
+nunca debe viajar en un request del cliente. Almacenar en cache con TTL.
+
+```java
+// ANTI-PATTERN: recibir el secreto del cliente en un header
+@RequestHeader("X-Secret-Value") String secret  // NUNCA
+
+// CORRECTO: cache server-side con TTL (Caffeine / Redis)
+private final Cache<UUID, String> pendingCache = Caffeine.newBuilder()
+    .expireAfterWrite(5, TimeUnit.MINUTES).maximumSize(1000).build();
+
+// Paso 1: almacenar en cache
+pendingCache.put(userId, sensitiveValue);
+
+// Paso 2: recuperar e invalidar
+String value = Optional.ofNullable(pendingCache.getIfPresent(userId))
+    .map(v -> { pendingCache.invalidate(userId); return v; })
+    .orElseThrow(() -> new IllegalStateException("Sesión expirada"));
+```
+
+**Deuda técnica escalonada:** para multi-réplica, migrar el cache a Redis (Bucket4j + Lettuce).
+Registrar como DEBT con impacto MEDIO antes de escalar horizontalmente.
+
+---
+
+### Patrón 2 — Inmutabilidad de tablas de auditoría en PostgreSQL
+
+PCI-DSS y regulaciones similares exigen que los logs de auditoría sean inmutables.
+Doble protección: REVOKE de permisos + trigger PostgreSQL.
+
+```sql
+-- Revocar permisos al usuario de aplicación
+REVOKE UPDATE, DELETE ON audit_log FROM app_user;
+
+-- Trigger como segunda barrera (cubre acceso de superusuario accidental)
+CREATE OR REPLACE FUNCTION audit_log_immutable()
+RETURNS TRIGGER AS $
+BEGIN
+  RAISE EXCEPTION 'audit_log is immutable — no UPDATE or DELETE allowed';
+END;
+$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_audit_log_immutable
+BEFORE UPDATE OR DELETE ON audit_log
+FOR EACH ROW EXECUTE FUNCTION audit_log_immutable();
+```
+
+**Test obligatorio en QA:** ejecutar `DELETE FROM audit_log LIMIT 1` como el usuario
+de aplicación y verificar que falla con `permission denied`. Documentar en el QA Report.
+
+---
+
+### Patrón 3 — JWT en dos fases para flujos multi-paso (Java/Node.js/.Net)
+
+Cuando un flujo requiere N verificaciones antes de emitir una sesión completa,
+usar tokens con scope limitado entre cada paso.
+
+```
+PASO 1: usuario + contraseña → JWT parcial (scope: "step1-complete", TTL: 5 min)
+PASO 2: segundo factor (OTP, SMS, biometría) → JWT completo (scope: "full-session", TTL: 8h)
+```
+
+Reglas:
+- El JWT parcial da acceso SOLO al endpoint del paso 2 — ningun otro endpoint
+- El JWT completo se emite SOLO tras verificar el paso 2 exitosamente
+- TTL del parcial: máximo 5 minutos (ventana de ataque mínima)
+- Algoritmo: RS256 con keypair RSA-2048 en producción (nunca HS256)
+- Generar keypair: `openssl genrsa -out jwt-private.pem 2048`
+
+```java
+// Verificar scope del JWT antes de procesar
+String scope = jwt.getClaim("scope").asString();
+if (!"step1-complete".equals(scope))
+    throw new UnauthorizedException("Token scope incorrecto para esta operación");
+```
+
+---
+
+### Patrón 4 — Rate limiting escalable (Java/Node.js)
+
+Implementar en dos fases para no bloquear el sprint inicial:
+
+**Fase 1 (Sprint inicial):** Caffeine cache in-process — simple, sin dependencias
+```java
+// Documentar la limitación con TODO
+// TODO(TECH-DEBT): multi-réplica requiere migrar a Bucket4j + Redis — DEBT-XXX
+private final Cache<String, AtomicInteger> failures = Caffeine.newBuilder()
+    .expireAfterWrite(blockMinutes, TimeUnit.MINUTES).build();
+```
+
+**Fase 2 (siguiente sprint):** Bucket4j + Redis Lettuce — distribuido
+```java
+@Bean
+public ProxyManager<String> bucketProxyManager(
+        StatefulRedisConnection<String, byte[]> conn) {
+    return LettuceBasedProxyManager.builderFor(conn).build();
+}
+// Key: "rl:[feature]:[userId]:[ip]" → aislamiento correcto
+```
+
+Registrar la migración como DEBT de impacto MEDIO al crear la Fase 1.
+
+---
+
 ## Plantilla de output obligatoria
 
 ```markdown
