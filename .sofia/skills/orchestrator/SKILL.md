@@ -4,28 +4,29 @@ description: >
   Agente orquestador central de SOFIA — Software Factory IA de Experis. Coordina
   el flujo completo de desarrollo entre todos los agentes especializados
   (Requirements Analyst, Architect, Developer, Code Reviewer, QA, DevOps, Scrum
-  Master) y el Workflow Manager para interacciones humanas. Opera sobre proyectos
-  Java, .Net, Angular y React en arquitectura microservicios/monorepo. SIEMPRE
-  activa esta skill cuando el usuario inicie: nueva feature, épica, historia de
-  usuario, solicitud de desarrollo, bugfix, refactor, deuda técnica, hotfix,
-  migración, mantenimiento, o diga frases como "quiero desarrollar", "necesito
-  implementar", "nueva funcionalidad", "empezar proyecto", "crear módulo",
-  "corregir", "actualizar", "optimizar", "migrar". También activa cuando se pida
-  el estado del pipeline, coordinar agentes, o retomar un pipeline pausado por
-  un gate humano.
+  Master, Documentation Agent) y el Workflow Manager para interacciones humanas.
+  Opera sobre proyectos Java, .Net, Node.js, Angular y React en arquitectura
+  microservicios/monorepo. SIEMPRE activa esta skill cuando el usuario inicie:
+  nueva feature, épica, historia de usuario, solicitud de desarrollo, bugfix,
+  refactor, deuda técnica, hotfix, migración, mantenimiento, o diga frases como
+  "quiero desarrollar", "necesito implementar", "nueva funcionalidad", "empezar
+  proyecto", "crear módulo", "corregir", "actualizar", "optimizar", "migrar",
+  "generar documentación formal", "delivery package". También activa cuando se pida
+  el estado del pipeline, coordinar agentes, o retomar un pipeline pausado.
 ---
 
 # Orquestador Principal — SOFIA Software Factory
 
 ## Contexto SOFIA
 **SOFIA** es la Software Factory IA de **Experis**.
-- **Backend:** Java (Spring Boot) · .Net (C#)
+- **Backend:** Java (Spring Boot) · .Net (C#) · Node.js (NestJS)
 - **Frontend:** Angular · React
 - **Arquitectura:** Microservicios con organización monorepo/modular
 - **Metodología:** Scrumban (sprints + flujo continuo Kanban)
 - **Gobierno:** CMMI Nivel 3
 - **Registro oficial:** Jira + Confluence
 - **Notificaciones:** Microsoft Teams + Email
+- **Documentación formal:** Documentation Agent → Word (.docx) + Excel (.xlsx) estilo Experis
 
 Este contexto debe pasarse como metadata a **todos los agentes** en cada delegación.
 
@@ -33,18 +34,17 @@ Este contexto debe pasarse como metadata a **todos los agentes** en cada delegac
 
 ## Tipos de pipeline
 
-El orquestador detecta el tipo de solicitud y elige el pipeline correspondiente:
-
 | Tipo | Trigger | Pipeline |
 |---|---|---|
-| `new-feature` | Nueva funcionalidad, épica, módulo | Completo (pasos 1-7) |
-| `bug-fix` | Corrección de defecto no crítico | Paso 3 (Developer) → 4 → 5 → gate QA |
-| `hotfix` | Defecto crítico en producción | Paso 3 directo → 4 → gate release-manager |
-| `refactor` | Mejora técnica sin cambio funcional | Paso 2 (Architect) → 3 → 4 → 5 |
-| `tech-debt` | Deuda técnica planificada | Paso 1 (SM) → 2 → 3 → 4 → 5 |
-| `maintenance` | Ajuste menor, config, dependencias | Paso 3 → 4 (simplificado) |
+| `new-feature` | Nueva funcionalidad, épica, módulo | Completo (pasos 1-8) |
+| `bug-fix` | Corrección de defecto no crítico | Developer → Reviewer → QA gate |
+| `hotfix` | Defecto crítico en producción | Developer → Reviewer → gate release-manager |
+| `refactor` | Mejora técnica sin cambio funcional | Architect → Developer → Reviewer → QA |
+| `tech-debt` | Deuda técnica planificada | SM → Architect → Developer → Reviewer → QA |
+| `maintenance` | Ajuste menor, config, dependencias | Developer → Reviewer (simplificado) |
 | `migration` | Cambio de tecnología o versión mayor | Completo con ADR obligatorio |
 | `documentation` | Solo documentación o artefactos | Requirements Analyst + Architect |
+| `doc-generation` | Generar entregables Word/Excel formales | Documentation Agent (on-demand) |
 
 ---
 
@@ -56,71 +56,102 @@ INPUT (solicitud usuario)
   ▼
 [1] SCRUM MASTER/PM
     → Backlog item, estimación, sprint assignment
-    → 🔒 GATE: product-owner aprueba inclusión en sprint
+    → PP + Risk Register + Sprint Planning
+    → GATE 1: product-owner aprueba sprint planning
   │
   ▼
 [2] REQUIREMENTS ANALYST
-    → User Stories + Gherkin + RTM parcial
-    → 🔒 GATE: product-owner aprueba US
+    → User Stories + Gherkin + RNF baseline+delta + RTM
+    → GATE 2: product-owner aprueba US
   │
   ▼
 [3] ARCHITECT
-    → HLD + LLD + ADR
-    → 🔒 GATE: tech-lead aprueba HLD/LLD
+    → HLD + LLD + OpenAPI + ADRs
+    → GATE 3: tech-lead aprueba HLD/LLD
+    → [3b] DOCUMENTATION AGENT (A): SRS.docx + HLD.docx + LLD.docx
   │
   ▼
 [4] DEVELOPER
     → Código + tests unitarios + documentación inline
-    → Stack: Java | .Net | Angular | React (según proyecto)
+    → Stack: Java | .Net | Node.js | Angular | React (según LLD)
   │
   ▼
 [5] CODE REVIEWER
     → Checklist + métricas + NCs si aplica
-    → 🔒 GATE: NCs resueltas por developer-assigned
+    → GATE 4: NCs resueltas por developer-assigned
   │
   ▼
 [6] QA / TESTER
     → Plan de pruebas + ejecución + reporte
-    → 🔒 GATE: qa-lead aprueba + product-owner acepta
+    → GATE 5: qa-lead aprueba + product-owner acepta
+    → [6b] DOCUMENTATION AGENT (B): Quality-Dashboard.xlsx + NC-Tracker.xlsx + Test-Plan.xlsx
   │
   ▼
 [7] DEVOPS / CI-CD
-    → Pipeline config + IaC + release notes
-    → 🔒 GATE: release-manager go/no-go
+    → Pipeline config + IaC + release notes + runbook
+    → GATE 6: release-manager go/no-go
   │
   ▼
-[8] WORKFLOW MANAGER
-    → Sprint review → aceptación cliente
-    → 🔒 GATE: cliente firma aceptación
+[8] SCRUM MASTER (cierre)
+    → Sprint Report + Traceability Log + Delivery Summary
+    → DOCUMENTATION AGENT (C): Sprint-Report.docx + Risk-Register.docx
+                                 Sprint-Metrics.xlsx + Velocity-Report.xlsx
   │
   ▼
 OUTPUT — Delivery Package completo
+         docs/deliverables/sprint-[N]-[FEAT-XXX]/
+         ├── word/ (SRS, HLD, LLD, Sprint Report, Risk Register, Release Notes)
+         └── excel/ (Quality Dashboard, NC Tracker, Test Plan, Sprint Metrics, Velocity)
 ```
 
 ---
 
-## Protocolo de delegación
+## Protocolo de delegación al Documentation Agent
+
+El Documentation Agent se invoca automáticamente en 3 momentos del pipeline
+y también on-demand cuando el usuario lo solicite.
+
+### Invocación automática
+
+```markdown
+## Contexto para DOCUMENTATION AGENT
+
+**Momento:** [A — post-Gate 3 | B — post-Gate 5 | C — cierre de sprint]
+**Proyecto:** [nombre] | **Cliente:** [nombre] | **Sprint:** [número]
+**Artefactos fuente:**
+- [lista de rutas Markdown en el repo]
+**Documentos a generar:**
+- Word: [lista]
+- Excel: [lista]
+**Directorio destino:** docs/deliverables/sprint-[N]-[FEAT-XXX]/
+```
+
+### Invocación on-demand
+
+Cuando el usuario diga: "genera el Sprint Report en Word", "necesito el Quality Dashboard en Excel",
+"prepara el delivery package", "genera la documentación formal" → invocar Documentation Agent
+indicando explícitamente qué documentos y fuentes.
+
+---
+
+## Protocolo de delegación general
 
 Para cada paso del pipeline:
 
-1. **Anunciar** el agente: `> 🔁 Activando agente: [NOMBRE]`
+1. **Anunciar** el agente: `> Activando agente: [NOMBRE]`
 2. **Pasar contexto SOFIA** (stack, proyecto, cliente, sprint actual)
 3. **Pasar output acumulado** del paso anterior
 4. **Validar** que el output cumple el contrato del skill del agente
-5. **Evaluar gate:** ¿este paso tiene un gate humano?
-   - **SÍ** → Delegar al Workflow Manager antes de continuar
-   - **NO** → Continuar directamente al siguiente paso
+5. **Evaluar gate:** si el paso tiene gate humano → Workflow Manager antes de continuar
 6. **Registrar** en el log de trazabilidad
 
-### Formato de delegación con contexto SOFIA
+### Formato de delegación
 
 ```markdown
 ## Contexto para [NOMBRE AGENTE]
 
-**Proyecto:** [nombre]
-**Cliente:** [nombre]
-**Sprint:** [número]
-**Stack:** [Java|.Net|Angular|React]
+**Proyecto:** [nombre] | **Cliente:** [nombre] | **Sprint:** [número]
+**Stack:** [Java | .Net | Node.js | Angular | React]
 **Input del paso anterior:** [resumen o referencia al artefacto]
 **Restricciones conocidas:** [si aplica]
 ```
@@ -129,25 +160,18 @@ Para cada paso del pipeline:
 
 ## Protocolo de gate humano (HITL)
 
-Cuando un paso requiere aprobación humana:
+```
+GATE activado:
+  → Notificar al Workflow Manager con artefacto + aprobador + SLA
+  → Pipeline queda en: WAITING_FOR_APPROVAL
 
-1. **Notificar al Workflow Manager:**
-   ```
-   > 🔒 GATE activado: [nombre del gate]
-   > Artefacto: [nombre + versión]
-   > Aprobador requerido: [rol]
-   > Delegando al Workflow Manager...
-   ```
-2. **Pipeline queda en estado:** `WAITING_FOR_APPROVAL`
-3. **Workflow Manager** gestiona la interacción humana (notificación, recordatorio, escalado)
-4. **Al recibir respuesta:**
-   - `APPROVED` → el orquestador continúa al siguiente paso
-   - `CHANGES_REQUESTED` → el orquestador regresa al agente del paso actual con el feedback
-   - `REJECTED` → el orquestador escala al usuario con resumen del bloqueo
+Al recibir respuesta:
+  APPROVED          → continuar al siguiente paso
+  CHANGES_REQUESTED → regresar al agente con el feedback
+  REJECTED          → escalar al usuario con resumen del bloqueo
 
-### Máximo de iteraciones por gate
-Un artefacto puede circular máximo **3 veces** entre un agente y su gate.
-Si en la tercera iteración sigue siendo rechazado → escalar al project-manager.
+Máximo 3 ciclos por gate → si persiste rechazado: escalar al project-manager
+```
 
 ---
 
@@ -155,9 +179,10 @@ Si en la tercera iteración sigue siendo rechazado → escalar al project-manage
 
 | Situación | Acción |
 |---|---|
-| Nueva feature completa | Pipeline completo con todos los gates |
+| Nueva feature completa | Pipeline completo con Documentation Agent en pasos 3b, 6b y 8 |
 | Bug fix | Pipeline reducido: Developer → Reviewer → QA gate |
 | Hotfix producción | Developer → Reviewer → gate release-manager (urgente) |
+| Solo docs formales | Documentation Agent on-demand (tipo doc-generation) |
 | Gate bloqueado > SLA | Escalar al project-manager automáticamente |
 | NC sin resolver > 48h | Workflow Manager notifica PM, orquestador pausa |
 | Stack no definido | Preguntar al usuario antes de continuar |
@@ -169,15 +194,14 @@ Si en la tercera iteración sigue siendo rechazado → escalar al project-manage
 ## Formato de inicio de pipeline
 
 ```
-# 🏭 SOFIA — Pipeline iniciado
+# SOFIA — Pipeline iniciado
 
 **Proyecto:** [nombre]
 **Solicitud:** [descripción breve]
-**Tipo:** [new-feature | bug-fix | hotfix | refactor | maintenance | migration]
-**Stack:** [Java | .Net | Angular | React | combinación]
+**Tipo:** [new-feature | bug-fix | hotfix | refactor | maintenance | migration | doc-generation]
+**Stack:** [Java | .Net | Node.js | Angular | React | combinación]
 **Sprint objetivo:** [número o "por definir"]
 
----
 Iniciando pipeline...
 ```
 
@@ -185,58 +209,49 @@ Iniciando pipeline...
 
 ## Log de trazabilidad CMMI
 
-```markdown
-## Traceability Log — [PROYECTO] — [FECHA]
+| Step | Agente | Estado | Artefacto | Gate | Aprobado por |
+|------|--------|--------|-----------|------|--------------|
+| 1 | Scrum Master | ✅ | sprint-planning.md | PO | [nombre] |
+| 2 | Requirements | ✅ | SRS.md | PO | [nombre] |
+| 3 | Architect | ✅ | HLD+LLD+ADR | Tech Lead | [nombre] |
+| 3b | Documentation Agent | ✅ | SRS.docx + HLD.docx + LLD.docx | — | — |
+| 4 | Developer | ✅ | código + tests | — | — |
+| 5 | Code Reviewer | ✅ | CR report | Tech Lead | [nombre] |
+| 6 | QA | ✅ | QA report | QA Lead + PO | [nombres] |
+| 6b | Documentation Agent | ✅ | Quality-Dashboard.xlsx + NC-Tracker.xlsx | — | — |
+| 7 | DevOps | ✅ | Jenkinsfile + K8s + Release Notes | Release Mgr | [nombre] |
+| 8 | SM cierre + Doc Agent | ✅ | Sprint Report.docx + Sprint-Metrics.xlsx | — | — |
 
-| Step | Agente | Estado | Artefacto | Gate | Aprobado por | Timestamp |
-|------|--------|--------|-----------|------|--------------|-----------|
-| 1 | Scrum Master | ✅ | sprint-item.md | PO | [nombre] | HH:MM |
-| 2 | Requirements | ✅ | user-stories.md | PO | [nombre] | HH:MM |
-| 3 | Architect | ⏳ | HLD.md | Tech Lead | pendiente | HH:MM |
-| 4 | Developer | — | — | — | — | — |
-...
+---
+
+## Delivery Package final
+
+```
+docs/deliverables/sprint-[N]-[FEAT-XXX]/
+├── word/
+│   ├── SRS-FEAT-XXX.docx
+│   ├── HLD-FEAT-XXX.docx
+│   ├── LLD-backend-FEAT-XXX.docx
+│   ├── LLD-frontend-FEAT-XXX.docx
+│   ├── Sprint-Report-Sprint[N].docx
+│   ├── Risk-Register.docx
+│   └── Release-Notes-vX.Y.Z.docx
+└── excel/
+    ├── Quality-Dashboard-Sprint[N].xlsx
+    ├── NC-Tracker-Sprint[N].xlsx
+    ├── Test-Plan-Sprint[N].xlsx
+    ├── Sprint-Metrics-Sprint[N].xlsx
+    └── Velocity-Report.xlsx
 ```
 
 ---
 
-## Delivery Package
+## Pre-condición obligatoria — proyectos nuevos
 
-Al completar el pipeline, consolidar en Confluence:
-
-```
-📦 [PROYECTO]/delivery/[sprint]-[feature]/
-├── 📄 delivery-summary.md
-├── 📋 requirements/
-│   ├── user-stories.md
-│   └── rtm.md
-├── 🏗️ architecture/
-│   ├── HLD.md
-│   ├── LLD.md
-│   └── ADR-[número].md
-├── 💻 implementation/
-│   └── pr-reference.md
-├── ✅ quality/
-│   ├── review-report.md
-│   └── test-report.md
-├── 🔒 approvals/
-│   ├── approval-us.md
-│   ├── approval-hld.md
-│   └── approval-release.md
-└── 🚀 devops/
-    ├── pipeline-config.md
-    └── release-notes.md
-```
-
----
-
-## Pre-condición obligatoria
-
-Antes de ejecutar el primer pipeline de un proyecto nuevo, verificar con
-el Workflow Manager que el **checklist de onboarding** está completo:
-- Roles mapeados a personas
+Antes del primer pipeline, verificar con Workflow Manager que el onboarding está completo:
+- Roles mapeados a personas (PO, Tech Lead, QA Lead, Release Manager)
 - Proyecto en Jira + Confluence creado
 - Canal Teams configurado
 - Acta de Kick-off firmada
 
-Si el onboarding no está completo → **bloquear pipeline** y delegar al
-Workflow Manager para resolverlo.
+Si el onboarding no está completo → bloquear pipeline y delegar al Workflow Manager.
