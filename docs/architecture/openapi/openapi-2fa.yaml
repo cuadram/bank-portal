@@ -1,20 +1,33 @@
 openapi: 3.0.3
 info:
-  title: BankPortal — 2FA API
+  title: BankPortal — Security API
   description: |
-    API de Autenticación de Doble Factor (TOTP/RFC 6238) para BankPortal — Banco Meridian.
-    Gestiona enrolamiento, verificación OTP, códigos de recuperación, desactivación y estado 2FA.
+    API de Seguridad para BankPortal — Banco Meridian.
+    Cubre: 2FA TOTP, sesiones activas, dispositivos de confianza, notificaciones,
+    auditoría de seguridad, bloqueo de cuenta y autenticación contextual.
 
     ## Autenticación
-    Todos los endpoints requieren un Bearer JWT en el header `Authorization`.
-    - **JWT parcial** (`scope: "2fa-pending"`): emitido por el módulo de login tras validar credenciales.
-      Requerido en: `/enroll`, `/activate`, `/verify`, `/verify-recovery`.
-    - **JWT completo** (`scope: "full-session"`): requerido en: `/recovery-codes/generate`, `/deactivate`, `/status`.
+    Todos los endpoints requieren Bearer JWT en `Authorization`.
+    Los JWTs se firman con **RS256** (keypair RSA-2048 gestionado en Jenkins + K8s Secret `bankportal-jwt-keypair`).
+
+    ### Scopes JWT
+    - **`2fa-pending`**: emitido tras validar credenciales. Requerido en: `/enroll`, `/activate`, `/verify`, `/verify-recovery`.
+    - **`full-session`**: emitido tras 2FA exitoso. Requerido en todos los demás endpoints.
+    - **`context-pending`** *(FEAT-006 US-603)*: emitido cuando se detecta contexto inusual (nueva subnet IP). Válido solo para `POST /api/v1/auth/confirm-context`.
 
     ## Rate Limiting
-    El endpoint `/verify` aplica rate limiting: máximo 5 intentos fallidos por usuario+IP
-    en una ventana temporal. Al superar el límite, se retorna HTTP 429 con `retryAfterSeconds`.
-  version: 1.0.0
+    `POST /api/v1/2fa/verify`: máximo 5 intentos fallidos por usuario+IP → bloqueo 15 min (Bucket4j + Redis).
+
+    ## Changelog
+    | Versión | Cambio |
+    |---------|--------|
+    | 1.4.0 | FEAT-005: endpoints /security/dashboard y /security/export. FEAT-006: endpoints bloqueo de cuenta y login contextual. ACT-30: claims JWT documentados en securitySchemes. Sprint 7. |
+    | 1.3.0 | FEAT-003: endpoints Dispositivos de Confianza. FEAT-004: endpoints Notificaciones + SSE. ACT-19 (Sprint 5). |
+    | 1.2.0 | FEAT-002: gestión de sesiones activas (US-101→105). |
+    | 1.1.0 | `DELETE /deactivate` deprecado → `POST /deactivate`. JWTs actualizados a RS256. |
+    | 1.0.0 | Versión inicial — FEAT-001 Sprint 1. |
+
+  version: 1.4.0
   contact:
     name: SOFIA — Software Factory IA — Experis
   license:
@@ -25,7 +38,7 @@ servers:
     description: Producción
   - url: https://api-staging.bankportal.meridian.com/v1
     description: Staging
-  - url: http://localhost:8081/v1
+  - url: http://localhost:8080/v1
     description: Local desarrollo
 
 tags:
@@ -37,17 +50,27 @@ tags:
     description: Gestión de códigos de recuperación
   - name: management
     description: Desactivación y estado del 2FA
+  - name: sessions
+    description: Gestión de sesiones activas (FEAT-002)
+  - name: trusted-devices
+    description: Dispositivos de confianza (FEAT-003)
+  - name: notifications
+    description: Centro de Notificaciones de Seguridad (FEAT-004)
+  - name: audit
+    description: Panel de Auditoría de Seguridad (FEAT-005)
+  - name: account
+    description: Bloqueo/desbloqueo de cuenta (FEAT-006)
+  - name: contextual-auth
+    description: Autenticación contextual — confirmación de subnet nueva (FEAT-006)
 
 paths:
 
-  /api/2fa/enroll:
+  # ── 2FA — Enrolamiento ───────────────────────────────────────────────────────
+
+  /api/v1/2fa/enroll:
     post:
       tags: [enrollment]
       summary: Iniciar enrolamiento 2FA
-      description: |
-        Genera un secreto TOTP único para el usuario y devuelve la URI para generar
-        el código QR que el usuario escaneará con su app autenticadora (Google Authenticator, Authy, etc.).
-        El 2FA NO queda activo hasta confirmar con `/activate`.
       operationId: enroll2fa
       security:
         - bearerJwtPartial: []
@@ -56,37 +79,20 @@ paths:
           description: QR URI generada correctamente
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/EnrollResponse'
-              example:
-                qrUri: "otpauth://totp/BankPortal%20-%20Banco%20Meridian:usuario@banco.com?secret=JBSWY3DPEHPK3PXP&issuer=BankPortal%20-%20Banco%20Meridian&algorithm=SHA1&digits=6&period=30"
-                secret: "JBSWY3DPEHPK3PXP"
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+              schema: { $ref: '#/components/schemas/EnrollResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '409':
           description: El usuario ya tiene 2FA activo
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                code: "TWO_FA_ALREADY_ACTIVE"
-                message: "El usuario ya tiene 2FA activo. Desactívelo antes de re-enrolar."
-        '500':
-          $ref: '#/components/responses/InternalError'
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+              example: { code: "TWO_FA_ALREADY_ACTIVE", message: "2FA ya activo." }
+        '500': { $ref: '#/components/responses/InternalError' }
 
-  /api/2fa/activate:
+  /api/v1/2fa/activate:
     post:
       tags: [enrollment]
       summary: Confirmar activación 2FA con primer OTP
-      description: |
-        Confirma el enrolamiento verificando el primer código OTP generado por la app autenticadora.
-        Si el código es válido:
-        - Almacena el secreto TOTP cifrado con AES-256 en base de datos
-        - Genera 10 códigos de recuperación one-time
-        - Registra evento `2FA_ACTIVATED` en auditoría
-        
-        El usuario DEBE mostrar los códigos de recuperación al usuario antes de cerrar la pantalla.
       operationId: activate2fa
       security:
         - bearerJwtPartial: []
@@ -94,53 +100,36 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/ActivateRequest'
-            example:
-              otpCode: "123456"
+            schema: { $ref: '#/components/schemas/ActivateRequest' }
       responses:
         '200':
-          description: 2FA activado correctamente
+          description: 2FA activado — devuelve 10 códigos de recuperación
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/ActivateResponse'
-              example:
-                recoveryCodes:
-                  - "ABCD-1234"
-                  - "EFGH-5678"
-                  - "IJKL-9012"
-                  - "MNOP-3456"
-                  - "QRST-7890"
-                  - "UVWX-1234"
-                  - "YZAN-5678"
-                  - "BCDE-9012"
-                  - "FGHI-3456"
-                  - "JKLM-7890"
+              schema: { $ref: '#/components/schemas/ActivateResponse' }
         '400':
-          description: Código OTP inválido o expirado
+          description: OTP inválido o expirado
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                code: "INVALID_OTP"
-                message: "Código incorrecto. Verifica que tu app esté sincronizada."
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalError'
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
 
-  /api/2fa/verify:
+  # ── 2FA — Verificación ───────────────────────────────────────────────────────
+
+  /api/v1/2fa/verify:
     post:
       tags: [verification]
       summary: Verificar OTP en flujo de login
       description: |
-        Verifica el código OTP generado por la app autenticadora durante el flujo de login.
-        Si es válido, emite un JWT de sesión completa (`scope: "full-session"`).
-        
-        **Rate limiting:** máximo 5 intentos fallidos por cuenta+IP → bloqueo 15 minutos.
-        Tolerancia TOTP: ±1 período (±30 segundos).
+        Verifica el código OTP. Si es válido, emite JWT de sesión completa (`scope=full-session`).
+
+        **FEAT-003** — parámetro opcional `trustDevice`: si `true`, establece cookie `bp_trust` (ADR-008).
+
+        **FEAT-006 US-601** — si la cuenta está bloqueada, retorna HTTP 423 antes de verificar el OTP.
+
+        **FEAT-006 US-603** — si la subnet IP es nueva (no confirmada), emite JWT `scope=context-pending`
+        en lugar de `full-session` y envía email de confirmación de contexto.
       operationId: verifyOtp
       security:
         - bearerJwtPartial: []
@@ -148,50 +137,40 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/VerifyRequest'
-            example:
-              otpCode: "654321"
+            schema: { $ref: '#/components/schemas/VerifyRequest' }
       responses:
         '200':
-          description: OTP válido — sesión completa emitida
+          description: OTP válido — sesión completa emitida (o context-pending si subnet nueva)
+          headers:
+            Set-Cookie:
+              description: Cookie `bp_trust` solo si `trustDevice=true`. HttpOnly; Secure; SameSite=Strict.
+              schema: { type: string }
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/VerifyResponse'
+              schema: { $ref: '#/components/schemas/VerifyResponse' }
         '400':
           description: OTP inválido
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/OtpErrorResponse'
-              example:
-                code: "INVALID_OTP"
-                message: "Código incorrecto. Intento 3 de 5."
-                attemptsRemaining: 2
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '429':
-          description: Rate limit alcanzado — cuenta bloqueada temporalmente
+              schema: { $ref: '#/components/schemas/OtpErrorResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '423':
+          description: Cuenta bloqueada por exceso de intentos fallidos (US-601)
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/RateLimitResponse'
-              example:
-                code: "RATE_LIMIT_EXCEEDED"
-                message: "Demasiados intentos fallidos. Intenta de nuevo en 15 minutos."
-                retryAfterSeconds: 900
-        '500':
-          $ref: '#/components/responses/InternalError'
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+              example: { code: "ACCOUNT_LOCKED", message: "Cuenta bloqueada. Revisa tu email para desbloquearla." }
+        '429':
+          description: Rate limit alcanzado (Bucket4j + Redis)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RateLimitResponse' }
+        '500': { $ref: '#/components/responses/InternalError' }
 
-  /api/2fa/verify-recovery:
+  /api/v1/2fa/verify-recovery:
     post:
       tags: [recovery]
       summary: Verificar código de recuperación como alternativa al OTP
-      description: |
-        Usa un código de recuperación one-time para completar el login cuando el usuario
-        no tiene acceso a su app autenticadora.
-        Si el código es válido, queda invalidado permanentemente (one-time use).
       operationId: verifyRecoveryCode
       security:
         - bearerJwtPartial: []
@@ -199,38 +178,25 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/RecoveryVerifyRequest'
-            example:
-              recoveryCode: "ABCD-1234"
+            schema: { $ref: '#/components/schemas/RecoveryVerifyRequest' }
       responses:
         '200':
-          description: Código de recuperación válido — sesión completa emitida
+          description: Código válido — sesión completa emitida (también desbloquea si cuenta estaba bloqueada)
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/VerifyResponse'
+              schema: { $ref: '#/components/schemas/VerifyResponse' }
         '400':
-          description: Código de recuperación inválido o ya usado
+          description: Código inválido o ya usado
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                code: "INVALID_RECOVERY_CODE"
-                message: "Este código ya fue utilizado o no es válido."
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalError'
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
 
-  /api/2fa/recovery-codes/generate:
+  /api/v1/2fa/recovery-codes/generate:
     post:
       tags: [recovery]
       summary: Regenerar códigos de recuperación
-      description: |
-        Invalida todos los códigos de recuperación existentes y genera 10 nuevos.
-        Requiere JWT de sesión completa. El usuario debe confirmar con su contraseña actual.
       operationId: generateRecoveryCodes
       security:
         - bearerJwtFull: []
@@ -238,34 +204,27 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/ConfirmPasswordRequest'
+            schema: { $ref: '#/components/schemas/ConfirmPasswordRequest' }
       responses:
         '200':
-          description: Nuevos códigos de recuperación generados
+          description: Nuevos 10 códigos generados
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/ActivateResponse'
+              schema: { $ref: '#/components/schemas/ActivateResponse' }
         '400':
           description: Contraseña incorrecta
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalError'
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
 
-  /api/2fa/deactivate:
-    delete:
+  # ── 2FA — Gestión ────────────────────────────────────────────────────────────
+
+  /api/v1/2fa/deactivate:
+    post:
       tags: [management]
       summary: Desactivar 2FA
-      description: |
-        Desactiva el 2FA del usuario. Requiere confirmación con contraseña actual.
-        Elimina el secreto TOTP y todos los códigos de recuperación de la base de datos.
-        Registra evento `2FA_DEACTIVATED` en auditoría.
       operationId: deactivate2fa
       security:
         - bearerJwtFull: []
@@ -273,77 +232,530 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/DeactivateRequest'
-            example:
-              currentPassword: "miContraseñaActual123"
+            schema: { $ref: '#/components/schemas/DeactivateRequest' }
       responses:
         '204':
           description: 2FA desactivado correctamente
         '400':
-          description: Contraseña incorrecta
+          description: Contraseña u OTP incorrecto
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                code: "INVALID_PASSWORD"
-                message: "Contraseña incorrecta. La desactivación no se ha completado."
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalError'
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
 
-  /api/2fa/status:
+    delete:
+      tags: [management]
+      summary: "DEPRECADO — usar POST /api/v1/2fa/deactivate"
+      deprecated: true
+      operationId: deactivate2faLegacy
+      security:
+        - bearerJwtFull: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DeactivateRequest' }
+      responses:
+        '204':
+          description: Usar POST en su lugar
+          headers:
+            Deprecation: { schema: { type: string, example: "true" } }
+            Sunset:      { schema: { type: string, example: "Sat, 01 Jan 2027 00:00:00 GMT" } }
+            Link:        { schema: { type: string, example: '</api/v1/2fa/deactivate>; rel="successor-version"' } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/v1/2fa/status:
     get:
       tags: [management]
       summary: Obtener estado 2FA del usuario
-      description: Devuelve si el 2FA está activo y cuántos códigos de recuperación disponibles tiene el usuario.
       operationId: get2faStatus
       security:
         - bearerJwtFull: []
       responses:
         '200':
-          description: Estado 2FA del usuario
+          description: Estado 2FA
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TwoFaStatusResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  # ── Sesiones activas (FEAT-002) ──────────────────────────────────────────────
+
+  /api/v1/sessions:
+    get:
+      tags: [sessions]
+      summary: Listar sesiones activas (US-101)
+      operationId: listActiveSessions
+      security:
+        - bearerJwtFull: []
+      responses:
+        '200':
+          description: Lista ordenada por lastActivity DESC
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TwoFaStatusResponse'
-              example:
-                enabled: true
-                codesRemaining: 7
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalError'
+                type: array
+                items: { $ref: '#/components/schemas/SessionResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+    delete:
+      tags: [sessions]
+      summary: Revocar todas las sesiones excepto la actual (US-102)
+      operationId: revokeAllSessions
+      security:
+        - bearerJwtFull: []
+      parameters:
+        - in: header
+          name: X-OTP-Code
+          required: true
+          schema: { type: string, pattern: '^\d{6}$' }
+      responses:
+        '204': { description: Todas las demás sesiones revocadas }
+        '400':
+          description: OTP inválido
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/v1/sessions/{sessionId}:
+    delete:
+      tags: [sessions]
+      summary: Revocar sesión individual (US-102)
+      operationId: revokeSession
+      security:
+        - bearerJwtFull: []
+      parameters:
+        - in: path
+          name: sessionId
+          required: true
+          schema: { type: string, format: uuid }
+        - in: header
+          name: X-OTP-Code
+          required: true
+          schema: { type: string, pattern: '^\d{6}$' }
+      responses:
+        '204': { description: Sesión revocada }
+        '400':
+          description: OTP inválido o no se puede revocar la sesión actual
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404':
+          description: Sesión no encontrada o de otro usuario
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/v1/sessions/timeout:
+    put:
+      tags: [sessions]
+      summary: Actualizar timeout de inactividad (US-103)
+      operationId: updateSessionTimeout
+      security:
+        - bearerJwtFull: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateTimeoutRequest' }
+      responses:
+        '200':
+          description: Timeout actualizado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UpdateTimeoutResponse' }
+        '400':
+          description: Valor fuera del rango (5–60 minutos)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/v1/sessions/deny/{token}:
+    get:
+      tags: [sessions]
+      summary: Denegar sesión desde enlace de email "No fui yo" (US-105)
+      operationId: denySessionByLink
+      parameters:
+        - in: path
+          name: token
+          required: true
+          schema: { type: string }
+      responses:
+        '302':
+          description: Sesión revocada — redirect /login?reason=session-denied
+          headers:
+            Location: { schema: { type: string } }
+        '400':
+          description: Token inválido, expirado o ya usado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  # ── Dispositivos de Confianza (FEAT-003) ─────────────────────────────────────
+
+  /api/v1/trusted-devices:
+    get:
+      tags: [trusted-devices]
+      summary: Listar dispositivos de confianza activos (US-202)
+      operationId: listTrustedDevices
+      security:
+        - bearerJwtFull: []
+      responses:
+        '200':
+          description: Lista ordenada por lastUsedAt DESC
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/TrustedDeviceResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+    delete:
+      tags: [trusted-devices]
+      summary: Revocar todos los dispositivos de confianza (US-202)
+      operationId: revokeAllTrustedDevices
+      security:
+        - bearerJwtFull: []
+      responses:
+        '204': { description: Todos los dispositivos revocados }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/v1/trusted-devices/{deviceId}:
+    delete:
+      tags: [trusted-devices]
+      summary: Revocar dispositivo de confianza individual (US-202)
+      operationId: revokeTrustedDevice
+      security:
+        - bearerJwtFull: []
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: Dispositivo revocado }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404':
+          description: Dispositivo no encontrado o de otro usuario
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  # ── Notificaciones (FEAT-004) ─────────────────────────────────────────────────
+
+  /api/v1/notifications:
+    get:
+      tags: [notifications]
+      summary: Listar notificaciones de seguridad paginadas (US-301)
+      operationId: listNotifications
+      security:
+        - bearerJwtFull: []
+      parameters:
+        - in: query
+          name: eventType
+          required: false
+          schema: { type: string }
+        - in: query
+          name: page
+          schema: { type: integer, default: 0 }
+        - in: query
+          name: size
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Página de notificaciones ordenadas por createdAt DESC
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/NotificationPage' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/v1/notifications/unread-count:
+    get:
+      tags: [notifications]
+      summary: Conteo de notificaciones no leídas — badge (US-303)
+      operationId: getUnreadCount
+      security:
+        - bearerJwtFull: []
+      responses:
+        '200':
+          description: Número de notificaciones sin leer
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnreadCountResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/v1/notifications/{notificationId}/read:
+    put:
+      tags: [notifications]
+      summary: Marcar notificación individual como leída (US-302)
+      operationId: markOneAsRead
+      security:
+        - bearerJwtFull: []
+      parameters:
+        - in: path
+          name: notificationId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: Notificación marcada como leída }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/v1/notifications/read-all:
+    put:
+      tags: [notifications]
+      summary: Marcar todas las notificaciones como leídas (US-302)
+      operationId: markAllAsRead
+      security:
+        - bearerJwtFull: []
+      responses:
+        '200':
+          description: Número de notificaciones marcadas
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MarkAllReadResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/v1/notifications/stream:
+    get:
+      tags: [notifications]
+      summary: Stream SSE de notificaciones en tiempo real (US-305)
+      description: |
+        Conexión SSE persistente. Máximo 1 conexión por usuario.
+        Headers ADR-010: `X-Accel-Buffering: no`, `Cache-Control: no-cache, no-store`.
+        El cliente Angular reconecta automáticamente (EventSource API).
+        Polling fallback cada 60s si SSE no está disponible (R-F4-003).
+      operationId: streamNotifications
+      security:
+        - bearerJwtFull: []
+      responses:
+        '200':
+          description: Stream SSE activo
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  # ── Auditoría (FEAT-005) ──────────────────────────────────────────────────────
+
+  /api/v1/security/dashboard:
+    get:
+      tags: [audit]
+      summary: Dashboard de seguridad — KPIs + SecurityScore (US-401)
+      description: |
+        Devuelve KPIs de los últimos 30 días: logins, intentos fallidos, sesiones activas,
+        dispositivos de confianza, notificaciones sin leer. Calcula SecurityScore:
+        SECURE | REVIEW | ALERT basado en estado 2FA, intentos fallidos y sesiones activas.
+        El claim `twoFaEnabled` del JWT se usa para el cálculo del score.
+      operationId: getSecurityDashboard
+      security:
+        - bearerJwtFull: []
+      responses:
+        '200':
+          description: Dashboard de seguridad
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SecurityDashboardResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/v1/security/export:
+    get:
+      tags: [audit]
+      summary: Exportar historial de seguridad en PDF o CSV (US-402)
+      description: |
+        Genera exportación del audit_log del usuario con hash SHA-256 de integridad
+        (scope: data-rows-only). PCI-DSS 4.0 req. 10.7.
+        Límite: 1000 eventos. Retorna 204 si no hay eventos en el período.
+      operationId: exportSecurityHistory
+      security:
+        - bearerJwtFull: []
+      parameters:
+        - in: query
+          name: format
+          schema: { type: string, enum: [pdf, csv], default: pdf }
+        - in: query
+          name: days
+          schema: { type: integer, enum: [30, 60, 90], default: 30 }
+      responses:
+        '200':
+          description: Archivo generado correctamente
+          headers:
+            Content-Disposition:
+              schema: { type: string, example: 'attachment; filename="seguridad-pdf-30d-2026-06-09.pdf"' }
+            X-Content-SHA256:
+              schema: { type: string, description: Hash SHA-256 del contenido para verificación de integridad }
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
+            text/csv:
+              schema: { type: string, format: binary }
+        '204': { description: No hay eventos en el período seleccionado }
+        '400':
+          description: Parámetros inválidos
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/v1/security/preferences:
+    get:
+      tags: [audit]
+      summary: Obtener preferencias de seguridad unificadas (US-403)
+      operationId: getSecurityPreferences
+      security:
+        - bearerJwtFull: []
+      responses:
+        '200':
+          description: Preferencias actuales del usuario
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SecurityPreferencesResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+    put:
+      tags: [audit]
+      summary: Actualizar preferencias de seguridad (US-403)
+      description: |
+        Actualiza preferencias de seguridad unificadas. Las preferencias de notificaciones
+        controlan la visibilidad en el Centro de Notificaciones pero NO desactivan el
+        registro en audit_log (siempre activo — R-F5-003).
+      operationId: updateSecurityPreferences
+      security:
+        - bearerJwtFull: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateSecurityPreferencesRequest' }
+      responses:
+        '204': { description: Preferencias actualizadas }
+        '400':
+          description: Parámetros inválidos
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  # ── Bloqueo de cuenta (FEAT-006) ──────────────────────────────────────────────
+
+  /api/v1/account/unlock:
+    post:
+      tags: [account]
+      summary: Solicitar enlace de desbloqueo de cuenta (US-602)
+      description: |
+        Envía un email con enlace HMAC-SHA256 (TTL 1h, one-time use — patrón ADR-007)
+        al email del usuario para desbloquear su cuenta bloqueada.
+        Endpoint público — no requiere JWT (la cuenta está bloqueada).
+      operationId: requestAccountUnlock
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RequestUnlockRequest' }
+      responses:
+        '204': { description: Email enviado si la cuenta existe y está bloqueada (respuesta neutral para evitar user enumeration) }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /api/v1/account/unlock/{token}:
+    get:
+      tags: [account]
+      summary: Desbloquear cuenta desde enlace de email (US-602)
+      description: |
+        Verifica el token HMAC-SHA256 del enlace de desbloqueo (TTL 1h, one-time use).
+        Si es válido: resetea failed_otp_attempts=0, account_status=ACTIVE.
+        Redirige al login con reason=account-unlocked.
+      operationId: unlockAccountByLink
+      parameters:
+        - in: path
+          name: token
+          required: true
+          schema: { type: string }
+      responses:
+        '302':
+          description: Cuenta desbloqueada — redirect /login?reason=account-unlocked
+          headers:
+            Location: { schema: { type: string } }
+        '400':
+          description: Token inválido, expirado o ya usado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+              example: { code: "TOKEN_EXPIRED", message: "El enlace ha expirado. Solicita uno nuevo." }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  # ── Autenticación contextual (FEAT-006 US-603) ───────────────────────────────
+
+  /api/v1/auth/confirm-context:
+    post:
+      tags: [contextual-auth]
+      summary: Confirmar acceso desde nueva subnet IP (US-603)
+      description: |
+        Endpoint para confirmar el contexto de login cuando se detecta una nueva subnet IP.
+        Requiere JWT `scope=context-pending`. Si el token del email es válido:
+        - Marca la subnet como confirmada en known_subnets
+        - Emite JWT `scope=full-session`
+        - Registra LOGIN_NEW_CONTEXT_CONFIRMED en audit_log
+      operationId: confirmLoginContext
+      security:
+        - bearerJwtContextPending: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ConfirmContextRequest' }
+      responses:
+        '200':
+          description: Contexto confirmado — sesión completa emitida
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VerifyResponse' }
+        '400':
+          description: Token de confirmación inválido o expirado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
 
 components:
   schemas:
+
+    # ── 2FA ───────────────────────────────────────────────────────────────────
 
     EnrollResponse:
       type: object
       required: [qrUri, secret]
       properties:
-        qrUri:
-          type: string
-          description: URI otpauth:// para generar el código QR en el frontend
-          example: "otpauth://totp/BankPortal:usuario@banco.com?secret=JBSWY3DPEHPK3PXP&issuer=BankPortal"
-        secret:
-          type: string
-          description: Secreto TOTP en texto plano para entrada manual (mostrar solo una vez)
-          example: "JBSWY3DPEHPK3PXP"
+        qrUri: { type: string }
+        secret: { type: string }
 
     ActivateRequest:
       type: object
       required: [otpCode]
       properties:
-        otpCode:
-          type: string
-          minLength: 6
-          maxLength: 6
-          pattern: '^\d{6}$'
-          description: Código OTP de 6 dígitos generado por la app autenticadora
-          example: "123456"
+        otpCode: { type: string, minLength: 6, maxLength: 6, pattern: '^\d{6}$' }
 
     ActivateResponse:
       type: object
@@ -351,141 +763,313 @@ components:
       properties:
         recoveryCodes:
           type: array
-          items:
-            type: string
-            pattern: '^[A-Z0-9]{4}-[A-Z0-9]{4}$'
+          items: { type: string }
           minItems: 10
           maxItems: 10
-          description: 10 códigos de recuperación one-time. Mostrar una única vez al usuario.
 
     VerifyRequest:
       type: object
       required: [otpCode]
       properties:
-        otpCode:
-          type: string
-          minLength: 6
-          maxLength: 6
-          pattern: '^\d{6}$'
-          example: "654321"
+        otpCode: { type: string, minLength: 6, maxLength: 6, pattern: '^\d{6}$' }
+        trustDevice:
+          type: boolean
+          default: false
+          description: Si true, establece cookie bp_trust (ADR-008). Solo aplica si el scope resultante es full-session.
 
     VerifyResponse:
       type: object
-      required: [token]
+      required: [accessToken, scope]
       properties:
-        token:
+        accessToken:
           type: string
-          description: JWT de sesión completa con scope "full-session"
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-
-    RecoveryVerifyRequest:
-      type: object
-      required: [recoveryCode]
-      properties:
-        recoveryCode:
+          description: JWT firmado RS256
+        scope:
           type: string
-          pattern: '^[A-Z0-9]{4}-[A-Z0-9]{4}$'
-          description: Código de recuperación one-time
-          example: "ABCD-1234"
-
-    DeactivateRequest:
-      type: object
-      required: [currentPassword]
-      properties:
-        currentPassword:
-          type: string
-          minLength: 8
-          description: Contraseña actual del usuario para confirmar la desactivación
-
-    ConfirmPasswordRequest:
-      type: object
-      required: [currentPassword]
-      properties:
-        currentPassword:
-          type: string
-          minLength: 8
-
-    TwoFaStatusResponse:
-      type: object
-      required: [enabled, codesRemaining]
-      properties:
-        enabled:
+          enum: [full-session, context-pending]
+          description: |
+            full-session — login completo.
+            context-pending — subnet nueva detectada, se requiere confirmación email (US-603).
+        contextConfirmationRequired:
           type: boolean
-          description: true si el usuario tiene 2FA activo
-        codesRemaining:
-          type: integer
-          minimum: 0
-          maximum: 10
-          description: Número de códigos de recuperación disponibles (no usados)
+          description: true si scope=context-pending
 
     OtpErrorResponse:
       type: object
       required: [code, message, attemptsRemaining]
       properties:
-        code:
-          type: string
-          example: "INVALID_OTP"
-        message:
-          type: string
-          example: "Código incorrecto. Intento 3 de 5."
+        code: { type: string }
+        message: { type: string }
         attemptsRemaining:
           type: integer
           minimum: 0
-          maximum: 4
+          maximum: 10
+          description: Intentos restantes antes del bloqueo (US-601 — umbral 10)
 
     RateLimitResponse:
       type: object
       required: [code, message, retryAfterSeconds]
       properties:
-        code:
+        code: { type: string }
+        message: { type: string }
+        retryAfterSeconds: { type: integer }
+
+    RecoveryVerifyRequest:
+      type: object
+      required: [recoveryCode]
+      properties:
+        recoveryCode: { type: string, pattern: '^[A-Z0-9]{4}-[A-Z0-9]{4}$' }
+
+    ConfirmPasswordRequest:
+      type: object
+      required: [currentPassword]
+      properties:
+        currentPassword: { type: string }
+
+    DeactivateRequest:
+      type: object
+      required: [currentPassword, otpCode]
+      properties:
+        currentPassword: { type: string }
+        otpCode: { type: string, minLength: 6, maxLength: 6, pattern: '^\d{6}$' }
+
+    TwoFaStatusResponse:
+      type: object
+      required: [enabled, codesRemaining]
+      properties:
+        enabled: { type: boolean }
+        codesRemaining: { type: integer, minimum: 0, maximum: 10 }
+
+    # ── Sessions (FEAT-002) ───────────────────────────────────────────────────
+
+    SessionResponse:
+      type: object
+      required: [sessionId, os, browser, deviceType, ipMasked, lastActivity, createdAt, isCurrent]
+      properties:
+        sessionId: { type: string, format: uuid }
+        os: { type: string, example: "macOS" }
+        browser: { type: string, example: "Safari" }
+        deviceType: { type: string, enum: [desktop, mobile, tablet] }
+        ipMasked: { type: string, example: "192.168.x.x" }
+        lastActivity: { type: string, format: date-time }
+        createdAt: { type: string, format: date-time }
+        isCurrent: { type: boolean }
+
+    UpdateTimeoutRequest:
+      type: object
+      required: [timeoutMinutes]
+      properties:
+        timeoutMinutes: { type: integer, minimum: 5, maximum: 60 }
+
+    UpdateTimeoutResponse:
+      type: object
+      required: [timeoutMinutes]
+      properties:
+        timeoutMinutes: { type: integer }
+
+    # ── Trusted Devices (FEAT-003) ────────────────────────────────────────────
+
+    TrustedDeviceResponse:
+      type: object
+      required: [deviceId, os, browser, ipMasked, createdAt, lastUsedAt, expiresAt]
+      properties:
+        deviceId: { type: string, format: uuid }
+        os: { type: string }
+        browser: { type: string }
+        ipMasked: { type: string }
+        createdAt: { type: string, format: date-time }
+        lastUsedAt: { type: string, format: date-time }
+        expiresAt: { type: string, format: date-time }
+
+    # ── Notifications (FEAT-004) ──────────────────────────────────────────────
+
+    NotificationPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/NotificationResponse' }
+        totalElements: { type: integer }
+        totalPages: { type: integer }
+        number: { type: integer }
+
+    NotificationResponse:
+      type: object
+      properties:
+        notificationId: { type: string, format: uuid }
+        eventType: { type: string }
+        title: { type: string }
+        body: { type: string }
+        actionUrl: { type: string, nullable: true }
+        read: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        expiresAt: { type: string, format: date-time }
+
+    UnreadCountResponse:
+      type: object
+      required: [unreadCount]
+      properties:
+        unreadCount: { type: integer }
+
+    MarkAllReadResponse:
+      type: object
+      required: [markedCount]
+      properties:
+        markedCount: { type: integer }
+
+    # ── Security Audit (FEAT-005) ─────────────────────────────────────────────
+
+    SecurityDashboardResponse:
+      type: object
+      required: [loginCount30d, failedAttempts30d, activeSessions, trustedDevices,
+                 unreadNotifications, securityScore, recentEvents, activityChart]
+      properties:
+        loginCount30d: { type: integer }
+        failedAttempts30d: { type: integer }
+        activeSessions: { type: integer }
+        trustedDevices: { type: integer }
+        unreadNotifications: { type: integer }
+        securityScore:
           type: string
-          example: "RATE_LIMIT_EXCEEDED"
-        message:
+          enum: [SECURE, REVIEW, ALERT]
+          description: |
+            SECURE: 2FA activo + < 3 intentos fallidos + ≤ 3 sesiones activas.
+            REVIEW: 2FA activo pero con alertas.
+            ALERT: 2FA desactivado O intentos fallidos ≥ umbral.
+            Calculado usando claim twoFaEnabled del JWT (ACT-30).
+        recentEvents:
+          type: array
+          items: { $ref: '#/components/schemas/AuditEventSummary' }
+        activityChart:
+          type: array
+          items: { $ref: '#/components/schemas/DailyActivityPoint' }
+
+    AuditEventSummary:
+      type: object
+      properties:
+        eventType: { type: string }
+        description: { type: string }
+        ipMasked: { type: string }
+        occurredAt: { type: string, format: date-time }
+
+    DailyActivityPoint:
+      type: object
+      properties:
+        date: { type: string, format: date }
+        count: { type: integer }
+
+    SecurityPreferencesResponse:
+      type: object
+      properties:
+        twoFactorEnabled: { type: boolean }
+        sessionTimeoutMinutes: { type: integer }
+        trustedDevicesCount: { type: integer }
+        notificationsEnabled: { type: boolean }
+        notificationsByType:
+          type: object
+          additionalProperties: { type: boolean }
+          description: Mapa SecurityEventType → habilitado. Solo afecta notificaciones visibles; audit_log siempre activo (R-F5-003).
+
+    UpdateSecurityPreferencesRequest:
+      type: object
+      properties:
+        sessionTimeoutMinutes: { type: integer, minimum: 5, maximum: 60, nullable: true }
+        notificationsByType:
+          type: object
+          additionalProperties: { type: boolean }
+          nullable: true
+
+    # ── Account Lock (FEAT-006) ───────────────────────────────────────────────
+
+    RequestUnlockRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
           type: string
-          example: "Demasiados intentos fallidos. Intenta de nuevo en 15 minutos."
-        retryAfterSeconds:
-          type: integer
-          example: 900
+          format: email
+          description: Email de la cuenta bloqueada. Respuesta neutral para evitar user enumeration.
+
+    # ── Contextual Auth (FEAT-006) ────────────────────────────────────────────
+
+    ConfirmContextRequest:
+      type: object
+      required: [confirmationToken]
+      properties:
+        confirmationToken:
+          type: string
+          description: Token HMAC-SHA256 de confirmación de contexto recibido por email (TTL 15min, one-time use)
+
+    # ── Error común ───────────────────────────────────────────────────────────
 
     ErrorResponse:
       type: object
       required: [code, message]
       properties:
-        code:
-          type: string
-          description: Código de error interno
-        message:
-          type: string
-          description: Mensaje legible para mostrar al usuario
+        code: { type: string }
+        message: { type: string }
 
   responses:
     Unauthorized:
-      description: JWT inválido, expirado o con scope incorrecto
+      description: JWT inválido, expirado, revocado (blacklist Redis) o cuenta bloqueada
       content:
         application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            code: "UNAUTHORIZED"
-            message: "Token inválido o expirado."
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+          example: { code: "UNAUTHORIZED", message: "Token inválido o expirado." }
+
     InternalError:
       description: Error interno del servidor
       content:
         application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            code: "INTERNAL_ERROR"
-            message: "Ha ocurrido un error inesperado. Contacte soporte."
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+          example: { code: "INTERNAL_ERROR", message: "Error inesperado. Contacte soporte." }
 
   securitySchemes:
     bearerJwtPartial:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: JWT de sesión parcial (`scope=2fa-pending`) emitido por el módulo de login
+      description: |
+        JWT parcial (`scope=2fa-pending`, `alg=RS256`) — emitido tras validar credenciales.
+
+        **Claims emitidos (ACT-30):**
+        - `sub`: UUID del usuario (string, UUID v4)
+        - `scope`: "2fa-pending"
+        - `jti`: UUID único del token (para blacklist Redis)
+        - `iat` / `exp`: timestamps estándar JWT (TTL: 300s)
+
+        Firmado con clave privada RSA-2048 (`bankportal-jwt-private-key` en Jenkins / K8s Secret `bankportal-jwt-keypair`).
+
     bearerJwtFull:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: JWT de sesión completa (`scope=full-session`) emitido tras verificación 2FA exitosa
+      description: |
+        JWT de sesión completa (`scope=full-session`, `alg=RS256`) — emitido tras 2FA exitoso.
+
+        **Claims emitidos (ACT-30):**
+        - `sub`: UUID del usuario (string, UUID v4)
+        - `scope`: "full-session"
+        - `jti`: UUID único del token (para blacklist Redis — `sessions:blacklist:{jti}`)
+        - `twoFaEnabled`: boolean — true si el usuario tiene 2FA activo al momento de la emisión. Usado por `SecurityDashboardUseCase` para calcular el SecurityScore (FEAT-005 US-401).
+        - `iat` / `exp`: timestamps estándar JWT (TTL: 3600s)
+
+        Verificado por `TokenBlacklistFilter` contra Redis blacklist en cada request.
+
+    bearerJwtContextPending:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT de contexto pendiente (`scope=context-pending`, `alg=RS256`) — emitido cuando
+        se detecta una nueva subnet IP durante el login (FEAT-006 US-603).
+
+        **Claims emitidos (ACT-30):**
+        - `sub`: UUID del usuario (string, UUID v4)
+        - `scope`: "context-pending"
+        - `jti`: UUID único del token
+        - `pendingSubnet`: subnet IP nueva que requiere confirmación (ej. "10.20")
+        - `iat` / `exp`: timestamps estándar JWT (TTL: 900s — 15 minutos)
+
+        Válido únicamente para `POST /api/v1/auth/confirm-context`.
+        Rechazado en todos los demás endpoints protegidos.

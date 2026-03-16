@@ -1,6 +1,7 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { SecurityPreferencesResponse, UpdateSecurityPreferencesRequest } from './security-preferences.component';
 
 export interface SecurityDashboardResponse {
   loginCount30d:      number;
@@ -14,10 +15,11 @@ export interface SecurityDashboardResponse {
 }
 
 export interface AuditEventSummary {
-  eventType:   string;
-  description: string;
-  ipMasked:    string;
-  occurredAt:  string;
+  eventType:        string;
+  description:      string;
+  ipMasked:         string;
+  occurredAt:       string;
+  unusualLocation?: boolean;  // US-604: true si subnet no está en known_subnets
 }
 
 export interface DailyActivityPoint {
@@ -46,5 +48,22 @@ export class SecurityAuditService {
       responseType: 'blob',
       observe: 'response',
     });
+  }
+
+  // ── US-403: Preferencias ─────────────────────────────────────────────────
+
+  getPreferences(): Observable<SecurityPreferencesResponse> {
+    return this.http.get<SecurityPreferencesResponse>(`${this.base}/preferences`);
+  }
+
+  updatePreferences(request: UpdateSecurityPreferencesRequest): Observable<void> {
+    return this.http.put<void>(`${this.base}/preferences`, request);
+  }
+
+  // ── US-604: Historial de configuración ───────────────────────────────────
+
+  getConfigHistory(days = 90): Observable<AuditEventSummary[]> {
+    const params = new HttpParams().set('days', days.toString());
+    return this.http.get<AuditEventSummary[]>(`${this.base}/config-history`, { params });
   }
 }

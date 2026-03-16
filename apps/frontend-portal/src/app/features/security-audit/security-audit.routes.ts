@@ -19,4 +19,16 @@ export const SECURITY_AUDIT_ROUTES: Routes = [
       import('./security-export.component').then(m => m.SecurityExportComponent),
     title: 'Exportar Historial — Banco Meridian',
   },
+  {
+    path: 'preferences',
+    loadComponent: () =>
+      import('./security-preferences.component').then(m => m.SecurityPreferencesComponent),
+    title: 'Preferencias de Seguridad — Banco Meridian',
+  },
+  {
+    path: 'config-history',
+    loadComponent: () =>
+      import('./config-history.component').then(m => m.ConfigHistoryComponent),
+    title: 'Historial de Configuración — Banco Meridian',
+  },
 ];

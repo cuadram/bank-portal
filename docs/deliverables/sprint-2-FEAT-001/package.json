@@ -1,0 +1,8 @@
+{
+  "name": "sofia-doc-agent-sprint2",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "docx": "^9.5.0"
+  }
+}
