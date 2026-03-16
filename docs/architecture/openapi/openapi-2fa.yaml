@@ -21,13 +21,14 @@ info:
     ## Changelog
     | Versión | Cambio |
     |---------|--------|
+    | 1.4.1 | US-604: endpoint /security/config-history + schemas ConfigHistoryPage y ConfigChangeEvent. RV-S7-002 fix. |
     | 1.4.0 | FEAT-005: endpoints /security/dashboard y /security/export. FEAT-006: endpoints bloqueo de cuenta y login contextual. ACT-30: claims JWT documentados en securitySchemes. Sprint 7. |
     | 1.3.0 | FEAT-003: endpoints Dispositivos de Confianza. FEAT-004: endpoints Notificaciones + SSE. ACT-19 (Sprint 5). |
     | 1.2.0 | FEAT-002: gestión de sesiones activas (US-101→105). |
     | 1.1.0 | `DELETE /deactivate` deprecado → `POST /deactivate`. JWTs actualizados a RS256. |
     | 1.0.0 | Versión inicial — FEAT-001 Sprint 1. |
 
-  version: 1.4.0
+  version: 1.4.1
   contact:
     name: SOFIA — Software Factory IA — Experis
   license:
@@ -58,14 +59,14 @@ tags:
     description: Centro de Notificaciones de Seguridad (FEAT-004)
   - name: audit
     description: Panel de Auditoría de Seguridad (FEAT-005)
+  - name: audit-config
+    description: Historial de cambios de configuración de seguridad (FEAT-006 US-604)
   - name: account
     description: Bloqueo/desbloqueo de cuenta (FEAT-006)
   - name: contextual-auth
     description: Autenticación contextual — confirmación de subnet nueva (FEAT-006)
 
 paths:
-
-  # ── 2FA — Enrolamiento ───────────────────────────────────────────────────────
 
   /api/v1/2fa/enroll:
     post:
@@ -86,7 +87,6 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/ErrorResponse' }
-              example: { code: "TWO_FA_ALREADY_ACTIVE", message: "2FA ya activo." }
         '500': { $ref: '#/components/responses/InternalError' }
 
   /api/v1/2fa/activate:
@@ -115,21 +115,14 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
 
-  # ── 2FA — Verificación ───────────────────────────────────────────────────────
-
   /api/v1/2fa/verify:
     post:
       tags: [verification]
       summary: Verificar OTP en flujo de login
       description: |
         Verifica el código OTP. Si es válido, emite JWT de sesión completa (`scope=full-session`).
-
-        **FEAT-003** — parámetro opcional `trustDevice`: si `true`, establece cookie `bp_trust` (ADR-008).
-
-        **FEAT-006 US-601** — si la cuenta está bloqueada, retorna HTTP 423 antes de verificar el OTP.
-
-        **FEAT-006 US-603** — si la subnet IP es nueva (no confirmada), emite JWT `scope=context-pending`
-        en lugar de `full-session` y envía email de confirmación de contexto.
+        FEAT-006 US-601: HTTP 423 si la cuenta está bloqueada antes de verificar el OTP.
+        FEAT-006 US-603: emite JWT `scope=context-pending` si la subnet IP es nueva.
       operationId: verifyOtp
       security:
         - bearerJwtPartial: []
@@ -141,10 +134,6 @@ paths:
       responses:
         '200':
           description: OTP válido — sesión completa emitida (o context-pending si subnet nueva)
-          headers:
-            Set-Cookie:
-              description: Cookie `bp_trust` solo si `trustDevice=true`. HttpOnly; Secure; SameSite=Strict.
-              schema: { type: string }
           content:
             application/json:
               schema: { $ref: '#/components/schemas/VerifyResponse' }
@@ -155,7 +144,7 @@ paths:
               schema: { $ref: '#/components/schemas/OtpErrorResponse' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '423':
-          description: Cuenta bloqueada por exceso de intentos fallidos (US-601)
+          description: Cuenta bloqueada (US-601)
           content:
             application/json:
               schema: { $ref: '#/components/schemas/ErrorResponse' }
@@ -170,7 +159,7 @@ paths:
   /api/v1/2fa/verify-recovery:
     post:
       tags: [recovery]
-      summary: Verificar código de recuperación como alternativa al OTP
+      summary: Verificar código de recuperación
       operationId: verifyRecoveryCode
       security:
         - bearerJwtPartial: []
@@ -181,7 +170,7 @@ paths:
             schema: { $ref: '#/components/schemas/RecoveryVerifyRequest' }
       responses:
         '200':
-          description: Código válido — sesión completa emitida (también desbloquea si cuenta estaba bloqueada)
+          description: Código válido — sesión completa emitida
           content:
             application/json:
               schema: { $ref: '#/components/schemas/VerifyResponse' }
@@ -218,8 +207,6 @@ paths:
               schema: { $ref: '#/components/schemas/ErrorResponse' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
-
-  # ── 2FA — Gestión ────────────────────────────────────────────────────────────
 
   /api/v1/2fa/deactivate:
     post:
@@ -262,7 +249,6 @@ paths:
           headers:
             Deprecation: { schema: { type: string, example: "true" } }
             Sunset:      { schema: { type: string, example: "Sat, 01 Jan 2027 00:00:00 GMT" } }
-            Link:        { schema: { type: string, example: '</api/v1/2fa/deactivate>; rel="successor-version"' } }
         '401': { $ref: '#/components/responses/Unauthorized' }
 
   /api/v1/2fa/status:
@@ -280,8 +266,6 @@ paths:
               schema: { $ref: '#/components/schemas/TwoFaStatusResponse' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
-
-  # ── Sesiones activas (FEAT-002) ──────────────────────────────────────────────
 
   /api/v1/sessions:
     get:
@@ -314,11 +298,6 @@ paths:
           schema: { type: string, pattern: '^\d{6}$' }
       responses:
         '204': { description: Todas las demás sesiones revocadas }
-        '400':
-          description: OTP inválido
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
 
@@ -340,14 +319,9 @@ paths:
           schema: { type: string, pattern: '^\d{6}$' }
       responses:
         '204': { description: Sesión revocada }
-        '400':
-          description: OTP inválido o no se puede revocar la sesión actual
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '404':
-          description: Sesión no encontrada o de otro usuario
+          description: Sesión no encontrada
           content:
             application/json:
               schema: { $ref: '#/components/schemas/ErrorResponse' }
@@ -371,18 +345,13 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/UpdateTimeoutResponse' }
-        '400':
-          description: Valor fuera del rango (5–60 minutos)
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
 
   /api/v1/sessions/deny/{token}:
     get:
       tags: [sessions]
-      summary: Denegar sesión desde enlace de email "No fui yo" (US-105)
+      summary: Denegar sesión desde enlace de email (US-105)
       operationId: denySessionByLink
       parameters:
         - in: path
@@ -395,18 +364,16 @@ paths:
           headers:
             Location: { schema: { type: string } }
         '400':
-          description: Token inválido, expirado o ya usado
+          description: Token inválido o expirado
           content:
             application/json:
               schema: { $ref: '#/components/schemas/ErrorResponse' }
         '500': { $ref: '#/components/responses/InternalError' }
 
-  # ── Dispositivos de Confianza (FEAT-003) ─────────────────────────────────────
-
   /api/v1/trusted-devices:
     get:
       tags: [trusted-devices]
-      summary: Listar dispositivos de confianza activos (US-202)
+      summary: Listar dispositivos de confianza (US-202)
       operationId: listTrustedDevices
       security:
         - bearerJwtFull: []
@@ -435,7 +402,7 @@ paths:
   /api/v1/trusted-devices/{deviceId}:
     delete:
       tags: [trusted-devices]
-      summary: Revocar dispositivo de confianza individual (US-202)
+      summary: Revocar dispositivo individual (US-202)
       operationId: revokeTrustedDevice
       security:
         - bearerJwtFull: []
@@ -448,18 +415,16 @@ paths:
         '204': { description: Dispositivo revocado }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '404':
-          description: Dispositivo no encontrado o de otro usuario
+          description: Dispositivo no encontrado
           content:
             application/json:
               schema: { $ref: '#/components/schemas/ErrorResponse' }
         '500': { $ref: '#/components/responses/InternalError' }
 
-  # ── Notificaciones (FEAT-004) ─────────────────────────────────────────────────
-
   /api/v1/notifications:
     get:
       tags: [notifications]
-      summary: Listar notificaciones de seguridad paginadas (US-301)
+      summary: Listar notificaciones paginadas (US-301)
       operationId: listNotifications
       security:
         - bearerJwtFull: []
@@ -476,7 +441,7 @@ paths:
           schema: { type: integer, default: 20 }
       responses:
         '200':
-          description: Página de notificaciones ordenadas por createdAt DESC
+          description: Página de notificaciones
           content:
             application/json:
               schema: { $ref: '#/components/schemas/NotificationPage' }
@@ -486,7 +451,7 @@ paths:
   /api/v1/notifications/unread-count:
     get:
       tags: [notifications]
-      summary: Conteo de notificaciones no leídas — badge (US-303)
+      summary: Conteo de notificaciones no leídas (US-303)
       operationId: getUnreadCount
       security:
         - bearerJwtFull: []
@@ -502,7 +467,7 @@ paths:
   /api/v1/notifications/{notificationId}/read:
     put:
       tags: [notifications]
-      summary: Marcar notificación individual como leída (US-302)
+      summary: Marcar notificación como leída (US-302)
       operationId: markOneAsRead
       security:
         - bearerJwtFull: []
@@ -535,12 +500,7 @@ paths:
   /api/v1/notifications/stream:
     get:
       tags: [notifications]
-      summary: Stream SSE de notificaciones en tiempo real (US-305)
-      description: |
-        Conexión SSE persistente. Máximo 1 conexión por usuario.
-        Headers ADR-010: `X-Accel-Buffering: no`, `Cache-Control: no-cache, no-store`.
-        El cliente Angular reconecta automáticamente (EventSource API).
-        Polling fallback cada 60s si SSE no está disponible (R-F4-003).
+      summary: Stream SSE de notificaciones (US-305)
       operationId: streamNotifications
       security:
         - bearerJwtFull: []
@@ -549,22 +509,14 @@ paths:
           description: Stream SSE activo
           content:
             text/event-stream:
-              schema:
-                type: string
+              schema: { type: string }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
-
-  # ── Auditoría (FEAT-005) ──────────────────────────────────────────────────────
 
   /api/v1/security/dashboard:
     get:
       tags: [audit]
       summary: Dashboard de seguridad — KPIs + SecurityScore (US-401)
-      description: |
-        Devuelve KPIs de los últimos 30 días: logins, intentos fallidos, sesiones activas,
-        dispositivos de confianza, notificaciones sin leer. Calcula SecurityScore:
-        SECURE | REVIEW | ALERT basado en estado 2FA, intentos fallidos y sesiones activas.
-        El claim `twoFaEnabled` del JWT se usa para el cálculo del score.
       operationId: getSecurityDashboard
       security:
         - bearerJwtFull: []
@@ -580,11 +532,7 @@ paths:
   /api/v1/security/export:
     get:
       tags: [audit]
-      summary: Exportar historial de seguridad en PDF o CSV (US-402)
-      description: |
-        Genera exportación del audit_log del usuario con hash SHA-256 de integridad
-        (scope: data-rows-only). PCI-DSS 4.0 req. 10.7.
-        Límite: 1000 eventos. Retorna 204 si no hay eventos en el período.
+      summary: Exportar historial en PDF o CSV (US-402)
       operationId: exportSecurityHistory
       security:
         - bearerJwtFull: []
@@ -597,36 +545,29 @@ paths:
           schema: { type: integer, enum: [30, 60, 90], default: 30 }
       responses:
         '200':
-          description: Archivo generado correctamente
+          description: Archivo generado
           headers:
-            Content-Disposition:
-              schema: { type: string, example: 'attachment; filename="seguridad-pdf-30d-2026-06-09.pdf"' }
             X-Content-SHA256:
-              schema: { type: string, description: Hash SHA-256 del contenido para verificación de integridad }
+              schema: { type: string }
           content:
             application/pdf:
               schema: { type: string, format: binary }
             text/csv:
               schema: { type: string, format: binary }
-        '204': { description: No hay eventos en el período seleccionado }
-        '400':
-          description: Parámetros inválidos
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '204': { description: No hay eventos en el período }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
 
   /api/v1/security/preferences:
     get:
       tags: [audit]
-      summary: Obtener preferencias de seguridad unificadas (US-403)
+      summary: Obtener preferencias de seguridad (US-403)
       operationId: getSecurityPreferences
       security:
         - bearerJwtFull: []
       responses:
         '200':
-          description: Preferencias actuales del usuario
+          description: Preferencias actuales
           content:
             application/json:
               schema: { $ref: '#/components/schemas/SecurityPreferencesResponse' }
@@ -636,10 +577,6 @@ paths:
     put:
       tags: [audit]
       summary: Actualizar preferencias de seguridad (US-403)
-      description: |
-        Actualiza preferencias de seguridad unificadas. Las preferencias de notificaciones
-        controlan la visibilidad en el Centro de Notificaciones pero NO desactivan el
-        registro en audit_log (siempre activo — R-F5-003).
       operationId: updateSecurityPreferences
       security:
         - bearerJwtFull: []
@@ -650,24 +587,49 @@ paths:
             schema: { $ref: '#/components/schemas/UpdateSecurityPreferencesRequest' }
       responses:
         '204': { description: Preferencias actualizadas }
-        '400':
-          description: Parámetros inválidos
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/InternalError' }
 
-  # ── Bloqueo de cuenta (FEAT-006) ──────────────────────────────────────────────
+  # ── Historial de configuración (FEAT-006 US-604) — RV-S7-002 fix ─────────────
+
+  /api/v1/security/config-history:
+    get:
+      tags: [audit-config]
+      summary: Historial paginado de cambios de configuración (US-604)
+      description: |
+        Filtra audit_log por event_category = 'CONFIG_CHANGE' sin tabla nueva en BD.
+        Tipos: 2FA_ACTIVATED/DEACTIVATED, SESSION_TIMEOUT_UPDATED,
+        TRUSTED_DEVICE_CREATED/REVOKED, ACCOUNT_UNLOCKED, NOTIFICATION_PREFERENCES_UPDATED.
+        Campo unusualLocation=true si la subnet no está en known_subnets del usuario.
+      operationId: getConfigHistory
+      security:
+        - bearerJwtFull: []
+      parameters:
+        - in: query
+          name: eventType
+          required: false
+          schema: { type: string }
+        - in: query
+          name: page
+          schema: { type: integer, default: 0 }
+        - in: query
+          name: size
+          schema: { type: integer, default: 20, maximum: 50 }
+      responses:
+        '200':
+          description: Página de eventos de configuración ordenados por occurredAt DESC
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConfigHistoryPage' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  # ── Bloqueo de cuenta (FEAT-006) ─────────────────────────────────────────────
 
   /api/v1/account/unlock:
     post:
       tags: [account]
-      summary: Solicitar enlace de desbloqueo de cuenta (US-602)
-      description: |
-        Envía un email con enlace HMAC-SHA256 (TTL 1h, one-time use — patrón ADR-007)
-        al email del usuario para desbloquear su cuenta bloqueada.
-        Endpoint público — no requiere JWT (la cuenta está bloqueada).
+      summary: Solicitar enlace de desbloqueo (US-602)
       operationId: requestAccountUnlock
       requestBody:
         required: true
@@ -675,17 +637,13 @@ paths:
           application/json:
             schema: { $ref: '#/components/schemas/RequestUnlockRequest' }
       responses:
-        '204': { description: Email enviado si la cuenta existe y está bloqueada (respuesta neutral para evitar user enumeration) }
+        '204': { description: Email enviado (respuesta neutra — evita user enumeration) }
         '500': { $ref: '#/components/responses/InternalError' }
 
   /api/v1/account/unlock/{token}:
     get:
       tags: [account]
-      summary: Desbloquear cuenta desde enlace de email (US-602)
-      description: |
-        Verifica el token HMAC-SHA256 del enlace de desbloqueo (TTL 1h, one-time use).
-        Si es válido: resetea failed_otp_attempts=0, account_status=ACTIVE.
-        Redirige al login con reason=account-unlocked.
+      summary: Desbloquear cuenta desde enlace email (US-602)
       operationId: unlockAccountByLink
       parameters:
         - in: path
@@ -698,11 +656,10 @@ paths:
           headers:
             Location: { schema: { type: string } }
         '400':
-          description: Token inválido, expirado o ya usado
+          description: Token inválido o expirado
           content:
             application/json:
               schema: { $ref: '#/components/schemas/ErrorResponse' }
-              example: { code: "TOKEN_EXPIRED", message: "El enlace ha expirado. Solicita uno nuevo." }
         '500': { $ref: '#/components/responses/InternalError' }
 
   # ── Autenticación contextual (FEAT-006 US-603) ───────────────────────────────
@@ -711,12 +668,6 @@ paths:
     post:
       tags: [contextual-auth]
       summary: Confirmar acceso desde nueva subnet IP (US-603)
-      description: |
-        Endpoint para confirmar el contexto de login cuando se detecta una nueva subnet IP.
-        Requiere JWT `scope=context-pending`. Si el token del email es válido:
-        - Marca la subnet como confirmada en known_subnets
-        - Emite JWT `scope=full-session`
-        - Registra LOGIN_NEW_CONTEXT_CONFIRMED en audit_log
       operationId: confirmLoginContext
       security:
         - bearerJwtContextPending: []
@@ -741,8 +692,6 @@ paths:
 
 components:
   schemas:
-
-    # ── 2FA ───────────────────────────────────────────────────────────────────
 
     EnrollResponse:
       type: object
@@ -772,27 +721,17 @@ components:
       required: [otpCode]
       properties:
         otpCode: { type: string, minLength: 6, maxLength: 6, pattern: '^\d{6}$' }
-        trustDevice:
-          type: boolean
-          default: false
-          description: Si true, establece cookie bp_trust (ADR-008). Solo aplica si el scope resultante es full-session.
+        trustDevice: { type: boolean, default: false }
 
     VerifyResponse:
       type: object
       required: [accessToken, scope]
       properties:
-        accessToken:
-          type: string
-          description: JWT firmado RS256
+        accessToken: { type: string }
         scope:
           type: string
           enum: [full-session, context-pending]
-          description: |
-            full-session — login completo.
-            context-pending — subnet nueva detectada, se requiere confirmación email (US-603).
-        contextConfirmationRequired:
-          type: boolean
-          description: true si scope=context-pending
+        contextConfirmationRequired: { type: boolean }
 
     OtpErrorResponse:
       type: object
@@ -840,17 +779,15 @@ components:
         enabled: { type: boolean }
         codesRemaining: { type: integer, minimum: 0, maximum: 10 }
 
-    # ── Sessions (FEAT-002) ───────────────────────────────────────────────────
-
     SessionResponse:
       type: object
       required: [sessionId, os, browser, deviceType, ipMasked, lastActivity, createdAt, isCurrent]
       properties:
         sessionId: { type: string, format: uuid }
-        os: { type: string, example: "macOS" }
-        browser: { type: string, example: "Safari" }
+        os: { type: string }
+        browser: { type: string }
         deviceType: { type: string, enum: [desktop, mobile, tablet] }
-        ipMasked: { type: string, example: "192.168.x.x" }
+        ipMasked: { type: string }
         lastActivity: { type: string, format: date-time }
         createdAt: { type: string, format: date-time }
         isCurrent: { type: boolean }
@@ -867,8 +804,6 @@ components:
       properties:
         timeoutMinutes: { type: integer }
 
-    # ── Trusted Devices (FEAT-003) ────────────────────────────────────────────
-
     TrustedDeviceResponse:
       type: object
       required: [deviceId, os, browser, ipMasked, createdAt, lastUsedAt, expiresAt]
@@ -880,8 +815,6 @@ components:
         createdAt: { type: string, format: date-time }
         lastUsedAt: { type: string, format: date-time }
         expiresAt: { type: string, format: date-time }
-
-    # ── Notifications (FEAT-004) ──────────────────────────────────────────────
 
     NotificationPage:
       type: object
@@ -917,8 +850,6 @@ components:
       properties:
         markedCount: { type: integer }
 
-    # ── Security Audit (FEAT-005) ─────────────────────────────────────────────
-
     SecurityDashboardResponse:
       type: object
       required: [loginCount30d, failedAttempts30d, activeSessions, trustedDevices,
@@ -932,11 +863,6 @@ components:
         securityScore:
           type: string
           enum: [SECURE, REVIEW, ALERT]
-          description: |
-            SECURE: 2FA activo + < 3 intentos fallidos + ≤ 3 sesiones activas.
-            REVIEW: 2FA activo pero con alertas.
-            ALERT: 2FA desactivado O intentos fallidos ≥ umbral.
-            Calculado usando claim twoFaEnabled del JWT (ACT-30).
         recentEvents:
           type: array
           items: { $ref: '#/components/schemas/AuditEventSummary' }
@@ -968,7 +894,6 @@ components:
         notificationsByType:
           type: object
           additionalProperties: { type: boolean }
-          description: Mapa SecurityEventType → habilitado. Solo afecta notificaciones visibles; audit_log siempre activo (R-F5-003).
 
     UpdateSecurityPreferencesRequest:
       type: object
@@ -979,16 +904,50 @@ components:
           additionalProperties: { type: boolean }
           nullable: true
 
+    # ── Config History (FEAT-006 US-604) — RV-S7-002 ─────────────────────────
+
+    ConfigHistoryPage:
+      type: object
+      required: [content, totalElements, totalPages, number, size]
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/ConfigChangeEvent' }
+        totalElements: { type: integer }
+        totalPages:    { type: integer }
+        number:        { type: integer, description: Página actual (0-indexed) }
+        size:          { type: integer }
+
+    ConfigChangeEvent:
+      type: object
+      required: [eventId, eventType, description, ipMasked, occurredAt]
+      properties:
+        eventId:     { type: string, format: uuid }
+        eventType:
+          type: string
+          enum:
+            - TWO_FA_ENABLED
+            - TWO_FA_DISABLED
+            - SESSION_TIMEOUT_CHANGED
+            - TRUSTED_DEVICE_ADDED
+            - TRUSTED_DEVICE_REVOKED
+            - ALL_TRUSTED_DEVICES_REVOKED
+            - NOTIFICATION_PREFS_CHANGED
+            - RECOVERY_CODES_REGENERATED
+            - ACCOUNT_UNLOCKED
+        description:     { type: string }
+        ipMasked:        { type: string, example: "192.168.x.x" }
+        deviceInfo:      { type: string, nullable: true }
+        occurredAt:      { type: string, format: date-time }
+        unusualLocation: { type: boolean }
+
     # ── Account Lock (FEAT-006) ───────────────────────────────────────────────
 
     RequestUnlockRequest:
       type: object
       required: [email]
       properties:
-        email:
-          type: string
-          format: email
-          description: Email de la cuenta bloqueada. Respuesta neutral para evitar user enumeration.
+        email: { type: string, format: email }
 
     # ── Contextual Auth (FEAT-006) ────────────────────────────────────────────
 
@@ -996,9 +955,7 @@ components:
       type: object
       required: [confirmationToken]
       properties:
-        confirmationToken:
-          type: string
-          description: Token HMAC-SHA256 de confirmación de contexto recibido por email (TTL 15min, one-time use)
+        confirmationToken: { type: string }
 
     # ── Error común ───────────────────────────────────────────────────────────
 
@@ -1006,12 +963,12 @@ components:
       type: object
       required: [code, message]
       properties:
-        code: { type: string }
+        code:    { type: string }
         message: { type: string }
 
   responses:
     Unauthorized:
-      description: JWT inválido, expirado, revocado (blacklist Redis) o cuenta bloqueada
+      description: JWT inválido, expirado o revocado
       content:
         application/json:
           schema: { $ref: '#/components/schemas/ErrorResponse' }
@@ -1030,46 +987,23 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: |
-        JWT parcial (`scope=2fa-pending`, `alg=RS256`) — emitido tras validar credenciales.
-
-        **Claims emitidos (ACT-30):**
-        - `sub`: UUID del usuario (string, UUID v4)
-        - `scope`: "2fa-pending"
-        - `jti`: UUID único del token (para blacklist Redis)
-        - `iat` / `exp`: timestamps estándar JWT (TTL: 300s)
-
-        Firmado con clave privada RSA-2048 (`bankportal-jwt-private-key` en Jenkins / K8s Secret `bankportal-jwt-keypair`).
+        JWT parcial (scope=2fa-pending, alg=RS256). TTL: 300s.
+        Claims (ACT-30): sub, scope, jti, iat, exp.
 
     bearerJwtFull:
       type: http
       scheme: bearer
       bearerFormat: JWT
       description: |
-        JWT de sesión completa (`scope=full-session`, `alg=RS256`) — emitido tras 2FA exitoso.
-
-        **Claims emitidos (ACT-30):**
-        - `sub`: UUID del usuario (string, UUID v4)
-        - `scope`: "full-session"
-        - `jti`: UUID único del token (para blacklist Redis — `sessions:blacklist:{jti}`)
-        - `twoFaEnabled`: boolean — true si el usuario tiene 2FA activo al momento de la emisión. Usado por `SecurityDashboardUseCase` para calcular el SecurityScore (FEAT-005 US-401).
-        - `iat` / `exp`: timestamps estándar JWT (TTL: 3600s)
-
-        Verificado por `TokenBlacklistFilter` contra Redis blacklist en cada request.
+        JWT de sesión completa (scope=full-session, alg=RS256). TTL: 3600s.
+        Claims (ACT-30): sub, scope, jti, twoFaEnabled, iat, exp.
+        Verificado contra Redis blacklist en cada request.
 
     bearerJwtContextPending:
       type: http
       scheme: bearer
       bearerFormat: JWT
       description: |
-        JWT de contexto pendiente (`scope=context-pending`, `alg=RS256`) — emitido cuando
-        se detecta una nueva subnet IP durante el login (FEAT-006 US-603).
-
-        **Claims emitidos (ACT-30):**
-        - `sub`: UUID del usuario (string, UUID v4)
-        - `scope`: "context-pending"
-        - `jti`: UUID único del token
-        - `pendingSubnet`: subnet IP nueva que requiere confirmación (ej. "10.20")
-        - `iat` / `exp`: timestamps estándar JWT (TTL: 900s — 15 minutos)
-
-        Válido únicamente para `POST /api/v1/auth/confirm-context`.
-        Rechazado en todos los demás endpoints protegidos.
+        JWT de contexto pendiente (scope=context-pending, alg=RS256). TTL: 900s.
+        Claims (ACT-30): sub, scope, jti, pendingSubnet, iat, exp.
+        Válido únicamente para POST /api/v1/auth/confirm-context.

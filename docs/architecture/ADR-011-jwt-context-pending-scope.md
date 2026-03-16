@@ -7,7 +7,7 @@
 | **ADR ID** | ADR-011 |
 | **Proyecto** | BankPortal — Banco Meridian |
 | **Feature** | FEAT-006 — Autenticación Contextual |
-| **Estado** | 🔒 PROPUESTO — Pendiente aprobación Tech Lead |
+| **Estado** | ✅ ACEPTADO — Tech Lead — 2026-06-09 |
 | **Fecha** | 2026-06-09 |
 | **Autor** | SOFIA Architect Agent |
 | **Supersede** | ADR-003 (extiende — no sustituye) |
@@ -150,4 +150,4 @@ El scope `context-pending` siempre incluye la subnet detectada. La confirmación
 ---
 
 *Generado por SOFIA Architect Agent · BankPortal · 2026-06-09*
-*🔒 GATE: aprobación Tech Lead requerida antes de iniciar US-603*
+*✅ ACEPTADO — Tech Lead — 2026-06-09 · Gate: ADR-011 + LLD-006 + LLD-007 + LLD-frontend-config-history*

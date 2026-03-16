@@ -15,41 +15,57 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Controller REST para el Panel de Auditoría de Seguridad (FEAT-005).
+ * Controller REST para el Panel de Auditoría de Seguridad (FEAT-005 + FEAT-006 US-604).
  *
- * Sprint 7 añade:
- * - GET /api/v1/security/preferences (US-403)
- * - PUT /api/v1/security/preferences (US-403)
- * - GET /api/v1/security/config-history (US-604)
- * - Extrae twoFaActive del claim JWT {@code twoFaEnabled} (ACT-30)
+ * <p>Endpoints:
+ * <ul>
+ *   <li>GET  /api/v1/security/dashboard        — US-401 KPIs + SecurityScore (ACT-30)</li>
+ *   <li>GET  /api/v1/security/export           — US-402 exportación PDF/CSV (PCI-DSS req. 10.7)</li>
+ *   <li>GET  /api/v1/security/preferences      — US-403 preferencias unificadas</li>
+ *   <li>PUT  /api/v1/security/preferences      — US-403 actualizar preferencias (R-F5-003)</li>
+ *   <li>GET  /api/v1/security/config-history   — US-604 historial cambios configuración</li>
+ * </ul>
  *
- * @author SOFIA Developer Agent — FEAT-005 Sprint 6 · Sprint 7
+ * @author SOFIA Developer Agent — FEAT-005 Sprint 6 · FEAT-006 Sprint 7
  */
 @RestController
 @RequestMapping("/api/v1/security")
 @RequiredArgsConstructor
 public class SecurityAuditController {
 
-    private final SecurityDashboardUseCase    dashboardUseCase;
+    private final SecurityDashboardUseCase     dashboardUseCase;
     private final ExportSecurityHistoryUseCase exportUseCase;
-    private final SecurityPreferencesUseCase  preferencesUseCase;
+    private final SecurityPreferencesUseCase   preferencesUseCase;
 
     /**
-     * US-401 — Dashboard de seguridad.
-     * ACT-30: claim {@code twoFaEnabled} del JWT extraído explícitamente.
+     * US-401 — Dashboard de seguridad con KPIs de los últimos 30 días y SecurityScore.
+     *
+     * <p>ACT-30: el claim {@code twoFaEnabled} del JWT es extraído explícitamente y pasado
+     * al caso de uso para el cálculo del SecurityScore — evita una query adicional a BD.
+     *
+     * @param jwt JWT de sesión completa ({@code scope=full-session}, claim {@code twoFaEnabled})
+     * @return {@link SecurityDashboardUseCase.SecurityDashboardResponse} con KPIs y score
      */
     @GetMapping("/dashboard")
     public ResponseEntity<SecurityDashboardUseCase.SecurityDashboardResponse> getDashboard(
             @AuthenticationPrincipal Jwt jwt) {
 
         UUID    userId      = UUID.fromString(jwt.getSubject());
-        // ACT-30: claim twoFaEnabled documentado en OpenAPI securitySchemes
         boolean twoFaActive = Boolean.TRUE.equals(jwt.getClaim("twoFaEnabled"));
         return ResponseEntity.ok(dashboardUseCase.execute(userId, twoFaActive));
     }
 
     /**
-     * US-402 — Exportar historial en PDF o CSV.
+     * US-402 — Exportar historial de seguridad en PDF o CSV.
+     *
+     * <p>La respuesta incluye el header {@code X-Content-SHA256} con el hash de integridad
+     * del contenido (PCI-DSS 4.0 req. 10.7). Retorna HTTP 204 si no hay eventos en el período.
+     *
+     * @param format formato del archivo: {@code pdf} (default) o {@code csv}
+     * @param days   ventana temporal: 30, 60 o 90 días (default 30)
+     * @param jwt    JWT de sesión completa
+     * @return archivo binario con header {@code Content-Disposition} y {@code X-Content-SHA256},
+     *         o HTTP 204 si no hay eventos
      */
     @GetMapping("/export")
     public ResponseEntity<byte[]> exportHistory(
@@ -77,7 +93,13 @@ public class SecurityAuditController {
     }
 
     /**
-     * US-403 — Obtener preferencias de seguridad unificadas.
+     * US-403 — Obtener preferencias de seguridad unificadas del usuario autenticado.
+     *
+     * <p>Devuelve el estado 2FA, timeout de sesión, conteo de dispositivos de confianza
+     * y mapa de preferencias de notificación por {@code SecurityEventType}.
+     *
+     * @param jwt JWT de sesión completa
+     * @return {@link SecurityPreferencesUseCase.SecurityPreferencesResponse} con todas las preferencias
      */
     @GetMapping("/preferences")
     public ResponseEntity<SecurityPreferencesUseCase.SecurityPreferencesResponse> getPreferences(
@@ -88,8 +110,15 @@ public class SecurityAuditController {
     }
 
     /**
-     * US-403 — Actualizar preferencias de seguridad.
-     * Las preferencias de notificaciones solo afectan la visibilidad — audit_log siempre activo (R-F5-003).
+     * US-403 — Actualizar preferencias de seguridad del usuario autenticado.
+     *
+     * <p><b>R-F5-003:</b> desactivar un tipo de notificación solo afecta la visibilidad en el
+     * Centro de Notificaciones. El {@code audit_log} permanece siempre activo por cumplimiento
+     * normativo (PCI-DSS 4.0 req. 10.2) — este invariante se aplica en la capa de dominio.
+     *
+     * @param request cuerpo con {@code sessionTimeoutMinutes} y/o {@code notificationsByType}
+     * @param jwt     JWT de sesión completa
+     * @return HTTP 204 No Content si la actualización fue exitosa
      */
     @PutMapping("/preferences")
     public ResponseEntity<Void> updatePreferences(
@@ -102,7 +131,21 @@ public class SecurityAuditController {
     }
 
     /**
-     * US-604 — Historial de cambios de configuración de seguridad.
+     * US-604 — Historial paginado de cambios de configuración de seguridad.
+     *
+     * <p>Filtra {@code audit_log} por {@code event_category = 'CONFIG_CHANGE'} usando
+     * {@link SecurityDashboardUseCase#getConfigHistory}. No requiere tabla nueva en BD —
+     * reutiliza {@code AuditLogQueryRepository} con un predicado adicional.
+     *
+     * <p>Tipos de evento incluidos: {@code 2FA_ACTIVATED}, {@code 2FA_DEACTIVATED},
+     * {@code SESSION_TIMEOUT_UPDATED}, {@code TRUSTED_DEVICE_CREATED/REVOKED},
+     * {@code ACCOUNT_UNLOCKED}, {@code NOTIFICATION_PREFERENCES_UPDATED}.
+     *
+     * @param days ventana temporal en días hacia atrás (default 90, máx. 90)
+     * @param jwt  JWT de sesión completa ({@code scope=full-session})
+     * @return lista de {@link SecurityDashboardUseCase.AuditEventSummary} ordenada
+     *         por {@code occurredAt DESC}, con flag {@code unusualLocation} si la subnet
+     *         no está en {@code known_subnets} del usuario
      */
     @GetMapping("/config-history")
     public ResponseEntity<List<SecurityDashboardUseCase.AuditEventSummary>> getConfigHistory(
