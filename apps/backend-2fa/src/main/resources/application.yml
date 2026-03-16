@@ -1,9 +1,6 @@
-# BankPortal — Backend 2FA | Banco Meridian
-# FEAT-001 | Sprint 01 | SOFIA Software Factory — Experis
-#
-# SEGURIDAD: ningún secreto está hardcodeado aquí.
-# Todas las variables sensibles deben definirse como variables de entorno.
-# Ver: docs/architecture/FEAT-001-LLD-backend.md §Variables de entorno
+# BankPortal — Backend 2FA + Session Management + Trusted Devices | Banco Meridian
+# FEAT-001 + FEAT-002 + FEAT-003 | Sprint 4
+# SOFIA Software Factory — Experis
 
 spring:
   application:
@@ -23,15 +20,29 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: false
   flyway:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: false
+  data:
+    redis:
+      url: ${REDIS_URL:redis://localhost:6379}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 4
+  mail:
+    host: ${SMTP_HOST:smtp.sendgrid.net}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USERNAME:apikey}
+    password: ${EMAIL_API_KEY}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 5000
 
-# TOTP — ADR-004
-# TOTP_ISSUER: nombre visible en apps authenticator (ej. "BankMeridian") — obligatorio en producción.
-# TOTP_AES_KEY: clave AES-256 en Base64 (32 bytes = 44 chars Base64) — obligatorio en producción.
 totp:
   issuer: ${TOTP_ISSUER:BankMeridian}
   aes-key: ${TOTP_AES_KEY}
@@ -39,23 +50,39 @@ totp:
   code-digits: 6
   tolerance: 1
 
-# JWT — ADR-001
-# JWT_SECRET           : secreto para JWT de sesión completa (HS256 — mín. 32 bytes)
-# JWT_PRE_AUTH_SECRET  : secreto independiente para pre-auth tokens (ADR-001)
-# JWT_PRE_AUTH_TTL_SECONDS: TTL del pre-auth token en segundos (default: 300 = 5 min)
-#                           NOTA: la unidad es SEGUNDOS — no minutos (RV-005 fix)
-# JWT_SESSION_TTL_SECONDS : TTL del JWT de sesión en segundos (default: 28800 = 8h)
 jwt:
-  secret: ${JWT_SECRET}
-  pre-auth-secret: ${JWT_PRE_AUTH_SECRET}
+  private-key: ${JWT_PRIVATE_KEY}
+  public-key: ${JWT_PUBLIC_KEY}
   pre-auth-ttl-seconds: ${JWT_PRE_AUTH_TTL_SECONDS:300}
-  session-ttl-seconds: ${JWT_SESSION_TTL_SECONDS:28800}
+  session-ttl-seconds: ${JWT_SESSION_TTL_SECONDS:3600}
 
-# Rate Limiting — ADR-002
 rate-limit:
   capacity: ${RATE_LIMIT_MAX_ATTEMPTS:5}
   window-minutes: ${RATE_LIMIT_WINDOW_MIN:10}
   block-minutes: ${RATE_LIMIT_BLOCK_MIN:15}
+
+session:
+  max-concurrent: ${SESSION_MAX_CONCURRENT:3}
+  default-timeout-minutes: ${SESSION_DEFAULT_TIMEOUT_MIN:30}
+  max-timeout-minutes: ${SESSION_MAX_TIMEOUT_MIN:60}
+  deny-link:
+    hmac-key: ${SESSION_DENY_LINK_HMAC_KEY}
+    ttl-hours: ${SESSION_DENY_LINK_TTL_HOURS:24}
+
+# Trusted Devices — FEAT-003 (ADR-008)
+trusted-device:
+  hmac-key: ${TRUSTED_DEVICE_HMAC_KEY}
+  ttl-days: ${TRUSTED_DEVICE_TTL_DAYS:30}
+  max-per-user: ${TRUSTED_DEVICE_MAX_PER_USER:10}
+  cookie-secure: ${TRUSTED_DEVICE_COOKIE_SECURE:true}
+
+notification:
+  email:
+    from: ${EMAIL_FROM:seguridad@bankmeridian.com}
+    deny-base-url: ${DENY_BASE_URL:https://api.bankportal.meridian.com/v1/sessions/deny}
+
+scheduling:
+  enabled: ${SCHEDULING_ENABLED:true}
 
 server:
   port: 8080
@@ -68,7 +95,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health,readiness,liveness
   endpoint:
     health:
       show-details: never
