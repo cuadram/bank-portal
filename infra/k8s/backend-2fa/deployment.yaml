@@ -1,185 +1,124 @@
-# ─────────────────────────────────────────────────────────────────────────────
-# BankPortal — backend-2fa — Kubernetes Deployment
-# SOFIA DevOps Agent — FEAT-001 v1.0.0
-# Target: namespace bankportal (PROD) / bankportal-stg / bankportal-dev
-# ─────────────────────────────────────────────────────────────────────────────
+# K8s Deployment — bankportal-backend-2fa v1.6.0
+# FEAT-001→006 | Sprint 7 | DEBT-008 + US-403 + US-601 + US-604
+# DevOps Agent — 2026-06-09
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-2fa
-  namespace: bankportal        # reemplazar por bankportal-stg / bankportal-dev según target
+  name: bankportal-2fa
+  namespace: bankportal-prod
   labels:
-    app: backend-2fa
-    project: bankportal
-    client: banco-meridian
-    managed-by: sofia-devops
-  annotations:
-    deployment.kubernetes.io/revision: "1"
-    sofia.experis.com/feature: "FEAT-001"
-    sofia.experis.com/version: "v1.0.0"
+    app: bankportal-2fa
+    version: "v1.6.0"
+    sprint: "sprint-7"
 spec:
-  replicas: 2                  # mínimo 2 para zero downtime
+  replicas: 2
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 0        # nunca bajar réplicas disponibles durante update
-      maxSurge: 1              # crear 1 réplica extra durante el rollout
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
-      app: backend-2fa
+      app: bankportal-2fa
   template:
     metadata:
       labels:
-        app: backend-2fa
-        version: "v1.0.0"
+        app: bankportal-2fa
+        version: "v1.6.0"
     spec:
-      # Usuario no-root — creado en el Dockerfile
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        fsGroup: 1000
-
       containers:
-        - name: backend-2fa
-          image: ${REGISTRY}/backend-2fa:v1.0.0    # reemplazado por pipeline
-          imagePullPolicy: Always
+        - name: bankportal-2fa
+          image: registry.meridian.internal/bankportal-backend-2fa:v1.6.0
           ports:
-            - name: http
-              containerPort: 8081
-              protocol: TCP
-
-          # Secrets inyectados desde Kubernetes Secret (NUNCA hardcodeados)
-          envFrom:
-            - secretRef:
-                name: backend-2fa-secrets           # crear manualmente en cada namespace
-
-          # Variables de entorno no sensibles
+            - containerPort: 8080
           env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: "kubernetes"
-            - name: SERVER_PORT
-              value: "8081"
+            # ── BD ────────────────────────────────────────────────────────
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef: { name: bankportal-db-secrets, key: DB_URL }
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef: { name: bankportal-db-secrets, key: DB_USERNAME }
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: bankportal-db-secrets, key: DB_PASSWORD }
+            # ── Redis ─────────────────────────────────────────────────────
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef: { name: bankportal-infra-secrets, key: REDIS_URL }
+            # ── JWT RS256 ─────────────────────────────────────────────────
+            - name: JWT_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef: { name: bankportal-jwt-keypair, key: private.pem }
+            - name: JWT_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef: { name: bankportal-jwt-keypair, key: public.pem }
+            - name: JWT_SESSION_TTL_SECONDS
+              value: "3600"
+            # ── JWT context-pending (FEAT-006 US-603 — ADR-011) ──────────
+            - name: JWT_CONTEXT_PENDING_TTL_SECONDS
+              value: "900"
+            # ── TOTP ──────────────────────────────────────────────────────
+            - name: TOTP_AES_KEY
+              valueFrom:
+                secretKeyRef: { name: bankportal-2fa-secrets, key: TOTP_AES_KEY }
             - name: TOTP_ISSUER
-              value: "BankPortal - Banco Meridian"
-            - name: RATE_LIMIT_MAX_ATTEMPTS
+              value: "BankMeridian"
+            # ── Account Lock (FEAT-006 US-601) ────────────────────────────
+            - name: ACCOUNT_LOCK_MAX_ATTEMPTS
+              value: "10"
+            - name: ACCOUNT_LOCK_WARNING_THRESHOLD
+              value: "7"
+            - name: ACCOUNT_LOCK_WINDOW_HOURS
+              value: "24"
+            - name: ACCOUNT_UNLOCK_LINK_TTL_SECONDS
+              value: "3600"
+            - name: ACCOUNT_UNLOCK_HMAC_KEY
+              valueFrom:
+                secretKeyRef: { name: bankportal-account-secrets, key: ACCOUNT_UNLOCK_HMAC_KEY }
+            # ── Dashboard executor (DEBT-008) ─────────────────────────────
+            - name: SOFIA_DASHBOARD_TIMEOUT_SECONDS
               value: "5"
-            - name: RATE_LIMIT_BLOCK_MINUTES
-              value: "15"
-            - name: JWT_FULL_EXPIRY_HOURS
-              value: "8"
-            - name: POD_NAME
+            # ── Session Management ────────────────────────────────────────
+            - name: SESSION_MAX_CONCURRENT
+              value: "3"
+            - name: SESSION_DEFAULT_TIMEOUT_MIN
+              value: "30"
+            - name: SESSION_DENY_LINK_HMAC_KEY
               valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: POD_NAMESPACE
+                secretKeyRef: { name: bankportal-session-secrets, key: SESSION_DENY_LINK_HMAC_KEY }
+            # ── Trusted Devices ───────────────────────────────────────────
+            - name: TRUSTED_DEVICE_HMAC_KEY
               valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-
-          # Liveness: el servicio está vivo (reiniciar si falla)
+                secretKeyRef: { name: bankportal-trusted-device-secrets, key: TRUSTED_DEVICE_HMAC_KEY }
+            - name: TRUSTED_DEVICE_HMAC_KEY_PREVIOUS
+              valueFrom:
+                secretKeyRef: { name: bankportal-trusted-device-secrets, key: TRUSTED_DEVICE_HMAC_KEY_PREVIOUS }
+            - name: TRUSTED_DEVICE_TTL_DAYS
+              value: "30"
+            - name: TRUSTED_DEVICE_MAX_PER_USER
+              value: "10"
+            - name: TRUSTED_DEVICE_COOKIE_SECURE
+              value: "true"
+            # ── Email ─────────────────────────────────────────────────────
+            - name: EMAIL_API_KEY
+              valueFrom:
+                secretKeyRef: { name: bankportal-email-secrets, key: EMAIL_API_KEY }
+            - name: EMAIL_FROM
+              value: "seguridad@bankmeridian.com"
+            - name: DENY_BASE_URL
+              value: "https://api.bankportal.meridian.com/v1/sessions/deny"
+            - name: UNLOCK_BASE_URL
+              value: "https://api.bankportal.meridian.com/v1/account/unlock"
           livenessProbe:
-            httpGet:
-              path: /actuator/health/liveness
-              port: 8081
+            httpGet: { path: /health, port: 8080 }
             initialDelaySeconds: 45
-            periodSeconds: 10
-            failureThreshold: 3
-            timeoutSeconds: 5
-
-          # Readiness: el servicio puede recibir tráfico
+            periodSeconds: 15
           readinessProbe:
-            httpGet:
-              path: /actuator/health/readiness
-              port: 8081
+            httpGet: { path: /health, port: 8080 }
             initialDelaySeconds: 20
-            periodSeconds: 5
-            failureThreshold: 3
-            timeoutSeconds: 3
-
-          # Recursos calibrados para Spring Boot con JWT + AES-256 operations
+            periodSeconds: 10
           resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
-
-          # Filesystem read-only para seguridad
-          securityContext:
-            readOnlyRootFilesystem: true
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: ["ALL"]
-
-          # Directorio temporal escribible para Spring Boot
-          volumeMounts:
-            - name: tmp-volume
-              mountPath: /tmp
-
-      volumes:
-        - name: tmp-volume
-          emptyDir: {}
-
-      # Política de pull de imagen privada
-      imagePullSecrets:
-        - name: registry-credentials
-
-      # Distribución de pods en nodos distintos (alta disponibilidad)
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: app
-                      operator: In
-                      values: ["backend-2fa"]
-                topologyKey: kubernetes.io/hostname
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: backend-2fa
-  namespace: bankportal
-  labels:
-    app: backend-2fa
-spec:
-  selector:
-    app: backend-2fa
-  ports:
-    - name: http
-      port: 80
-      targetPort: 8081
-      protocol: TCP
-  type: ClusterIP
-
----
-# Horizontal Pod Autoscaler — escala automáticamente según CPU
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: backend-2fa-hpa
-  namespace: bankportal
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: backend-2fa
-  minReplicas: 2
-  maxReplicas: 8
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          type: Utilization
-          averageUtilization: 80
+            requests: { memory: "512Mi", cpu: "250m" }
+            limits:   { memory: "1Gi",   cpu: "1000m" }
