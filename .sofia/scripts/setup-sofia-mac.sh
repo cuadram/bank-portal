@@ -1,9 +1,10 @@
 #!/bin/bash
 # =============================================================================
-# SOFIA v1.4 — setup-sofia-mac.sh
+# SOFIA v1.5 — setup-sofia-mac.sh
 # Setup completo para macOS · Experis Software Factory IA
 # Uso: ./setup-sofia-mac.sh [ruta_destino]
 # Ejemplo: ./setup-sofia-mac.sh ~/proyectos/mi-proyecto
+# Cambios v1.5: CLAUDE.md con Persistence Protocol, session.json, sofia.log
 # =============================================================================
 
 set -e
@@ -15,7 +16,7 @@ REPO="${1:-$DEFAULT_REPO}"
 
 echo ""
 echo "╔══════════════════════════════════════════════════╗"
-echo "║   SOFIA v1.4 — Software Factory IA · Experis    ║"
+echo "║   SOFIA v1.5 — Software Factory IA · Experis    ║"
 echo "╚══════════════════════════════════════════════════╝"
 echo ""
 echo "  Repo destino : $REPO"
@@ -77,7 +78,7 @@ if ! "$NODE_BIN" -e "require('docx')" 2>/dev/null; then
     npm install -g docx --silent
     echo "  ✅ docx instalado"
 else
-    echo "  ✅ docx ya instalado ($(npm list -g docx 2>/dev/null | grep docx | head -1 | tr -d ' '))"
+    echo "  ✅ docx ya instalado"
 fi
 
 # ── 4. Instalar dependencias: openpyxl (Python) ──────────────────────────────
@@ -86,12 +87,10 @@ echo "▶ [4/10] Instalando dependencia Python: openpyxl..."
 
 VENV_GLOBAL="$HOME/.sofia-venv"
 
-# Intentar sistema primero
 if python3 -c "import openpyxl" 2>/dev/null; then
     PY_DOCS="python3"
-    echo "  ✅ openpyxl disponible en sistema ($(python3 -c 'import openpyxl; print(openpyxl.__version__)'))"
+    echo "  ✅ openpyxl disponible en sistema"
 else
-    # Crear venv global si no existe
     if [ ! -d "$VENV_GLOBAL" ]; then
         echo "  📦 Creando venv global SOFIA en $VENV_GLOBAL..."
         python3 -m venv "$VENV_GLOBAL"
@@ -99,7 +98,6 @@ else
     "$VENV_GLOBAL/bin/pip" install openpyxl -q
     PY_DOCS="$VENV_GLOBAL/bin/python3"
     echo "  ✅ openpyxl instalado en $VENV_GLOBAL"
-    echo "     gen_excel.py usará: $PY_DOCS"
 fi
 
 # ── 5. Pre-instalar servidor MCP filesystem ──────────────────────────────────
@@ -178,100 +176,202 @@ else
 # SOFIA — Documentation Agent Hook v1.4
 REPO="$(git rev-parse --show-toplevel 2>/dev/null)"; [ -z "$REPO" ] && exit 0
 DELIVERABLES="$REPO/docs/deliverables"; [ -d "$DELIVERABLES" ] || exit 0
-
-NODE=""; for c in "/opt/homebrew/opt/node@22/bin/node" "/opt/homebrew/opt/node@20/bin/node" "/usr/local/bin/node" "$(command -v node 2>/dev/null)"; do [ -x "$c" ] && NODE="$c" && break; done
+NODE=""; for c in "/opt/homebrew/opt/node@22/bin/node" "/opt/homebrew/opt/node@20/bin/node" "$(command -v node 2>/dev/null)"; do [ -x "$c" ] && NODE="$c" && break; done
 export NODE_PATH="/opt/homebrew/lib/node_modules:/usr/local/lib/node_modules:$NODE_PATH"
-
-PY=""
-VENV_DIR="$REPO/.sofia/venv"
-[ -x "$VENV_DIR/bin/python3" ] && "$VENV_DIR/bin/python3" -c "import openpyxl" 2>/dev/null && PY="$VENV_DIR/bin/python3"
-[ -z "$PY" ] && [ -x "$HOME/.sofia-venv/bin/python3" ] && "$HOME/.sofia-venv/bin/python3" -c "import openpyxl" 2>/dev/null && PY="$HOME/.sofia-venv/bin/python3"
+PY=""; VENV="$REPO/.sofia/venv"
+[ -x "$VENV/bin/python3" ] && "$VENV/bin/python3" -c "import openpyxl" 2>/dev/null && PY="$VENV/bin/python3"
+[ -z "$PY" ] && [ -x "$HOME/.sofia-venv/bin/python3" ] && PY="$HOME/.sofia-venv/bin/python3"
 if [ -z "$PY" ]; then
-    for c in "/opt/homebrew/bin/python3" "/usr/local/bin/python3" "$(command -v python3 2>/dev/null)"; do
+    for c in "/opt/homebrew/bin/python3" "$(command -v python3 2>/dev/null)"; do
         [ -x "$c" ] && "$c" -c "import openpyxl" 2>/dev/null && PY="$c" && break
     done
 fi
 if [ -z "$PY" ]; then
-    SYS_PY=""; for c in "/opt/homebrew/bin/python3" "/usr/local/bin/python3" "$(command -v python3 2>/dev/null)"; do [ -x "$c" ] && SYS_PY="$c" && break; done
-    if [ -n "$SYS_PY" ]; then "$SYS_PY" -m venv "$VENV_DIR"; "$VENV_DIR/bin/pip" install openpyxl -q; PY="$VENV_DIR/bin/python3"; fi
+    SYS_PY="$(command -v python3 2>/dev/null)"
+    [ -n "$SYS_PY" ] && "$SYS_PY" -m venv "$VENV" && "$VENV/bin/pip" install openpyxl -q && PY="$VENV/bin/python3"
 fi
-
 CHANGED=$(git diff-tree --no-commit-id -r --name-only HEAD 2>/dev/null)
 echo "$CHANGED" | grep -qE "docs/deliverables/.*\.(js|py)$" || exit 0
-
 echo ""; echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  📑 SOFIA Documentation Agent v1.4"; echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
+echo "  📑 SOFIA Documentation Agent v1.4"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if [ -f "$DELIVERABLES/gen_all_word.js" ] || [ -f "$DELIVERABLES/gen_all_excel.py" ]; then
     echo "  Modo: multi-sprint"
-    [ -f "$DELIVERABLES/gen_all_word.js" ] && [ -n "$NODE" ] && echo "" && echo "  📄 Word docs..." && cd "$DELIVERABLES" && "$NODE" gen_all_word.js && cd "$REPO"
-    [ -f "$DELIVERABLES/gen_all_excel.py" ] && [ -n "$PY" ] && echo "" && echo "  📊 Excel docs..." && "$PY" "$DELIVERABLES/gen_all_excel.py"
+    [ -f "$DELIVERABLES/gen_all_word.js" ] && [ -n "$NODE" ] && cd "$DELIVERABLES" && "$NODE" gen_all_word.js && cd "$REPO"
+    [ -f "$DELIVERABLES/gen_all_excel.py" ] && [ -n "$PY" ] && "$PY" "$DELIVERABLES/gen_all_excel.py"
 else
     SPRINT_DIR=$(find "$DELIVERABLES" -name "gen_word.js" -exec dirname {} \; 2>/dev/null | sort -r | head -1)
-    [ -z "$SPRINT_DIR" ] && SPRINT_DIR=$(find "$DELIVERABLES" -name "gen_excel.py" -exec dirname {} \; 2>/dev/null | sort -r | head -1)
     [ -z "$SPRINT_DIR" ] && exit 0
-    echo "  Modo: sprint individual → $(basename $SPRINT_DIR)"
-    [ -f "$SPRINT_DIR/gen_word.js" ] && [ -n "$NODE" ] && echo "" && echo "  📄 Word docs..." && "$NODE" "$SPRINT_DIR/gen_word.js"
-    [ -f "$SPRINT_DIR/gen_excel.py" ] && [ -n "$PY" ] && echo "" && echo "  📊 Excel docs..." && "$PY" "$SPRINT_DIR/gen_excel.py"
+    [ -f "$SPRINT_DIR/gen_word.js" ] && [ -n "$NODE" ] && "$NODE" "$SPRINT_DIR/gen_word.js"
+    [ -f "$SPRINT_DIR/gen_excel.py" ] && [ -n "$PY" ] && "$PY" "$SPRINT_DIR/gen_excel.py"
 fi
-echo ""; echo "  ✅ SOFIA: delivery packages actualizados"; echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""; echo "  ✅ SOFIA: delivery packages actualizados"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 DOC_HOOK_EOF
     chmod +x "$REPO/.sofia/doc-agent-hook.sh"
     echo "  ✅ doc-agent-hook.sh generado inline"
 fi
 
-# Instalar el wrapper post-commit en .git/hooks/
+# Instalar wrapper post-commit en .git/hooks/
 if [ -f "$HOOK_SRC/post-commit" ]; then
     cp "$HOOK_SRC/post-commit" "$HOOK_DST/post-commit"
 else
     cat > "$HOOK_DST/post-commit" << 'POST_COMMIT_EOF'
 #!/bin/bash
-# SOFIA — post-commit wrapper (generado por setup-sofia-mac.sh v1.4)
+# SOFIA — post-commit wrapper (setup-sofia-mac.sh v1.5)
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
 HOOK="$REPO_ROOT/.sofia/doc-agent-hook.sh"
 [ -f "$HOOK" ] && bash "$HOOK"
 POST_COMMIT_EOF
 fi
 chmod +x "$HOOK_DST/post-commit"
-echo "  ✅ .git/hooks/post-commit instalado"
-echo "  📌 El hook se activa automáticamente en cada 'git commit'"
-echo "     Solo genera docs cuando el commit toca docs/deliverables/*.js o *.py"
+echo "  ✅ .git/hooks/post-commit instalado y activo"
+echo "  📌 Genera .docx/.xlsx automáticamente al commitear docs/deliverables/*.js o *.py"
 
-# ── 9. Generar CLAUDE.md ─────────────────────────────────────────────────────
+# ── 9. Generar CLAUDE.md v1.5 ────────────────────────────────────────────────
 echo ""
-echo "▶ [9/10] Generando CLAUDE.md (skill loader v1.4)..."
+echo "▶ [9/10] Generando CLAUDE.md (skill loader v1.5)..."
 
-cat > "$REPO/CLAUDE.md" << 'CLAUDEMD'
-# SOFIA — Software Factory IA · Experis
-## Skill Loader v1.4
+# Si viene una plantilla CLAUDE.md en el paquete SOFIA, usarla
+if [ -f "$SOFIA_DIR/CLAUDE.md.template" ]; then
+    sed "s|__REPO__|$REPO|g" "$SOFIA_DIR/CLAUDE.md.template" > "$REPO/CLAUDE.md"
+    echo "  ✅ CLAUDE.md instalado desde template"
+else
+    # Generar CLAUDE.md v1.5 inline
+    cat > "$REPO/CLAUDE.md" << 'CLAUDEMD'
+# SOFIA — Software Factory IA | Proyecto: BankPortal
+## Skill Loader v1.5 · CMMI Nivel 3 · Scrumban
 
-### Orquestador (leer SIEMPRE al iniciar)
-Lee: .sofia/skills/orchestrator/SKILL.md
+## Inicialización automática — EJECUTAR SIEMPRE AL ARRANCAR
 
-### Agentes disponibles
-- Scrum Master:          .sofia/skills/scrum-master/SKILL.md
-- Requirements Analyst:  .sofia/skills/requirements-analyst/SKILL.md
-- Architect:             .sofia/skills/architect/SKILL.md
-- Developer Core:        .sofia/skills/developer-core/SKILL.md
-- Java Developer:        .sofia/skills/java-developer/SKILL.md
-- .Net Developer:        .sofia/skills/dotnet-developer/SKILL.md
-- Node.js Developer:     .sofia/skills/nodejs-developer/SKILL.md
-- Angular Developer:     .sofia/skills/angular-developer/SKILL.md
-- React Developer:       .sofia/skills/react-developer/SKILL.md
-- Code Reviewer:         .sofia/skills/code-reviewer/SKILL.md
-- QA Tester:             .sofia/skills/qa-tester/SKILL.md
-- DevOps:                .sofia/skills/devops/SKILL.md
-- Jenkins Agent:         .sofia/skills/jenkins-agent/SKILL.md
-- Workflow Manager:      .sofia/skills/workflow-manager/SKILL.md
-- Documentation Agent:   .sofia/skills/documentation-agent/SKILL.md
-- Atlassian Agent:       .sofia/skills/atlassian-agent/SKILL.md
+Al leer este archivo, ejecutar siempre estos pasos:
 
-### Documentation Agent (automático via git hook)
-El Documentation Agent genera .docx y .xlsx automáticamente en cada commit
-que toca docs/deliverables/*.js o *.py — no requiere intervención manual.
-Hook instalado en: .git/hooks/post-commit → .sofia/doc-agent-hook.sh
+```bash
+# 1. Activar permisos del git hook de documentación
+chmod +x "$(git rev-parse --show-toplevel)/.git/hooks/post-commit" 2>/dev/null || true
+chmod +x "$(git rev-parse --show-toplevel)/.sofia/doc-agent-hook.sh" 2>/dev/null || true
+
+# 2. Verificar dependencias del Documentation Agent
+/opt/homebrew/opt/node@22/bin/node -e "require('docx')" 2>/dev/null || \
+  echo "⚠️  SOFIA: instalar docx → bash .sofia/scripts/install-deps.sh"
+python3 -c "import openpyxl" 2>/dev/null || \
+  echo "⚠️  SOFIA: instalar openpyxl → bash .sofia/scripts/install-deps.sh"
+
+# 3. Verificar Jenkins
+brew services list | grep jenkins-lts 2>/dev/null || \
+  echo "⚠️  SOFIA: Jenkins no activo → brew services start jenkins-lts"
+
+# 4. Verificar archivos de persistencia SOFIA
+[ -f "$(git rev-parse --show-toplevel)/.sofia/session.json" ] || \
+  echo "⚠️  SOFIA: session.json ausente — el Orchestrator lo creará"
+[ -f "$(git rev-parse --show-toplevel)/.sofia/sofia.log" ] || \
+  echo "⚠️  SOFIA: sofia.log ausente — el Orchestrator lo creará"
+```
+
+## Cómo cargar un skill
+
+Cuando el usuario diga: **"Actúa como el [ROL]"**, debes:
+1. Leer el archivo `.sofia/skills/[nombre-skill]/SKILL.md`
+2. Seguir sus instrucciones al pie de la letra
+3. Producir los artefactos en las carpetas definidas
+4. Confirmar persistencia con bloque **"✅ PERSISTIDO"** antes de cerrar el paso
+5. Hacer commit con mensaje convencional correspondiente
+
+## Roles disponibles
+
+| Rol solicitado | Skill | Artefactos en |
+|---|---|---|
+| Scrum Master | `scrum-master/SKILL.md` | `docs/sprints/` |
+| Requirements Analyst | `requirements-analyst/SKILL.md` | `docs/srs/` + `docs/backlog/` |
+| Architect | `architect/SKILL.md` | `docs/architecture/` |
+| Developer Backend Java | `java-developer/SKILL.md` + `developer-core/SKILL.md` | `apps/backend-*/src/` |
+| Developer Frontend Angular | `angular-developer/SKILL.md` + `developer-core/SKILL.md` | `apps/frontend-*/src/` |
+| Code Reviewer | `code-reviewer/SKILL.md` | `docs/code-review/` |
+| QA Tester | `qa-tester/SKILL.md` | `docs/qa/` |
+| DevOps | `devops/SKILL.md` | `infra/` |
+| Jenkins Agent | `jenkins-agent/SKILL.md` | `infra/jenkins/` · `Jenkinsfile` |
+| Workflow Manager | `workflow-manager/SKILL.md` | `docs/gates/` |
+| Documentation Agent | `documentation-agent/SKILL.md` | `docs/deliverables/` |
+| Atlassian Agent | `atlassian-agent/SKILL.md` | Jira + Confluence |
+| Orchestrator | `orchestrator/SKILL.md` | (coordina a los demás) |
+
+## ⚠️ Persistence Protocol — OBLIGATORIO en todo el pipeline
+
+Todo agente de SOFIA que genere artefactos DEBE:
+1. Escribir los artefactos a disco antes de cerrar su paso
+2. Confirmar con el bloque `✅ PERSISTIDO` listando cada archivo y su ruta
+3. El Orchestrator actualiza `.sofia/session.json` y añade entrada a `.sofia/sofia.log`
+
+**El Orchestrator NO avanza al siguiente paso sin el bloque de confirmación.**
+
+## Documentation Agent — cómo funciona
+
+```
+1. Lee Markdown fuente del repo (Filesystem:read_multiple_files)
+2. Escribe gen_word.js y gen_excel.py al repo (texto ✅)
+3. Hace git commit (Git MCP)
+4. El hook post-commit se dispara automáticamente:
+   → node gen_word.js     → genera .docx en word/
+   → python3 gen_excel.py → genera .xlsx en excel/
+5. Confirma con bloque ✅ PERSISTIDO
+```
+
+## Convenciones de commit
+
+```
+feat(sm):        Scrum Master
+feat(req):       Requirements Analyst
+feat(arch):      Architect
+feat(dev):       Developer
+feat(review):    Code Reviewer
+feat(qa):        QA Tester
+feat(devops):    DevOps / Jenkinsfile
+feat(jenkins):   Jenkins Agent
+feat(wm):        Workflow Manager
+docs(doc-agent): Documentation Agent
+fix:             Corrección de artefacto
+```
+
+## Definition of Done (DoD) v1.1
+
+- [ ] Código implementado y mergeado en rama feature
+- [ ] Cobertura tests ≥ 80% (JaCoCo / Karma)
+- [ ] Quality Gate SonarQube PASS
+- [ ] Code review aprobado (Tech Lead en ítems de seguridad)
+- [ ] OpenAPI actualizada si hay cambios de contrato (ACT-11)
+- [ ] Criterios Gherkin verificados por QA Tester
+- [ ] Tests E2E Playwright PASS en Jenkins
+- [ ] Aprobado en demo por Product Owner
+- [ ] Pipeline CI/CD PASS en Jenkins
+- [ ] Todos los artefactos confirmados con ✅ PERSISTIDO (ACT-12)
+- [ ] `.sofia/session.json` y `.sofia/sofia.log` actualizados
+
+*CLAUDE.md v1.5 — Persistence Protocol — 2026-03-17*
 CLAUDEMD
-echo "  ✅ CLAUDE.md generado"
+    echo "  ✅ CLAUDE.md v1.5 generado"
+fi
+
+# ── Inicializar session.json y sofia.log ──────────────────────────────────────
+if [ ! -f "$REPO/.sofia/session.json" ]; then
+    cat > "$REPO/.sofia/session.json" << 'SESSIONEOF'
+{
+  "version": "1.5",
+  "status": "idle",
+  "sprint": null,
+  "feature": null,
+  "step": null,
+  "gates": [],
+  "lastUpdated": null
+}
+SESSIONEOF
+    echo "  ✅ session.json inicializado"
+fi
+
+if [ ! -f "$REPO/.sofia/sofia.log" ]; then
+    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] INIT — SOFIA v1.5 setup completado — repo: $REPO" \
+        > "$REPO/.sofia/sofia.log"
+    echo "  ✅ sofia.log inicializado"
+fi
 
 # ── 10. Configurar Claude Desktop MCP ────────────────────────────────────────
 echo ""
@@ -308,7 +408,7 @@ existing["mcpServers"] = {
 
 with open(config_file, "w") as f:
     json.dump(existing, f, indent=2)
-print("  ✅ claude_desktop_config.json actualizado (preferencias preservadas)")
+print("  ✅ claude_desktop_config.json actualizado")
 PYEOF
 
 # ── Commit inicial ────────────────────────────────────────────────────────────
@@ -317,31 +417,31 @@ echo "▶ Commit inicial de setup..."
 cd "$REPO"
 git add -A
 git diff --staged --quiet || \
-    git commit -m "feat(sofia): setup SOFIA v1.4 — Documentation Agent hook integrado" \
+    git commit -m "feat(sofia): setup SOFIA v1.5 — Persistence Protocol + Documentation Agent" \
     2>/dev/null || true
 echo "  ✅ Commit realizado"
 
 # ── Resumen final ─────────────────────────────────────────────────────────────
 echo ""
 echo "╔══════════════════════════════════════════════════════════╗"
-echo "║   ✅  SOFIA v1.4 — Setup completado                     ║"
+echo "║   ✅  SOFIA v1.5 — Setup completado                     ║"
 echo "╚══════════════════════════════════════════════════════════╝"
 echo ""
 echo "  Repo     : $REPO"
-echo "  Skills   : $REPO/.sofia/skills/"
+echo "  Skills   : $REPO/.sofia/skills/ (17 skills)"
 echo "  Hook     : $REPO/.git/hooks/post-commit ✅ (auto-activo)"
 echo "  Lógica   : $REPO/.sofia/doc-agent-hook.sh"
+echo "  Session  : $REPO/.sofia/session.json ✅"
+echo "  Log      : $REPO/.sofia/sofia.log ✅"
 echo "  Config   : $CONFIG_DIR/claude_desktop_config.json ✅"
 echo ""
-echo "  ── Documentation Agent ────────────────────────────────"
-echo "  Genera .docx/.xlsx automáticamente en cada git commit"
-echo "  que toque docs/deliverables/*.js o *.py"
-echo "  Node    : $([ -n '$NODE_BIN' ] && echo $NODE_BIN || echo 'auto-detectado')"
-echo "  Python  : $PY_DOCS"
+echo "  ── Dependencias Documentation Agent ───────────────────"
+echo "  Node : $NODE_BIN (docx ✅)"
+echo "  Python : $PY_DOCS (openpyxl ✅)"
 echo ""
 echo "  ── Pasos siguientes ───────────────────────────────────"
 echo "  1. Reiniciar Claude Desktop (Cmd+Q → reabrir)"
 echo "  2. Jenkins PATH: Manage Jenkins → System → Global properties"
-echo "     PATH = /opt/homebrew/opt/node@22/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
-echo "     SOFIA_REPO = $REPO"
+echo "     PATH=/opt/homebrew/opt/node@22/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
+echo "     SOFIA_REPO=$REPO"
 echo ""
