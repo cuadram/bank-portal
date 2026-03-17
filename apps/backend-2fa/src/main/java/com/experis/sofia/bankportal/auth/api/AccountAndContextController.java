@@ -2,6 +2,9 @@ package com.experis.sofia.bankportal.auth.api;
 
 import com.experis.sofia.bankportal.auth.application.AccountUnlockUseCase;
 import com.experis.sofia.bankportal.auth.application.LoginContextUseCase;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,32 +15,49 @@ import java.net.URI;
 import java.util.UUID;
 
 /**
- * Controllers para bloqueo de cuenta (US-601/602) y autenticación contextual (US-603).
+ * Endpoints para desbloqueo de cuenta (US-602) y confirmación de contexto (US-603).
  *
- * Endpoints:
- *   POST /api/v1/account/unlock          → solicitar enlace de desbloqueo (US-602, público)
- *   GET  /api/v1/account/unlock/{token}  → desbloquear cuenta (US-602, público)
- *   POST /api/v1/auth/confirm-context    → confirmar subnet nueva (US-603, context-pending JWT)
+ * <p>Rutas:
+ * <pre>
+ *   POST /api/v1/account/unlock           → solicitar enlace de desbloqueo (público)
+ *   GET  /api/v1/account/unlock/{token}   → desbloquear desde email (público)
+ *   POST /api/v1/auth/confirm-context     → confirmar subnet nueva (scope=context-pending)
+ * </pre>
  *
- * RV-S7-002 fix: eliminado import no usado {@code AccountLockUseCase}.
+ * <p>Seguridad:
+ * <ul>
+ *   <li>/account/unlock* → permitAll (usuario no tiene JWT — cuenta bloqueada)</li>
+ *   <li>/auth/confirm-context → hasAuthority("SCOPE_context-pending") (ADR-011)</li>
+ * </ul>
  *
- * @author SOFIA Developer Agent — FEAT-006 Sprint 7
+ * @author SOFIA Developer Agent — FEAT-006 Sprint 7 Semana 2
  */
 @RestController
 @RequiredArgsConstructor
 public class AccountAndContextController {
 
-    private final AccountUnlockUseCase accountUnlockUseCase;
-    private final LoginContextUseCase  loginContextUseCase;
+    private final AccountUnlockUseCase  accountUnlockUseCase;
+    private final LoginContextUseCase   loginContextUseCase;
 
-    /** US-602 — Solicitar enlace de desbloqueo. Respuesta 204 neutra (evita user enumeration). */
+    // ─────────────────────────────────────────────────────────────────────────
+    // US-602: Desbloqueo por email
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Solicitar enlace de desbloqueo.
+     * Siempre devuelve 204 para no revelar si el email existe (R-SEC-004).
+     */
     @PostMapping("/api/v1/account/unlock")
-    public ResponseEntity<Void> requestUnlock(@RequestBody RequestUnlockRequest request) {
+    public ResponseEntity<Void> requestUnlock(
+            @Valid @RequestBody RequestUnlockRequest request) {
         accountUnlockUseCase.requestUnlock(request.email());
         return ResponseEntity.noContent().build();
     }
 
-    /** US-602 — Desbloquear cuenta desde enlace de email. Redirect a /login?reason=account-unlocked. */
+    /**
+     * Desbloquear cuenta desde deep-link de email.
+     * Redirige a /login?reason=account-unlocked si ok, 400 si token inválido.
+     */
     @GetMapping("/api/v1/account/unlock/{token}")
     public ResponseEntity<Void> unlockByToken(@PathVariable String token) {
         try {
@@ -50,47 +70,43 @@ public class AccountAndContextController {
         }
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // US-603: Confirmación de contexto
+    // ─────────────────────────────────────────────────────────────────────────
+
     /**
-     * US-603 — Confirmar acceso desde subnet nueva.
-     * Requiere JWT scope=context-pending (ADR-011). Extrae pendingSubnet del claim JWT.
+     * Confirmar acceso desde subnet nueva.
+     *
+     * <p>Requiere JWT scope=context-pending (ADR-011). El filtro JWT ya validó que
+     * el claim {@code pendingSubnet} coincide con la subnet de la request actual.
+     * Este endpoint completa el flujo: valida token, persiste subnet, devuelve 204.
+     * El cliente debe obtener un nuevo JWT full-session después de la confirmación.
      */
     @PostMapping("/api/v1/auth/confirm-context")
-    public ResponseEntity<ConfirmContextResponse> confirmContext(
-            @RequestBody ConfirmContextRequest request,
+    public ResponseEntity<Void> confirmContext(
             @AuthenticationPrincipal Jwt jwt,
-            jakarta.servlet.http.HttpServletRequest httpRequest) {
+            @Valid @RequestBody ConfirmContextRequest request) {
 
-        UUID   userId        = UUID.fromString(jwt.getSubject());
-        String pendingSubnet = jwt.getClaim("pendingSubnet");
-        String currentSubnet = extractSubnet(httpRequest.getRemoteAddr());
+        UUID userId       = UUID.fromString(jwt.getSubject());
+        String pendingSub = jwt.getClaimAsString("pendingSubnet");
+        String currentSub = request.currentSubnet();
 
         try {
-            loginContextUseCase.confirmContext(
-                    userId, pendingSubnet, currentSubnet, request.confirmationToken());
-            // TODO(impl): jwtService.blacklist(jwt.getId()) + jwtService.issueFullSession(userId)
-            return ResponseEntity.ok(new ConfirmContextResponse("full-session-jwt-placeholder"));
+            loginContextUseCase.confirmContext(userId, pendingSub, currentSub, request.confirmToken());
+            return ResponseEntity.noContent().build();
         } catch (LoginContextUseCase.ContextConfirmException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // DTOs
+    // ─────────────────────────────────────────────────────────────────────────
 
-    /**
-     * Extrae los dos primeros octetos de la IP (subnet /16).
-     * TODO(SUG-S7-001): delegar en DeviceFingerprintService.extractIpSubnet() para evitar duplicación.
-     */
-    private String extractSubnet(String rawIp) {
-        if (rawIp == null) return "";
-        String[] parts = rawIp.split("\\.");
-        return parts.length >= 2 ? parts[0] + "." + parts[1] : rawIp;
-    }
+    record RequestUnlockRequest(@Email @NotBlank String email) {}
 
-    // ── DTOs ──────────────────────────────────────────────────────────────────
-
-    public record RequestUnlockRequest(String email) {}
-
-    public record ConfirmContextRequest(String confirmationToken) {}
-
-    public record ConfirmContextResponse(String accessToken) {}
+    record ConfirmContextRequest(
+            @NotBlank String confirmToken,
+            @NotBlank String currentSubnet
+    ) {}
 }
