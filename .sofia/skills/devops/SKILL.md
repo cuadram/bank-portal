@@ -39,6 +39,54 @@ de despliegue multi-target y gate de go/no-go integrado con el Workflow Manager.
 
 ---
 
+## Agente especializado Jenkins — Delegación obligatoria
+
+> **REGLA:** Para toda operación directa sobre Jenkins (crear/modificar
+> Jenkinsfiles, configurar jobs, diagnosticar builds, instalar plugins,
+> gestionar credenciales, configurar webhooks, gestionar el servicio),
+> el agente DevOps **DEBE** leer y delegar en el skill `jenkins-agent`:
+>
+> ```
+> skills/jenkins-agent/SKILL.md
+> ```
+
+### Cuándo delegar a jenkins-agent
+
+| Situación | Acción |
+|-----------|--------|
+| Crear o actualizar un `Jenkinsfile` para bank-portal | Leer `jenkins-agent/SKILL.md` → usar plantilla SOFIA |
+| Crear un job/pipeline en Jenkins UI | Delegar a `jenkins-agent` → sección "Crear job en Jenkins vía UI" |
+| Build fallido / error en consola Jenkins | Delegar a `jenkins-agent` → sección "Diagnóstico de errores comunes" |
+| Instalar o actualizar plugins | Delegar a `jenkins-agent` → sección "Plugins recomendados" |
+| Configurar variables de entorno globales | Delegar a `jenkins-agent` → sección "Variables de entorno globales" |
+| Configurar webhook Git → Jenkins | Delegar a `jenkins-agent` → sección "Webhook local" |
+| Gestionar servicio (`start`/`stop`/`restart`) | Delegar a `jenkins-agent` → sección "Comandos Jenkins CLI" |
+| Patrones avanzados (parallel, matrix, retry) | Leer `jenkins-agent/references/jenkinsfile-patterns.md` |
+| Trazabilidad CMMI L3 en stages | Leer `jenkins-agent/references/cmmi-traceability.md` |
+
+### Protocolo de delegación
+
+```
+1. DevOps recibe tarea Jenkins del Orchestrator
+2. Lee skills/jenkins-agent/SKILL.md
+3. Ejecuta la operación según las instrucciones del jenkins-agent
+4. Devuelve el artefacto (Jenkinsfile, config, diagnóstico) al Orchestrator
+5. Registra la operación en el stage DevOps del pipeline SOFIA
+```
+
+### Entorno Jenkins en bank-portal
+
+| Parámetro | Valor |
+|-----------|-------|
+| Instalación | Homebrew — `jenkins-lts` |
+| URL | `http://localhost:8080` |
+| Repo | `/Users/cuadram/proyectos/bank-portal` |
+| Node | `/opt/homebrew/opt/node@22/bin/node` |
+| Python | `/opt/homebrew/bin/python3` |
+| UVX | `/opt/homebrew/bin/uvx` |
+
+---
+
 ## Principios DevOps obligatorios
 
 | Principio | Regla concreta en SOFIA |
@@ -693,3 +741,6 @@ al stage de deploy en PROD.
 
 Para los Dockerfiles completos ejecutables por stack, leer:
 `references/dockerfiles.md`
+
+Para operaciones directas sobre Jenkins en bank-portal, leer:
+`../jenkins-agent/SKILL.md`

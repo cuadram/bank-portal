@@ -1,0 +1,4 @@
+# SOFIA Audit Log — bank-portal
+# Formato: [ISO-TIMESTAMP] [STEP-N] [agent-name] STATUS → artifact-path
+# ─────────────────────────────────────────────────────────────────────
+[2026-03-17T00:00:00Z] [INIT] [orchestrator] INITIALIZED → .sofia/session.json, .sofia/sofia.log

@@ -1,0 +1,15 @@
+{
+  "project": "bank-portal",
+  "sprint": 7,
+  "feature": null,
+  "pipeline_type": null,
+  "pipeline_step": 0,
+  "pipeline_step_name": null,
+  "status": "idle",
+  "timestamp": "2026-03-17T00:00:00Z",
+  "completed_steps": [],
+  "pending_steps": [],
+  "last_artifact": null,
+  "last_skill": null,
+  "gates": {}
+}
