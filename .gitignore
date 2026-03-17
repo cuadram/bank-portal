@@ -1,33 +1,32 @@
+# SOFIA — BankPortal .gitignore
+
+# Python venv
+.sofia/venv/
+.sofia-venv/
+__pycache__/
+*.pyc
+
 # Node
 node_modules/
-npm-debug.log*
+npm-debug.log
 
-# Java
+# Build outputs
 target/
-*.class
-*.jar
-
-# .Net
-bin/
-obj/
-*.user
-
-# Angular/React
 dist/
-.angular/
+build/
 
 # IDE
 .idea/
 .vscode/
-*.DS_Store
+*.iml
 
-# Env files (nunca commitear secrets)
-.env
-.env.local
-.env.*.local
+# OS
+.DS_Store
+Thumbs.db
 
-# SOFIA — logs de ejecución de agentes (no son artefactos oficiales)
-.sofia/logs/
+# Logs
+*.log
+!.sofia/sofia.log
 
-# SOFIA — virtualenv del Documentation Agent (local, no commitear)
-.sofia/venv/
+# Paquetes de release SOFIA (binarios — no versionar)
+sofia-deploy-v*.zip
