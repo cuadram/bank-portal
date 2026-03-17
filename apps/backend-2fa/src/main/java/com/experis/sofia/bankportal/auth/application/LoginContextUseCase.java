@@ -1,158 +1,183 @@
 package com.experis.sofia.bankportal.auth.application;
 
-import com.experis.sofia.bankportal.session.application.usecase.AuditLogService;
-import com.experis.sofia.bankportal.session.domain.service.DeviceFingerprintService;
+import com.experis.sofia.bankportal.audit.domain.AuditLogService;
+import com.experis.sofia.bankportal.auth.domain.KnownSubnet;
+import com.experis.sofia.bankportal.auth.domain.KnownSubnetRepository;
+import com.experis.sofia.bankportal.auth.domain.ContextConfirmToken;
+import com.experis.sofia.bankportal.auth.domain.ContextConfirmTokenRepository;
+import com.experis.sofia.bankportal.notification.domain.EmailNotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
-import java.util.HexFormat;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Caso de uso US-603 — Autenticación contextual por subnet IP.
+ * US-603 — Autenticación contextual: detección de subnet nueva y confirmación por email.
  *
- * <p>Evalúa si la subnet IP actual es conocida para el usuario.
- * Si es nueva → emite JWT {@code context-pending} (ADR-011) y envía email de confirmación.
- * Si es conocida → permite emisión de JWT {@code full-session} directamente.
+ * <p>Flujo completo (ADR-011):
+ * <ol>
+ *   <li>Login OTP correcto → {@link #evaluateContext} compara subnet actual contra known_subnets</li>
+ *   <li>Subnet conocida   → devuelve {@code FullSession} → JWT scope=full-session emitido</li>
+ *   <li>Subnet nueva      → devuelve {@code ContextPending} → JWT scope=context-pending emitido
+ *       con claim {@code pendingSubnet}</li>
+ *   <li>Usuario confirma desde email deep-link → {@link #confirmContext} valida token,
+ *       registra subnet, emite evento de auditoría</li>
+ * </ol>
  *
- * <p>Patrón ADR-007: token de confirmación HMAC-SHA256, TTL 15min, one-time use Redis.
+ * <p>El claim {@code pendingSubnet} en el JWT de scope=context-pending permite al endpoint
+ * /confirm-context verificar que la confirmación proviene de la misma red que el intento
+ * original — defensa en profundidad sin estado en servidor (ADR-011 §Seguridad).
  *
- * <p>RV-S7-003 fix: eliminado import no usado {@code java.security.MessageDigest}.
- *
- * @author SOFIA Developer Agent — FEAT-006 US-603 Sprint 7
+ * @author SOFIA Developer Agent — FEAT-006 Sprint 7 Semana 2
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class LoginContextUseCase {
 
-    private final DeviceFingerprintService fingerprintService;
-    private final AuditLogService          auditLogService;
-    // TODO(impl): KnownSubnetRepository, EmailService, JwtService
+    private final KnownSubnetRepository          knownSubnetRepository;
+    private final ContextConfirmTokenRepository  confirmTokenRepository;
+    private final EmailNotificationService       emailNotificationService;
+    private final AuditLogService                auditLogService;
 
-    @Value("${context.confirm.hmac-key}")
-    private String confirmHmacKey;
+    /** TTL del token de confirmación de contexto: 30 minutos. */
+    static final long CONFIRM_TOKEN_TTL_SECONDS = 1_800L;
 
-    @Value("${login.context.enabled:true}")
-    private boolean contextCheckEnabled;
-
-    @Value("${context.confirm.ttl-minutes:15}")
-    private int confirmTtlMinutes;
+    // ─────────────────────────────────────────────────────────────────────────
+    // Sealed interface — resultado de evaluación de contexto
+    // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Evalúa el contexto de login tras OTP correcto.
-     *
-     * @param userId ID del usuario autenticado
-     * @param rawIp  IP del request de login
-     * @return {@link ContextEvaluationResult} indicando si emitir full-session o context-pending
+     * Resultado sellado de la evaluación del contexto de red.
+     * El caller (filtro JWT) inspecciona el tipo para decidir qué scope emitir.
      */
-    @Transactional
-    public ContextEvaluationResult evaluate(UUID userId, String rawIp) {
-        if (!contextCheckEnabled) {
-            return ContextEvaluationResult.fullSession();
+    public sealed interface ContextEvaluationResult
+            permits ContextEvaluationResult.FullSession,
+                    ContextEvaluationResult.ContextPending {
+
+        boolean isFullSession();
+        boolean isContextPending();
+
+        /** Subnet reconocida → emite JWT full-session. */
+        record FullSession() implements ContextEvaluationResult {
+            @Override public boolean isFullSession()    { return true;  }
+            @Override public boolean isContextPending() { return false; }
         }
 
-        String subnet       = fingerprintService.extractIpSubnet(rawIp);
-        boolean subnetKnown = isSubnetKnown(userId, subnet);
-
-        if (subnetKnown) {
-            log.debug("Known subnet {} for userId={} — full session", subnet, userId);
-            return ContextEvaluationResult.fullSession();
+        /**
+         * Subnet desconocida → emite JWT context-pending.
+         * @param pendingSubnet subnet del intento de login (se incluye en claim JWT)
+         * @param confirmToken  token de confirmación enviado por email
+         */
+        record ContextPending(String pendingSubnet, String confirmToken)
+                implements ContextEvaluationResult {
+            @Override public boolean isFullSession()    { return false; }
+            @Override public boolean isContextPending() { return true;  }
         }
 
-        log.info("New subnet {} detected for userId={} — context-pending required", subnet, userId);
-
-        String confirmToken = generateConfirmToken(userId, subnet);
-        // TODO(impl): knownSubnetRepo.save(KnownSubnet(userId, subnet, confirmed=false))
-        // TODO(impl): emailService.sendContextConfirmEmail(userId, confirmToken, confirmTtlMinutes)
-
-        auditLogService.log("LOGIN_NEW_CONTEXT_DETECTED", userId, "subnet=" + subnet);
-
-        return ContextEvaluationResult.contextPending(subnet, confirmToken);
+        // ── Factory methods ─────────────────────────────────────────────────
+        static ContextEvaluationResult fullSession() {
+            return new FullSession();
+        }
+        static ContextEvaluationResult contextPending(String subnet, String token) {
+            return new ContextPending(subnet, token);
+        }
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // Caso 1: evaluar contexto post-OTP
+    // ─────────────────────────────────────────────────────────────────────────
+
     /**
-     * Confirma el contexto desde el enlace del email.
+     * Evalúa si la subnet del login actual está entre las conocidas del usuario.
      *
-     * @param userId        del claim JWT context-pending
-     * @param pendingSubnet del claim JWT context-pending
-     * @param currentSubnet subnet actual del request de confirmación
-     * @param confirmToken  token HMAC del email
-     * @throws ContextConfirmException si subnet mismatch o token inválido
+     * <p>Si es nueva: genera token de confirmación, envía email y devuelve
+     * {@code ContextPending} con el token y la subnet para incluirlos en el JWT.
+     *
+     * @param userId     identificador del usuario autenticado (OTP correcto)
+     * @param userEmail  email del usuario para el envío de la confirmación
+     * @param subnet     subnet del cliente (ej. "192.168.1") — primeros 3 octetos
+     * @return resultado sellado
+     */
+    @Transactional
+    public ContextEvaluationResult evaluateContext(UUID userId, String userEmail, String subnet) {
+        boolean isKnown = knownSubnetRepository.existsByUserIdAndSubnet(userId, subnet);
+
+        if (isKnown) {
+            auditLogService.log("LOGIN_KNOWN_CONTEXT", userId, "subnet=" + subnet);
+            log.debug("[US-603] Subnet conocida · user={} subnet={}", userId, subnet);
+            return ContextEvaluationResult.fullSession();
+        }
+
+        // Subnet nueva → flujo context-pending
+        String rawToken = UUID.randomUUID().toString();
+        Instant expiresAt = Instant.now().plusSeconds(CONFIRM_TOKEN_TTL_SECONDS);
+
+        confirmTokenRepository.save(ContextConfirmToken.of(userId, subnet, rawToken, expiresAt));
+        emailNotificationService.sendContextConfirmLink(userEmail, rawToken, subnet);
+
+        auditLogService.log("LOGIN_NEW_CONTEXT_DETECTED", userId,
+                "subnet=" + subnet + " confirmToken=<generated>");
+        log.info("[US-603] Subnet nueva detectada · user={} subnet={}", userId, subnet);
+
+        return ContextEvaluationResult.contextPending(subnet, rawToken);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Caso 2: confirmar contexto desde deep-link email
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Valida el token de confirmación y registra la subnet como conocida.
+     *
+     * <p>La verificación de que {@code currentSubnet} coincide con {@code pendingSubnet}
+     * del token la realiza el caller (filtro JWT) con el claim del token. Este método
+     * se limita a: validez del token + persistencia de subnet + auditoría.
+     *
+     * @param userId         del JWT scope=context-pending
+     * @param pendingSubnet  subnet del claim JWT (verificada por filtro)
+     * @param currentSubnet  subnet de la request actual (para log de auditoría)
+     * @param rawToken       token recibido en el deep-link
+     * @throws ContextConfirmException si el token es inválido, ya usado o expirado
      */
     @Transactional
     public void confirmContext(UUID userId, String pendingSubnet,
-                                String currentSubnet, String confirmToken) {
-        if (!pendingSubnet.equals(currentSubnet)) {
-            log.warn("Subnet mismatch userId={} pending={} current={}",
-                    userId, pendingSubnet, currentSubnet);
-            throw new ContextConfirmException("SUBNET_MISMATCH",
-                    "La confirmación debe realizarse desde la misma red.");
+                               String currentSubnet, String rawToken) {
+
+        ContextConfirmToken token = confirmTokenRepository.findByRawToken(rawToken)
+                .orElseThrow(() -> new ContextConfirmException("Token no encontrado"));
+
+        if (token.isUsed()) {
+            throw new ContextConfirmException("Token ya utilizado");
+        }
+        if (Instant.now().isAfter(token.getExpiresAt())) {
+            throw new ContextConfirmException("Token expirado");
+        }
+        if (!token.getUserId().equals(userId)) {
+            throw new ContextConfirmException("Token no pertenece al usuario");
         }
 
-        if (!verifyConfirmToken(confirmToken, userId, pendingSubnet)) {
-            throw new ContextConfirmException("TOKEN_INVALID",
-                    "El token de confirmación es inválido o ha expirado.");
-        }
+        // Registrar subnet como conocida
+        knownSubnetRepository.save(KnownSubnet.of(userId, pendingSubnet));
 
-        // TODO(impl): knownSubnetRepo.confirmSubnet(userId, pendingSubnet)
-        auditLogService.log("LOGIN_NEW_CONTEXT_CONFIRMED", userId, "subnet=" + pendingSubnet);
-        log.info("Context confirmed for userId={} subnet={}", userId, pendingSubnet);
+        token.setUsed(true);
+        confirmTokenRepository.save(token);
+
+        auditLogService.log("LOGIN_NEW_CONTEXT_CONFIRMED", userId,
+                "subnet=" + pendingSubnet + " confirmFrom=" + currentSubnet);
+        log.info("[US-603] Contexto confirmado · user={} subnet={}", userId, pendingSubnet);
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
-
-    private boolean isSubnetKnown(UUID userId, String subnet) {
-        // TODO(impl): knownSubnetRepo.existsConfirmed(userId, subnet)
-        return false; // placeholder
-    }
-
-    private String generateConfirmToken(UUID userId, String subnet) {
-        try {
-            String payload = userId + ":" + subnet + ":" + System.currentTimeMillis();
-            Mac mac = Mac.getInstance("HmacSHA256");
-            mac.init(new SecretKeySpec(confirmHmacKey.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
-            String sig = HexFormat.of().formatHex(
-                    mac.doFinal(payload.getBytes(StandardCharsets.UTF_8)));
-            return java.util.Base64.getUrlEncoder().withoutPadding()
-                    .encodeToString((payload + ":" + sig).getBytes(StandardCharsets.UTF_8));
-        } catch (Exception e) {
-            throw new IllegalStateException("Token generation failed", e);
-        }
-    }
-
-    private boolean verifyConfirmToken(String token, UUID userId, String subnet) {
-        // TODO(impl): verificar HMAC + TTL + one-time use Redis (patrón ValidateTrustedDeviceUseCase)
-        return token != null && !token.isBlank();
-    }
-
-    // ── Sealed result + Exceptions ────────────────────────────────────────────
-
-    public sealed interface ContextEvaluationResult
-            permits ContextEvaluationResult.FullSession, ContextEvaluationResult.ContextPending {
-
-        record FullSession()                              implements ContextEvaluationResult {}
-        record ContextPending(String subnet, String confirmToken) implements ContextEvaluationResult {}
-
-        static ContextEvaluationResult fullSession()                      { return new FullSession(); }
-        static ContextEvaluationResult contextPending(String s, String t) { return new ContextPending(s, t); }
-
-        default boolean isFullSession()    { return this instanceof FullSession; }
-        default boolean isContextPending() { return this instanceof ContextPending; }
-    }
+    // ─────────────────────────────────────────────────────────────────────────
+    // Excepción de dominio
+    // ─────────────────────────────────────────────────────────────────────────
 
     public static class ContextConfirmException extends RuntimeException {
-        private final String code;
-        public ContextConfirmException(String code, String message) {
+        public ContextConfirmException(String message) {
             super(message);
-            this.code = code;
         }
-        public String getCode() { return code; }
     }
 }
