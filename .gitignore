@@ -28,3 +28,6 @@ dist/
 
 # SOFIA — logs de ejecución de agentes (no son artefactos oficiales)
 .sofia/logs/
+
+# SOFIA — virtualenv del Documentation Agent (local, no commitear)
+.sofia/venv/
