@@ -10,13 +10,16 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * ADR-012 — Registro centralizado de conexiones SSE activas.
+ * ADR-012 / ADR-014 — Registro centralizado de conexiones SSE activas.
  *
  * <p>Garantiza máximo 1 conexión activa por usuario (last-write-wins).
  * Thread-safe mediante {@link ConcurrentHashMap}.
- * Límite global configurable: {@value MAX_TOTAL_CONNECTIONS} conexiones.
+ * Límite global: {@value MAX_TOTAL_CONNECTIONS} conexiones.
  *
- * @author SOFIA Developer Agent — Sprint 8
+ * <p>ADR-014 (Sprint 9): añadido {@link #sendToAll} para broadcast cross-pod
+ * vía Redis Pub/Sub ({@code SseRedisSubscriber}).
+ *
+ * @author SOFIA Developer Agent — Sprint 8 / Sprint 9 DEBT-011
  */
 @Slf4j
 @Component
@@ -76,6 +79,25 @@ public class SseRegistry {
             registry.remove(userId, emitter);
             log.debug("[SSE] Error enviando evento a userId={} — conexión eliminada", userId);
         }
+    }
+
+    /**
+     * ADR-014 — Envía un evento a TODOS los usuarios conectados en este pod.
+     * Llamado por {@code SseRedisSubscriber} al recibir un broadcast global
+     * desde el canal {@code sse:broadcast} de Redis.
+     */
+    public void sendToAll(SseEvent event) {
+        registry.forEach((userId, emitter) -> {
+            try {
+                emitter.send(SseEmitter.event()
+                        .id(event.id())
+                        .name(event.type())
+                        .data(event.payload()));
+            } catch (IOException e) {
+                registry.remove(userId, emitter);
+                log.debug("[SSE] Broadcast: error enviando a userId={} — eliminado", userId);
+            }
+        });
     }
 
     /**
