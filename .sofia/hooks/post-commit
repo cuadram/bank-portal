@@ -1,0 +1,11 @@
+#!/bin/bash
+# SOFIA — post-commit hook wrapper
+# Instalado automáticamente por setup-sofia-mac.sh en .git/hooks/post-commit
+# NO modificar este archivo directamente — editar .sofia/doc-agent-hook.sh
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+HOOK="$REPO_ROOT/.sofia/doc-agent-hook.sh"
+
+if [ -f "$HOOK" ]; then
+  bash "$HOOK"
+fi
