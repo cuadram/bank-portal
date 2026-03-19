@@ -1,0 +1,68 @@
+# application-staging.yml — BankPortal STG local
+# Sprint 10: MailHog activo como SMTP real
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://postgres:5432/bankportal}
+    username: ${DB_USER:bankportal}
+    password: ${DB_PASSWORD:bankportal_stg_2026}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+  data:
+    redis:
+      url: ${REDIS_URL:redis://:redis_stg_2026@redis:6379}
+  mail:
+    host: ${SMTP_HOST:mailhog}      # MailHog en STG, SendGrid/SES en PROD
+    port: ${SMTP_PORT:1025}
+    username: ${SMTP_USERNAME:}
+    password: ${EMAIL_API_KEY:}
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: false
+
+# JWT — HMAC HS256 — claves >= 32 chars (256 bits) requerido por RFC 7518
+jwt:
+  secret: ${JWT_SECRET:stg-jwt-hmac-secret-minimum-32bytes!}
+  pre-auth-secret: ${JWT_PRE_AUTH_SECRET:stg-preauth-hmac-secret-32bytes-ok!}
+  pre-auth-ttl-seconds: 300
+  session-ttl-seconds: 28800
+
+# TOTP — Base64 de "stg-totp-aes-key-exactly-32bytes" = 32 bytes exactos (AES-256)
+totp:
+  aes-key: ${TOTP_AES_KEY:c3RnLXRvdHAtYWVzLWtleS1leGFjdGx5LTMyYnl0ZXM=}
+
+session:
+  deny-link:
+    hmac-key: ${SESSION_DENY_LINK_HMAC_KEY:stg-deny-link-hmac-key-32-bytes!!}
+    ttl-hours: 24
+
+trusted-device:
+  hmac-key: ${TRUSTED_DEVICE_HMAC_KEY:stg-trusted-device-hmac-key-32b!!}
+  ttl-days: 30
+  max-per-user: 10
+  cookie-secure: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,flyway
+  health:
+    mail:
+      enabled: true     # MailHog disponible en STG — health activo
+    redis:
+      enabled: true
+    db:
+      enabled: true
+
+logging:
+  level:
+    root: INFO
+    com.experis.sofia.bankportal: INFO
+    org.flywaydb: INFO
