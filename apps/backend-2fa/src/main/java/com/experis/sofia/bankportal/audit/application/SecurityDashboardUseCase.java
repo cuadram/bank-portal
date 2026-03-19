@@ -112,7 +112,15 @@ public class SecurityDashboardUseCase {
      */
     @Transactional(readOnly = true)
     public List<AuditEventSummary> getConfigHistory(UUID userId, int days) {
-        return auditRepo.findConfigChangesByUserId(userId, Math.min(days, 90));
+        // Adaptar ConfigHistoryEntry → AuditEventSummary
+        return auditRepo.findConfigChangesByUserId(userId, Math.min(days, 90)).stream()
+                .map(e -> new AuditEventSummary(
+                        e.eventType(),
+                        e.eventDescription(),
+                        e.ipSubnet(),
+                        e.occurredAt().atZone(java.time.ZoneOffset.UTC).toLocalDateTime(),
+                        e.unusualLocation()))
+                .toList();
     }
 
     // ── SecurityScore ─────────────────────────────────────────────────────────

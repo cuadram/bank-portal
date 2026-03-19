@@ -129,7 +129,7 @@ public class NotificationController {
                     n.getBody(),
                     n.getActionUrl(),
                     n.getContextId(),
-                    n.getCreatedAt(),
+                    n.getCreatedAt().atZone(java.time.ZoneOffset.UTC).toInstant(),
                     n.getReadAt() != null,
                     n.getIpSubnet(),
                     n.isUnusualLocation());
