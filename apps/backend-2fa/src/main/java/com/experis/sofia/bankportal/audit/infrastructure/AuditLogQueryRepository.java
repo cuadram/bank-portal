@@ -35,8 +35,8 @@ public interface AuditLogQueryRepository {
      * @param since      ventana de búsqueda (máx. 90 días)
      * @return lista de entradas del historial de configuración
      */
-    /** US-604 via SecurityDashboardUseCase: acepta número de días. */
-    default List<com.experis.sofia.bankportal.audit.application.SecurityConfigHistoryUseCase.ConfigHistoryEntry>
+    /** US-604 via SecurityDashboardUseCase: acepta número de días. Retorna AuditEventSummary. */
+    default List<com.experis.sofia.bankportal.audit.application.SecurityDashboardUseCase.AuditEventSummary>
             findConfigChangesByUserId(UUID userId, int days) {
         return List.of(); // stub — impl real en JPA
     }

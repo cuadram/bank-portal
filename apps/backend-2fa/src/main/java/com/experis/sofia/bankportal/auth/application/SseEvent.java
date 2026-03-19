@@ -28,6 +28,11 @@ public record SseEvent(String id, String type, Object payload) {
                 Map.of("count", count));
     }
 
+    /** Conveniencia para tests: crea SseEvent con id autogenerado. */
+    public static SseEvent of(String type, Object payload) {
+        return new SseEvent(java.util.UUID.randomUUID().toString(), type, payload);
+    }
+
     public static SseEvent heartbeat() {
         return new SseEvent("", "heartbeat", "");
     }

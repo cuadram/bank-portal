@@ -35,8 +35,8 @@ public class NotificationHistoryUseCase {
     private final UserNotificationRepository notificationRepo;
     private final AuditLogService            auditLogService;
 
-    static final int HISTORY_WINDOW_DAYS = 90;
-    static final int DEFAULT_PAGE_SIZE   = 20;
+    public static final int HISTORY_WINDOW_DAYS = 90;
+    public static final int DEFAULT_PAGE_SIZE   = 20;
 
     // ─────────────────────────────────────────────────────────────────────────
     // Query principal

@@ -80,4 +80,9 @@ public class JwtBlacklistService {
     public boolean isBlacklisted(String jwtId) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(PREFIX + jwtId));
     }
+
+    /** Alias de blacklist sin SSE invalidation — usado en tests. */
+    public void remove(String jwtId) {
+        redisTemplate.delete(PREFIX + jwtId);
+    }
 }

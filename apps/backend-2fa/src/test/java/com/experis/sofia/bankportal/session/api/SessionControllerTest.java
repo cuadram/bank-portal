@@ -51,7 +51,7 @@ class SessionControllerTest {
         mockMvc.perform(get("/api/v1/sessions")
                         .with(SecurityMockMvcRequestPostProcessors.jwt()
                                 .jwt(j -> j.subject(UUID.randomUUID().toString())
-                                            .id(UUID.randomUUID().toString()))))
+                                            .claim("jti", UUID.randomUUID().toString()))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].deviceType").value("desktop"))
                 .andExpect(jsonPath("$[0].isCurrent").value(true));
@@ -68,7 +68,7 @@ class SessionControllerTest {
                         .header("X-OTP-Code", "123456")
                         .with(SecurityMockMvcRequestPostProcessors.jwt()
                                 .jwt(j -> j.subject(UUID.randomUUID().toString())
-                                            .id(UUID.randomUUID().toString()))))
+                                            .claim("jti", UUID.randomUUID().toString()))))
                 .andExpect(status().isNoContent());
     }
 

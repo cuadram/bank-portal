@@ -3,24 +3,24 @@ package com.experis.sofia.bankportal.auth.domain;
 import java.time.Instant;
 import java.util.UUID;
 
-/**
- * Entidad de cuenta de usuario con estado de bloqueo — FEAT-006.
- */
+/** Cuenta de usuario — FEAT-006. Compatible con patrón no-arg + setters de los tests. */
 public class UserAccount {
     private UUID    id;
     private String  email;
-    private String  accountStatus;   // "ACTIVE", "LOCKED", "INACTIVE"
+    private String  accountStatus = "ACTIVE";
     private int     failedOtpAttempts;
     private Instant lockedAt;
 
+    public UserAccount() {}
+
     public UserAccount(UUID id, String email, String accountStatus) {
-        this.id            = id;
-        this.email         = email;
-        this.accountStatus = accountStatus;
+        this.id = id; this.email = email; this.accountStatus = accountStatus;
     }
 
     public UUID    getId()                          { return id; }
+    public void    setId(UUID id)                   { this.id = id; }
     public String  getEmail()                       { return email; }
+    public void    setEmail(String e)               { this.email = e; }
     public String  getAccountStatus()               { return accountStatus; }
     public void    setAccountStatus(String s)       { this.accountStatus = s; }
     public int     getFailedOtpAttempts()           { return failedOtpAttempts; }
