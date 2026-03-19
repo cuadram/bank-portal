@@ -34,9 +34,10 @@ jwt:
   pre-auth-ttl-seconds: 300
   session-ttl-seconds: 28800
 
-# TOTP — clave AES-256 stub para STG (32 bytes Base64)
+# TOTP — clave AES-256 stub para STG
+# Base64 de "stg-totp-aes-key-exactly-32bytes" = 32 bytes exactos (AES-256)
 totp:
-  aes-key: ${TOTP_AES_KEY:c3RnLXRlc3Qta2V5LTMyLWJ5dGVzLW1pbmltdW0h}
+  aes-key: ${TOTP_AES_KEY:c3RnLXRvdHAtYWVzLWtleS1leGFjdGx5LTMyYnl0ZXM=}
 
 # Session deny-link HMAC
 session:
