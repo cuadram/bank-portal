@@ -24,9 +24,11 @@ CREATE UNIQUE INDEX idx_trusted_devices_token_hash
     WHERE revoked_at IS NULL;
 
 -- Lista dispositivos activos de un usuario
+-- NOTA: expires_at > now() NO se puede usar en índice parcial (now() es STABLE, no IMMUTABLE)
+-- La condición de expiración se aplica en la query, no en el índice
 CREATE INDEX idx_trusted_devices_user_active
     ON trusted_devices(user_id, last_used_at DESC)
-    WHERE revoked_at IS NULL AND expires_at > now();
+    WHERE revoked_at IS NULL;
 
 -- Job de limpieza nocturna (US-204)
 CREATE INDEX idx_trusted_devices_expires
