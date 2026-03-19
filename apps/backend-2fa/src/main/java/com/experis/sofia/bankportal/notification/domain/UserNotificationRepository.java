@@ -3,15 +3,18 @@ package com.experis.sofia.bankportal.notification.domain;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 /**
  * Puerto de dominio para persistencia de notificaciones de seguridad.
- * RV-S5-002: añadido findByIdAndUserId para lookup O(1) con IDOR protection.
  *
- * @author SOFIA Developer Agent — FEAT-004 Sprint 5
+ * <p>Sprint 9 DEBT-012: añadido {@link #deleteExpiredBefore(Instant)} para
+ * que {@code NotificationPurgeJob} pase el cutoff calculado dinámicamente.
+ *
+ * @author SOFIA Developer Agent — FEAT-004 Sprint 5 / DEBT-012 Sprint 9
  */
 public interface UserNotificationRepository {
 
@@ -22,7 +25,6 @@ public interface UserNotificationRepository {
 
     /**
      * US-302: lookup O(1) por ID con IDOR protection (filtra por userId).
-     * RV-S5-002: evita cargar todas las notificaciones del usuario en memoria.
      */
     Optional<UserNotification> findByIdAndUserId(UUID notificationId, UUID userId);
 
@@ -32,6 +34,19 @@ public interface UserNotificationRepository {
     /** US-302: todas las no leídas para markAllAsRead en batch. */
     List<UserNotification> findUnreadByUserId(UUID userId);
 
-    /** Cleanup nocturno de notificaciones expiradas (> 90 días). */
-    int deleteExpired();
+    /** US-302: marca todas las notificaciones del usuario como leídas. */
+    int markAllReadByUserId(UUID userId, Instant readAt);
+
+    /**
+     * DEBT-012 — Purga notificaciones anteriores al cutoff indicado.
+     * @param cutoff instante de corte (exclusivo — elimina created_at < cutoff)
+     * @return número de filas eliminadas
+     */
+    int deleteExpiredBefore(Instant cutoff);
+
+    /** @deprecated usar {@link #deleteExpiredBefore(Instant)} con cutoff explícito. */
+    @Deprecated
+    default int deleteExpired() {
+        return deleteExpiredBefore(Instant.now().minusSeconds(90L * 24 * 3600));
+    }
 }
