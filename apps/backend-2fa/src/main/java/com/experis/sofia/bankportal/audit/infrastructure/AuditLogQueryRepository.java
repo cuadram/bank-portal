@@ -35,11 +35,17 @@ public interface AuditLogQueryRepository {
      * @param since      ventana de búsqueda (máx. 90 días)
      * @return lista de entradas del historial de configuración
      */
+    /** US-604 via SecurityDashboardUseCase: acepta número de días. */
+    default List<com.experis.sofia.bankportal.audit.application.SecurityConfigHistoryUseCase.ConfigHistoryEntry>
+            findConfigChangesByUserId(UUID userId, int days) {
+        return List.of(); // stub — impl real en JPA
+    }
+
+    /** US-604 via SecurityConfigHistoryUseCase: acepta lista de tipos + Instant. */
     default List<com.experis.sofia.bankportal.audit.application.SecurityConfigHistoryUseCase.ConfigHistoryEntry>
             findConfigChangesByUserId(UUID userId, List<String> eventTypes,
                                        java.time.Instant since) {
-        // Impl por defecto — stub para compilación; la implementación real en JPA
-        return List.of();
+        return List.of(); // stub — impl real en JPA
     }
 
     /** Evento de auditoría minimal — para exportación US-402. */

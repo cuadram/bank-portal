@@ -8,7 +8,10 @@ import java.util.UUID;
  */
 public interface UnlockTokenRepository {
     void save(UnlockToken token);
+    Optional<UnlockToken> findByRawToken(String rawToken);
     Optional<UnlockToken> findByToken(String token);
     void deleteByToken(String token);
     void deleteExpiredBefore(java.time.Instant cutoff);
+    /** Invalida todos los tokens pendientes del usuario (llamado antes de generar nuevo). */
+    void invalidateAllForUser(UUID userId);
 }

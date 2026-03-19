@@ -67,4 +67,14 @@ public class SessionRedisAdapter {
     public void removeActiveSession(String userId, String jti) {
         redisTemplate.delete(ACTIVE_PREFIX + userId + ":" + jti);
     }
+
+    /** Comprueba si existe una clave arbitraria en Redis. */
+    public boolean hasKey(String key) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+
+    /** Establece una clave arbitraria con valor y TTL. */
+    public void setKey(String key, String value, Duration ttl) {
+        redisTemplate.opsForValue().set(key, value, ttl);
+    }
 }

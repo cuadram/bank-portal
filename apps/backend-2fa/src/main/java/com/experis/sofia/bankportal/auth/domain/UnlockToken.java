@@ -13,11 +13,16 @@ public class UnlockToken {
     private Instant expiresAt;
     private boolean used;
 
-    public UnlockToken(String token, UUID userId, Instant expiresAt) {
+    private UnlockToken(String token, UUID userId, Instant expiresAt) {
         this.token     = token;
         this.userId    = userId;
         this.expiresAt = expiresAt;
         this.used      = false;
+    }
+
+    /** Factory method usado por AccountUnlockUseCase. */
+    public static UnlockToken of(UUID userId, String rawToken, Instant expiresAt) {
+        return new UnlockToken(rawToken, userId, expiresAt);
     }
 
     public String  getToken()        { return token; }

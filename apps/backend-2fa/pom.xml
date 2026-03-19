@@ -142,6 +142,12 @@
             <version>1.11.0</version>
         </dependency>
 
+        <!-- Spring Mail — SecurityNotificationAdapter (jakarta.mail.internet.*) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
         <!-- Spring Data Redis — DEBT-011 SSE Pub/Sub + DEBT-009 JWT blacklist -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

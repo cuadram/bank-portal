@@ -13,7 +13,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.*;
+// java.awt.* excluido — Rectangle ambiguo con com.lowagie.text.Rectangle
+import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -174,7 +175,7 @@ public class StatementExportUseCase {
         PdfPCell leftCell = new PdfPCell(titlePhrase);
         leftCell.setBackgroundColor(COLOR_HEADER);
         leftCell.setPadding(14);
-        leftCell.setBorder(Rectangle.NO_BORDER);
+        leftCell.setBorder(com.lowagie.text.Rectangle.NO_BORDER);
         header.addCell(leftCell);
 
         // Celda derecha: tipo de cuenta
@@ -184,7 +185,7 @@ public class StatementExportUseCase {
         rightCell.setPadding(14);
         rightCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         rightCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        rightCell.setBorder(Rectangle.NO_BORDER);
+        rightCell.setBorder(com.lowagie.text.Rectangle.NO_BORDER);
         header.addCell(rightCell);
 
         doc.add(header);
@@ -207,7 +208,7 @@ public class StatementExportUseCase {
             PdfPCell cell = new PdfPCell(new Phrase(h, colFont));
             cell.setBackgroundColor(COLOR_HEADER);
             cell.setPadding(6);
-            cell.setBorder(Rectangle.BOTTOM);
+            cell.setBorder(com.lowagie.text.Rectangle.BOTTOM);
             table.addCell(cell);
         }
 
@@ -239,7 +240,7 @@ public class StatementExportUseCase {
         cell.setBackgroundColor(bg);
         cell.setPadding(5);
         cell.setHorizontalAlignment(align);
-        cell.setBorder(Rectangle.BOTTOM);
+        cell.setBorder(com.lowagie.text.Rectangle.BOTTOM);
         table.addCell(cell);
     }
 
@@ -284,7 +285,7 @@ public class StatementExportUseCase {
         PdfPCell cell = new PdfPCell(p);
         cell.setBackgroundColor(COLOR_ROW_ALT);
         cell.setPadding(8);
-        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setBorder(com.lowagie.text.Rectangle.NO_BORDER);
         t.addCell(cell);
     }
 
