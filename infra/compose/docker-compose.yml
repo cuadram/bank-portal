@@ -113,6 +113,25 @@ services:
         limits:
           memory: 128M
 
+  # ── MAILHOG — SMTP fake para STG ─────────────────────────────────────────────
+  # UI: http://localhost:8025  SMTP: localhost:1025
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: bankportal-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8025"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+
 volumes:
   postgres_data:
     driver: local
