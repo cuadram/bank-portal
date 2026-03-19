@@ -1,6 +1,6 @@
 # application-staging.yml — BankPortal STG local
 # Perfil activado con SPRING_PROFILES_ACTIVE=staging
-# Relaja restricciones de producción para entorno de desarrollo/STG local
+# Relaja restricciones de producción para entorno STG local
 
 spring:
   datasource:
@@ -9,8 +9,6 @@ spring:
     password: ${DB_PASSWORD:bankportal_stg_2026}
   jpa:
     hibernate:
-      # create-drop crea las tablas si no existen — evita fallo en BD vacía
-      # En STG real usar validate; aquí usamos create para arranque rápido
       ddl-auto: update
     show-sql: false
   flyway:
@@ -29,23 +27,26 @@ spring:
       mail.smtp.auth: false
       mail.smtp.starttls.enable: false
 
-# Valores stub para STG — no usar en PROD
-totp:
-  aes-key: ${TOTP_AES_KEY:stubAesKeyForStgEnvironment32Bytes}
-
+# JWT — HMAC HS256 (JwtProperties: secret + pre-auth-secret)
 jwt:
-  private-key: ${JWT_PRIVATE_KEY:stub-private-key-stg}
-  public-key: ${JWT_PUBLIC_KEY:stub-public-key-stg}
+  secret: ${JWT_SECRET:stg-jwt-secret-32bytesminimum!!!}
+  pre-auth-secret: ${JWT_PRE_AUTH_SECRET:stg-preauth-secret-32bytes!!!}
   pre-auth-ttl-seconds: 300
-  session-ttl-seconds: 3600
+  session-ttl-seconds: 28800
 
+# TOTP — clave AES-256 stub para STG (32 bytes Base64)
+totp:
+  aes-key: ${TOTP_AES_KEY:c3RnLXRlc3Qta2V5LTMyLWJ5dGVzLW1pbmltdW0h}
+
+# Session deny-link HMAC
 session:
   deny-link:
-    hmac-key: ${SESSION_DENY_LINK_HMAC_KEY:stub-hmac-key-stg-32bytes-minimum}
+    hmac-key: ${SESSION_DENY_LINK_HMAC_KEY:stg-deny-link-hmac-key-32-bytes!!}
     ttl-hours: 24
 
+# Trusted devices HMAC
 trusted-device:
-  hmac-key: ${TRUSTED_DEVICE_HMAC_KEY:stub-trusted-device-hmac-key-stg}
+  hmac-key: ${TRUSTED_DEVICE_HMAC_KEY:stg-trusted-device-hmac-key-32b!!}
   ttl-days: 30
   max-per-user: 10
   cookie-secure: false
@@ -54,11 +55,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,readiness,liveness,info,flyway
+        include: health,info,flyway
 
 logging:
   level:
     root: INFO
     com.experis.sofia.bankportal: INFO
-    org.springframework.security: WARN
     org.flywaydb: INFO

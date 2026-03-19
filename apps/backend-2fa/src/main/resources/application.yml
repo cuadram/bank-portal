@@ -51,10 +51,10 @@ totp:
   tolerance: 1
 
 jwt:
-  private-key: ${JWT_PRIVATE_KEY}
-  public-key: ${JWT_PUBLIC_KEY}
+  secret: ${JWT_SECRET:changeme-stg-secret-32bytesmin!!!}
+  pre-auth-secret: ${JWT_PRE_AUTH_SECRET:changeme-preauth-secret-32bytes!!!}
   pre-auth-ttl-seconds: ${JWT_PRE_AUTH_TTL_SECONDS:300}
-  session-ttl-seconds: ${JWT_SESSION_TTL_SECONDS:3600}
+  session-ttl-seconds: ${JWT_SESSION_TTL_SECONDS:28800}
 
 rate-limit:
   capacity: ${RATE_LIMIT_MAX_ATTEMPTS:5}
