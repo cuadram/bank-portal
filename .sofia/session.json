@@ -5,11 +5,37 @@
   "pipeline_type": null,
   "pipeline_step": 0,
   "pipeline_step_name": null,
-  "status": "idle",
+  "status": "in_progress",
   "timestamp": "2026-03-17T00:00:00Z",
-  "completed_steps": [],
+  "completed_steps": [
+    "3"
+  ],
   "pending_steps": [],
   "last_artifact": null,
   "last_skill": null,
-  "gates": {}
+  "gates": {
+    "3": {
+      "status": "approved",
+      "by": "tech-lead",
+      "comment": "Approved",
+      "jira_issue_key": "TEST Tech-Lead",
+      "at": "2026-03-18T19:48:05Z"
+    }
+  },
+  "version": "1.6",
+  "updated_at": "2026-03-18T20:11:15Z",
+  "started_at": null,
+  "artifacts": {},
+  "ncs": {},
+  "security": {
+    "scan_status": null,
+    "semaphore": null,
+    "cve_critical": 0,
+    "cve_high": 0,
+    "cve_medium": 0,
+    "secrets_found": 0,
+    "report_path": null,
+    "gate_result": null
+  },
+  "client": "Experis"
 }

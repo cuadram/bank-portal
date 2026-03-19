@@ -1,157 +1,77 @@
----
-name: orchestrator-principal
-description: >
-  Agente orquestador central de SOFIA — Software Factory IA de Experis. Coordina
-  el flujo completo de desarrollo entre todos los agentes especializados
-  (Requirements Analyst, Architect, Developer, Code Reviewer, QA, DevOps,
-  Jenkins Agent, Scrum Master, Documentation Agent) y el Workflow Manager para
-  interacciones humanas. Opera sobre proyectos Java, .Net, Node.js, Angular y
-  React en arquitectura microservicios/monorepo. SIEMPRE activa esta skill cuando
-  el usuario inicie: nueva feature, épica, historia de usuario, solicitud de
-  desarrollo, bugfix, refactor, deuda técnica, hotfix, migración, mantenimiento,
-  o diga frases como "quiero desarrollar", "necesito implementar", "nueva
-  funcionalidad", "empezar proyecto", "crear módulo", "corregir", "actualizar",
-  "optimizar", "migrar", "generar documentación formal", "delivery package".
-  También activa cuando se pida el estado del pipeline, coordinar agentes, o
-  retomar un pipeline pausado.
----
+# Orchestrator — SOFIA Software Factory v1.6
+# Orquestador principal del pipeline de entrega
 
-# Orquestador Principal — SOFIA Software Factory
+Coordina el flujo completo de desarrollo entre todos los agentes especializados
+y el Workflow Manager. Opera sobre proyectos Java, .Net, Angular y React en
+arquitectura microservicios/monorepo. SIEMPRE activa esta skill cuando el usuario
+inicie: nueva feature, épica, historia de usuario, solicitud de desarrollo,
+bugfix, refactor, deuda técnica, hotfix, migración, mantenimiento, o diga frases
+como "quiero desarrollar", "necesito implementar", "nueva funcionalidad",
+"empezar proyecto", "crear módulo", "corregir", "actualizar", "optimizar",
+"migrar". También activa cuando se pida el estado del pipeline, coordinar
+agentes, o retomar un pipeline pausado por un gate humano.
+
+---
 
 ## Contexto SOFIA
+
 **SOFIA** es la Software Factory IA de **Experis**.
-- **Backend:** Java (Spring Boot) · .Net (C#) · Node.js (NestJS)
+- **Backend:** Java (Spring Boot) · .Net (C#)
 - **Frontend:** Angular · React
 - **Arquitectura:** Microservicios con organización monorepo/modular
 - **Metodología:** Scrumban (sprints + flujo continuo Kanban)
 - **Gobierno:** CMMI Nivel 3
-- **Registro oficial:** Jira + Confluence
+- **Registro oficial:** Jira + Confluence (via atlassian-agent)
 - **Notificaciones:** Microsoft Teams + Email
-- **CI/CD:** Jenkins LTS (localhost:8080) — gestionado por Jenkins Agent
-- **Documentación formal:** Documentation Agent → Word (.docx) + Excel (.xlsx) estilo Experis
+- **Config proyecto:** `.sofia/sofia-config.json` (si existe)
+
+Leer `.sofia/sofia-config.json` al arrancar para obtener: client, project_name,
+stack, repo_path, jira_project_key, confluence_space, sprint_length.
 
 Este contexto debe pasarse como metadata a **todos los agentes** en cada delegación.
 
 ---
 
-## ⚠️ PERSISTENCE PROTOCOL — OBLIGATORIO EN CADA PASO
-
-> **Regla fundamental:** Un paso NO está completo hasta que sus artefactos
-> estén escritos en disco y `session.json` esté actualizado.
-> El Orchestrator NUNCA avanza al siguiente paso sin confirmación de persistencia.
-
-### Tres capas de persistencia
-
-**Capa 1 — Estado activo del pipeline** (`.sofia/session.json`)
-
-El Orchestrator debe crear este archivo al iniciar el pipeline y actualizarlo
-tras cada step completado:
-
-```json
-{
-  "project": "bank-portal",
-  "sprint": 7,
-  "feature": "FEAT-XXX",
-  "pipeline_type": "new-feature",
-  "pipeline_step": 3,
-  "pipeline_step_name": "architect",
-  "status": "in_progress",
-  "timestamp": "2026-03-17T10:00:00Z",
-  "completed_steps": [1, 2],
-  "pending_steps": [3, 4, 5, 6, 7, 8],
-  "last_artifact": "docs/srs/SRS-FEAT-XXX.md",
-  "last_skill": "requirements-analyst",
-  "gates": {
-    "gate1": {"status": "APPROVED", "approver": "PO", "ts": "2026-03-17T09:00:00Z"},
-    "gate2": {"status": "APPROVED", "approver": "PO", "ts": "2026-03-17T09:30:00Z"}
-  }
-}
-```
-
-**Capa 2 — Audit trail** (`.sofia/sofia.log`)
-
-Cada step debe añadir una línea al log antes de cerrarse:
+## INIT — Lo primero al activarse
 
 ```
-[ISO-TIMESTAMP] [STEP-N] [agent-name] STATUS → artifact-path
+1. Leer .sofia/session.json (si existe)
+2. Leer .sofia/sofia-config.json (si existe)
+3. Si session.json.status == "in_progress" → ejecutar RESUME PROTOCOL
+4. Si no hay sesión activa → iniciar nuevo pipeline
+5. Si .sofia/ no existe → crear estructura y session.json vacío
 ```
 
-Ejemplos:
-```
-[2026-03-17T09:00:00Z] [STEP-1] [scrum-master] COMPLETED → docs/sprints/SPRINT-7-planning.md
-[2026-03-17T09:30:00Z] [GATE-1] [workflow-manager] APPROVED by PO → gate1
-[2026-03-17T10:00:00Z] [STEP-2] [requirements-analyst] COMPLETED → docs/srs/SRS-FEAT-XXX.md, docs/backlog/US-601.md
-[2026-03-17T10:30:00Z] [STEP-3] [architect] COMPLETED → docs/architecture/hld/HLD-FEAT-XXX.md
-[2026-03-17T10:31:00Z] [STEP-3b] [documentation-agent] COMPLETED → docs/deliverables/sprint-7-FEAT-XXX/word/HLD-FEAT-XXX.docx
-```
+### Estructura mínima a crear si no existe
 
-**Capa 3 — Artefactos de salida** (rutas definidas por cada skill)
-
-Cada agente debe confirmar en su respuesta final la lista exacta de archivos escritos.
-
----
-
-### Cláusula de persistencia en cada delegación
-
-Toda delegación a un agente DEBE incluir al final:
-
-```markdown
-## 🔒 PERSISTENCE REQUIREMENT (MANDATORY)
-
-Antes de considerar este paso completo, DEBES:
-1. Escribir todos los artefactos generados a las rutas definidas en tu skill
-   usando Filesystem:write_file (texto) o los scripts correspondientes (binarios)
-2. Confirmar en tu respuesta con el bloque:
-
-✅ PERSISTIDO:
-- [ruta-archivo-1] — [tipo: md|docx|xlsx|json|yaml]
-- [ruta-archivo-2] — [tipo]
-...
-
-3. El Orchestrator NO avanzará al siguiente paso sin este bloque de confirmación.
+```bash
+mkdir -p .sofia/snapshots
+echo '{"version":"1.6","status":"idle","completed_steps":[]}' > .sofia/session.json
+touch .sofia/sofia.log
 ```
 
 ---
 
-### Validación post-step (checklist del Orchestrator)
+## RESUME PROTOCOL — Retomar pipeline interrumpido
 
-Tras recibir la respuesta de cada agente, verificar:
+Si `session.json.status == "in_progress"`, presentar al usuario:
 
 ```
-POST-STEP VALIDATION — Step [N] — [agent-name]
-─────────────────────────────────────────────
-[ ] ¿La respuesta contiene el bloque "✅ PERSISTIDO"?
-[ ] ¿Las rutas declaradas son coherentes con el skill del agente?
-[ ] ¿session.json fue actualizado con pipeline_step = N y status correcto?
-[ ] ¿sofia.log tiene la entrada del step N?
+⚠️  Pipeline activo detectado
+    Proyecto: [project_name]  Feature: [feature]  Sprint: [sprint]
+    Último step completado: [last_skill] (step [N])
+    Steps completados: [completed_steps]
+    Artefactos generados: [count de artifacts]
 
-Si ALGÚN check falla:
-→ Re-invocar el agente con:
-  "Falta confirmación de persistencia. Escribe todos los artefactos a disco,
-   actualiza .sofia/session.json y añade la entrada a .sofia/sofia.log
-   antes de responder de nuevo."
-
-Si TODOS los checks pasan:
-→ Actualizar session.json con completed_steps += [N]
-→ Continuar al paso N+1
+    ¿Qué deseas hacer?
+    [A] Retomar desde step [N+1]
+    [B] Re-ejecutar step [N] (output anterior disponible)
+    [C] Reiniciar pipeline completo
+    [D] Ver resumen de artefactos generados
 ```
 
----
-
-### Actualización de session.json — responsabilidad del Orchestrator
-
-El Orchestrator actualiza `.sofia/session.json` en estos momentos:
-
-| Momento | Cambio en session.json |
-|---------|------------------------|
-| Inicio del pipeline | Crear archivo con step=0, status="started" |
-| Antes de delegar step N | pipeline_step=N, status="in_progress" |
-| Tras confirmación de persistencia | completed_steps.push(N), last_artifact, last_skill |
-| Gate aprobado | gates.gateN = {status:"APPROVED", approver, ts} |
-| Gate rechazado | gates.gateN = {status:"CHANGES_REQUESTED", feedback} |
-| Pipeline completado | status="completed", pipeline_step=8 |
-| Pipeline pausado | status="paused", pause_reason |
-| Error de persistencia | status="persistence_error", error_detail |
+Al retomar, cargar el contexto acumulado de `session.json.artifacts` para
+que los steps restantes tengan acceso al output previo.
 
 ---
 
@@ -159,342 +79,253 @@ El Orchestrator actualiza `.sofia/session.json` en estos momentos:
 
 | Tipo | Trigger | Pipeline |
 |---|---|---|
-| `new-feature` | Nueva funcionalidad, épica, módulo | Completo (pasos 1-8) |
-| `bug-fix` | Corrección de defecto no crítico | Developer → Reviewer → QA gate |
-| `hotfix` | Defecto crítico en producción | Developer → Reviewer → gate release-manager |
-| `refactor` | Mejora técnica sin cambio funcional | Architect → Developer → Reviewer → QA |
-| `tech-debt` | Deuda técnica planificada | SM → Architect → Developer → Reviewer → QA |
-| `maintenance` | Ajuste menor, config, dependencias | Developer → Reviewer (simplificado) |
-| `migration` | Cambio de tecnología o versión mayor | Completo con ADR obligatorio |
-| `documentation` | Solo documentación o artefactos | Requirements Analyst + Architect |
-| `doc-generation` | Generar entregables Word/Excel formales | Documentation Agent (on-demand) |
-| `jenkins-config` | Configurar job, plugin, credencial, webhook | Jenkins Agent (on-demand vía DevOps) |
+| `new-feature` | Nueva funcionalidad, épica, módulo | Completo (pasos 1-9) |
+| `bug-fix` | Corrección de defecto no crítico | Developer → Reviewer → Security → QA gate → Docs |
+| `hotfix` | Defecto crítico en producción | Developer directo → Reviewer → gate release-manager |
+| `refactor` | Mejora técnica sin cambio funcional | Architect → Developer → Reviewer → Security → Docs |
+| `tech-debt` | Deuda técnica planificada | SM → Architect → Developer → Reviewer → Security → Docs |
+| `maintenance` | Ajuste menor, config, dependencias | Developer → Reviewer |
+| `migration` | Cambio de tecnología o versión mayor | Completo con ADR obligatorio + Security + Docs |
+| `documentation` | Solo documentación o artefactos | Documentation Agent directamente |
 
 ---
 
-## Pipeline completo — New Feature
+## Pipeline completo — New Feature (pasos 1-9)
 
 ```
 INPUT (solicitud usuario)
   │
   ▼
-[INIT] Orchestrator crea .sofia/session.json
-       status="started", pipeline_step=0
-  │
-  ▼
-[1] SCRUM MASTER/PM
+[1] SCRUM MASTER
     → Backlog item, estimación, sprint assignment
-    → PP + Risk Register + Sprint Planning
-    → PERSISTENCE: docs/sprints/ + session.json(step=1) + sofia.log
-    → GATE 1: product-owner aprueba sprint planning
+    → 🔒 GATE: product-owner aprueba inclusión en sprint
   │
   ▼
 [2] REQUIREMENTS ANALYST
-    → User Stories + Gherkin + RNF baseline+delta + RTM
-    → PERSISTENCE: docs/srs/ + docs/backlog/ + session.json(step=2) + sofia.log
-    → GATE 2: product-owner aprueba US
+    → User Stories + Gherkin + RTM parcial
+    → 🔒 GATE: product-owner aprueba US
   │
   ▼
 [3] ARCHITECT
-    → HLD + LLD + OpenAPI + ADRs
-    → PERSISTENCE: docs/architecture/ + session.json(step=3) + sofia.log
-    → GATE 3: tech-lead aprueba HLD/LLD
-    → [3b] DOCUMENTATION AGENT (A): SRS.docx + HLD.docx + LLD.docx
-           PERSISTENCE: docs/deliverables/sprint-[N]-[FEAT-XXX]/word/ + session.json(step=3b) + sofia.log
+    → HLD + LLD + OpenAPI + ADR
+    → 🔒 GATE: tech-lead aprueba HLD/LLD
+  │
+  ▼
+[3b] DOCUMENTATION AGENT
+    → Diagramas (C4, Secuencia, Clean Arch) + HLD.docx + LLD.docx
+    → Sin gate — automático post-aprobación Architect
   │
   ▼
 [4] DEVELOPER
     → Código + tests unitarios + documentación inline
-    → Stack: Java | .Net | Node.js | Angular | React (según LLD)
-    → PERSISTENCE: apps/[stack]/src/ + session.json(step=4) + sofia.log
+    → Stack: Java | .Net | Angular | React | Node (según sofia-config)
   │
   ▼
 [5] CODE REVIEWER
     → Checklist + métricas + NCs si aplica
-    → PERSISTENCE: docs/code-review/ + session.json(step=5) + sofia.log
-    → GATE 4: NCs resueltas por developer-assigned
+    → 🔒 GATE: NCs resueltas por developer antes de continuar
+  │
+  ▼
+[5b] SECURITY AGENT  ← NUEVO en v1.6
+    → SAST + OWASP dependency check + secrets scan + SecurityReport.docx
+    → 🔒 GATE BLOQUEANTE: si CVE críticos > 0, no avanza a QA
   │
   ▼
 [6] QA / TESTER
     → Plan de pruebas + ejecución + reporte
-    → PERSISTENCE: docs/qa/ + session.json(step=6) + sofia.log
-    → GATE 5: qa-lead aprueba + product-owner acepta
-    → [6b] DOCUMENTATION AGENT (B): Quality-Dashboard.xlsx + NC-Tracker.xlsx + Test-Plan.xlsx
-           PERSISTENCE: docs/deliverables/sprint-[N]-[FEAT-XXX]/excel/ + session.json(step=6b) + sofia.log
+    → 🔒 GATE: qa-lead aprueba + product-owner acepta
   │
   ▼
 [7] DEVOPS / CI-CD
-    → Pipeline config + IaC + release notes + runbook
-    → [7j] JENKINS AGENT: Jenkinsfile + job config + webhook (delegado por DevOps)
-    → PERSISTENCE: infra/ + docs/releases/ + docs/runbooks/ + session.json(step=7) + sofia.log
-    → GATE 6: release-manager go/no-go
+    → Pipeline config + IaC + release notes
+    → 🔒 GATE: release-manager go/no-go
   │
   ▼
-[8] SCRUM MASTER (cierre)
-    → Sprint Report + Traceability Log + Delivery Summary
-    → DOCUMENTATION AGENT (C): Sprint-Report.docx + Risk-Register.docx
-                                 Sprint-Metrics.xlsx + Velocity-Report.xlsx
-    → PERSISTENCE: docs/sprints/ + docs/deliverables/ + session.json(status="completed") + sofia.log
+[8] DOCUMENTATION AGENT
+    → Paquete completo cliente: 10 Word + 3 Excel
+    → 🔒 GATE: PM aprueba antes de enviar al cliente
+  │
+  ▼
+[9] WORKFLOW MANAGER
+    → Sprint review → aceptación cliente
+    → 🔒 GATE: cliente firma aceptación
   │
   ▼
 OUTPUT — Delivery Package completo
-         docs/deliverables/sprint-[N]-[FEAT-XXX]/
-         ├── word/ (SRS, HLD, LLD, Sprint Report, Risk Register, Release Notes)
-         └── excel/ (Quality Dashboard, NC Tracker, Test Plan, Sprint Metrics, Velocity)
-         .sofia/session.json → status="completed"
-         .sofia/sofia.log    → audit trail completo del pipeline
 ```
 
 ---
 
-## Protocolo de delegación al Jenkins Agent
+## Protocolo de delegación
 
-El Jenkins Agent es un sub-agente del DevOps invocado **siempre** que el paso 7
-requiera una operación directa sobre Jenkins. El Orchestrator no invoca al Jenkins
-Agent directamente — pasa la tarea al DevOps y éste delega internamente.
+Para cada paso del pipeline, ejecutar en orden:
 
-### Cuándo el Orchestrator indica delegación a Jenkins Agent
-
-```markdown
-## Contexto para DEVOPS → delegar a JENKINS AGENT
-
-**Operación Jenkins requerida:** [crear Jenkinsfile | configurar job | diagnosticar build | instalar plugin | configurar webhook]
-**Proyecto:** [nombre] | **Sprint:** [número] | **Feature:** [FEAT-XXX]
-**Entorno:** macOS · Jenkins LTS localhost:8080 · repo bank-portal
-**Skill a leer:** .sofia/skills/jenkins-agent/SKILL.md
-**Artefacto esperado:** [Jenkinsfile | job config | diagnóstico | plugin list]
-**Directorio destino:** infra/jenkins/
-
-🔒 PERSISTENCE REQUIREMENT (MANDATORY)
-Confirmar con bloque "✅ PERSISTIDO" antes de cerrar el step.
 ```
-
-### Situaciones que activan Jenkins Agent (vía DevOps)
-
-| Situación en el pipeline | Operación Jenkins |
-|--------------------------|-------------------|
-| Paso 7 — nueva feature | Crear/actualizar Jenkinsfile con los 8 stages SOFIA |
-| Paso 7 — hotfix | Jenkinsfile hotfix (pipeline acelerado) |
-| Build fallido reportado | Diagnóstico → sección "Errores comunes" del jenkins-agent |
-| Nuevo plugin requerido | Lista de plugins + instrucciones de instalación |
-| Webhook Git → Jenkins | Configurar post-commit hook en bank-portal |
-| Gestión del servicio | `brew services` start/stop/restart |
-
----
-
-## Protocolo de delegación al Documentation Agent
-
-El Documentation Agent se invoca automáticamente en 3 momentos del pipeline
-y también on-demand cuando el usuario lo solicite.
-
-### Invocación automática
-
-```markdown
-## Contexto para DOCUMENTATION AGENT
-
-**Momento:** [A — post-Gate 3 | B — post-Gate 5 | C — cierre de sprint]
-**Proyecto:** [nombre] | **Cliente:** [nombre] | **Sprint:** [número]
-**Artefactos fuente:**
-- [lista de rutas Markdown en el repo]
-**Documentos a generar:**
-- Word: [lista]
-- Excel: [lista]
-**Directorio destino:** docs/deliverables/sprint-[N]-[FEAT-XXX]/
-
-🔒 PERSISTENCE REQUIREMENT (MANDATORY)
-Confirmar con bloque "✅ PERSISTIDO" con rutas exactas de cada .docx y .xlsx generado.
-session.json debe actualizarse con los artefactos del momento [A|B|C].
-```
-
-### Invocación on-demand
-
-Cuando el usuario diga: "genera el Sprint Report en Word", "necesito el Quality Dashboard en Excel",
-"prepara el delivery package", "genera la documentación formal" → invocar Documentation Agent
-indicando explícitamente qué documentos y fuentes.
-
----
-
-## Protocolo de delegación general
-
-Para cada paso del pipeline:
-
-1. **Actualizar `session.json`** antes de delegar: `pipeline_step=N, status="in_progress"`
-2. **Anunciar** el agente: `> Activando agente: [NOMBRE]`
-3. **Pasar contexto SOFIA** (stack, proyecto, cliente, sprint actual)
-4. **Pasar output acumulado** del paso anterior
-5. **Incluir la cláusula PERSISTENCE REQUIREMENT** al final del contexto
-6. **Validar** que el output cumple el contrato del skill del agente
-7. **Verificar bloque "✅ PERSISTIDO"** — si no está presente, re-invocar
-8. **Evaluar gate:** si el paso tiene gate humano → Workflow Manager antes de continuar
-9. **Actualizar `session.json`** tras confirmación: `completed_steps.push(N)`
-10. **Añadir entrada a `sofia.log`**
-
-### Formato de delegación
-
-```markdown
-## Contexto para [NOMBRE AGENTE]
-
-**Proyecto:** [nombre] | **Cliente:** [nombre] | **Sprint:** [número]
-**Stack:** [Java | .Net | Node.js | Angular | React]
-**Input del paso anterior:** [resumen o referencia al artefacto]
-**Restricciones conocidas:** [si aplica]
-
-🔒 PERSISTENCE REQUIREMENT (MANDATORY)
-Antes de considerar este paso completo, DEBES:
-1. Escribir todos los artefactos generados a las rutas definidas en tu skill
-2. Confirmar con el bloque:
-
-✅ PERSISTIDO:
-- [ruta-archivo-1] — [tipo]
-- [ruta-archivo-2] — [tipo]
-
-El Orchestrator NO avanzará sin este bloque.
+1. Anunciar: "> 🔁 Activando agente: [NOMBRE SKILL] — Step [N]"
+2. Actualizar session.json: status = "in_progress", pipeline_step = N
+3. Escribir sofia.log: [TIMESTAMP] [STEP-N] [orchestrator] DELEGATING → [skill-name]
+4. Pasar contexto SOFIA completo (de sofia-config.json)
+5. Pasar output acumulado del paso anterior (de session.json.artifacts)
+6. Invocar skill con instrucción de persistencia explícita:
+   "Al completar, actualiza .sofia/session.json y .sofia/sofia.log según PERSISTENCE_PROTOCOL.md"
+7. Ejecutar POST-STEP VALIDATION (ver sección siguiente)
+8. Evaluar gate: ¿este paso tiene gate humano?
+   → SÍ: Delegar al Workflow Manager
+   → NO: Continuar al siguiente step
 ```
 
 ---
 
-## Protocolo de gate humano (HITL)
+## POST-STEP VALIDATION — Obligatorio tras cada delegación
 
 ```
-GATE activado:
-  → Notificar al Workflow Manager con artefacto + aprobador + SLA
-  → Actualizar session.json: gates.gateN = {status:"WAITING", ts}
-  → Pipeline queda en: WAITING_FOR_APPROVAL
+Después de recibir la respuesta del skill, verificar en orden:
 
-Al recibir respuesta:
-  APPROVED          → session.json: gates.gateN.status="APPROVED" → continuar
-  CHANGES_REQUESTED → session.json: gates.gateN.status="CHANGES_REQUESTED"
-                    → regresar al agente con el feedback (incluir PERSISTENCE REQUIREMENT)
-  REJECTED          → session.json: status="blocked" → escalar al usuario
+CHECK 1 — Bloque de confirmación
+  ¿La respuesta contiene "✅ PERSISTENCE CONFIRMED"?
+  → NO: Emitir "⚠️ Persistence missing" y re-invocar skill (máx 2 intentos)
 
-Máximo 3 ciclos por gate → si persiste rechazado: escalar al project-manager
-```
+CHECK 2 — session.json actualizado
+  Leer .sofia/session.json via filesystem
+  ¿completed_steps contiene step N?
+  → NO: Re-invocar skill con:
+    "session.json no refleja el step como completado.
+     Ejecuta el Persistence Protocol antes de retornar."
 
----
+CHECK 3 — Artefactos en disco
+  Para cada ruta en session.json.artifacts.N:
+    ¿El archivo existe?
+  → Alguno falta: Re-invocar skill con lista de archivos faltantes
 
-## Decisiones de orquestación
+CHECK 4 — sofia.log entry
+  ¿sofia.log tiene línea COMPLETED para step N?
+  → NO (warning): Registrar en log del orchestrator pero no bloquear
 
-| Situación | Acción |
-|---|---|
-| Nueva feature completa | Pipeline completo con Documentation Agent en pasos 3b, 6b y 8 |
-| Bug fix | Pipeline reducido: Developer → Reviewer → QA gate |
-| Hotfix producción | Developer → Reviewer → gate release-manager (urgente) |
-| Solo docs formales | Documentation Agent on-demand (tipo doc-generation) |
-| Jenkinsfile requerido | DevOps → delega a Jenkins Agent → `jenkins-agent/SKILL.md` |
-| Job/plugin/webhook Jenkins | DevOps → delega a Jenkins Agent → operación correspondiente |
-| Build Jenkins fallido | DevOps → Jenkins Agent → diagnóstico → fix → re-trigger |
-| Gate bloqueado > SLA | Escalar al project-manager automáticamente |
-| NC sin resolver > 48h | Workflow Manager notifica PM, orquestador pausa |
-| Stack no definido | Preguntar al usuario antes de continuar |
-| Roles sin mapear | Delegar a Workflow Manager: checklist onboarding |
-| Consulta de estado | Leer session.json → mostrar pipeline status sin ejecutar agentes |
-| **Agente sin "✅ PERSISTIDO"** | **Re-invocar con cláusula de persistencia explícita** |
-| **session.json ausente** | **Crearlo antes de cualquier delegación** |
-| Pipeline pausado/retomado | Leer session.json → continuar desde completed_steps |
-
----
-
-## Formato de inicio de pipeline
-
-```
-# SOFIA — Pipeline iniciado
-
-**Proyecto:** [nombre]
-**Solicitud:** [descripción breve]
-**Tipo:** [new-feature | bug-fix | hotfix | refactor | maintenance | migration | doc-generation | jenkins-config]
-**Stack:** [Java | .Net | Node.js | Angular | React | combinación]
-**Sprint objetivo:** [número o "por definir"]
-
-[INIT] Creando .sofia/session.json...
-[INIT] Verificando .sofia/sofia.log...
-
-Iniciando pipeline...
+RESULTADO:
+  CHECK 1 + 2 + 3 PASS → ✅ Step N validado → continuar a step N+1
+  Fallo en 2 intentos → Escalar a Workflow Manager con status = "ERROR"
+                         Escribir en sofia.log: [TIMESTAMP] [STEP-N] [orchestrator] ERROR → persistence_failure
 ```
 
 ---
 
-## Recuperación de pipeline (retomar sesión)
+## Protocolo de gate humano
 
-Si el usuario dice "retomar pipeline", "continuar donde estábamos" o similar:
-
-```
-1. Leer .sofia/session.json
-2. Identificar pipeline_step y completed_steps
-3. Mostrar resumen:
-   ─────────────────────────────────
-   Pipeline: [tipo] | Feature: [FEAT-XXX] | Sprint: [N]
-   Último step completado: [N] — [agent-name]
-   Último artefacto: [ruta]
-   Próximo step: [N+1] — [agent-name]
-   Estado gates: [resumen]
-   ─────────────────────────────────
-4. Preguntar: "¿Continuar desde el paso [N+1]? (SÍ / NO)"
-5. Si SÍ → continuar con el protocolo de persistencia activo
-```
-
----
-
-## Log de trazabilidad CMMI
-
-| Step | Agente | Estado | Artefacto | Gate | Aprobado por | Persistido |
-|------|--------|--------|-----------|------|--------------|------------|
-| 1 | Scrum Master | ✅ | sprint-planning.md | PO | [nombre] | ✅ |
-| 2 | Requirements | ✅ | SRS.md | PO | [nombre] | ✅ |
-| 3 | Architect | ✅ | HLD+LLD+ADR | Tech Lead | [nombre] | ✅ |
-| 3b | Documentation Agent | ✅ | SRS.docx + HLD.docx + LLD.docx | — | — | ✅ |
-| 4 | Developer | ✅ | código + tests | — | — | ✅ |
-| 5 | Code Reviewer | ✅ | CR report | Tech Lead | [nombre] | ✅ |
-| 6 | QA | ✅ | QA report | QA Lead + PO | [nombres] | ✅ |
-| 6b | Documentation Agent | ✅ | Quality-Dashboard.xlsx + NC-Tracker.xlsx | — | — | ✅ |
-| 7 | DevOps | ✅ | Pipeline config + IaC + Release Notes | Release Mgr | [nombre] | ✅ |
-| 7j | Jenkins Agent | ✅ | Jenkinsfile + job config | — | — | ✅ |
-| 8 | SM cierre + Doc Agent | ✅ | Sprint Report.docx + Sprint-Metrics.xlsx | — | — | ✅ |
-
----
-
-## Delivery Package final
+Cuando un paso requiere aprobación humana:
 
 ```
-docs/deliverables/sprint-[N]-[FEAT-XXX]/
-├── word/
-│   ├── SRS-FEAT-XXX.docx
-│   ├── HLD-FEAT-XXX.docx
-│   ├── LLD-backend-FEAT-XXX.docx
-│   ├── LLD-frontend-FEAT-XXX.docx
-│   ├── Sprint-Report-Sprint[N].docx
-│   ├── Risk-Register.docx
-│   └── Release-Notes-vX.Y.Z.docx
-└── excel/
-    ├── Quality-Dashboard-Sprint[N].xlsx
-    ├── NC-Tracker-Sprint[N].xlsx
-    ├── Test-Plan-Sprint[N].xlsx
-    ├── Sprint-Metrics-Sprint[N].xlsx
-    └── Velocity-Report.xlsx
+1. Delegar al Workflow Manager con:
+   - step actual
+   - artefactos generados (rutas)
+   - responsable de aprobación
+   - criterios de aprobación
 
-.sofia/
-├── session.json   ← status="completed", todos los steps en completed_steps
-└── sofia.log      ← audit trail completo de todos los steps y gates
+2. Actualizar session.json:
+   - status = "gate_pending"
+   - gates.N = {status: "pending", by: "rol", at: timestamp}
+
+3. Escribir sofia.log: GATE_PENDING
+
+4. DETENER el pipeline — NO continuar al siguiente step
+
+5. Al retomar (nueva sesión o mensaje del usuario):
+   - Si gate aprobado: continuar al step N+1
+   - Si gate rechazado: registrar NC, volver al step N con feedback
 ```
 
 ---
 
-## Pre-condición obligatoria — proyectos nuevos
+## Gestión de No Conformidades (NCs)
 
-Antes del primer pipeline, verificar con Workflow Manager que el onboarding está completo:
-- Roles mapeados a personas (PO, Tech Lead, QA Lead, Release Manager)
-- Proyecto en Jira + Confluence creado
-- Canal Teams configurado
-- Acta de Kick-off firmada
-- Jenkins operativo y conectado al repo (verificar con Jenkins Agent)
-- `.sofia/session.json` inicializado
-- `.sofia/sofia.log` creado (puede estar vacío)
+```
+Si un gate se rechaza o un reviewer detecta NCs:
 
-Si el onboarding no está completo → bloquear pipeline y delegar al Workflow Manager.
+1. Crear NC en session.json bajo "ncs":
+   {
+     "NC-001": {
+       "step": N,
+       "skill": "code-reviewer",
+       "description": "...",
+       "severity": "mayor|menor",
+       "assigned_to": "developer",
+       "status": "open"
+     }
+   }
+
+2. Escribir sofia.log: [TIMESTAMP] [STEP-N] [orchestrator] NC_CREATED → NC-001
+
+3. Volver al step correspondiente con el contexto de la NC
+
+4. Una vez resuelta: status = "closed", registrar en log
+```
 
 ---
 
-*Orchestrator SKILL.md v1.5 — Persistence Protocol integrado — 2026-03-17*
-*Cambios v1.5: PERSISTENCE PROTOCOL añadido (3 capas: session.json, sofia.log, artefactos),*
-*cláusula PERSISTENCE REQUIREMENT en todas las delegaciones, validación post-step,*
-*recuperación de pipeline por session.json, columna "Persistido" en traceability log,*
-*decisiones de orquestación actualizadas con casos de fallo de persistencia.*
+## Contrato de contexto — Lo que se pasa a cada skill
+
+```json
+{
+  "sofia_context": {
+    "project": "[de sofia-config.json]",
+    "client": "[de sofia-config.json]",
+    "stack": "[backend + frontend de sofia-config.json]",
+    "sprint": "[sprint actual]",
+    "feature": "[FEAT-XXX actual]",
+    "methodology": "Scrumban",
+    "governance": "CMMI Level 3",
+    "tools": {
+      "issue_tracker": "Jira",
+      "wiki": "Confluence",
+      "ci_cd": "Jenkins",
+      "notifications": "Teams"
+    }
+  },
+  "pipeline_context": {
+    "step": "N",
+    "type": "new-feature|bug-fix|...",
+    "previous_artifacts": "[session.json.artifacts para steps anteriores]",
+    "completed_steps": "[array]"
+  },
+  "persistence_instruction": "Antes de retornar, actualiza .sofia/session.json y .sofia/sofia.log según PERSISTENCE_PROTOCOL.md e incluye el bloque ✅ PERSISTENCE CONFIRMED."
+}
+```
+
+---
+
+## Estado del pipeline — Resumen visual
+
+Al recibir "estado del pipeline" o "status":
+
+```
+📊 SOFIA Pipeline Status
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Proyecto:  [project_name]
+Feature:   [feature]
+Sprint:    [sprint]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[✅] Step 1  Scrum Master       → docs/backlog/FEAT-XXX.md
+[✅] Step 2  Requirements       → docs/requirements/
+[✅] Step 3  Architect          → docs/architecture/
+[✅] Step 3b Documentation      → docs/deliverables/sprint-N/
+[🔄] Step 4  Developer          → en progreso
+[ ]  Step 5  Code Reviewer
+[ ]  Step 5b Security Agent
+[ ]  Step 6  QA Tester
+[ ]  Step 7  DevOps
+[ ]  Step 8  Documentation
+[ ]  Step 9  Workflow Manager
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Velocidad estimada: [SP completados]/[SP totales] SP
+```
+
+---
+
+## Reglas de oro del Orchestrator
+
+1. **Nunca saltar un step** sin motivo explícito del usuario
+2. **Nunca continuar** si el POST-STEP VALIDATION falla dos veces
+3. **Siempre pasar el contexto completo** (sofia-context + artifacts previos) al delegar
+4. **Nunca escribir código** — delegar siempre al developer skill
+5. **Nunca aprobar gates** por cuenta propia — los gates son siempre humanos
+6. **Siempre actualizar session.json** antes y después de cada delegación
+7. **Si el usuario interrumpe el pipeline** a mitad, guardar estado con status = "paused"

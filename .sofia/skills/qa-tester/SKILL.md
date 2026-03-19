@@ -372,3 +372,65 @@ Content-Type: application/json
 5. **Máximo 3 ciclos** de defecto → corrección → re-test para el mismo defecto antes de escalar al PM
 6. **El Test Plan debe estar aprobado** por QA Lead antes de ejecutar cualquier prueba
 7. **El QA Report requiere doble gate**: QA Lead + Product Owner antes de pasar a DevOps
+
+
+---
+
+## Persistence Protocol — Implementación obligatoria (SOFIA v1.6)
+
+**Este skill DEBE ejecutar los siguientes pasos antes de retornar al Orchestrator.**
+Ver protocolo completo en `.sofia/PERSISTENCE_PROTOCOL.md`.
+
+### Al INICIAR
+
+```
+1. Leer .sofia/session.json
+2. Escribir en sofia.log:
+   [TIMESTAMP] [STEP-6] [qa-tester] STARTED → descripción breve
+3. Actualizar session.json: status = "in_progress", pipeline_step = "6", updated_at = now
+```
+
+### Al COMPLETAR
+
+```javascript
+const fs  = require('fs');
+const now = new Date().toISOString();
+
+// 1. Actualizar session.json
+const session = JSON.parse(fs.readFileSync('.sofia/session.json', 'utf8'));
+const step = '6';
+if (!session.completed_steps.includes(step)) session.completed_steps.push(step);
+session.pipeline_step          = step;
+session.pipeline_step_name     = 'qa-tester';
+session.last_skill             = 'qa-tester';
+session.last_skill_output_path = 'docs/quality/';
+session.updated_at             = now;
+session.status                 = 'completed'; // o 'gate_pending' si hay gate
+if (!session.artifacts) session.artifacts = {};
+session.artifacts[step]        = [ /* rutas de artefactos generados */ ];
+fs.writeFileSync('.sofia/session.json', JSON.stringify(session, null, 2));
+
+// 2. Escribir en sofia.log (append-only)
+const logEntry = `[${now}] [STEP-6] [qa-tester] COMPLETED → docs/quality/ | <detalles>\n`;
+fs.appendFileSync('.sofia/sofia.log', logEntry);
+
+// 3. Crear snapshot
+const snapPath = `.sofia/snapshots/step-6-${Date.now()}.json`;
+fs.copyFileSync('.sofia/session.json', snapPath);
+```
+
+### Bloque de confirmación — incluir al final de cada respuesta
+
+```
+---
+✅ PERSISTENCE CONFIRMED — QA_TESTER STEP-6
+- session.json: updated (step 6 added to completed_steps)
+- sofia.log: entry written [TIMESTAMP]
+- snapshot: .sofia/snapshots/step-6-[timestamp].json
+- artifacts:
+  · docs/quality/<artefacto-principal>
+---
+```
+
+> Si este skill **no** genera artefactos de fichero (ej: atlassian-agent opera
+> sobre Jira/Confluence), usar las URLs o IDs de los recursos creados/actualizados.

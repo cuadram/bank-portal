@@ -1,4 +1,5 @@
 #!/bin/bash
+<<<<<<< HEAD
 # ============================================================================
 # SOFIA — Documentation Agent Hook v1.4
 # Disparado automáticamente por git post-commit
@@ -101,3 +102,9 @@ echo "  Modo: sprint individual → $(basename $SPRINT_DIR)"
 
 echo ""; echo "  ✅ SOFIA: delivery package en $(basename $SPRINT_DIR)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+=======
+# SOFIA — post-commit wrapper (setup-sofia-mac.sh v1.4)
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+HOOK="$REPO_ROOT/.sofia/doc-agent-hook.sh"
+[ -f "$HOOK" ] && bash "$HOOK"
+>>>>>>> feature/FEAT-004-sprint8-semana1

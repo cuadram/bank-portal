@@ -1,330 +1,282 @@
----
-name: workflow-manager
-description: >
-  Agente de gestión de workflow humano para SOFIA — Software Factory IA de Experis.
-  Gestiona la interacción entre los agentes IA y los equipos humanos asignados a
-  cada proyecto. Administra buzones de tareas por rol, flujos de aprobación de
-  artefactos, ciclo completo de No Conformidades (CMMI), actas de reunión con
-  firma digital, gates de calidad y notificaciones multicanal (Jira, Confluence,
-  Microsoft Teams, Email). SIEMPRE activa esta skill cuando: un agente IA produzca
-  un artefacto que requiera revisión o aprobación humana, se mencione "aprobar",
-  "rechazar", "no conformidad", "acta de reunión", "firmar", "asignar tarea",
-  "buzón", "pendiente de aprobación", "gate", "go/no-go", "sprint review",
-  "aceptación del cliente", o cuando el Orchestrator indique que el pipeline
-  requiere intervención humana. También activa para consultas de estado de
-  pendientes, tareas vencidas y escalados.
----
+# Workflow Manager — SOFIA Software Factory v1.7
+# Gestión de gates HITL con enforcement vía Jira
 
-# Workflow Manager — SOFIA Software Factory
+Gestiona todos los gates de aprobación humana del pipeline. En v1.7 los gates
+son **físicamente bloqueantes**: crea un issue de aprobación en Jira, bloquea
+el pipeline en session.json, y solo libera el siguiente step cuando el responsable
+transiciona el issue a "Approved" o "Rejected".
 
-## Rol
-Gestionar toda la interacción entre los agentes IA de SOFIA y los equipos humanos
-asignados. Es el puente entre el pipeline automatizado y las decisiones, aprobaciones
-y acciones que solo pueden realizar personas. Garantiza trazabilidad CMMI Nivel 3
-en cada interacción humana.
-
-## Sistema de registro oficial
-- **Jira:** gestión de tareas, no conformidades, trazabilidad y estados
-- **Confluence:** documentación, actas, artefactos aprobados
-- **Microsoft Teams:** notificaciones en tiempo real, cards interactivos
-- **Email:** notificaciones formales, recordatorios y escalados
+Se activa cuando el Orchestrator detecta un gate al final de cualquier step.
 
 ---
 
-## Modelo de Roles Humanos
+## Principio fundamental v1.7
+
+> Un gate es APROBADO cuando el issue Jira está en estado "Approved".
+> El pipeline NO puede avanzar por ningún otro medio.
+
+El gate deja de ser declarativo ("el PM debe aprobar") y pasa a ser
+ejecutable: ningún skill puede ejecutarse mientras `session.json.status == "gate_pending"`.
+
+---
+
+## Protocolo de gate — Flujo completo
 
 ```
-ROL                   RESPONSABILIDAD EN SOFIA
-──────────────────────────────────────────────────────────────────
-product-owner         Aprueba US, acepta sprint review, firma entregables
-tech-lead             Aprueba HLD/LLD/ADR, valida decisiones arquitectónicas
-developer-assigned    Resuelve no conformidades de code review
-qa-lead               Aprueba test plan, cierra defectos, gate de calidad
-release-manager       Aprueba go/no-go de release a producción
-project-manager       Gestiona riesgos, firma actas, coordina escalados
-cliente               Acepta entregables, firma actas de sprint review
-```
-
-Cada proyecto en SOFIA debe tener estos roles mapeados a personas reales antes
-de iniciar el pipeline. El Workflow Manager debe validar este mapeo al inicio.
-
----
-
-## Tipos de Tarea en Buzón
-
-| TASK_TYPE | Descripción | Acciones posibles | SLA |
-|---|---|---|---|
-| `approval` | Artefacto requiere aprobación | ✅ Aprobar / ❌ Rechazar / 🔄 Cambios | 24h |
-| `non-conformity` | NC abierta, requiere resolución | 📋 Resolver + evidencia | 48h |
-| `meeting-minutes` | Acta generada, requiere firma | ✍️ Firmar / ❌ Objetar | 24h |
-| `risk-decision` | Riesgo identificado, requiere decisión | ✅ Aceptar / 🛡️ Mitigar / ❌ Escalar | 8h |
-| `sprint-acceptance` | Sprint review, requiere aceptación cliente | ✅ Aceptar / 🔄 Observaciones | 48h |
-| `release-gate` | Go/No-Go para release a producción | ✅ Go / ❌ No-Go + razón | 4h |
-
----
-
-## Ciclo de Vida de Artefactos
-
-```
-DRAFT ──► IN_REVIEW ──► APPROVED ──► ARCHIVED
-              │
-              ▼
-      CHANGES_REQUESTED
-              │
-              ▼
-          IN_REVIEW  (ciclo hasta aprobación o rechazo definitivo)
-              │
-              ▼
-           REJECTED ──► [Orchestrator notificado para reiniciar paso]
-```
-
-**Regla:** Un artefacto en `CHANGES_REQUESTED` bloquea el avance del pipeline.
-El Orchestrator no puede continuar al siguiente paso hasta que el artefacto
-alcance estado `APPROVED`.
-
----
-
-## Gates de Aprobación en el Pipeline
-
-El Workflow Manager actúa como gate en estos puntos del pipeline SOFIA:
-
-```
-PASO PIPELINE          GATE                    ROL APROBADOR
-───────────────────────────────────────────────────────────────
-User Stories           ✅ Aprobación US         product-owner
-HLD                    ✅ Aprobación HLD         tech-lead
-LLD + ADR              ✅ Aprobación LLD/ADR     tech-lead
-Code Review            ✅ NC resueltas           developer-assigned
-Test Plan              ✅ Aprobación plan        qa-lead
-QA Report              ✅ Gate de calidad        qa-lead + product-owner
-Release                ✅ Go/No-Go              release-manager
-Sprint Review          ✅ Aceptación cliente     cliente
+[Orchestrator detecta gate en step N]
+        │
+        ▼
+[1] Workflow Manager crea issue Jira
+    - Tipo: Task
+    - Summary: "[GATE] Sprint X — FEAT-XXX — Step N: [nombre del gate]"
+    - Labels: ["gate", "sofia-gate", "FEAT-XXX"]
+    - Priority: High
+    - Descripción: artefactos generados + criterios de aprobación
+        │
+        ▼
+[2] Bloquear pipeline
+    - session.json.status = "gate_pending"
+    - session.json.gates.N = {status: "pending", jira_issue_key: "BP-XXX"}
+    - sofia.log: GATE_PENDING → step N, esperando BP-XXX
+    - Informar al usuario: "Pipeline en espera. Issue de aprobación: BP-XXX"
+        │
+        ▼
+[3] Responsable actúa en Jira
+    - Revisa artefactos enlazados en el issue
+    - Transiciona a "Approved" o "Rejected"
+        │
+        ▼
+[4] Detección del resultado (al retomar la sesión)
+    python3 .sofia/scripts/gate-check.py [repo] [step] [feature]
+    → Exit 0: aprobado  → continuar pipeline
+    → Exit 1: pendiente → mantener bloqueo
+    → Exit 2: rechazado → gestionar NC
+        │
+        ▼
+[5A] APROBADO
+    - session.json.gates.N.status = "approved"
+    - session.json.status = "in_progress"
+    - Continuar al step N+1
+        │
+[5B] RECHAZADO
+    - session.json.gates.N.status = "rejected"
+    - Crear NC en session.json.ncs
+    - Volver al step N con el feedback del rechazo
+    - El Orchestrator re-invoca el skill del step N con las NCs
 ```
 
 ---
 
-## Ciclo Completo de No Conformidades (CMMI)
+## Gates del pipeline — Detalle
 
-Las No Conformidades (NC) son el mecanismo CMMI de corrección de desviaciones
-del proceso. En SOFIA son **críticas** como diferenciador de calidad.
-
-### Estados de una NC
-
-```
-OPEN ──► ASSIGNED ──► IN_RESOLUTION ──► RESOLVED ──► VERIFIED ──► CLOSED
-   │                                         │
-   └─────────────── REOPENED ◄───────────────┘
-                    (si verificación falla)
-```
-
-### Tipos de NC en SOFIA
-
-```
-NC_TYPE              ORIGEN                          ASIGNADO A
-────────────────────────────────────────────────────────────────
-nc-architecture      Code Reviewer detecta           developer-assigned
-nc-security          Code Reviewer / QA detecta      developer-assigned
-nc-test-coverage     Code Reviewer detecta           developer-assigned
-nc-process           Auditoría CMMI                  project-manager
-nc-acceptance        QA rechaza criterio             developer-assigned
-nc-documentation     Artefacto incompleto            agente origen
-```
-
-### Proceso de NC
-
-#### Paso 1 — Apertura
-```markdown
-## NC-[PROYECTO]-[NÚMERO] — [Título descriptivo]
-
-**Tipo:** [nc-type]
-**Severidad:** BLOQUEANTE | MAYOR | MENOR
-**Origen:** [Agente o proceso que detectó]
-**Artefacto afectado:** [nombre + versión]
-**Descripción:** [qué está mal, con evidencia específica]
-**Impacto:** [qué pasa si no se resuelve]
-**Asignado a:** [rol + persona]
-**Fecha apertura:** [fecha]
-**SLA resolución:** [fecha límite]
-```
-
-#### Paso 2 — Registro en Jira
-Crear issue en Jira con:
-- **Type:** `Non-Conformity`
-- **Priority:** Blocker / Major / Minor
-- **Label:** `CMMI-NC`, `[nc-type]`
-- **Linked to:** issue de la US o tarea origen
-
-#### Paso 3 — Notificación
-- **Teams:** card con descripción, SLA y link a Jira
-- **Email:** notificación formal al asignado y PM
-
-#### Paso 4 — Resolución
-El asignado debe:
-1. Registrar plan de acción en Jira
-2. Implementar corrección
-3. Adjuntar evidencia (código corregido, screenshot, doc)
-4. Cambiar estado a `RESOLVED`
-
-#### Paso 5 — Verificación
-El agente que detectó la NC (o el QA Lead) verifica:
-- ¿La corrección resuelve el problema?
-- ¿No introduce nuevos problemas?
-- Si ✅ → `VERIFIED` → `CLOSED`
-- Si ❌ → `REOPENED` → vuelve a paso 4
-
-#### Paso 6 — Cierre y métricas
-Al cerrar, registrar en Confluence:
-- Tiempo de resolución vs SLA
-- Root cause
-- Lección aprendida (para retrospectiva)
+| Step | Gate | Responsable | Criterio de aprobación |
+|------|------|-------------|------------------------|
+| 1  | Inclusión en sprint    | product-owner   | Scope y estimación válidos |
+| 2  | User Stories           | product-owner   | ACs completos y verificables |
+| 3  | HLD/LLD                | tech-lead       | Arquitectura alineada con plataforma |
+| 5  | Code Review (NCs)      | tech-lead       | Zero NCs abiertas |
+| 5b | Security Gate          | security-team   | Zero CVEs críticos |
+| 6  | QA                     | qa-lead + PO    | 100% tests críticos, 0 bugs bloqueantes |
+| 7  | Go/No-Go Release       | release-manager | Pipeline CI/CD verde |
+| 8  | Paquete cliente        | PM              | Documentación completa y correcta |
+| 9  | Aceptación cliente     | client          | Demo aprobada, criterios de aceptación OK |
 
 ---
 
-## Gestión de Actas de Reunión
+## Crear issue de gate — Instrucciones al atlassian-agent
 
-### Tipos de reuniones en SOFIA
-
-| Reunión | Frecuencia | Participantes | Acta obligatoria |
-|---|---|---|---|
-| Sprint Planning | Inicio de sprint | Equipo + PO | ✅ |
-| Daily Standup | Diaria | Equipo | ❌ (solo impedimentos) |
-| Sprint Review | Fin de sprint | Equipo + Cliente | ✅ |
-| Retrospectiva | Fin de sprint | Equipo | ✅ |
-| Kick-off proyecto | Una vez | Equipo + Cliente + PM | ✅ |
-| Comité técnico | Ad-hoc | Tech Lead + Architect | ✅ |
-
-### Plantilla de Acta
-
-```markdown
-# Acta de Reunión — [Tipo] — [Proyecto]
-
-## Metadata
-- **ID:** ACT-[PROYECTO]-[NÚMERO]
-- **Fecha:** [fecha y hora]
-- **Moderador:** [nombre + rol]
-- **Participantes:** [lista con nombre, rol, empresa]
-- **Convocados ausentes:** [si aplica]
-
-## Agenda
-1. [Punto 1]
-2. [Punto 2]
-
-## Desarrollo
-### [Punto 1]
-[Resumen de lo tratado, decisiones, posiciones]
-
-### [Punto 2]
-[...]
-
-## Acuerdos y compromisos
-| # | Acuerdo | Responsable | Fecha límite |
-|---|---------|-------------|--------------|
-| 1 | [acuerdo] | [persona] | [fecha] |
-
-## Próximos pasos
-- [acción concreta + responsable + fecha]
-
-## Estado de firmas
-| Participante | Rol | Estado | Fecha firma |
-|---|---|---|---|
-| [nombre] | [rol] | ⏳ Pendiente | — |
-
----
-*Acta generada por SOFIA — Workflow Manager*
-*Publicada en Confluence: [link]*
-```
-
-### Flujo de aceptación de acta
+Cuando el Orchestrator invoca el Workflow Manager para crear un gate:
 
 ```
-1. Workflow Manager genera acta y publica en Confluence
-2. Envía Teams card + Email a cada participante
-3. Cada uno revisa y firma (o hace observaciones)
-4. Si todos firman → ACT estado: ACCEPTED
-5. Si hay observación → Workflow Manager actualiza acta → reinicia firmas
-6. Acta aceptada se archiva en Confluence como versión final
+Instrucción para atlassian-agent:
+
+Crear un issue de tipo Task en Jira con:
+
+summary: "[GATE] Sprint [N] — [FEAT-XXX] — Step [N]: [nombre del gate]"
+
+description (formato ADF o markdown):
+  ## Pipeline BLOQUEADO — Acción requerida
+
+  **Proyecto:** [project_name]
+  **Feature:** [FEAT-XXX]
+  **Sprint:** [N]
+  **Step completado:** [N] — [nombre skill]
+  **Responsable de aprobación:** [rol]
+
+  ## Artefactos generados (revisar antes de aprobar)
+  [lista de rutas/enlaces de artefactos del step]
+
+  ## Criterio de aprobación
+  [criterio específico del gate]
+
+  ## Acción requerida
+  - Transicionar a **Approved** si los artefactos cumplen el criterio
+  - Transicionar a **Rejected** con comentario explicando qué corregir
+
+  _Generado por SOFIA v1.7 — [timestamp]_
+
+labels: ["gate", "sofia-gate", "[FEAT-XXX]", "sprint-[N]"]
+priority: High
+assignee: [account_id del responsable si está disponible]
+
+Retornar el issue key creado (ej: BP-123).
 ```
 
 ---
 
-## Notificaciones Multicanal
-
-### Teams — Card estándar de tarea
+## Consultar estado del gate — Instrucciones al atlassian-agent
 
 ```
-┌─────────────────────────────────────────────┐
-│ 🏭 SOFIA — Tarea pendiente                  │
-├─────────────────────────────────────────────┤
-│ Proyecto: [nombre]                          │
-│ Tipo: [TASK_TYPE]                           │
-│ Artefacto: [nombre + versión]               │
-│ Asignado a: [nombre]                        │
-│ SLA: [fecha límite]                         │
-├─────────────────────────────────────────────┤
-│ [Ver en Jira]  [Ver en Confluence]          │
-└─────────────────────────────────────────────┘
-```
+Instrucción para atlassian-agent:
 
-### Escalado automático por SLA
+Consultar el issue [issue_key] con getJiraIssue.
+Extraer:
+  - fields.status.name
+  - fields.comment.comments (últimos 3)
+  - fields.assignee.displayName
 
-```
-SLA - 4h    → Recordatorio Teams (mention)
-SLA vencido → Alerta Teams (rojo) + Email al PM
-SLA + 24h   → Escalado automático al project-manager con resumen
+Interpretar:
+  - "Approved"          → gate aprobado, pipeline puede continuar
+  - "Rejected"          → gate rechazado, gestionar NC con feedback del comentario
+  - cualquier otro estado → gate pendiente, pipeline bloqueado
+
+Si el issue no existe → buscar con JQL:
+  project = [KEY] AND labels = "sofia-gate" AND labels = "[FEAT-XXX]"
+  AND summary ~ "Step [N]" ORDER BY created DESC
 ```
 
 ---
 
-## Artefactos que produce el Workflow Manager
+## Gestión de NCs (No Conformidades)
 
-Al completar cada gate, generar en Confluence:
-
-```
-📁 [PROYECTO]/workflow/
-├── approvals/
-│   ├── approval-us-[número].md
-│   ├── approval-hld-[fecha].md
-│   └── approval-release-[versión].md
-├── non-conformities/
-│   ├── NC-[PROYECTO]-001.md
-│   └── NC-[PROYECTO]-002.md
-├── meeting-minutes/
-│   ├── ACT-[PROYECTO]-001-kickoff.md
-│   └── ACT-[PROYECTO]-002-sprint1-review.md
-└── metrics/
-    └── workflow-metrics-sprint-[n].md
-```
-
-## Métricas que reporta
-
-Al final de cada sprint, generar reporte de:
+Cuando un gate es RECHAZADO:
 
 ```
-MÉTRICA                          FÓRMULA
-─────────────────────────────────────────────────────
-Tasa de aprobación 1er intento   Aprobados sin cambios / Total
-Tiempo medio de aprobación       Σ(cierre - apertura) / n tareas
-NC abiertas / cerradas           Count por sprint
-Tiempo medio resolución NC       Σ(cierre - apertura) / n NC
-SLA cumplido                     Tareas en SLA / Total tareas
-Actas firmadas en SLA            Actas firmadas a tiempo / Total
+1. Registrar NC en session.json:
+   ncs["NC-[step]-[timestamp]"] = {
+     "step": "N",
+     "description": "[feedback del revisor]",
+     "severity": "mayor",   // siempre mayor si viene de un gate
+     "status": "open",
+     "assigned_to": "skill del step N",
+     "created_at": "[timestamp]"
+   }
+
+2. Crear issue Jira de tipo Bug:
+   summary: "[NC] [FEAT-XXX] Step [N] — [descripción breve]"
+   labels: ["NC", "sofia-nc", "[FEAT-XXX]"]
+   priority: High
+   description: feedback completo del revisor
+
+3. Escribir en sofia.log:
+   [TIMESTAMP] [STEP-N] [workflow-manager] GATE_REJECTED → [feature] | NC: [descripción]
+
+4. Informar al Orchestrator:
+   "Gate rechazado. NC-[ID] creada. Volver al step N con feedback: [descripción]"
+
+5. El Orchestrator re-invoca el skill del step N con:
+   "Re-ejecutar step N. NC abierta: [descripción del rechazo]."
 ```
 
 ---
 
-## Protocolo de inicio de proyecto
+## Gestión de NCs resueltas
 
-Antes de que el Orchestrator inicie el primer pipeline, el Workflow Manager
-debe ejecutar el **checklist de onboarding**:
+Cuando el developer/skill resuelve la NC:
 
 ```
-□ Mapeo de roles a personas confirmado (product-owner, tech-lead, etc.)
-□ Proyecto creado en Jira con board configurado
-□ Espacio de proyecto creado en Confluence
-□ Canal de Teams configurado con notificaciones activas
-□ Emails de todos los participantes registrados
-□ SLAs acordados con el cliente
-□ Acta de Kick-off generada, enviada y firmada
+1. Actualizar session.json:
+   ncs["NC-[ID]"].status = "closed"
+   ncs["NC-[ID]"].resolved_at = "[timestamp]"
+
+2. Transicionar issue Jira de NC a "Done"
+
+3. Solicitar re-aprobación del gate:
+   → El Workflow Manager crea un NUEVO issue de gate con el mismo formato
+   → Referencia al issue de NC resuelto en la descripción
+
+4. Escribir en sofia.log:
+   [TIMESTAMP] [STEP-N] [workflow-manager] NC_CLOSED → [NC-ID] | re-gate solicitado
 ```
 
-Si algún ítem no está completado → **bloquear inicio del pipeline** y notificar al PM.
+---
+
+## Verificación de bloqueo — Regla del Orchestrator
+
+Antes de invocar CUALQUIER skill del pipeline:
+
+```
+1. Leer session.json.status
+2. Si status == "gate_pending":
+   a. Ejecutar: python3 .sofia/scripts/gate-check.py [repo] [step] [feature]
+   b. Si exit == 0 (aprobado)  → continuar
+   c. Si exit == 1 (pendiente) → mostrar mensaje de espera, NO continuar
+   d. Si exit == 2 (rechazado) → gestionar NC, NO continuar al step siguiente
+3. Si status == "in_progress" → continuar normalmente
+```
+
+Mensaje de espera al usuario (cuando gate está pendiente):
+
+```
+⏳ Pipeline en espera — Gate step [N] pendiente
+
+  Proyecto:   [project]
+  Feature:    [FEAT-XXX]
+  Gate:       [nombre del gate]
+  Responsable: [rol]
+  Jira issue: [BP-XXX] (si fue creado)
+  Desde:      [timestamp]
+
+  Cuando el responsable haya actuado en Jira, escribe:
+  "verificar gate step [N]" para que SOFIA compruebe el resultado.
+```
+
+---
+
+## Persistence Protocol — Implementación obligatoria (SOFIA v1.6)
+
+```javascript
+const fs  = require('fs');
+const now = new Date().toISOString();
+
+const session = JSON.parse(fs.readFileSync('.sofia/session.json', 'utf8'));
+const step = 'N';
+
+// Actualizar gate en session.json
+if (!session.gates) session.gates = {};
+session.gates[step] = {
+  status: gateStatus,          // "pending" | "approved" | "rejected"
+  by: approverRole,
+  jira_issue_key: issueKey,
+  at: now,
+};
+session.status    = gateStatus === "approved" ? "in_progress" : "gate_pending";
+session.updated_at = now;
+fs.writeFileSync('.sofia/session.json', JSON.stringify(session, null, 2));
+
+// sofia.log
+const statusLabel = gateStatus === "approved" ? "GATE_APPROVED"
+                  : gateStatus === "rejected"  ? "GATE_REJECTED"
+                  : "GATE_PENDING";
+const logEntry = `[${now}] [STEP-${step}] [workflow-manager] ${statusLabel} → ${feature} | issue: ${issueKey || "local"}\n`;
+fs.appendFileSync('.sofia/sofia.log', logEntry);
+
+// Snapshot
+const snapPath = `.sofia/snapshots/gate-step${step}-${Date.now()}.json`;
+fs.copyFileSync('.sofia/session.json', snapPath);
+```
+
+### Bloque de confirmación
+
+```
+---
+✅ PERSISTENCE CONFIRMED — WORKFLOW_MANAGER STEP-N
+- session.json: updated (gates.N = {status: [approved|rejected|pending]})
+- session.json.status: [in_progress|gate_pending]
+- sofia.log: GATE_[STATUS] entry written [TIMESTAMP]
+- snapshot: .sofia/snapshots/gate-step[N]-[timestamp].json
+- artifacts:
+  · jira://[BP-XXX] (issue de gate creado/actualizado)
+  · .sofia/gates/gate-step[N]-[FEAT-XXX].json
+---
+```

@@ -276,3 +276,65 @@ GIT
 3. **Toda NC generada** se registra en Jira via Workflow Manager — nunca de forma verbal o informal
 4. **El reviewer no aprueba su propio código** — el Code Reviewer Agent es independiente del Developer Agent
 5. **Máximo 3 ciclos** por PR (review → corrección → review → corrección → review) — si persisten problemas en el 3er ciclo → escalar al Tech Lead
+
+
+---
+
+## Persistence Protocol — Implementación obligatoria (SOFIA v1.6)
+
+**Este skill DEBE ejecutar los siguientes pasos antes de retornar al Orchestrator.**
+Ver protocolo completo en `.sofia/PERSISTENCE_PROTOCOL.md`.
+
+### Al INICIAR
+
+```
+1. Leer .sofia/session.json
+2. Escribir en sofia.log:
+   [TIMESTAMP] [STEP-5] [code-reviewer] STARTED → descripción breve
+3. Actualizar session.json: status = "in_progress", pipeline_step = "5", updated_at = now
+```
+
+### Al COMPLETAR
+
+```javascript
+const fs  = require('fs');
+const now = new Date().toISOString();
+
+// 1. Actualizar session.json
+const session = JSON.parse(fs.readFileSync('.sofia/session.json', 'utf8'));
+const step = '5';
+if (!session.completed_steps.includes(step)) session.completed_steps.push(step);
+session.pipeline_step          = step;
+session.pipeline_step_name     = 'code-reviewer';
+session.last_skill             = 'code-reviewer';
+session.last_skill_output_path = 'docs/quality/';
+session.updated_at             = now;
+session.status                 = 'completed'; // o 'gate_pending' si hay gate
+if (!session.artifacts) session.artifacts = {};
+session.artifacts[step]        = [ /* rutas de artefactos generados */ ];
+fs.writeFileSync('.sofia/session.json', JSON.stringify(session, null, 2));
+
+// 2. Escribir en sofia.log (append-only)
+const logEntry = `[${now}] [STEP-5] [code-reviewer] COMPLETED → docs/quality/ | <detalles>\n`;
+fs.appendFileSync('.sofia/sofia.log', logEntry);
+
+// 3. Crear snapshot
+const snapPath = `.sofia/snapshots/step-5-${Date.now()}.json`;
+fs.copyFileSync('.sofia/session.json', snapPath);
+```
+
+### Bloque de confirmación — incluir al final de cada respuesta
+
+```
+---
+✅ PERSISTENCE CONFIRMED — CODE_REVIEWER STEP-5
+- session.json: updated (step 5 added to completed_steps)
+- sofia.log: entry written [TIMESTAMP]
+- snapshot: .sofia/snapshots/step-5-[timestamp].json
+- artifacts:
+  · docs/quality/<artefacto-principal>
+---
+```
+
+> Si este skill **no** genera artefactos de fichero (ej: atlassian-agent opera
+> sobre Jira/Confluence), usar las URLs o IDs de los recursos creados/actualizados.
