@@ -3,50 +3,32 @@
   "sprint": 9,
   "feature": "FEAT-007",
   "pipeline_type": "new-feature",
-  "pipeline_step": "2",
-  "pipeline_step_name": "requirements-analyst",
+  "pipeline_step": "3",
+  "pipeline_step_name": "architect",
   "status": "gate_pending",
   "timestamp": "2026-03-19T00:00:00Z",
-  "completed_steps": ["1", "2"],
-  "pending_steps": ["3","3b","4","5","5b","6","7","8","9"],
-  "last_skill": "requirements-analyst",
-  "last_artifact": "docs/srs/SRS-FEAT-007.md",
+  "completed_steps": ["1", "2", "3"],
+  "pending_steps": ["3b","4","5","5b","6","7","8","9"],
+  "last_skill": "architect",
+  "last_artifact": "docs/architecture/hld/HLD-FEAT-007.md",
   "gates": {
-    "1": {
-      "status": "approved",
-      "by": "product-owner",
-      "comment": "approved",
-      "at": "2026-03-19T00:00:00Z"
-    },
-    "2": {
-      "status": "pending",
-      "by": "product-owner",
-      "comment": "",
-      "at": "2026-03-19T00:00:00Z"
-    }
+    "1": { "status": "approved", "by": "product-owner", "at": "2026-03-19T00:00:00Z" },
+    "2": { "status": "approved", "by": "product-owner", "at": "2026-03-19T00:00:00Z" },
+    "3": { "status": "pending", "by": "tech-lead", "at": "2026-03-19T00:00:00Z" }
   },
   "version": "1.6",
   "updated_at": "2026-03-19T00:00:00Z",
   "started_at": "2026-03-19T00:00:00Z",
   "artifacts": {
-    "1": [
-      "docs/backlog/FEAT-007.md",
-      "docs/sprints/SPRINT-009-planning.md"
-    ],
-    "2": [
-      "docs/srs/SRS-FEAT-007.md"
+    "1": ["docs/backlog/FEAT-007.md", "docs/sprints/SPRINT-009-planning.md"],
+    "2": ["docs/srs/SRS-FEAT-007.md"],
+    "3": [
+      "docs/architecture/hld/HLD-FEAT-007.md",
+      "docs/architecture/lld/LLD-010-accounts-backend.md",
+      "docs/architecture/openapi/openapi-v1.6.0.yaml"
     ]
   },
   "ncs": {},
-  "security": {
-    "scan_status": null,
-    "semaphore": null,
-    "cve_critical": 0,
-    "cve_high": 0,
-    "cve_medium": 0,
-    "secrets_found": 0,
-    "report_path": null,
-    "gate_result": null
-  },
+  "security": { "scan_status": null, "semaphore": null, "cve_critical": 0, "cve_high": 0, "cve_medium": 0, "secrets_found": 0, "report_path": null, "gate_result": null },
   "client": "Banco Meridian"
 }
