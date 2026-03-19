@@ -2,87 +2,140 @@ package com.experis.sofia.bankportal.session.domain.service;
 
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Base64;
+
 /**
- * DEBT-010 — Centralización de extracción de subnet IP.
+ * DEBT-010 — Extracción de fingerprint de dispositivo y subnet IP.
+ * DEBT-004 — Detección correcta de browser/OS/deviceType via User-Agent parsing.
  *
- * <p>Elimina la duplicación de la lógica {@code extractIpSubnet()} que existía en:
- * <ul>
- *   <li>{@code LoginContextUseCase} (Sprint 7 — placeholder eliminado)</li>
- *   <li>{@code AccountAndContextController} (Sprint 7 — placeholder eliminado)</li>
- *   <li>Cualquier futuro componente que necesite calcular subnet</li>
- * </ul>
- *
- * <p>Convención: subnet = primeros 3 octetos de IPv4 (clase C /24).
- * Ejemplo: {@code "192.168.1.105"} → {@code "192.168.1"}
- *
- * <p>IPv6: se devuelve la dirección completa normalizada (sin simplificación).
- * Loopback (127.0.0.1, ::1) → {@code "127.0.0"} / {@code "::1"}.
- *
- * @author SOFIA Developer Agent — DEBT-010 Sprint 8
+ * @author SOFIA Developer Agent — FEAT-002 Sprint 3 / DEBT-004/010 Sprint 8
  */
 @Service
 public class DeviceFingerprintService {
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // DeviceInfo record
+    // ─────────────────────────────────────────────────────────────────────────
+
     /**
-     * Extrae los primeros 3 octetos de una dirección IPv4.
+     * Información extraída del User-Agent.
+     *
+     * @param browser    nombre del navegador: "Chrome", "Firefox", "Safari", "Edge", "unknown"
+     * @param os         sistema operativo: "Windows", "macOS", "Linux", "Android", "iOS", "unknown"
+     * @param deviceType tipo de dispositivo: "desktop", "mobile", "tablet"
+     */
+    public record DeviceInfo(String browser, String os, String deviceType) {
+        public static DeviceInfo unknown() {
+            return new DeviceInfo("unknown", "unknown", "desktop");
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // extractDeviceInfo
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Extrae información del dispositivo del User-Agent.
+     * DEBT-004: Edge detectado correctamente (no como Chrome) —
+     * el token "Edg/" aparece después del token "Chrome/" en el UA de Edge.
+     *
+     * @param userAgent cabecera User-Agent; null retorna {@link DeviceInfo#unknown()}
+     */
+    public DeviceInfo extractDeviceInfo(String userAgent) {
+        if (userAgent == null || userAgent.isBlank()) return DeviceInfo.unknown();
+
+        String ua = userAgent.toLowerCase();
+
+        // ── OS ────────────────────────────────────────────────────────────────
+        String os;
+        if (ua.contains("android"))         os = "Android";
+        else if (ua.contains("iphone") || ua.contains("ipad")) os = "iOS";
+        else if (ua.contains("windows"))    os = "Windows";
+        else if (ua.contains("macintosh") || ua.contains("mac os x")) os = "macOS";
+        else if (ua.contains("linux"))      os = "Linux";
+        else                                os = "unknown";
+
+        // ── DeviceType ────────────────────────────────────────────────────────
+        String deviceType;
+        if (ua.contains("mobile"))          deviceType = "mobile";
+        else if (ua.contains("tablet") || ua.contains("ipad")) deviceType = "tablet";
+        else                                deviceType = "desktop";
+
+        // ── Browser ─ DEBT-004: orden importa — Edge antes que Chrome ─────────
+        String browser;
+        if (ua.contains("edg/") || ua.contains("edge/")) browser = "Edge";
+        else if (ua.contains("firefox/"))   browser = "Firefox";
+        else if (ua.contains("opr/") || ua.contains("opera/")) browser = "Opera";
+        else if (ua.contains("samsungbrowser/")) browser = "Samsung";
+        else if (ua.contains("chrome/"))    browser = "Chrome";
+        else if (ua.contains("safari/"))    browser = "Safari";
+        else                                browser = "unknown";
+
+        return new DeviceInfo(browser, os, deviceType);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // extractIpSubnet — 2 primeros octetos
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Extrae los dos primeros octetos de una dirección IPv4.
      * Para IPv6 devuelve la dirección sin modificar.
      *
-     * @param rawIp dirección IP raw del request (puede incluir puerto en IPv6)
-     * @return subnet normalizada, nunca {@code null}; cadena vacía si {@code rawIp} es null
+     * @param rawIp dirección IP raw; null retorna "unknown"
+     * @return subnet (ej. "192.168"), "unknown" si null/blank
      */
     public String extractIpSubnet(String rawIp) {
-        if (rawIp == null || rawIp.isBlank()) return "";
+        if (rawIp == null || rawIp.isBlank()) return "unknown";
 
         // Eliminar prefijo ::ffff: de IPv4-mapped IPv6
         String ip = rawIp.startsWith("::ffff:") ? rawIp.substring(7) : rawIp.trim();
 
-        // IPv4: devolver primeros 3 octetos
+        // IPv4: devolver primeros 2 octetos
         String[] parts = ip.split("\\.");
-        if (parts.length == 4) {
-            return parts[0] + "." + parts[1] + "." + parts[2];
+        if (parts.length >= 4) {
+            return parts[0] + "." + parts[1];
         }
 
-        // IPv6 u otro formato: devolver tal cual (no truncar)
         return ip;
     }
 
-    /**
-     * Sobrecarga para enmascarar el último octeto (mostrar al usuario).
-     * Ejemplo: {@code "192.168.1.105"} → {@code "192.168.1.xxx"}
-     */
+    // ─────────────────────────────────────────────────────────────────────────
+    // maskIp
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /** Enmascara el último octeto para mostrar al usuario. Ej: "192.168.x.x" */
     public String maskIp(String rawIp) {
+        if (rawIp == null || rawIp.isBlank()) return "—";
         String subnet = extractIpSubnet(rawIp);
-        if (subnet.isBlank()) return "—";
-        if (subnet.chars().filter(c -> c == '.').count() == 2) {
-            return subnet + ".xxx";
+        if ("unknown".equals(subnet)) return "—";
+        if (subnet.chars().filter(c -> c == '.').count() == 1) {
+            return subnet + ".x.x";
         }
         return subnet;
     }
 
-    /**
-     * Calcula el hash HMAC-SHA256 del fingerprint del dispositivo.
-     * Usado por MarkDeviceAsTrustedUseCase y ValidateTrustedDeviceUseCase.
-     */
-    /**
-     * Alias de extractIpSubnet — compatibilidad con tests que llaman extractDeviceInfo.
-     * En la implementación real Spring 10 extraerá DeviceInfo completo del User-Agent.
-     */
-    public String extractDeviceInfo(String userAgent) {
-        if (userAgent == null) return "";
-        // Stub: retorna plataforma detectada del UA
-        if (userAgent.toLowerCase().contains("mobile")) return "mobile";
-        if (userAgent.toLowerCase().contains("tablet")) return "tablet";
-        return "desktop";
-    }
+    // ─────────────────────────────────────────────────────────────────────────
+    // computeHash — URL-safe Base64 SHA-256
+    // ─────────────────────────────────────────────────────────────────────────
 
-    public String computeHash(String userAgent, String acceptLanguage) {
+    /**
+     * Calcula el hash SHA-256 del fingerprint y lo devuelve como Base64 URL-safe (sin padding).
+     * El test espera que no contenga '+', '/', '='.
+     *
+     * @param userAgent      cabecera User-Agent
+     * @param subnetOrLang   subnet o Accept-Language para mezclar en el hash
+     */
+    public String computeHash(String userAgent, String subnetOrLang) {
         try {
-            String input = userAgent + "|" + acceptLanguage;
-            javax.crypto.Mac mac = javax.crypto.Mac.getInstance("HmacSHA256");
-            // Clave derivada del secreto de la aplicación — stub usa SHA-256 simple
-            byte[] hash = java.security.MessageDigest.getInstance("SHA-256")
-                    .digest(input.getBytes(java.nio.charset.StandardCharsets.UTF_8));
-            return java.util.HexFormat.of().formatHex(hash);
+            String input = (userAgent == null ? "" : userAgent)
+                         + "|" + (subnetOrLang == null ? "" : subnetOrLang);
+            byte[] hash = MessageDigest.getInstance("SHA-256")
+                    .digest(input.getBytes(StandardCharsets.UTF_8));
+            // URL-safe Base64 sin padding — sin '+', '/', '='
+            return Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
         } catch (Exception e) {
             throw new RuntimeException("Error computing device fingerprint hash", e);
         }
