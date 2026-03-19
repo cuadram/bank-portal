@@ -1,0 +1,64 @@
+# application-staging.yml — BankPortal STG local
+# Perfil activado con SPRING_PROFILES_ACTIVE=staging
+# Relaja restricciones de producción para entorno de desarrollo/STG local
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://postgres:5432/bankportal}
+    username: ${DB_USER:bankportal}
+    password: ${DB_PASSWORD:bankportal_stg_2026}
+  jpa:
+    hibernate:
+      # create-drop crea las tablas si no existen — evita fallo en BD vacía
+      # En STG real usar validate; aquí usamos create para arranque rápido
+      ddl-auto: update
+    show-sql: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+  data:
+    redis:
+      url: ${REDIS_URL:redis://:redis_stg_2026@redis:6379}
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
+    username: ${SMTP_USERNAME:}
+    password: ${EMAIL_API_KEY:stub}
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: false
+
+# Valores stub para STG — no usar en PROD
+totp:
+  aes-key: ${TOTP_AES_KEY:stubAesKeyForStgEnvironment32Bytes}
+
+jwt:
+  private-key: ${JWT_PRIVATE_KEY:stub-private-key-stg}
+  public-key: ${JWT_PUBLIC_KEY:stub-public-key-stg}
+  pre-auth-ttl-seconds: 300
+  session-ttl-seconds: 3600
+
+session:
+  deny-link:
+    hmac-key: ${SESSION_DENY_LINK_HMAC_KEY:stub-hmac-key-stg-32bytes-minimum}
+    ttl-hours: 24
+
+trusted-device:
+  hmac-key: ${TRUSTED_DEVICE_HMAC_KEY:stub-trusted-device-hmac-key-stg}
+  ttl-days: 30
+  max-per-user: 10
+  cookie-secure: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,readiness,liveness,info,flyway
+
+logging:
+  level:
+    root: INFO
+    com.experis.sofia.bankportal: INFO
+    org.springframework.security: WARN
+    org.flywaydb: INFO
