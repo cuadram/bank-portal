@@ -14,8 +14,6 @@ import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Configuración de beans TOTP — ADR-004.
@@ -115,11 +113,4 @@ public class TotpConfig {
         );
     }
 
-    /**
-     * BCrypt password encoder — cost=12 (OWASP recomendado).
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
-    }
 }
