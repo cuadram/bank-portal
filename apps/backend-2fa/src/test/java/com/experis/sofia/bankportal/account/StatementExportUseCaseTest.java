@@ -20,6 +20,7 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 
 import static org.assertj.core.api.Assertions.*;
@@ -147,10 +148,9 @@ class StatementExportUseCaseTest {
         when(accountRepository.findByMonth(eq(accountId), any(), any(), anyInt()))
                 .thenReturn(List.of(buildTransaction("TX", "10.00", "CARGO")));
 
-        CompletableFutureAssert<Optional<StatementExportUseCase.StatementResult>> assertion =
-                assertThatFuture(useCase.export(userId, accountId, 2026, 1, "xlsx"));
-
-        assertion.failsWithin(java.time.Duration.ofSeconds(3))
+        // RV-006: usar assertThat directamente
+        assertThat(useCase.export(userId, accountId, 2026, 1, "xlsx"))
+                .failsWithin(Duration.ofSeconds(3))
                 .withThrowableOfType(ExecutionException.class)
                 .withCauseInstanceOf(IllegalArgumentException.class)
                 .withMessageContaining("xlsx");
@@ -161,17 +161,27 @@ class StatementExportUseCaseTest {
     void export_foreignAccount_throwsIllegalArgument() {
         UUID otherAccount = UUID.randomUUID(); // no está en la lista del usuario
 
-        assertThatFuture(useCase.export(userId, otherAccount, 2026, 1, "csv"))
-                .failsWithin(java.time.Duration.ofSeconds(3))
+        assertThat(useCase.export(userId, otherAccount, 2026, 1, "csv"))
+                .failsWithin(Duration.ofSeconds(3))
                 .withThrowableOfType(ExecutionException.class)
                 .withCauseInstanceOf(IllegalArgumentException.class);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    private <T> org.assertj.core.api.AbstractFutureAssert<?, ?, T, ?> assertThatFuture(
-            java.util.concurrent.Future<T> future) {
-        return org.assertj.core.api.Assertions.assertThat(future);
+    @Test
+    @DisplayName("US-704: generación PDF devuelve bytes con magic number %PDF")
+    void export_pdf_returnsPdfMagicBytes() throws Exception {
+        when(accountRepository.findByMonth(eq(accountId), any(), any(), anyInt()))
+                .thenReturn(List.of(buildTransaction("NOMINA SL", "2000.00", "ABONO")));
+
+        StatementExportUseCase.StatementResult r =
+                useCase.export(userId, accountId, 2026, 2, "pdf").get().orElseThrow();
+
+        assertThat(r.format()).isEqualTo("PDF");
+        assertThat(r.content()).isNotEmpty();
+        assertThat(new String(r.content(), 0, 4, java.nio.charset.StandardCharsets.ISO_8859_1))
+                .isEqualTo("%PDF"); // RV-008: cobertura path PDF
     }
 
     private Transaction buildTransaction(String concept, String amount, String type) {

@@ -84,8 +84,8 @@ public class StatementExportUseCase {
     public CompletableFuture<Optional<StatementResult>> export(
             UUID userId, UUID accountId, int year, int month, String format) {
 
-        log.info("[US-704] Iniciando exportación extracto accountId={} periodo={}-{:02d} format={}",
-                accountId, year, month, format);
+        log.info("[US-704] Iniciando exportación extracto accountId={} periodo={}-{} format={}",
+                accountId, year, String.format("%02d", month), format);
 
         // ── 1. Cargar cuenta ──────────────────────────────────────────────────
         AccountSummaryDto account = accountSummaryUseCase.getSummary(userId).stream()
@@ -142,10 +142,13 @@ public class StatementExportUseCase {
             addPdfHeader(doc, account, year, month);
             addPdfTransactionTable(doc, txs);
             addPdfSummary(doc, txs);
-            addPdfFooter(doc, sha256Hex(baos.toByteArray()));
-
+            // Footer sin hash — el hash correcto se añade DESPUÉS de doc.close() (RV-001)
+            addPdfFooter(doc);
             doc.close();
-            return baos.toByteArray();
+
+            // Hash calculado sobre el documento completo y final
+            byte[] pdfBytes = baos.toByteArray();
+            return pdfBytes;
         } catch (Exception e) {
             throw new StatementGenerationException("Error generando PDF", e);
         }
@@ -241,6 +244,12 @@ public class StatementExportUseCase {
     }
 
     private void addPdfSummary(Document doc, List<Transaction> txs) throws DocumentException {
+        // RV-005: ordenar ASC para garantizar saldoInicial/Final correctos
+        // independientemente del orden devuelto por el repositorio
+        java.util.List<Transaction> sorted = txs.stream()
+                .sorted(java.util.Comparator.comparing(Transaction::getTransactionDate))
+                .toList();
+
         BigDecimal totalAbonos = txs.stream()
                 .filter(t -> t.getType() == Transaction.Type.ABONO)
                 .map(Transaction::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -248,9 +257,9 @@ public class StatementExportUseCase {
                 .filter(t -> t.getType() == Transaction.Type.CARGO)
                 .map(Transaction::getAmount).map(BigDecimal::abs)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal saldoInicial = txs.get(0).getBalanceAfter()
-                .subtract(txs.get(0).getAmount());
-        BigDecimal saldoFinal   = txs.get(txs.size() - 1).getBalanceAfter();
+        BigDecimal saldoInicial = sorted.get(0).getBalanceAfter()
+                .subtract(sorted.get(0).getAmount());
+        BigDecimal saldoFinal   = sorted.get(sorted.size() - 1).getBalanceAfter();
 
         Font labelFont = FontFactory.getFont(FONT_FAMILY, 9, Font.BOLD, COLOR_TEXT);
         Font valueFont = FontFactory.getFont(FONT_FAMILY, 9, Font.NORMAL, COLOR_TEXT);
@@ -279,12 +288,17 @@ public class StatementExportUseCase {
         t.addCell(cell);
     }
 
-    private void addPdfFooter(Document doc, String hash) throws DocumentException {
+    /**
+     * Footer del PDF: fecha de generación.
+     * El hash SHA-256 se entrega en el header HTTP X-Content-SHA256, no en el footer,
+     * ya que no se puede calcular hasta que doc.close() haya volcado todos los bytes (RV-001).
+     */
+    private void addPdfFooter(Document doc) throws DocumentException {
         Font footerFont = FontFactory.getFont(FONT_FAMILY, 7, Font.NORMAL, COLOR_TEXT);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss 'UTC'")
                 .withZone(ZoneOffset.UTC);
         String footerText = "Generado: " + dtf.format(Instant.now()) +
-                "  |  Integridad SHA-256: " + hash;
+                "  |  Verifique la integridad del documento en Banca Online (SHA-256 en cabecera HTTP)";
         doc.add(new Paragraph(footerText, footerFont));
     }
 

@@ -103,8 +103,10 @@ public class StatementController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(mediaType);
         headers.setContentLength(r.content().length);
+        // RV-004: sanitizar filename para evitar HTTP header injection
+        String safeFilename = r.filename().replaceAll("[\\r\\n\"\\\\]", "_");
         headers.set(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + r.filename() + "\"");
+                "attachment; filename=\"" + safeFilename + "\"");
         headers.set("X-Content-SHA256", r.sha256());
         headers.set("X-Statement-Format", r.format());
 

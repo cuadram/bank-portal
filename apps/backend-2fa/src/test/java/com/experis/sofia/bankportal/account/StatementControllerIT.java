@@ -139,12 +139,15 @@ class StatementControllerIT {
     @Test
     @DisplayName("US-704: mes=0 → 400 Bad Request")
     void downloadStatement_invalidMonthZero_returns400() throws Exception {
-        mockMvc.perform(get("/api/v1/accounts/" + ACCOUNT_ID + "/statements/2026/0")
-                        .with(jwt().jwt(j -> j.subject(USER_ID.toString()))))
-                .andExpect(request -> {}) // Async puede no haberse completado aún
-                .andReturn(); // Verificamos en la propia respuesta síncrona cuando es 400
-        // El controller devuelve CompletableFuture.completedFuture(badRequest) que
-        // MockMvc resuelve inmediatamente — no se necesita asyncDispatch
+        // RV-002: añadir assertions — el controller retorna completedFuture(badRequest)
+        // que MockMvc puede resolver con asyncDispatch
+        var mvcResult = mockMvc.perform(
+                        get("/api/v1/accounts/" + ACCOUNT_ID + "/statements/2026/0")
+                                .with(jwt().jwt(j -> j.subject(USER_ID.toString()))))
+                .andReturn();
+
+        mockMvc.perform(asyncDispatch(mvcResult))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
