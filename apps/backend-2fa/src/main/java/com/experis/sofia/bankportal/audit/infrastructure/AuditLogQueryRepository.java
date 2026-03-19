@@ -28,6 +28,20 @@ public interface AuditLogQueryRepository {
     /** US-402: eventos del usuario en un período para exportación. */
     List<AuditEvent> findByUserIdAndPeriod(UUID userId, int days);
 
+    /**
+     * US-604: eventos de configuración del usuario filtrados por tipos.
+     * @param userId     usuario propietario de los eventos
+     * @param eventTypes tipos a incluir (CONFIG_EVENT_TYPES)
+     * @param since      ventana de búsqueda (máx. 90 días)
+     * @return lista de entradas del historial de configuración
+     */
+    default List<com.experis.sofia.bankportal.audit.application.SecurityConfigHistoryUseCase.ConfigHistoryEntry>
+            findConfigChangesByUserId(UUID userId, List<String> eventTypes,
+                                       java.time.Instant since) {
+        // Impl por defecto — stub para compilación; la implementación real en JPA
+        return List.of();
+    }
+
     /** Evento de auditoría minimal — para exportación US-402. */
     record AuditEvent(
             String        eventType,
