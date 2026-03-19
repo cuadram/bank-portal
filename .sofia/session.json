@@ -3,16 +3,22 @@
   "sprint": 9,
   "feature": "FEAT-007",
   "pipeline_type": "new-feature",
-  "pipeline_step": "1",
-  "pipeline_step_name": "scrum-master",
+  "pipeline_step": "2",
+  "pipeline_step_name": "requirements-analyst",
   "status": "gate_pending",
   "timestamp": "2026-03-19T00:00:00Z",
-  "completed_steps": ["1"],
-  "pending_steps": ["2","3","3b","4","5","5b","6","7","8","9"],
-  "last_skill": "scrum-master",
-  "last_artifact": "docs/sprints/SPRINT-009-planning.md",
+  "completed_steps": ["1", "2"],
+  "pending_steps": ["3","3b","4","5","5b","6","7","8","9"],
+  "last_skill": "requirements-analyst",
+  "last_artifact": "docs/srs/SRS-FEAT-007.md",
   "gates": {
     "1": {
+      "status": "approved",
+      "by": "product-owner",
+      "comment": "approved",
+      "at": "2026-03-19T00:00:00Z"
+    },
+    "2": {
       "status": "pending",
       "by": "product-owner",
       "comment": "",
@@ -26,6 +32,9 @@
     "1": [
       "docs/backlog/FEAT-007.md",
       "docs/sprints/SPRINT-009-planning.md"
+    ],
+    "2": [
+      "docs/srs/SRS-FEAT-007.md"
     ]
   },
   "ncs": {},
