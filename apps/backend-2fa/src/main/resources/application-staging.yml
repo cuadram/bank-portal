@@ -27,10 +27,10 @@ spring:
       mail.smtp.auth: false
       mail.smtp.starttls.enable: false
 
-# JWT — HMAC HS256 (JwtProperties: secret + pre-auth-secret)
+# JWT — HMAC HS256 — claves >= 32 chars (256 bits) requerido por RFC 7518
 jwt:
-  secret: ${JWT_SECRET:stg-jwt-secret-32bytesminimum!!!}
-  pre-auth-secret: ${JWT_PRE_AUTH_SECRET:stg-preauth-secret-32bytes!!!}
+  secret: ${JWT_SECRET:stg-jwt-hmac-secret-minimum-32bytes!}
+  pre-auth-secret: ${JWT_PRE_AUTH_SECRET:stg-preauth-hmac-secret-32bytes-ok!}
   pre-auth-ttl-seconds: 300
   session-ttl-seconds: 28800
 
