@@ -115,6 +115,60 @@
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
 
+        <!-- Lombok — @Slf4j, @RequiredArgsConstructor (todos los servicios) -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Spring Security OAuth2 Resource Server — Jwt en controllers -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+
+        <!-- OpenPDF — generación extractos PDF US-704 (com.lowagie.*) -->
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>1.3.30</version>
+        </dependency>
+
+        <!-- Apache Commons CSV — ExportSecurityHistoryUseCase -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.11.0</version>
+        </dependency>
+
+        <!-- Spring Data Redis — DEBT-011 SSE Pub/Sub + DEBT-009 JWT blacklist -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- Spring Cache — @Cacheable/@CacheEvict en TransactionHistoryUseCase -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <!-- Actuator — health checks, métricas, Flyway endpoint -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Micrometer — SimpleMeterRegistry en tests (SseEventPublisherTest) -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+        </dependency>
+
+        <!-- Spring Scheduling — @Scheduled en NotificationPurgeJob -->
+        <!-- Incluido en spring-boot-starter-web, declarado explícitamente para claridad -->
+
         <!-- Utils -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -166,6 +220,15 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- Excluir Lombok del fat JAR — solo necesario en compilación -->
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
             </plugin>
 
             <!-- Surefire: excluye E2E por defecto; se activan con perfil integration -->
