@@ -21,4 +21,7 @@
 [2026-03-20T10:45:00Z] [STEP-6] [qa-tester] COMPLETED → QA-Report-FEAT-008-sprint10.md | 49/49 PASS | 0 defectos | Gherkin 100% | LISTO PARA RELEASE
 [2026-03-20T10:50:00Z] [GATE-5] [qa-lead+product-owner] APPROVED → QA Report FEAT-008
 [2026-03-20T10:50:01Z] [STEP-7] [devops] STARTED → CI/CD pipeline FEAT-008 Sprint 10
-[2026-03-20T11:00:00Z] [STEP-7] [devops] COMPLETED → Jenkinsfile v1.10.0 (12 stages + Testcontainers + RS256 deploy) | RELEASE-NOTES-v1.10.0.md | README-CREDENTIALS.md actualizado (4 nuevas creds RS256) | Gate 6 PENDING release-manager
+[2026-03-20T11:00:00Z] [STEP-7] [devops] COMPLETED → Jenkinsfile v1.10.0 (12 stages) | RELEASE-NOTES-v1.10.0.md | README-CREDENTIALS.md (4 creds RS256) | Gate 6 PENDING
+[2026-03-20T11:05:00Z] [GATE-6] [release-manager] APPROVED → DevOps release BankPortal v1.10.0
+[2026-03-20T11:05:01Z] [STEP-8] [documentation-agent] COMPLETED → docs/deliverables/sprint-10-FEAT-008/DOC-INDEX-sprint10.md | paquete entregables generado
+[2026-03-20T11:06:00Z] [STEP-9] [workflow-manager] COMPLETED → Sprint 10 CERRADO | FEAT-008 ENTREGADO | v1.10.0 | 24/24 SP | 0 defectos | pipeline status=completed | SCRUM-31 pendiente de comentario Jira (herramienta no disponible en sesión)
