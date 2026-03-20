@@ -42,8 +42,9 @@ public class TransferToBeneficiaryUseCase {
                 .orElseThrow(() -> new BeneficiaryTransferException("BENEFICIARY_NOT_FOUND"));
 
         // 2. Regla anti-fraude: primera transferencia requiere confirmación explícita
-        boolean isFirst = transferRepo.findByUserIdOrderByCreatedAtDesc(cmd.userId()).stream()
-                .noneMatch(t -> cmd.beneficiaryId().equals(t.getBeneficiaryId()) && t.isCompleted());
+        // RV-003 fix: query específica en lugar de cargar todo el historial del usuario
+        boolean isFirst = !transferRepo.existsCompletedTransferToBeneficiary(
+                cmd.userId(), cmd.beneficiaryId());
         if (isFirst && !cmd.firstTransferConfirmed())
             throw new BeneficiaryTransferException("FIRST_TRANSFER_CONFIRMATION_REQUIRED");
 

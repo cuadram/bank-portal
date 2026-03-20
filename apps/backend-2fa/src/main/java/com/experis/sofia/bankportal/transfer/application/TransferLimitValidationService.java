@@ -1,6 +1,6 @@
 package com.experis.sofia.bankportal.transfer.application;
 
-import com.experis.sofia.bankportal.transfer.infrastructure.redis.TransferLimitRedisAdapter;
+import com.experis.sofia.bankportal.transfer.domain.TransferLimitPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +11,9 @@ import java.util.UUID;
 
 /**
  * Valida límites de transferencia antes de ejecutar la operación (US-804).
- * Orden: límite por operación → límite diario (Redis, fallback graceful).
+ * Orden: límite por operación → límite diario (puerto, fallback graceful).
+ *
+ * RV-001 fix: depende de TransferLimitPort (dominio) en lugar de TransferLimitRedisAdapter (infra).
  *
  * @author SOFIA Developer Agent — FEAT-008 Sprint 10
  */
@@ -20,7 +22,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TransferLimitValidationService {
 
-    private final TransferLimitRedisAdapter redisAdapter;
+    private final TransferLimitPort limitPort;  // RV-001: puerto de dominio, no adaptador concreto
 
     @Value("${transfer.limit.per-operation:2000.00}")
     private BigDecimal perOperationLimit;
@@ -35,7 +37,7 @@ public class TransferLimitValidationService {
                     "Límite máximo por operación: " + perOperationLimit + "€");
         }
         try {
-            BigDecimal accumulated = redisAdapter.getDailyAccumulated(userId);
+            BigDecimal accumulated = limitPort.getDailyAccumulated(userId);
             if (accumulated.add(amount).compareTo(dailyLimit) > 0) {
                 BigDecimal remaining = dailyLimit.subtract(accumulated).max(BigDecimal.ZERO);
                 throw new TransferLimitExceededException("DAILY_LIMIT_EXCEEDED",
@@ -48,10 +50,26 @@ public class TransferLimitValidationService {
         }
     }
 
+    /** Retorna el límite por operación configurado. */
+    public BigDecimal getPerOperationLimit() { return perOperationLimit; }
+
+    /** Retorna el límite diario configurado. */
+    public BigDecimal getDailyLimit() { return dailyLimit; }
+
+    /** Consulta el acumulado diario del usuario sin modificarlo. */
+    public BigDecimal getDailyAccumulated(UUID userId) {
+        try {
+            return limitPort.getDailyAccumulated(userId);
+        } catch (Exception e) {
+            log.error("Redis no disponible para consulta de acumulado userId={}", userId);
+            return BigDecimal.ZERO;
+        }
+    }
+
     /** Incrementa el acumulado diario tras confirmar la transferencia (best-effort). */
     public void incrementDailyAccumulated(UUID userId, BigDecimal amount) {
         try {
-            redisAdapter.incrementDaily(userId, amount);
+            limitPort.incrementDaily(userId, amount);
         } catch (Exception e) {
             log.error("Redis no disponible para incrementar contador diario userId={}", userId);
         }

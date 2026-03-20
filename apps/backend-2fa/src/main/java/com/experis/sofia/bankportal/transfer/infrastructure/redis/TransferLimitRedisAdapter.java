@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class TransferLimitRedisAdapter {
+public class TransferLimitRedisAdapter implements com.experis.sofia.bankportal.transfer.domain.TransferLimitPort {
 
     private static final String KEY_PREFIX = "transfer:daily:";
     private final StringRedisTemplate redisTemplate;
