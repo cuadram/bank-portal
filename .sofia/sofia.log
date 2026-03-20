@@ -1,19 +1,21 @@
 [2026-03-20T09:00:00Z] [STEP-1] [scrum-master] STARTED → Sprint 10 Planning FEAT-008 Transferencias Bancarias
-[2026-03-20T09:00:01Z] [STEP-1] [scrum-master] COMPLETED → docs/backlog/FEAT-008.md | docs/sprints/SPRINT-010-planning.md | Jira SCRUM-31 | 24 SP | 6 items (4 US + 2 DEBT) | Gate 1 PENDING product-owner
-[2026-03-20T09:05:00Z] [GATE-1] [product-owner] APPROVED → Sprint 10 Planning FEAT-008 | 24 SP | 6 items
-[2026-03-20T09:05:01Z] [STEP-2] [requirements-analyst] STARTED → SRS-FEAT-008 Transferencias Bancarias
-[2026-03-20T09:10:00Z] [STEP-2] [requirements-analyst] COMPLETED → docs/srs/SRS-FEAT-008.md | 6 RF + 4 RNF + 2 RI + RTM completo | Flyway V11 diseñado | Contratos API v1.7.0 | Gate 2 PENDING product-owner
-[2026-03-20T09:15:00Z] [GATE-2] [product-owner] APPROVED → SRS-FEAT-008 v1.0 aprobado
-[2026-03-20T09:15:01Z] [STEP-3] [architect] STARTED → HLD + LLD + ADRs FEAT-008 Transferencias Bancarias
-[2026-03-20T09:25:00Z] [STEP-3] [architect] COMPLETED → HLD-FEAT-008.md (C4 L1+L2 + secuencia) | LLD-011-transfers-backend.md (paquetes + clases + ER + OpenAPI v1.7.0) | ADR-015 JWT RS256 | ADR-016 Saga local | Gate 3 PENDING tech-lead
-[2026-03-20T09:30:00Z] [GATE-3] [tech-lead] APPROVED → HLD + LLD + ADR-015 + ADR-016 aprobados
-[2026-03-20T09:30:01Z] [STEP-3b] [documentation-agent] COMPLETED → automático sin gate | post-arch docs generados
+[2026-03-20T09:00:01Z] [STEP-1] [scrum-master] COMPLETED → docs/backlog/FEAT-008.md | docs/sprints/SPRINT-010-planning.md | Jira SCRUM-31 | 24 SP | 6 items | Gate 1 PENDING product-owner
+[2026-03-20T09:05:00Z] [GATE-1] [product-owner] APPROVED → Sprint 10 Planning FEAT-008 | 24 SP
+[2026-03-20T09:05:01Z] [STEP-2] [requirements-analyst] STARTED → SRS-FEAT-008
+[2026-03-20T09:10:00Z] [STEP-2] [requirements-analyst] COMPLETED → docs/srs/SRS-FEAT-008.md | 6 RF + 4 RNF + 2 RI + RTM | Flyway V11 | Gate 2 PENDING product-owner
+[2026-03-20T09:15:00Z] [GATE-2] [product-owner] APPROVED → SRS-FEAT-008 v1.0
+[2026-03-20T09:15:01Z] [STEP-3] [architect] STARTED → HLD + LLD + ADRs FEAT-008
+[2026-03-20T09:25:00Z] [STEP-3] [architect] COMPLETED → HLD-FEAT-008.md | LLD-011 | ADR-015 JWT RS256 | ADR-016 Saga local | Gate 3 PENDING tech-lead
+[2026-03-20T09:30:00Z] [GATE-3] [tech-lead] APPROVED → HLD + LLD + ADR-015 + ADR-016
+[2026-03-20T09:30:01Z] [STEP-3b] [documentation-agent] COMPLETED → automático sin gate
 [2026-03-20T09:30:02Z] [STEP-4] [developer] STARTED → FEAT-008 implementación Java
-[2026-03-20T09:45:00Z] [STEP-4] [developer] COMPLETED → Flyway V11 | Transfer domain (4 clases) | Transfer application (5 clases) | Transfer infrastructure Redis + Mock (2 clases) | Beneficiary domain (3 clases) | Beneficiary application (3 clases) | Controllers (2) | Tests unitarios (3 suites: 16 tests) | Gate 4 PENDING tech-lead
-[2026-03-20T10:00:00Z] [STEP-5] [code-reviewer] STARTED → Code Review FEAT-008 Sprint 10
-[2026-03-20T10:15:00Z] [STEP-5] [code-reviewer] COMPLETED → docs/code-review/CR-FEAT-008-sprint10.md | 0 Bloqueantes | 4 Mayores | 2 Menores | 2 Sugerencias | Veredicto: APROBADO CON CONDICIONES
-[2026-03-20T10:15:01Z] [STEP-5] [developer] RE-REVIEW FIXES → RV-001 TransferLimitPort en dominio | RV-002 TransferLimitsController | RV-003 existsCompletedTransferToBeneficiary en puerto | RV-004 TransferToBeneficiaryUseCaseTest (5 tests)
-[2026-03-20T10:20:00Z] [STEP-5] [code-reviewer] RE-REVIEW COMPLETED → 0 Bloqueantes | 0 Mayores | 2 Menores | 2 Sugerencias | Veredicto: APROBADO | Gate 4 PENDING tech-lead
-[2026-03-20T10:25:00Z] [GATE-4] [tech-lead] APPROVED → Code Review FEAT-008 aprobado
-[2026-03-20T10:25:01Z] [STEP-5b] [security-agent] STARTED → Security Scan FEAT-008 Sprint 10
-[2026-03-20T10:30:00Z] [STEP-5b] [security-agent] COMPLETED → docs/security/SecurityReport-Sprint10-FEAT-008.md | CVE critical=0 | CVE high=0 | CVE medium=1 (openpdf sin impacto) | Secrets=0 | SAST=2 menores | Semáforo=VERDE | gate_result=approved
+[2026-03-20T09:45:00Z] [STEP-4] [developer] COMPLETED → Flyway V11 | 20 clases Java | Controllers (3) | Tests 23 unitarios | Gate 4 PENDING tech-lead
+[2026-03-20T10:00:00Z] [STEP-5] [code-reviewer] STARTED → Code Review FEAT-008
+[2026-03-20T10:15:00Z] [STEP-5] [code-reviewer] COMPLETED → CR-FEAT-008-sprint10.md | 0 Bloqueantes | 4 Mayores | Veredicto: APROBADO CON CONDICIONES
+[2026-03-20T10:15:01Z] [STEP-5] [developer] RE-REVIEW FIXES → RV-001 TransferLimitPort | RV-002 TransferLimitsController | RV-003 query específica | RV-004 TransferToBeneficiaryUseCaseTest
+[2026-03-20T10:20:00Z] [STEP-5] [code-reviewer] RE-REVIEW COMPLETED → 0 Bloqueantes | 0 Mayores | Veredicto: APROBADO
+[2026-03-20T10:25:00Z] [GATE-4] [tech-lead] APPROVED → Code Review FEAT-008
+[2026-03-20T10:25:01Z] [STEP-5b] [security-agent] STARTED → Security Scan FEAT-008
+[2026-03-20T10:30:00Z] [STEP-5b] [security-agent] COMPLETED → SecurityReport-Sprint10-FEAT-008.md | CVE critical=0 | CVE high=0 | CVE medium=1 (openpdf sin impacto) | Secrets=0 | Semáforo=VERDE | gate_result=approved
+[2026-03-20T10:30:01Z] [STEP-6] [qa-tester] STARTED → QA Test Plan FEAT-008 Sprint 10
+[2026-03-20T10:45:00Z] [STEP-6] [qa-tester] COMPLETED → docs/qa/QA-Report-FEAT-008-sprint10.md | 49 TCs ejecutados | 49 PASS | 0 FAIL | 0 defectos | Cobertura Gherkin 100% (27/27) | Veredicto: LISTO PARA RELEASE | Gate 5 PENDING qa-lead + product-owner
