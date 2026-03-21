@@ -1,2 +1,5 @@
 [2026-03-21T09:00:00Z] [STEP-1] [scrum-master] STARTED → Sprint 11 Planning FEAT-009 Core Bancario Real + Pagos Servicios
-[2026-03-21T09:05:00Z] [STEP-1] [scrum-master] COMPLETED → docs/backlog/FEAT-009.md | docs/sprints/SPRINT-011-planning.md | 20 SP | 6 items (4 US + 2 DEBT) | Gate 1 PENDING product-owner
+[2026-03-21T09:05:00Z] [STEP-1] [scrum-master] COMPLETED → docs/backlog/FEAT-009.md | docs/sprints/SPRINT-011-planning.md | SCRUM-32 | 20 SP | 6 items (4 US + 2 DEBT) | Gate 1 PENDING product-owner
+[2026-03-21T09:05:00Z] [GATE-1] [product-owner] APPROVED → Sprint 11 Planning 20 SP | SCRUM-32 comentado
+[2026-03-21T09:05:01Z] [STEP-2] [requirements-analyst] STARTED → SRS-FEAT-009 Core Bancario Real + Pagos Servicios
+[2026-03-21T09:12:00Z] [STEP-2] [requirements-analyst] COMPLETED → docs/srs/SRS-FEAT-009.md | 6 RF + 4 RNF + 3 RI + RTM | Flyway V12 DDL | contratos API core bancario | Resilience4j + Bucket4j config | Gate 2 PENDING product-owner
