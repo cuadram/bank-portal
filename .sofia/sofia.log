@@ -1,2 +1,5 @@
 [2026-03-21T14:30:00Z] [STEP-1] [scrum-master] STARTED → Sprint 12 Planning FEAT-010 Dashboard Analítico
-[2026-03-21T14:35:00Z] [STEP-1] [scrum-master] COMPLETED → docs/backlog/FEAT-010.md | docs/sprints/SPRINT-012-planning.md | 24 SP | 9 items (6 US + 3 DEBT) | Gate 1 PENDING product-owner
+[2026-03-21T14:35:00Z] [STEP-1] [scrum-master] COMPLETED → FEAT-010.md | SPRINT-012-planning.md | SCRUM-33 | 24 SP | 9 items (6 US + 3 DEBT)
+[2026-03-21T19:37:00Z] [GATE-1] [product-owner] APPROVED → Sprint 12 Planning 24 SP
+[2026-03-21T19:37:01Z] [STEP-2] [requirements-analyst] STARTED → SRS-FEAT-010 Dashboard Analítico
+[2026-03-21T19:45:00Z] [STEP-2] [requirements-analyst] COMPLETED → SRS-FEAT-010.md | 9 RF + 4 RNF + 2 RI + RTM | Flyway V13 DDL | 5 endpoints dashboard + Angular + 3 DEBTs | Gate 2 PENDING product-owner
