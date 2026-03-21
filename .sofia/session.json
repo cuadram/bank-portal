@@ -24,7 +24,8 @@
   },
   "artifacts": {
     "1": ["docs/backlog/FEAT-009.md", "docs/sprints/SPRINT-011-planning.md"],
-    "2": ["docs/srs/SRS-FEAT-009.md"]
+    "2": ["docs/srs/SRS-FEAT-009.md"],
+    "3": ["docs/architecture/hld/HLD-FEAT-009.md","docs/architecture/lld/LLD-012-core-integration-bills.md","docs/architecture/hld/ADR-017-resilience4j-core-integration.md","docs/architecture/hld/ADR-018-bucket4j-rate-limiting.md"]
   },
   "ncs": {},
   "security": {
