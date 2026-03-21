@@ -3,8 +3,10 @@ package com.experis.sofia.bankportal.bill.application;
 import com.experis.sofia.bankportal.audit.AuditLogService;
 import com.experis.sofia.bankportal.bill.application.dto.PayInvoiceCommand;
 import com.experis.sofia.bankportal.bill.application.dto.PaymentResultDto;
+import com.experis.sofia.bankportal.bill.domain.BillPayment;
 import com.experis.sofia.bankportal.bill.domain.BillPaymentPort;
 import com.experis.sofia.bankportal.bill.domain.BillPaymentPort.BillLookupResult;
+import com.experis.sofia.bankportal.bill.domain.BillPaymentRepositoryPort;
 import com.experis.sofia.bankportal.auth.totp.TwoFactorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,7 @@ import java.util.UUID;
 public class BillLookupAndPayUseCase {
 
     private final BillPaymentPort billPaymentPort;
+    private final BillPaymentRepositoryPort billPaymentRepository;
     private final TwoFactorService twoFactorService;
     private final AuditLogService auditLog;
 
@@ -61,14 +64,22 @@ public class BillLookupAndPayUseCase {
                 cmd.sourceAccountId(), cmd.amount(),
                 bill.issuer() + " — " + bill.concept(), idempotencyKey);
 
+        // Persistir en bill_payments (RV-002)
+        LocalDateTime now = LocalDateTime.now();
+        BillPayment payment = new BillPayment(
+                UUID.randomUUID(), userId, null,
+                cmd.reference(), bill.issuer(), cmd.amount(),
+                cmd.sourceAccountId(), "COMPLETED", coreTxnId, now);
+        BillPayment saved = billPaymentRepository.save(payment);
+
         auditLog.record(userId, "INVOICE_PAYMENT_COMPLETED",
-                "ref=" + maskReference(cmd.reference()) + " coreTxnId=" + coreTxnId
-                        + " amount=" + cmd.amount());
+                "ref=" + maskReference(cmd.reference()) + " paymentId=" + saved.id()
+                        + " coreTxnId=" + coreTxnId + " amount=" + cmd.amount());
 
-        log.info("[US-904] Factura pagada: ref={} userId={} coreTxnId={}",
-                maskReference(cmd.reference()), userId, coreTxnId);
+        log.info("[US-904] Factura pagada: ref={} paymentId={} userId={} coreTxnId={}",
+                maskReference(cmd.reference()), saved.id(), userId, coreTxnId);
 
-        return new PaymentResultDto(UUID.randomUUID(), "COMPLETED", LocalDateTime.now());
+        return new PaymentResultDto(saved.id(), "COMPLETED", now);
     }
 
     private void validateReference(String reference) {

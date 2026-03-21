@@ -5,7 +5,9 @@ import com.experis.sofia.bankportal.bill.application.dto.BillDto;
 import com.experis.sofia.bankportal.bill.application.dto.PayBillCommand;
 import com.experis.sofia.bankportal.bill.application.dto.PaymentResultDto;
 import com.experis.sofia.bankportal.bill.domain.Bill;
+import com.experis.sofia.bankportal.bill.domain.BillPayment;
 import com.experis.sofia.bankportal.bill.domain.BillPaymentPort;
+import com.experis.sofia.bankportal.bill.domain.BillPaymentRepositoryPort;
 import com.experis.sofia.bankportal.bill.domain.BillRepositoryPort;
 import com.experis.sofia.bankportal.bill.domain.BillStatus;
 import com.experis.sofia.bankportal.auth.totp.TwoFactorService;
@@ -38,6 +40,7 @@ public class BillPaymentUseCase {
 
     private final BillRepositoryPort billRepository;
     private final BillPaymentPort billPaymentPort;
+    private final BillPaymentRepositoryPort billPaymentRepository;
     private final TwoFactorService twoFactorService;
     private final AuditLogService auditLog;
 
@@ -53,11 +56,11 @@ public class BillPaymentUseCase {
             throw new BillAlreadyPaidException(billId);
         }
 
+        // 3. Verificar OTP — PSD2 SCA obligatorio (ANTES del audit INITIATED — RV-001)
+        twoFactorService.verifyCurrentOtp(userId, cmd.otpCode());
+
         auditLog.record(userId, "BILL_PAYMENT_INITIATED",
                 "billId=" + billId + " amount=" + bill.amount() + " issuer=" + bill.issuer());
-
-        // 3. Verificar OTP — PSD2 SCA obligatorio
-        twoFactorService.verifyCurrentOtp(userId, cmd.otpCode());
 
         // 4. Ejecutar pago en core bancario (con idempotencyKey para reintentos seguros)
         UUID idempotencyKey = UUID.randomUUID();
@@ -65,17 +68,26 @@ public class BillPaymentUseCase {
                 cmd.sourceAccountId(), bill.amount(),
                 bill.issuer() + " — " + bill.concept(), idempotencyKey);
 
-        // 5. Actualizar estado del recibo a PAID
+        // 5. Persistir registro de pago en bill_payments (RV-002)
+        LocalDateTime now = LocalDateTime.now();
+        BillPayment payment = new BillPayment(
+                UUID.randomUUID(), userId, billId, null,
+                bill.issuer(), bill.amount(), cmd.sourceAccountId(),
+                "COMPLETED", coreTxnId, now);
+        BillPayment saved = billPaymentRepository.save(payment);
+
+        // 6. Actualizar estado del recibo a PAID
         Bill paidBill = new Bill(bill.id(), bill.userId(), bill.issuer(), bill.concept(),
                 bill.amount(), bill.dueDate(), BillStatus.PAID, bill.createdAt());
         billRepository.save(paidBill);
 
         auditLog.record(userId, "BILL_PAYMENT_COMPLETED",
-                "billId=" + billId + " coreTxnId=" + coreTxnId + " amount=" + bill.amount());
+                "billId=" + billId + " paymentId=" + saved.id() + " coreTxnId=" + coreTxnId + " amount=" + bill.amount());
 
-        log.info("[US-903] Recibo pagado: billId={} userId={} coreTxnId={}", billId, userId, coreTxnId);
+        log.info("[US-903] Recibo pagado: billId={} paymentId={} userId={} coreTxnId={}",
+                billId, saved.id(), userId, coreTxnId);
 
-        return new PaymentResultDto(UUID.randomUUID(), "COMPLETED", LocalDateTime.now());
+        return new PaymentResultDto(saved.id(), "COMPLETED", now);
     }
 
     public List<BillDto> listPending(UUID userId) {
