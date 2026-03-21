@@ -5,4 +5,7 @@
 [2026-03-21T09:12:00Z] [STEP-2] [requirements-analyst] COMPLETED → SRS-FEAT-009.md | 6 RF + 4 RNF + 3 RI + RTM | Gate 2 PENDING
 [2026-03-21T09:15:00Z] [GATE-2] [product-owner] APPROVED → SRS-FEAT-009 v1.0
 [2026-03-21T09:15:01Z] [STEP-3] [architect] STARTED → HLD + LLD + ADRs FEAT-009
-[2026-03-21T09:25:00Z] [STEP-3] [architect] COMPLETED → HLD-FEAT-009.md (C4 L1+L2 + secuencia CB) | LLD-012 (BankCoreRestAdapter + ResilienceConfig + Flyway V12 + OpenAPI v1.8.0) | ADR-017 Resilience4j | ADR-018 Bucket4j | commit 32b08ec | Gate 3 PENDING tech-lead
+[2026-03-21T09:25:00Z] [STEP-3] [architect] COMPLETED → HLD-FEAT-009.md | LLD-012 | ADR-017 Resilience4j | ADR-018 Bucket4j | commit 32b08ec | Gate 3 PENDING tech-lead
+[2026-03-21T10:50:00Z] [GATE-3] [tech-lead] APPROVED → HLD + LLD + ADR-017 + ADR-018
+[2026-03-21T10:50:01Z] [STEP-4] [developer] STARTED → FEAT-009 implementación Java
+[2026-03-21T11:15:00Z] [STEP-4] [developer] COMPLETED → Flyway V12 | BankCoreRestAdapter @Profile(production) | ResilienceConfig | RateLimitFilter (DEBT-016) | BillCoreAdapter | BillController | BillPaymentUseCase + BillLookupAndPayUseCase | 15 tests unitarios nuevos (10 bill + 5 rate-limit) | pom.xml Resilience4j 2.2.0 | commits 9321c72 + 7205b6d | Gate 4 PENDING tech-lead

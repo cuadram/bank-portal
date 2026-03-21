@@ -1,7 +1,6 @@
 package com.experis.sofia.bankportal.transfer.infrastructure.core;
 
 import com.experis.sofia.bankportal.transfer.domain.BankCoreTransferPort;
-import com.experis.sofia.bankportal.transfer.domain.TransferResult;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
@@ -72,19 +71,22 @@ public class BankCoreRestAdapter implements BankCoreTransferPort {
 
             log.info("[US-901] Own transfer OK: txnId={} src={} amount={}",
                     response.transactionId(), sourceAccountId, amount);
-            return TransferResult.success(response.sourceBalance(), response.targetBalance());
+            return new BankCoreTransferPort.TransferResult(true, response.sourceBalance(),
+                    response.targetBalance(), null);
 
         } catch (HttpClientErrorException e) {
             log.error("[US-901] Core 4xx error: {} {}", e.getStatusCode(), e.getMessage());
-            return TransferResult.failure("CORE_CLIENT_ERROR");
+            return new BankCoreTransferPort.TransferResult(false,
+                    BigDecimal.ZERO, BigDecimal.ZERO, "CORE_CLIENT_ERROR");
         }
     }
 
     @SuppressWarnings("unused")
-    public TransferResult fallbackOwnTransfer(UUID src, UUID tgt, BigDecimal amt,
-                                              String concept, Exception ex) {
+    public BankCoreTransferPort.TransferResult fallbackOwnTransfer(UUID src, UUID tgt,
+                                              BigDecimal amt, String concept, Exception ex) {
         log.error("[US-901] Circuit OPEN — own transfer fallback: {}", ex.getMessage());
-        return TransferResult.failure("CORE_CIRCUIT_OPEN");
+        return new BankCoreTransferPort.TransferResult(false,
+                BigDecimal.ZERO, BigDecimal.ZERO, "CORE_CIRCUIT_OPEN");
     }
 
     // ── Transferencia a beneficiario externo (IBAN) ───────────────────────────
@@ -113,19 +115,22 @@ public class BankCoreRestAdapter implements BankCoreTransferPort {
             log.info("[US-901] External transfer OK: txnId={} src={} iban=****{}",
                     response.transactionId(), sourceAccountId,
                     targetIban.substring(targetIban.length() - 4));
-            return TransferResult.success(response.sourceBalance(), BigDecimal.ZERO);
+            return new BankCoreTransferPort.TransferResult(true,
+                    response.sourceBalance(), BigDecimal.ZERO, null);
 
         } catch (HttpClientErrorException e) {
             log.error("[US-901] Core 4xx error (external): {} {}", e.getStatusCode(), e.getMessage());
-            return TransferResult.failure("CORE_CLIENT_ERROR");
+            return new BankCoreTransferPort.TransferResult(false,
+                    BigDecimal.ZERO, BigDecimal.ZERO, "CORE_CLIENT_ERROR");
         }
     }
 
     @SuppressWarnings("unused")
-    public TransferResult fallbackExternalTransfer(UUID src, String iban, BigDecimal amt,
-                                                   String concept, Exception ex) {
+    public BankCoreTransferPort.TransferResult fallbackExternalTransfer(UUID src, String iban,
+                                                   BigDecimal amt, String concept, Exception ex) {
         log.error("[US-901] Circuit OPEN — external transfer fallback: {}", ex.getMessage());
-        return TransferResult.failure("CORE_CIRCUIT_OPEN");
+        return new BankCoreTransferPort.TransferResult(false,
+                BigDecimal.ZERO, BigDecimal.ZERO, "CORE_CIRCUIT_OPEN");
     }
 
     // ── Consulta de saldo real ────────────────────────────────────────────────

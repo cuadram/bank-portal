@@ -5,12 +5,12 @@
   "pipeline_type": "new-feature",
   "pipeline_step": "4",
   "pipeline_step_name": "developer",
-  "status": "in_progress",
+  "status": "gate_pending",
   "timestamp": "2026-03-21T09:00:00Z",
-  "completed_steps": ["1","2","3"],
-  "pending_steps": ["3b","4","5","5b","6","7","8","9"],
-  "last_skill": "architect",
-  "last_artifact": "docs/architecture/lld/LLD-012-core-integration-bills.md",
+  "completed_steps": ["1","2","3","3b","4"],
+  "pending_steps": ["5","5b","6","7","8","9"],
+  "last_skill": "developer",
+  "last_artifact": "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/bill/api/BillController.java",
   "gates": {
     "1": { "status": "approved", "by": "product-owner", "at": "2026-03-21T09:05:00Z" },
     "2": { "status": "approved", "by": "product-owner", "at": "2026-03-21T09:15:00Z" },
@@ -26,7 +26,9 @@
   "artifacts": {
     "1": ["docs/backlog/FEAT-009.md", "docs/sprints/SPRINT-011-planning.md"],
     "2": ["docs/srs/SRS-FEAT-009.md"],
-    "3": ["docs/architecture/hld/HLD-FEAT-009.md","docs/architecture/lld/LLD-012-core-integration-bills.md","docs/architecture/hld/ADR-017-resilience4j-core-integration.md","docs/architecture/hld/ADR-018-bucket4j-rate-limiting.md"]
+    "3": ["docs/architecture/hld/HLD-FEAT-009.md","docs/architecture/lld/LLD-012-core-integration-bills.md","docs/architecture/hld/ADR-017-resilience4j-core-integration.md","docs/architecture/hld/ADR-018-bucket4j-rate-limiting.md"],
+    "3b": ["automático"],
+    "4": ["apps/backend-2fa/src/main/resources/db/migration/V12__bills_and_payments.sql","apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/transfer/infrastructure/core/BankCoreRestAdapter.java","apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/bill/api/BillController.java"]
   },
   "ncs": {},
   "security": {
