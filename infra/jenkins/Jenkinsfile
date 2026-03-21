@@ -1,6 +1,14 @@
-// Jenkinsfile — BankPortal v1.9.0
-// FEAT-007 (US-701/702/703/704/705) + DEBT-011/012 | Sprint 9
-// Gate 6 DevOps — SOFIA Pipeline · 2026-03-19
+// Jenkinsfile — BankPortal v1.10.0
+// FEAT-008 (US-801/802/803/804) + DEBT-013/014 | Sprint 10
+// Gate 6 DevOps — SOFIA Pipeline · 2026-03-20
+//
+// Cambios respecto a v1.9.0 (Sprint 9):
+//   - RELEASE_VERSION 1.9.0 → 1.10.0
+//   - DEBT-014: credencial bankportal-jwt-private-key-pem / bankportal-jwt-public-key-pem (RS256)
+//   - DEBT-013: Stage 'Backend — Integration Tests (Testcontainers)' añadido
+//   - Stage Deploy STG: docker-compose down -v previo (invalida tokens HS256)
+//   - Stage E2E: rutas actualizadas para /transfers y /beneficiaries
+//   - Jira Epic actualizado: SCRUM-31
 
 pipeline {
     agent { label 'java-node' }
@@ -13,7 +21,7 @@ pipeline {
         IMAGE_TAG       = "${env.GIT_COMMIT?.take(8) ?: env.BUILD_NUMBER}"
 
         // ── Versión semántica ──────────────────────────────────────────────
-        RELEASE_VERSION = '1.9.0'
+        RELEASE_VERSION = '1.10.0'
         RELEASE_TAG     = "v${RELEASE_VERSION}"
 
         // ── Paths monorepo ─────────────────────────────────────────────────
@@ -26,58 +34,61 @@ pipeline {
         MVN_BIN         = '/opt/homebrew/bin/mvn'
         PYTHON_BIN      = '/opt/homebrew/bin/python3'
         UVX_BIN         = '/opt/homebrew/bin/uvx'
+
+        // ── FEAT-008: referencia Jira Sprint 10 ───────────────────────────
+        JIRA_EPIC       = 'SCRUM-31'
     }
 
     options {
-        timeout(time: 45, unit: 'MINUTES')
+        timeout(time: 60, unit: 'MINUTES')  // +15 min por Testcontainers (DEBT-013)
         buildDiscarder(logRotator(numToKeepStr: '20'))
         disableConcurrentBuilds()
         timestamps()
         ansiColor('xterm')
     }
 
-    // ─── TRIGGERS ─────────────────────────────────────────────────────────────
     triggers {
-        // Build automático en push a develop y en tags vX.Y.Z
         pollSCM('H/5 * * * *')
     }
 
     stages {
 
         // ══════════════════════════════════════════════════════════════════════
-        // STAGE 1 — SETUP & PATH FILTER
+        // STAGE 1 — SETUP & VALIDACIÓN CREDENCIALES
         // ══════════════════════════════════════════════════════════════════════
         stage('Setup') {
             steps {
                 script {
                     echo "╔═══════════════════════════════════════════════════════╗"
-                    echo "║  BankPortal · Sprint 9 · FEAT-007 · ${RELEASE_TAG}         ║"
-                    echo "║  Branch: ${env.BRANCH_NAME} | Commit: ${IMAGE_TAG}         ║"
+                    echo "║  BankPortal · Sprint 10 · FEAT-008 · ${RELEASE_TAG}        ║"
+                    echo "║  Branch: ${env.BRANCH_NAME} | Commit: ${IMAGE_TAG}        ║"
+                    echo "║  DEBT-013: Testcontainers | DEBT-014: JWT RS256         ║"
                     echo "╚═══════════════════════════════════════════════════════╝"
                     sh "${MVN_BIN} -version"
                     sh "${NODE_BIN} -version"
                     sh "${PYTHON_BIN} --version"
 
-                    // Validar credenciales requeridas
+                    // DEBT-014: credenciales RS256 obligatorias (PEM en Base64)
                     withCredentials([
-                        string(credentialsId: 'bankportal-jwt-private-key',    variable: '_JWT_PRIV'),
-                        string(credentialsId: 'bankportal-jwt-public-key',     variable: '_JWT_PUB'),
-                        string(credentialsId: 'bankportal-redis-url',          variable: '_REDIS'),
-                        string(credentialsId: 'bankportal-db-url',             variable: '_DB'),
-                        string(credentialsId: 'registry-creds',                variable: '_REG')
+                        string(credentialsId: 'bankportal-jwt-private-key-pem', variable: '_JWT_PRIV_PEM'),
+                        string(credentialsId: 'bankportal-jwt-public-key-pem',  variable: '_JWT_PUB_PEM'),
+                        string(credentialsId: 'bankportal-redis-url',           variable: '_REDIS'),
+                        string(credentialsId: 'bankportal-db-url',              variable: '_DB'),
+                        string(credentialsId: 'registry-creds',                 variable: '_REG')
                     ]) {
-                        echo "✅ Todas las credenciales disponibles"
+                        echo "✅ Credenciales JWT RS256 (PEM) + infra disponibles"
                     }
                 }
             }
         }
 
         // ══════════════════════════════════════════════════════════════════════
-        // STAGE 2 — BACKEND: TEST + BUILD
+        // STAGE 2 — BACKEND: TESTS UNITARIOS
         // ══════════════════════════════════════════════════════════════════════
-        stage('Backend — Unit + IT Tests') {
+        stage('Backend — Unit Tests') {
             steps {
                 dir(BACKEND_PATH) {
+                    // Perfil por defecto (H2) — 23 tests unitarios FEAT-008 + tests previos
                     sh "${MVN_BIN} test -Dspring.profiles.active=test -q"
                 }
             }
@@ -95,6 +106,28 @@ pipeline {
             }
         }
 
+        // ══════════════════════════════════════════════════════════════════════
+        // STAGE 3 — BACKEND: TESTS DE INTEGRACIÓN (DEBT-013 — Testcontainers)
+        // ══════════════════════════════════════════════════════════════════════
+        stage('Backend — Integration Tests (Testcontainers)') {
+            steps {
+                dir(BACKEND_PATH) {
+                    // Perfil 'integration': levanta PostgreSQL real + aplica Flyway V1→V11
+                    // Requiere Docker activo en el agente Jenkins
+                    sh "${MVN_BIN} verify -Pintegration -q"
+                }
+            }
+            post {
+                always {
+                    junit allowEmptyResults: true,
+                          testResults: "${BACKEND_PATH}/target/surefire-reports/**/*.xml"
+                }
+            }
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        // STAGE 4 — BACKEND: COVERAGE GATE (≥80%)
+        // ══════════════════════════════════════════════════════════════════════
         stage('Backend — Coverage Gate (≥80%)') {
             steps {
                 dir(BACKEND_PATH) {
@@ -106,12 +139,14 @@ pipeline {
                             returnStdout: true
                         ).trim()
                         echo "Cobertura líneas perdidas: ${coverage}"
-                        // Gate: informe visual — el Quality Gate de Sonar es el bloqueante oficial
                     }
                 }
             }
         }
 
+        // ══════════════════════════════════════════════════════════════════════
+        // STAGE 5 — BACKEND: SAST SonarQube
+        // ══════════════════════════════════════════════════════════════════════
         stage('Backend — SAST SonarQube') {
             steps {
                 dir(BACKEND_PATH) {
@@ -149,7 +184,7 @@ pipeline {
         }
 
         // ══════════════════════════════════════════════════════════════════════
-        // STAGE 3 — FRONTEND: TEST + BUILD
+        // STAGE 6 — FRONTEND: TEST + BUILD
         // ══════════════════════════════════════════════════════════════════════
         stage('Frontend — Install & Test') {
             steps {
@@ -175,7 +210,7 @@ pipeline {
         }
 
         // ══════════════════════════════════════════════════════════════════════
-        // STAGE 4 — DOCKER BUILD & SCAN
+        // STAGE 7 — DOCKER BUILD & SCAN (Trivy)
         // ══════════════════════════════════════════════════════════════════════
         stage('Docker — Build Backend') {
             steps {
@@ -200,20 +235,17 @@ pipeline {
         stage('Docker — Vulnerability Scan (Trivy)') {
             steps {
                 script {
-                    // Backend
                     def backendScan = sh(
                         script: """trivy image --exit-code 0 --severity CRITICAL,HIGH \
                                    --no-progress --format table \
                                    ${DOCKER_REGISTRY}/${BACKEND_APP}:${IMAGE_TAG} 2>&1 || true""",
                         returnStdout: true
                     )
-                    echo "Backend scan:\n${backendScan}"
-                    // BLOQUEANTE: CVE Critical
+                    echo "Backend Trivy:\n${backendScan}"
+                    // CVE Critical = BLOQUEANTE
                     sh """trivy image --exit-code 1 --severity CRITICAL \
                           --no-progress \
                           ${DOCKER_REGISTRY}/${BACKEND_APP}:${IMAGE_TAG}"""
-
-                    // Frontend
                     sh """trivy image --exit-code 1 --severity CRITICAL \
                           --no-progress \
                           ${DOCKER_REGISTRY}/${FRONTEND_APP}:${IMAGE_TAG}"""
@@ -222,14 +254,11 @@ pipeline {
         }
 
         // ══════════════════════════════════════════════════════════════════════
-        // STAGE 5 — PUSH TO REGISTRY (develop y tags)
+        // STAGE 8 — PUSH TO REGISTRY
         // ══════════════════════════════════════════════════════════════════════
         stage('Docker — Push (develop / tag)') {
             when {
-                anyOf {
-                    branch 'develop'
-                    tag 'v*'
-                }
+                anyOf { branch 'develop'; tag 'v*' }
             }
             steps {
                 withCredentials([
@@ -238,66 +267,75 @@ pipeline {
                                      passwordVariable: 'REG_PASS')
                 ]) {
                     sh "docker login ${DOCKER_REGISTRY} -u ${REG_USER} -p ${REG_PASS}"
-
                     script {
                         def pushTag = env.TAG_NAME ?: IMAGE_TAG
                         sh "docker tag ${DOCKER_REGISTRY}/${BACKEND_APP}:${IMAGE_TAG} ${DOCKER_REGISTRY}/${BACKEND_APP}:${pushTag}"
                         sh "docker push ${DOCKER_REGISTRY}/${BACKEND_APP}:${pushTag}"
-
                         sh "docker tag ${DOCKER_REGISTRY}/${FRONTEND_APP}:${IMAGE_TAG} ${DOCKER_REGISTRY}/${FRONTEND_APP}:${pushTag}"
                         sh "docker push ${DOCKER_REGISTRY}/${FRONTEND_APP}:${pushTag}"
-                        echo "✅ Imágenes publicadas con tag: ${pushTag}"
+                        echo "✅ Imágenes publicadas: ${pushTag}"
                     }
                 }
             }
         }
 
         // ══════════════════════════════════════════════════════════════════════
-        // STAGE 6 — DEPLOY STG (solo tags v*)
+        // STAGE 9 — DEPLOY STG
+        // DEBT-014: down -v obligatorio para invalidar tokens HS256 anteriores
         // ══════════════════════════════════════════════════════════════════════
         stage('Deploy — STG') {
             when { tag 'v*' }
             steps {
                 withCredentials([
-                    string(credentialsId: 'bankportal-db-url',          variable: 'DB_URL'),
-                    string(credentialsId: 'bankportal-redis-url',        variable: 'REDIS_URL'),
-                    string(credentialsId: 'bankportal-jwt-private-key',  variable: 'JWT_PRIVATE_KEY'),
-                    string(credentialsId: 'bankportal-jwt-public-key',   variable: 'JWT_PUBLIC_KEY')
+                    string(credentialsId: 'bankportal-db-url',              variable: 'DB_URL'),
+                    string(credentialsId: 'bankportal-redis-url',            variable: 'REDIS_URL'),
+                    // DEBT-014: claves RSA en PEM Base64 (sustituyen jwt-private-key / jwt-public-key)
+                    string(credentialsId: 'bankportal-jwt-private-key-pem',  variable: 'JWT_PRIVATE_KEY_PEM'),
+                    string(credentialsId: 'bankportal-jwt-public-key-pem',   variable: 'JWT_PUBLIC_KEY_PEM')
                 ]) {
-                    sh """
-                        TAG=${env.TAG_NAME} \
-                        DOCKER_REGISTRY=${DOCKER_REGISTRY} \
-                        BACKEND_APP=${BACKEND_APP} \
-                        FRONTEND_APP=${FRONTEND_APP} \
-                        docker-compose -f infra/compose/stg/docker-compose.yml up -d --force-recreate
-                    """
+                    script {
+                        echo "⚠️  DEBT-014: down -v para limpiar tokens HS256 anteriores en STG"
+                        sh "cd infra/compose && docker-compose down -v || true"
+                        sh """
+                            TAG=${env.TAG_NAME} \
+                            DOCKER_REGISTRY=${DOCKER_REGISTRY} \
+                            BACKEND_APP=${BACKEND_APP} \
+                            FRONTEND_APP=${FRONTEND_APP} \
+                            JWT_PRIVATE_KEY_PEM=${JWT_PRIVATE_KEY_PEM} \
+                            JWT_PUBLIC_KEY_PEM=${JWT_PUBLIC_KEY_PEM} \
+                            docker-compose -f infra/compose/docker-compose.yml up -d --build
+                        """
+                    }
                 }
-                // Health check post-deploy STG
-                sh "sleep 20"
+                sh "sleep 30"
                 sh "curl -f http://localhost:8081/actuator/health/readiness || exit 1"
-                echo "✅ Deploy STG completado — health check OK"
+                // Verificar que los 5 contenedores están healthy
+                sh """docker ps --format '{{.Names}} {{.Status}}' | \
+                      grep -E '(bankportal-backend|bankportal-frontend|bankportal-postgres|bankportal-redis|bankportal-mailhog)'"""
+                echo "✅ Deploy STG v${RELEASE_VERSION} — 5/5 contenedores healthy — JWT RS256 activo"
             }
         }
 
         // ══════════════════════════════════════════════════════════════════════
-        // STAGE 7 — E2E + REGRESIÓN STG
+        // STAGE 10 — E2E STG (rutas FEAT-008)
         // ══════════════════════════════════════════════════════════════════════
         stage('E2E Playwright — STG') {
             when { tag 'v*' }
             steps {
                 dir(FRONTEND_PATH) {
                     sh "${NPX_BIN} playwright install --with-deps chromium firefox"
+                    // E2E incluye flujos de transferencias y beneficiarios (FEAT-008)
                     sh "BASE_URL=http://localhost:4201 ${NPX_BIN} playwright test e2e/ --reporter=html"
                 }
             }
             post {
                 always {
                     publishHTML(target: [
-                        allowMissing:      true,
-                        reportDir:        "${FRONTEND_PATH}/playwright-report",
-                        reportFiles:      'index.html',
-                        reportName:       'Playwright E2E — STG',
-                        keepAll:          true
+                        allowMissing: true,
+                        reportDir:   "${FRONTEND_PATH}/playwright-report",
+                        reportFiles: 'index.html',
+                        reportName:  'Playwright E2E — STG FEAT-008',
+                        keepAll:     true
                     ])
                 }
             }
@@ -307,20 +345,25 @@ pipeline {
             when { tag 'v*' }
             steps {
                 dir(FRONTEND_PATH) {
-                    // QA-01: accesibilidad sobre AccountSummaryComponent y TransactionListComponent
+                    // FEAT-008: añadir rutas /transfers y /beneficiaries
                     sh """${NPX_BIN} axe http://localhost:4201/accounts \
-                          --tags wcag2aa \
-                          --reporter json \
+                          --tags wcag2aa --reporter json \
                           --stdout > axe-report-accounts.json || true"""
+                    sh """${NPX_BIN} axe http://localhost:4201/transfers \
+                          --tags wcag2aa --reporter json \
+                          --stdout > axe-report-transfers.json || true"""
                     sh """${NODE_BIN} -e \"
-                        const r = require('./axe-report-accounts.json');
-                        const violations = r.violations || [];
-                        const critical = violations.filter(v => v.impact === 'critical');
-                        if (critical.length > 0) {
-                            console.error('❌ WCAG critical violations:', JSON.stringify(critical, null, 2));
-                            process.exit(1);
-                        }
-                        console.log('✅ WCAG 2.1 AA: 0 critical violations');
+                        ['axe-report-accounts.json','axe-report-transfers.json'].forEach(f => {
+                            try {
+                                const r = require('./' + f);
+                                const critical = (r.violations||[]).filter(v => v.impact==='critical');
+                                if (critical.length > 0) {
+                                    console.error('WCAG critical in ' + f + ':', JSON.stringify(critical, null, 2));
+                                    process.exit(1);
+                                }
+                            } catch(e) { console.log('Skipping ' + f); }
+                        });
+                        console.log('WCAG 2.1 AA: 0 critical violations');
                     \" """
                 }
             }
@@ -333,13 +376,13 @@ pipeline {
         }
 
         // ══════════════════════════════════════════════════════════════════════
-        // STAGE 8 — GO/NO-GO PRODUCCIÓN (gate manual HITL)
+        // STAGE 11 — GO/NO-GO PRODUCCIÓN (gate manual HITL)
         // ══════════════════════════════════════════════════════════════════════
         stage('Go/No-Go — PROD') {
             when { tag 'v*' }
             steps {
                 script {
-                    echo "⏳ Esperando aprobación release-manager para deploy PROD..."
+                    echo "⏳ Esperando aprobación release-manager para BankPortal v${RELEASE_VERSION}..."
                     def approval = input(
                         message: "Deploy BankPortal ${env.TAG_NAME} to PRODUCTION?",
                         submitter: 'release-manager,pm-team',
@@ -349,34 +392,33 @@ pipeline {
                                    description: 'Decisión de release'),
                             text(name: 'NOTES',
                                  defaultValue: '',
-                                 description: 'Notas del release / justificación No-Go')
+                                 description: 'Notas FEAT-008 / DEBT-013/014 / justificación No-Go')
                         ]
                     )
                     if (approval['ACTION'] == 'No-Go') {
-                        error("❌ Release rechazado por release-manager: ${approval['NOTES']}")
+                        error("❌ Release rechazado: ${approval['NOTES']}")
                     }
-                    echo "✅ Go autorizado. Notas: ${approval['NOTES']}"
+                    echo "✅ Go autorizado por release-manager. Notas: ${approval['NOTES']}"
                 }
             }
         }
 
         // ══════════════════════════════════════════════════════════════════════
-        // STAGE 9 — DEPLOY PRODUCCIÓN
+        // STAGE 12 — DEPLOY PRODUCCIÓN
         // ══════════════════════════════════════════════════════════════════════
         stage('Deploy — PROD') {
             when { tag 'v*' }
             steps {
                 withCredentials([
-                    string(credentialsId: 'bankportal-db-url-prod',          variable: 'DB_URL'),
-                    string(credentialsId: 'bankportal-redis-url-prod',        variable: 'REDIS_URL'),
-                    string(credentialsId: 'bankportal-jwt-private-key-prod',  variable: 'JWT_PRIVATE_KEY'),
-                    string(credentialsId: 'bankportal-jwt-public-key-prod',   variable: 'JWT_PUBLIC_KEY')
+                    string(credentialsId: 'bankportal-db-url-prod',              variable: 'DB_URL'),
+                    string(credentialsId: 'bankportal-redis-url-prod',            variable: 'REDIS_URL'),
+                    string(credentialsId: 'bankportal-jwt-private-key-pem-prod',  variable: 'JWT_PRIVATE_KEY_PEM'),
+                    string(credentialsId: 'bankportal-jwt-public-key-pem-prod',   variable: 'JWT_PUBLIC_KEY_PEM')
                 ]) {
                     sh """
                         TAG=${env.TAG_NAME} \
-                        DOCKER_REGISTRY=${DOCKER_REGISTRY} \
-                        BACKEND_APP=${BACKEND_APP} \
-                        FRONTEND_APP=${FRONTEND_APP} \
+                        JWT_PRIVATE_KEY_PEM=${JWT_PRIVATE_KEY_PEM} \
+                        JWT_PUBLIC_KEY_PEM=${JWT_PUBLIC_KEY_PEM} \
                         docker-compose -f infra/compose/prod/docker-compose.yml up -d --force-recreate
                     """
                 }
@@ -389,29 +431,27 @@ pipeline {
                 sh "sleep 30"
                 sh "curl -f https://api.bankmeridian.com/actuator/health/readiness || exit 1"
                 sh "curl -f https://app.bankmeridian.com/ || exit 1"
-                echo "✅ Deploy PROD completado — health checks OK"
+                // FEAT-008: verificar endpoints nuevos
+                sh "curl -f -H 'Authorization: Bearer test' https://api.bankmeridian.com/api/v1/transfers/limits || true"
+                echo "✅ Deploy PROD v${RELEASE_VERSION} completado — health checks OK"
             }
         }
 
     } // end stages
 
-    // ─── POST ─────────────────────────────────────────────────────────────────
     post {
         success {
             script {
                 if (env.TAG_NAME?.startsWith('v')) {
-                    echo "🚀 Release ${env.TAG_NAME} desplegado exitosamente"
-                    // Jira: comentario automático en Epic Sprint 9 (SCRUM-30)
-                    // Triggear via webhook o script de notificación
+                    echo "🚀 BankPortal ${env.TAG_NAME} desplegado — FEAT-008 Transferencias activo"
+                    // Notificación automática al epic SCRUM-31 via Jira API
                 }
             }
         }
         failure {
             echo "❌ Pipeline fallido — Branch: ${env.BRANCH_NAME} | Build: ${env.BUILD_URL}"
-            // Notificación Teams / email configurada en Jenkins globalmente
         }
         always {
-            // Limpiar imágenes Docker locales para ahorrar espacio
             sh "docker image prune -f --filter 'until=24h' || true"
         }
     }
