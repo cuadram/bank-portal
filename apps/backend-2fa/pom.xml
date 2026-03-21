@@ -148,6 +148,18 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
+        <!-- Resilience4j — ADR-017 FEAT-009 Circuit Breaker + Retry + TimeLimiter -->
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-spring-boot3</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-reactor</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+
         <!-- Spring Data Redis — DEBT-011 SSE Pub/Sub + DEBT-009 JWT blacklist -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
