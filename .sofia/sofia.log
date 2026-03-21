@@ -7,5 +7,12 @@
 [2026-03-21T09:15:01Z] [STEP-3] [architect] STARTED → HLD + LLD + ADRs FEAT-009
 [2026-03-21T09:25:00Z] [STEP-3] [architect] COMPLETED → HLD-FEAT-009.md | LLD-012 | ADR-017 Resilience4j | ADR-018 Bucket4j | commit 32b08ec | Gate 3 PENDING tech-lead
 [2026-03-21T10:50:00Z] [GATE-3] [tech-lead] APPROVED → HLD + LLD + ADR-017 + ADR-018
-[2026-03-21T10:50:01Z] [STEP-4] [developer] STARTED → FEAT-009 implementación Java
-[2026-03-21T11:15:00Z] [STEP-4] [developer] COMPLETED → Flyway V12 | BankCoreRestAdapter @Profile(production) | ResilienceConfig | RateLimitFilter (DEBT-016) | BillCoreAdapter | BillController | BillPaymentUseCase + BillLookupAndPayUseCase | 15 tests unitarios nuevos (10 bill + 5 rate-limit) | pom.xml Resilience4j 2.2.0 | commits 9321c72 + 7205b6d | Gate 4 PENDING tech-lead
+[2026-03-21T10:50:01Z] [STEP-3b] [documentation-agent] COMPLETED → automático sin gate
+[2026-03-21T10:50:02Z] [STEP-4] [developer] STARTED → FEAT-009 implementación Java
+[2026-03-21T11:15:00Z] [STEP-4] [developer] COMPLETED → Flyway V12 | BankCoreRestAdapter | ResilienceConfig | RateLimitFilter | BillCoreAdapter | BillController | 2 use cases | 15 tests | pom.xml Resilience4j | commits 9321c72+7205b6d+84f4ec7+47bce6d | Gate 4 PENDING
+[2026-03-21T13:00:00Z] [GATE-4] [tech-lead] APPROVED → Code Developer FEAT-009 (post-verificación)
+[2026-03-21T13:00:01Z] [STEP-5] [code-reviewer] STARTED → Code Review FEAT-009
+[2026-03-21T13:05:00Z] [STEP-5] [code-reviewer] COMPLETED → CR-FEAT-009-sprint11.md | 0 Bloqueantes | 2 Mayores resueltos (RV-001 OTP order + RV-002 persistencia) | commit b26d5af | Gate 5 PENDING
+[2026-03-21T13:08:00Z] [GATE-5] [tech-lead] APPROVED → Code Review FEAT-009
+[2026-03-21T13:08:01Z] [STEP-5b] [security-agent] STARTED → Security Scan FEAT-009
+[2026-03-21T13:15:00Z] [STEP-5b] [security-agent] COMPLETED → SecurityReport-Sprint11-FEAT-009.md | CVE critical=0 | CVE high=0 | CVE medium=0 (nuevas deps limpias) | Secrets=0 | SAST=1 info | Semáforo=VERDE | gate_result=approved
