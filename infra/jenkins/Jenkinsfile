@@ -1,6 +1,6 @@
-// Jenkinsfile — BankPortal v1.11.0
-// FEAT-009 (US-901/902/903/904) + DEBT-015/016 | Sprint 11
-// Gate 7 DevOps — SOFIA Pipeline · 2026-03-21
+// Jenkinsfile — BankPortal v1.12.0
+// FEAT-010 (US-1001/1002/1003/1004/1005) + DEBT-017/018/019 | Sprint 12
+// Gate 7 DevOps — SOFIA Pipeline · 2026-03-22
 //
 // Cambios respecto a v1.9.0 (Sprint 9):
 //   - RELEASE_VERSION 1.9.0 → 1.10.0
@@ -21,7 +21,7 @@ pipeline {
         IMAGE_TAG       = "${env.GIT_COMMIT?.take(8) ?: env.BUILD_NUMBER}"
 
         // ── Versión semántica ──────────────────────────────────────────────
-        RELEASE_VERSION = '1.11.0'
+        RELEASE_VERSION = '1.12.0'
         RELEASE_TAG     = "v${RELEASE_VERSION}"
 
         // ── Paths monorepo ─────────────────────────────────────────────────
@@ -36,7 +36,7 @@ pipeline {
         UVX_BIN         = '/opt/homebrew/bin/uvx'
 
         // ── FEAT-008: referencia Jira Sprint 10 ───────────────────────────
-        JIRA_EPIC       = 'SCRUM-32'
+        JIRA_EPIC       = 'SCRUM-33'
     }
 
     options {

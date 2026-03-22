@@ -32,7 +32,7 @@ services:
       # DEBT-012: purga nocturna
       NOTIFICATION_PURGE_CRON:     "0 0 2 * * *"
       # Actuator / observabilidad
-      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,metrics,prometheus
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,metrics,prometheus,flyway,env,beans,mappings
     depends_on:
       postgres:
         condition: service_healthy
