@@ -1,6 +1,6 @@
 package com.experis.sofia.bankportal.dashboard.application;
 
-import com.experis.sofia.bankportal.audit.AuditLogService;
+import com.experis.sofia.bankportal.audit.domain.AuditLogService;
 import com.experis.sofia.bankportal.dashboard.application.dto.BudgetAlertDto;
 import com.experis.sofia.bankportal.dashboard.domain.BudgetAlertRepositoryPort;
 import lombok.RequiredArgsConstructor;

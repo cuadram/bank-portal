@@ -1,13 +1,13 @@
 package com.experis.sofia.bankportal.bill.application;
 
-import com.experis.sofia.bankportal.audit.AuditLogService;
+import com.experis.sofia.bankportal.audit.domain.AuditLogService;
 import com.experis.sofia.bankportal.bill.application.dto.PayInvoiceCommand;
 import com.experis.sofia.bankportal.bill.application.dto.PaymentResultDto;
 import com.experis.sofia.bankportal.bill.domain.BillPayment;
 import com.experis.sofia.bankportal.bill.domain.BillLookupResult;
 import com.experis.sofia.bankportal.bill.domain.BillPaymentPort;
 import com.experis.sofia.bankportal.bill.domain.BillPaymentRepositoryPort;
-import com.experis.sofia.bankportal.auth.totp.TwoFactorService;
+import com.experis.sofia.bankportal.twofa.domain.service.TwoFactorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
