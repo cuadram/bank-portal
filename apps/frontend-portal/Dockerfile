@@ -20,11 +20,12 @@ RUN npm install --legacy-peer-deps
 COPY . .
 
 # Build Angular producción si ng está disponible; si no, usar placeholder.html
+# El builder 'application' (esbuild) genera los artefactos en dist/bankportal/browser/
 RUN if [ -f "angular.json" ] && [ -f "node_modules/.bin/ng" ]; then \
-      node node_modules/.bin/ng build --configuration=production --output-path=dist/bankportal; \
+      node node_modules/.bin/ng build --configuration=production; \
     else \
       echo "⚠️  angular.json o ng no disponibles — usando placeholder"; \
-      mkdir -p dist/bankportal && cp placeholder.html dist/bankportal/index.html; \
+      mkdir -p dist/bankportal/browser && cp placeholder.html dist/bankportal/browser/index.html; \
     fi
 
 # ── STAGE 2: RUNTIME NGINX ────────────────────────────────────────────────────
@@ -37,7 +38,8 @@ LABEL feature="FEAT-011"
 LABEL sprint="13"
 
 # Copiar artefactos del build
-COPY --from=builder /build/dist/bankportal /usr/share/nginx/html
+# El builder esbuild genera en dist/bankportal/browser/
+COPY --from=builder /build/dist/bankportal/browser /usr/share/nginx/html
 
 # Nginx config: SPA routing + headers de seguridad + health endpoint
 RUN printf 'server {\n\
