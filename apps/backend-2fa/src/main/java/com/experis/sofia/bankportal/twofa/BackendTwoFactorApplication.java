@@ -2,19 +2,19 @@ package com.experis.sofia.bankportal.twofa;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 /**
  * Punto de entrada del módulo backend-2fa — BankPortal | Banco Meridian.
  *
- * <p>Módulo de autenticación de segundo factor (TOTP RFC 6238) implementado
- * en Java 21 / Spring Boot 3.3 con arquitectura hexagonal (Clean Architecture).</p>
+ * OAuth2ResourceServerAutoConfiguration excluida: el proyecto usa JwtAuthenticationFilter
+ * custom con JJWT/HMAC HS256. La dependencia oauth2-resource-server se mantiene solo
+ * para que compile la clase Jwt usada en @AuthenticationPrincipal de los controllers.
  *
- * <p>FEAT-001 | Sprint 01 | SOFIA Software Factory — Experis</p>
- *
- * @since 1.0.0
+ * FEAT-001 | Sprint 01 | SOFIA Software Factory — Experis
  */
-@SpringBootApplication
+@SpringBootApplication(exclude = {OAuth2ResourceServerAutoConfiguration.class})
 @ConfigurationPropertiesScan("com.experis.sofia.bankportal.twofa.infrastructure.config")
 public class BackendTwoFactorApplication {
 

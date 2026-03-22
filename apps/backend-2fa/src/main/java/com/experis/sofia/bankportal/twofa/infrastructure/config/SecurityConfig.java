@@ -71,7 +71,8 @@ public class SecurityConfig {
                     "/auth/login",
                     "/2fa/verify",
                     "/actuator/health",
-                    "/dev/token"
+                    "/dev/token",
+                    "/dev/hash"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
