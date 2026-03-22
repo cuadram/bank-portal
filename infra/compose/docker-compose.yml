@@ -24,8 +24,8 @@ services:
       # Redis — DEBT-011: SSE Pub/Sub multi-pod
       SPRING_REDIS_URL:            ${REDIS_URL}
       # JWT
-      JWT_SECRET:                  changeme-jwt-hmac-secret-min-32bytes!
-      JWT_PRE_AUTH_SECRET:         changeme-preauth-hmac-secret-32bytes!
+      JWT_SECRET:                  "stg-jwt-hmac-secret-minimum-32bytes!"
+      JWT_PRE_AUTH_SECRET:         "stg-preauth-hmac-secret-32bytes-ok!"
       JWT_PRIVATE_KEY:             ${JWT_PRIVATE_KEY}
       JWT_PUBLIC_KEY:              ${JWT_PUBLIC_KEY}
       # FEAT-007: extractos + notificaciones
