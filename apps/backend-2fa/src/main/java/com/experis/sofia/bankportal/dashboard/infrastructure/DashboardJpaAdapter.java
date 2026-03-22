@@ -104,7 +104,7 @@ public class DashboardJpaAdapter implements DashboardRepositoryPort {
         return jdbc.sql(sql)
                 .param("userId", userId)
                 .param("period", period)
-                .query((rs, _) -> new RawSpendingRecord(
+                .query((rs, rowNum) -> new RawSpendingRecord(
                         rs.getString("concept"),
                         rs.getString("issuer"),
                         rs.getBigDecimal("amount")))
@@ -129,7 +129,7 @@ public class DashboardJpaAdapter implements DashboardRepositoryPort {
                 .param("userId", userId)
                 .param("period", period)
                 .param("limit", limit)
-                .query((rs, _) -> new TopMerchantDto(
+                .query((rs, rowNum) -> new TopMerchantDto(
                         rs.getString("issuer"),
                         rs.getBigDecimal("total_amount"),
                         rs.getInt("cnt")))
@@ -146,7 +146,7 @@ public class DashboardJpaAdapter implements DashboardRepositoryPort {
                     """)
                 .param("userId", userId)
                 .param("period", period)
-                .query((rs, _) -> new SpendingCategoryDto(
+                .query((rs, rowNum) -> new SpendingCategoryDto(
                         rs.getString("category"),
                         rs.getBigDecimal("amount"),
                         0.0, // percentage se recalcula en service

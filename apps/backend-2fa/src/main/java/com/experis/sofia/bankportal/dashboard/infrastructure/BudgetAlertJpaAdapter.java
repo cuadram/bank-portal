@@ -51,7 +51,7 @@ public class BudgetAlertJpaAdapter implements BudgetAlertRepositoryPort {
                 """)
                 .param("userId", userId)
                 .param("period", currentPeriod)
-                .query((rs, _) -> {
+                .query((rs, rowNum) -> {
                     BigDecimal budget  = rs.getBigDecimal("monthly_budget");
                     BigDecimal current = rs.getBigDecimal("current_amount");
                     int pct            = rs.getInt("threshold_pct");
