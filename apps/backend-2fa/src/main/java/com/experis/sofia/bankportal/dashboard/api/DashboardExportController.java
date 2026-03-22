@@ -2,12 +2,11 @@ package com.experis.sofia.bankportal.dashboard.api;
 
 import com.experis.sofia.bankportal.dashboard.application.DashboardExportUseCase;
 import com.experis.sofia.bankportal.dashboard.application.DashboardSummaryUseCase;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -16,9 +15,8 @@ import java.util.UUID;
  * REST Controller — Exportación del Dashboard Analítico.
  * US-1107 (PDF) / US-1108 (Excel) — FEAT-011 Sprint 13
  *
- * Endpoints:
- *   GET /api/v1/dashboard/export/pdf   → descarga PDF del dashboard
- *   GET /api/v1/dashboard/export/excel → descarga Excel del dashboard
+ * userId extraído de request.getAttribute("authenticatedUserId")
+ * inyectado por JwtAuthenticationFilter (HMAC HS256 — ADR-001).
  *
  * @author SOFIA Developer Agent
  */
@@ -29,18 +27,17 @@ public class DashboardExportController {
 
     private final DashboardExportUseCase exportUseCase;
 
-    /**
-     * GET /api/v1/dashboard/export/pdf?period=current_month
-     * US-1107 — Exporta el dashboard del período a PDF (application/pdf).
-     */
+    private UUID userId(HttpServletRequest req) {
+        return (UUID) req.getAttribute("authenticatedUserId");
+    }
+
     @GetMapping("/pdf")
     public ResponseEntity<byte[]> exportPdf(
             @RequestParam(defaultValue = "current_month") String period,
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest req) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
         String resolved = DashboardSummaryUseCase.resolvePeriod(period);
-        byte[] pdf = exportUseCase.generatePdf(userId, resolved);
+        byte[] pdf = exportUseCase.generatePdf(userId(req), resolved);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
@@ -49,18 +46,13 @@ public class DashboardExportController {
                 .body(pdf);
     }
 
-    /**
-     * GET /api/v1/dashboard/export/excel?period=current_month
-     * US-1108 — Exporta el dashboard del período a Excel (.xlsx).
-     */
     @GetMapping("/excel")
     public ResponseEntity<byte[]> exportExcel(
             @RequestParam(defaultValue = "current_month") String period,
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest req) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
         String resolved = DashboardSummaryUseCase.resolvePeriod(period);
-        byte[] xlsx = exportUseCase.generateExcel(userId, resolved);
+        byte[] xlsx = exportUseCase.generateExcel(userId(req), resolved);
 
         String contentType =
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";

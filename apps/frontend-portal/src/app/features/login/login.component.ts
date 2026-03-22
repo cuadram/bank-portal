@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 /**
@@ -74,7 +75,7 @@ export class LoginComponent {
   loading = false;
   error = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private http: HttpClient) {}
 
   login(): void {
     if (!this.username || !this.password) {
@@ -84,12 +85,18 @@ export class LoginComponent {
     this.loading = true;
     this.error = '';
 
-    // En STG simulamos un token JWT válido para desarrollo local
-    setTimeout(() => {
-      // Token de desarrollo — en producción vendría del backend
-      const devToken = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDEiLCJpYXQiOjE3NDI2NTk2MDAsImV4cCI6OTk5OTk5OTk5OX0.dev-signature';
-      localStorage.setItem('access_token', devToken);
-      this.router.navigate(['/dashboard']);
-    }, 800);
+    this.http.post<{accessToken: string}>('/auth/login', {
+      email: this.username,
+      password: this.password
+    }).subscribe({
+      next: res => {
+        localStorage.setItem('access_token', res.accessToken);
+        this.router.navigate(['/dashboard']);
+      },
+      error: () => {
+        this.loading = false;
+        this.error = 'Email o contraseña incorrectos';
+      }
+    });
   }
 }
