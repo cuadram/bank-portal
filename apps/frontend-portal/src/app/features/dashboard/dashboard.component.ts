@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import {
   DashboardService, DashboardSummary, SpendingCategory,
@@ -15,10 +16,11 @@ import {
   template: `
     <div class="dashboard-page">
       <header class="dash-header">
-        <h1>Dashboard Analítico</h1>
+        <h1>🏦 Dashboard Analítico</h1>
         <div class="export-actions">
           <button (click)="exportPdf()" class="btn-export" title="Exportar PDF">📄 PDF</button>
           <button (click)="exportExcel()" class="btn-export" title="Exportar Excel">📊 Excel</button>
+          <button (click)="logout()" class="btn-logout" title="Cerrar sesión">🔓 Salir</button>
         </div>
       </header>
 
@@ -68,6 +70,12 @@ import {
       transition: background .2s;
     }
     .btn-export:hover { background: #1B3A6B; color: #fff; }
+    .btn-logout {
+      padding: .5rem 1rem; border: 1px solid #c62828; border-radius: 6px;
+      background: #fff; color: #c62828; cursor: pointer; font-size: .9rem;
+      transition: background .2s;
+    }
+    .btn-logout:hover { background: #c62828; color: #fff; }
     .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
     @media (max-width: 768px) {
       .charts-grid { grid-template-columns: 1fr; }
@@ -83,7 +91,7 @@ export class DashboardComponent implements OnInit {
   loading = true;
   hasError = false;
 
-  constructor(private dashService: DashboardService) {}
+  constructor(private dashService: DashboardService, private router: Router) {}
 
   ngOnInit(): void {
     forkJoin({
@@ -111,4 +119,9 @@ export class DashboardComponent implements OnInit {
 
   exportPdf(): void   { this.dashService.downloadPdf(); }
   exportExcel(): void { this.dashService.downloadExcel(); }
+
+  logout(): void {
+    localStorage.removeItem('access_token');
+    this.router.navigate(['/login']);
+  }
 }
