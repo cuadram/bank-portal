@@ -1,6 +1,6 @@
 package com.experis.sofia.bankportal.dashboard;
 
-import com.experis.sofia.bankportal.audit.AuditLogService;
+import com.experis.sofia.bankportal.audit.domain.AuditLogService;
 import com.experis.sofia.bankportal.dashboard.application.BudgetAlertService;
 import com.experis.sofia.bankportal.dashboard.application.DashboardSummaryUseCase;
 import com.experis.sofia.bankportal.dashboard.application.dto.BudgetAlertDto;
@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,7 +60,7 @@ class BudgetAlertServiceTest {
 
         verify(alertRepo).saveAlert(eq(userId), eq(period),
                 eq(new BigDecimal("1500.00")), eq(80), any());
-        verify(auditLog).record(eq(userId), eq("BUDGET_ALERT_TRIGGERED"), anyString());
+        verify(auditLog).log(eq("BUDGET_ALERT_TRIGGERED"), eq(userId), anyString());
     }
 
     @Test
