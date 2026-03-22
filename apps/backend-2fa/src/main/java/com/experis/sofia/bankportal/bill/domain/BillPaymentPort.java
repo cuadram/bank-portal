@@ -1,12 +1,13 @@
 package com.experis.sofia.bankportal.bill.domain;
 
+import com.experis.sofia.bankportal.bill.domain.BillLookupResult;
 import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
  * Puerto de salida — pago al core bancario real.
  * Implementado por BillCoreAdapter (infra) que delega en BankCoreRestAdapter.
- * US-903/904 FEAT-009 Sprint 11.
+ * US-903/904 FEAT-009 Sprint 11 · DEBT-018 Sprint 12 (BillLookupResult extraida).
  *
  * @author SOFIA Developer Agent
  */
@@ -28,15 +29,7 @@ public interface BillPaymentPort {
      * Consulta los datos de una factura por referencia al core bancario.
      *
      * @param reference referencia de 20 dígitos
-     * @return resultado del lookup
+     * @return resultado del lookup (DEBT-018: clase independiente en domain)
      */
     BillLookupResult lookupBill(String reference);
-
-    record BillLookupResult(
-            String externalBillId,
-            String issuer,
-            String concept,
-            BigDecimal amount,
-            String expiryDate
-    ) {}
 }

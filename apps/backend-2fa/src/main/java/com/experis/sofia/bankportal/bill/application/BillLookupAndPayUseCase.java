@@ -4,8 +4,8 @@ import com.experis.sofia.bankportal.audit.AuditLogService;
 import com.experis.sofia.bankportal.bill.application.dto.PayInvoiceCommand;
 import com.experis.sofia.bankportal.bill.application.dto.PaymentResultDto;
 import com.experis.sofia.bankportal.bill.domain.BillPayment;
+import com.experis.sofia.bankportal.bill.domain.BillLookupResult;
 import com.experis.sofia.bankportal.bill.domain.BillPaymentPort;
-import com.experis.sofia.bankportal.bill.domain.BillPaymentPort.BillLookupResult;
 import com.experis.sofia.bankportal.bill.domain.BillPaymentRepositoryPort;
 import com.experis.sofia.bankportal.auth.totp.TwoFactorService;
 import lombok.RequiredArgsConstructor;
@@ -41,13 +41,13 @@ public class BillLookupAndPayUseCase {
 
     /** Solo lookup — para GET /api/v1/bills/lookup */
     public BillLookupResult lookup(String reference) {
-        validateReference(reference);
+        // DEBT-019: validación de formato delegada al controller (@Pattern)
         return billPaymentPort.lookupBill(reference);
     }
 
     @Transactional
     public PaymentResultDto pay(UUID userId, PayInvoiceCommand cmd) {
-        validateReference(cmd.reference());
+        // DEBT-019: validación de referencia ya hecha por Bean Validation en el controller
 
         // Lookup en core — confirmar que la factura existe y el importe es correcto
         BillLookupResult bill = billPaymentPort.lookupBill(cmd.reference());
@@ -82,11 +82,7 @@ public class BillLookupAndPayUseCase {
         return new PaymentResultDto(saved.id(), "COMPLETED", now);
     }
 
-    private void validateReference(String reference) {
-        if (reference == null || !reference.matches("\\d{20}")) {
-            throw new InvalidBillReferenceException(reference);
-        }
-    }
+    // DEBT-019: validateReference() eliminado — validación única en BillController (@Pattern)
 
     /** Enmascara referencia: primeros 4 + **** + últimos 4 */
     private String maskReference(String ref) {

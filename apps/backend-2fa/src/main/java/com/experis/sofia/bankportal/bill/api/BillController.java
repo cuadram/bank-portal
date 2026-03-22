@@ -6,7 +6,7 @@ import com.experis.sofia.bankportal.bill.application.dto.BillDto;
 import com.experis.sofia.bankportal.bill.application.dto.PayBillCommand;
 import com.experis.sofia.bankportal.bill.application.dto.PayInvoiceCommand;
 import com.experis.sofia.bankportal.bill.application.dto.PaymentResultDto;
-import com.experis.sofia.bankportal.bill.domain.BillPaymentPort.BillLookupResult;
+import com.experis.sofia.bankportal.bill.domain.BillLookupResult;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;

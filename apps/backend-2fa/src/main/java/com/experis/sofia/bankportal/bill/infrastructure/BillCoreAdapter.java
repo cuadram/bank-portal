@@ -1,5 +1,6 @@
 package com.experis.sofia.bankportal.bill.infrastructure;
 
+import com.experis.sofia.bankportal.bill.domain.BillLookupResult;
 import com.experis.sofia.bankportal.bill.domain.BillPaymentPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -83,7 +84,7 @@ public class BillCoreAdapter implements BillPaymentPort {
                 response.concept(),
                 response.amount(),
                 response.expiryDate()
-        );
+        ); // DEBT-018: BillLookupResult es ahora top-level en domain
     }
 
     @SuppressWarnings("unused")

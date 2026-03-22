@@ -145,13 +145,22 @@ public class BankCoreRestAdapter implements BankCoreTransferPort {
                 .header("X-API-Key", apiKey)
                 .retrieve()
                 .body(CoreBalanceResponse.class);
-        return response.available();
+        return safeBalance(response, accountId); // DEBT-017
     }
 
     @SuppressWarnings("unused")
     public BigDecimal fallbackBalance(UUID accountId, Exception ex) {
         log.error("[US-901] Circuit OPEN — balance fallback: {}", ex.getMessage());
         throw new CoreUnavailableException("CORE_CIRCUIT_OPEN");
+    }
+
+    /** DEBT-017: protege ante body nulo del core — devuelve BigDecimal.ZERO con log WARN */
+    private BigDecimal safeBalance(CoreBalanceResponse response, UUID accountId) {
+        if (response == null || response.available() == null) {
+            log.warn("[DEBT-017] Core devolvio balance nulo para accountId={}", accountId);
+            return BigDecimal.ZERO;
+        }
+        return response.available();
     }
 
     // ── Records internos ──────────────────────────────────────────────────────
