@@ -136,11 +136,15 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Spring Security OAuth2 Resource Server — Jwt en controllers -->
+        <!-- OAuth2 Resource Server DESACTIVADO — el proyecto usa JwtAuthenticationFilter custom (JJWT/HMAC HS256)
+             Este starter crea un SecurityFilterChain adicional con @Order(1) que intercepta antes que el custom
+             y rechaza tokens HMAC con 403. No usar hasta migrar a RS256 con JWK endpoint. -->
+        <!--
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
         </dependency>
+        -->
 
         <!-- OpenPDF — generación extractos PDF US-704 (com.lowagie.*) -->
         <dependency>
