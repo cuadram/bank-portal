@@ -52,7 +52,7 @@ public class BillLookupAndPayUseCase {
         // Lookup en core — confirmar que la factura existe y el importe es correcto
         BillLookupResult bill = billPaymentPort.lookupBill(cmd.reference());
 
-        auditLog.record(userId, "INVOICE_PAYMENT_INITIATED",
+        auditLog.log("INVOICE_PAYMENT_INITIATED", userId,
                 "ref=" + maskReference(cmd.reference()) + " amount=" + cmd.amount());
 
         // OTP obligatorio — PSD2 SCA
@@ -72,7 +72,7 @@ public class BillLookupAndPayUseCase {
                 cmd.sourceAccountId(), "COMPLETED", coreTxnId, now);
         BillPayment saved = billPaymentRepository.save(payment);
 
-        auditLog.record(userId, "INVOICE_PAYMENT_COMPLETED",
+        auditLog.log("INVOICE_PAYMENT_COMPLETED", userId,
                 "ref=" + maskReference(cmd.reference()) + " paymentId=" + saved.id()
                         + " coreTxnId=" + coreTxnId + " amount=" + cmd.amount());
 

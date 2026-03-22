@@ -53,7 +53,7 @@ public class BudgetAlertService {
 
         if (usedPct >= 80.0) {
             alertRepo.saveAlert(userId, period, monthlyBudget, 80, expenses);
-            auditLog.record(userId, "BUDGET_ALERT_TRIGGERED",
+            auditLog.log("BUDGET_ALERT_TRIGGERED", userId,
                     "period=" + period + " used=" + usedPct + "% budget=" + monthlyBudget);
             log.info("[US-1005] Alerta disparada: userId={} period={} used={}%", userId, period, usedPct);
             // Notificación SSE + email: delegar al NotificationService (ya existente)

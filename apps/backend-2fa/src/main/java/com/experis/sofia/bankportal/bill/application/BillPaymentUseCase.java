@@ -59,7 +59,7 @@ public class BillPaymentUseCase {
         // 3. Verificar OTP — PSD2 SCA obligatorio (ANTES del audit INITIATED — RV-001)
         twoFactorService.verifyCurrentOtp(userId, cmd.otpCode());
 
-        auditLog.record(userId, "BILL_PAYMENT_INITIATED",
+        auditLog.log("BILL_PAYMENT_INITIATED", userId,
                 "billId=" + billId + " amount=" + bill.amount() + " issuer=" + bill.issuer());
 
         // 4. Ejecutar pago en core bancario (con idempotencyKey para reintentos seguros)
@@ -81,7 +81,7 @@ public class BillPaymentUseCase {
                 bill.amount(), bill.dueDate(), BillStatus.PAID, bill.createdAt());
         billRepository.save(paidBill);
 
-        auditLog.record(userId, "BILL_PAYMENT_COMPLETED",
+        auditLog.log("BILL_PAYMENT_COMPLETED", userId,
                 "billId=" + billId + " paymentId=" + saved.id() + " coreTxnId=" + coreTxnId + " amount=" + bill.amount());
 
         log.info("[US-903] Recibo pagado: billId={} paymentId={} userId={} coreTxnId={}",
