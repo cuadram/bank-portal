@@ -34,6 +34,13 @@ jwt:
   pre-auth-ttl-seconds: 300
   session-ttl-seconds: 28800
 
+# Deshabilitar auto-configuracion OAuth2 Resource Server en STG
+# (el proyecto usa JJWT custom, no Spring OAuth2 JWT)
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration
+
 # TOTP — clave AES-256 stub para STG
 # Base64 de "stg-totp-aes-key-exactly-32bytes" = 32 bytes exactos (AES-256)
 totp:
