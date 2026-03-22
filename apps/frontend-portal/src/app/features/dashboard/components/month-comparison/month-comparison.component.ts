@@ -10,7 +10,10 @@ import { MonthComparison } from '../../services/dashboard.service';
   template: `
     <div class="comparison-card">
       <h3>Mes actual vs anterior</h3>
-      <div *ngIf="loading" class="skeleton-line" *ngFor="let i of [1,2]"></div>
+      <ng-container *ngIf="loading">
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line"></div>
+      </ng-container>
       <div *ngIf="!loading && comparison">
         <div class="row">
           <span>Gastos este mes</span>
