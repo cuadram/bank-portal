@@ -14,7 +14,9 @@
   "gates": {
     "1": { "status": "approved", "by": "product-owner", "at": "2026-03-21T19:37:00Z" },
     "2": { "status": "approved", "by": "product-owner", "at": "2026-03-22T11:02:00Z" },
-    "3": { "status": "approved", "by": "tech-lead",     "at": "2026-03-22T11:17:00Z" }
+    "3": { "status": "approved", "by": "tech-lead", "at": "2026-03-22T11:17:00Z" },
+    "4": { "status": "approved", "by": "tech-lead", "at": "2026-03-22T13:21:00Z" },
+    "5": { "status": "approved", "by": "tech-lead", "at": "2026-03-22T13:28:00Z" }
   },
   "version": "2.0",
   "updated_at": "2026-03-21T14:30:00Z",
