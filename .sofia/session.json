@@ -3,16 +3,17 @@
   "sprint": 13,
   "feature": "FEAT-011",
   "pipeline_type": "new-feature",
-  "pipeline_step": "2",
-  "pipeline_step_name": "requirements-analyst",
+  "pipeline_step": "3",
+  "pipeline_step_name": "architect",
   "status": "gate_pending",
   "timestamp": "2026-03-22T14:30:00Z",
-  "completed_steps": ["1","2"],
-  "pending_steps": ["3","3b","4","5","5b","6","7","8","9"],
-  "last_skill": "requirements-analyst",
-  "last_artifact": "docs/srs/SRS-FEAT-011.md",
+  "completed_steps": ["1","2","3"],
+  "pending_steps": ["3b","4","5","5b","6","7","8","9"],
+  "last_skill": "architect",
+  "last_artifact": "docs/architecture/lld/LLD-014-frontend-export.md",
   "gates": {
-    "1": { "status": "approved", "by": "product-owner", "at": "2026-03-22T18:50:00Z" }
+    "1": { "status": "approved", "by": "product-owner", "at": "2026-03-22T18:50:00Z" },
+    "2": { "status": "approved", "by": "product-owner", "at": "2026-03-22T18:53:00Z" }
   },
   "version": "2.0",
   "updated_at": "2026-03-22T14:30:00Z",
@@ -24,7 +25,8 @@
   },
   "artifacts": {
     "1": ["docs/backlog/FEAT-011.md", "docs/sprints/SPRINT-013-planning.md"],
-    "2": ["docs/srs/SRS-FEAT-011.md"]
+    "2": ["docs/srs/SRS-FEAT-011.md"],
+    "3": ["docs/architecture/hld/HLD-FEAT-011.md","docs/architecture/lld/LLD-014-frontend-export.md","docs/architecture/hld/ADR-020-export-strategy.md"]
   },
   "ncs": {},
   "security": {
