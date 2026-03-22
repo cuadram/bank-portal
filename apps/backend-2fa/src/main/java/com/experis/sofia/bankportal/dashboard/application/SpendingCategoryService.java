@@ -61,7 +61,7 @@ public class SpendingCategoryService {
                             e.getKey().name(), e.getValue(), pct,
                             counts.getOrDefault(e.getKey(), 0));
                 })
-                .sorted(Comparator.comparingDouble(SpendingCategoryDto::amount).reversed())
+                .sorted(Comparator.comparing(SpendingCategoryDto::amount).reversed()) // RV-010: BigDecimal usa Comparable, no comparingDouble
                 .collect(Collectors.toList());
 
         // Persistir caché

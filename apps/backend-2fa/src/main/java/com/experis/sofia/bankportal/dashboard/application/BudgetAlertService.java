@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.UUID;
@@ -47,7 +48,7 @@ public class BudgetAlertService {
         BigDecimal expenses = summary.totalExpenses();
 
         double usedPct = expenses.multiply(BigDecimal.valueOf(100))
-                .divide(monthlyBudget, 1, java.math.RoundingMode.HALF_UP)
+                .divide(monthlyBudget, 1, RoundingMode.HALF_UP) // RV-013: import limpio
                 .doubleValue();
 
         if (usedPct >= 80.0) {
