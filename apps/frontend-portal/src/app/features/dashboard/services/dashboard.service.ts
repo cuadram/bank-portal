@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
 
 export interface DashboardSummary {
   period: string;
@@ -56,7 +55,7 @@ export interface BudgetAlert {
  */
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
-  private base = `${environment.apiUrl}/dashboard`;
+  private base = '/api/v1/dashboard';
 
   constructor(private http: HttpClient) {}
 
