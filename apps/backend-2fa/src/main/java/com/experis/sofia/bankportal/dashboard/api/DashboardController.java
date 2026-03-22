@@ -1,7 +1,16 @@
 package com.experis.sofia.bankportal.dashboard.api;
 
-import com.experis.sofia.bankportal.dashboard.application.*;
-import com.experis.sofia.bankportal.dashboard.application.dto.*;
+import com.experis.sofia.bankportal.dashboard.application.BudgetAlertService;
+import com.experis.sofia.bankportal.dashboard.application.DashboardSummaryUseCase;
+import com.experis.sofia.bankportal.dashboard.application.MonthComparisonUseCase;
+import com.experis.sofia.bankportal.dashboard.application.MonthlyEvolutionUseCase;
+import com.experis.sofia.bankportal.dashboard.application.SpendingCategoryService;
+import com.experis.sofia.bankportal.dashboard.application.dto.BudgetAlertDto;
+import com.experis.sofia.bankportal.dashboard.application.dto.DashboardSummaryDto;
+import com.experis.sofia.bankportal.dashboard.application.dto.MonthComparisonDto;
+import com.experis.sofia.bankportal.dashboard.application.dto.MonthlyEvolutionDto;
+import com.experis.sofia.bankportal.dashboard.application.dto.SpendingCategoryDto;
+import com.experis.sofia.bankportal.dashboard.application.dto.TopMerchantDto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;

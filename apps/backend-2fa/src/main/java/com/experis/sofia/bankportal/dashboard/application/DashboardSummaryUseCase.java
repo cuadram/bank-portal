@@ -38,7 +38,12 @@ public class DashboardSummaryUseCase {
         return switch (param) {
             case "current_month"  -> YearMonth.now().toString();
             case "previous_month" -> YearMonth.now().minusMonths(1).toString();
-            default               -> param;
+            default -> {
+            if (!param.matches("\\d{4}-\\d{2}"))
+                throw new IllegalArgumentException(
+                    "Periodo invalido: '" + param + "' — usar YYYY-MM, current_month o previous_month");
+            yield param;
+        }
         };
     }
 }
