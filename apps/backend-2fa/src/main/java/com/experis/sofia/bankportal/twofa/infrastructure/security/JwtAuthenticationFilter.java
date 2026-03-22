@@ -90,6 +90,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         return path.equals("/auth/login")
             || path.equals("/2fa/verify")
-            || path.equals("/actuator/health");
+            || path.equals("/actuator/health")
+            || path.startsWith("/dev/");
     }
 }

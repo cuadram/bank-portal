@@ -68,7 +68,8 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/auth/login",
                     "/2fa/verify",
-                    "/actuator/health"
+                    "/actuator/health",
+                    "/dev/token"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
