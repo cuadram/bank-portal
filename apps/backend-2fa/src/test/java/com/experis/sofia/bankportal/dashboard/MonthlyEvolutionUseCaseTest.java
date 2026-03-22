@@ -105,7 +105,7 @@ class MonthlyEvolutionUseCaseTest {
         for (int i = 1; i < result.size(); i++) {
             YearMonth prev = YearMonth.of(result.get(i-1).year(), result.get(i-1).month());
             YearMonth curr = YearMonth.of(result.get(i).year(),   result.get(i).month());
-            assertThat(curr).isAfter(prev);
+            assertThat(curr).isGreaterThan(prev);
         }
     }
 }
