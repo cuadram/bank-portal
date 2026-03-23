@@ -24,6 +24,8 @@ services:
       # Redis — DEBT-011: SSE Pub/Sub multi-pod
       SPRING_REDIS_URL:            ${REDIS_URL}
       # JWT
+      JWT_SECRET:                  "stg-jwt-hmac-secret-minimum-32bytes!"
+      JWT_PRE_AUTH_SECRET:         "stg-preauth-hmac-secret-32bytes-ok!"
       JWT_PRIVATE_KEY:             ${JWT_PRIVATE_KEY}
       JWT_PUBLIC_KEY:              ${JWT_PUBLIC_KEY}
       # FEAT-007: extractos + notificaciones
@@ -32,7 +34,7 @@ services:
       # DEBT-012: purga nocturna
       NOTIFICATION_PURGE_CRON:     "0 0 2 * * *"
       # Actuator / observabilidad
-      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,metrics,prometheus
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,metrics,prometheus,flyway,env,beans,mappings
     depends_on:
       postgres:
         condition: service_healthy

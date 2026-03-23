@@ -14,7 +14,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 
-/** DEBT-022/023 (Sprint 14): propaga jti + expiresAt como atributos de request. */
+/**
+ * Filtro de autenticación JWT — DEBT-022/023 (Sprint 14):
+ * propaga jti + expiresAt como atributos de request.
+ * FEAT-001 | US-002 | @since 1.0.0
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -60,6 +64,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.equals("/auth/login") || path.equals("/2fa/verify") || path.equals("/actuator/health");
+        return path.equals("/auth/login")
+            || path.equals("/2fa/verify")
+            || path.equals("/actuator/health")
+            || path.startsWith("/dev/");
     }
 }

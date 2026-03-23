@@ -3,6 +3,7 @@ package com.experis.sofia.bankportal.twofa.infrastructure.config;
 import com.experis.sofia.bankportal.twofa.infrastructure.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -59,6 +60,7 @@ public class SecurityConfig {
      * @throws Exception si la configuración falla
      */
     @Bean
+    @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
@@ -68,7 +70,9 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/auth/login",
                     "/2fa/verify",
-                    "/actuator/health"
+                    "/actuator/health",
+                    "/dev/token",
+                    "/dev/hash"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

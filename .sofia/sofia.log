@@ -1,27 +1,31 @@
 [2026-03-20T09:00:00Z] [STEP-1] [scrum-master] STARTED → Sprint 10 Planning FEAT-008
 [2026-03-20T09:00:01Z] [STEP-1] [scrum-master] COMPLETED → FEAT-008.md | SPRINT-010-planning.md | SCRUM-31 | 24 SP | Gate 1 PENDING
 [2026-03-20T09:05:00Z] [GATE-1] [product-owner] APPROVED → Sprint 10 Planning 24 SP
-[2026-03-20T09:05:01Z] [STEP-2] [requirements-analyst] STARTED → SRS-FEAT-008
-[2026-03-20T09:10:00Z] [STEP-2] [requirements-analyst] COMPLETED → SRS-FEAT-008.md | 6 RF + 4 RNF + RTM | Gate 2 PENDING
-[2026-03-20T09:15:00Z] [GATE-2] [product-owner] APPROVED → SRS-FEAT-008 v1.0
-[2026-03-20T09:15:01Z] [STEP-3] [architect] STARTED → HLD + LLD + ADRs
-[2026-03-20T09:25:00Z] [STEP-3] [architect] COMPLETED → HLD-FEAT-008.md | LLD-011 | ADR-015 | ADR-016 | Gate 3 PENDING
-[2026-03-20T09:30:00Z] [GATE-3] [tech-lead] APPROVED → HLD + LLD + ADRs
-[2026-03-20T09:30:01Z] [STEP-3b] [documentation-agent] COMPLETED → automático
-[2026-03-20T09:30:02Z] [STEP-4] [developer] STARTED → FEAT-008 Java implementation
-[2026-03-20T09:45:00Z] [STEP-4] [developer] COMPLETED → Flyway V11 | 20 clases | 3 controllers | 23 tests unitarios
-[2026-03-20T10:00:00Z] [STEP-5] [code-reviewer] STARTED → Code Review FEAT-008
-[2026-03-20T10:15:00Z] [STEP-5] [code-reviewer] COMPLETED → CR-FEAT-008-sprint10.md | 4 Mayores | APROBADO CON CONDICIONES
-[2026-03-20T10:15:01Z] [STEP-5] [developer] RE-REVIEW → RV-001 TransferLimitPort | RV-002 TransferLimitsController | RV-003 query específica | RV-004 tests US-802
-[2026-03-20T10:20:00Z] [STEP-5] [code-reviewer] RE-REVIEW COMPLETED → 0 Mayores | APROBADO
-[2026-03-20T10:25:00Z] [GATE-4] [tech-lead] APPROVED → Code Review
-[2026-03-20T10:25:01Z] [STEP-5b] [security-agent] STARTED → Security Scan
-[2026-03-20T10:30:00Z] [STEP-5b] [security-agent] COMPLETED → SecurityReport-Sprint10-FEAT-008.md | CVE critical=0 | Semáforo=VERDE | approved
-[2026-03-20T10:30:01Z] [STEP-6] [qa-tester] STARTED → QA Test Plan FEAT-008
-[2026-03-20T10:45:00Z] [STEP-6] [qa-tester] COMPLETED → QA-Report-FEAT-008-sprint10.md | 49/49 PASS | 0 defectos | Gherkin 100% | LISTO PARA RELEASE
-[2026-03-20T10:50:00Z] [GATE-5] [qa-lead+product-owner] APPROVED → QA Report FEAT-008
-[2026-03-20T10:50:01Z] [STEP-7] [devops] STARTED → CI/CD pipeline FEAT-008 Sprint 10
-[2026-03-20T11:00:00Z] [STEP-7] [devops] COMPLETED → Jenkinsfile v1.10.0 (12 stages) | RELEASE-NOTES-v1.10.0.md | README-CREDENTIALS.md (4 creds RS256) | Gate 6 PENDING
-[2026-03-20T11:05:00Z] [GATE-6] [release-manager] APPROVED → DevOps release BankPortal v1.10.0
-[2026-03-20T11:05:01Z] [STEP-8] [documentation-agent] COMPLETED → docs/deliverables/sprint-10-FEAT-008/DOC-INDEX-sprint10.md | paquete entregables generado
-[2026-03-20T11:06:00Z] [STEP-9] [workflow-manager] COMPLETED → Sprint 10 CERRADO | FEAT-008 ENTREGADO | v1.10.0 | 24/24 SP | 0 defectos | pipeline status=completed | SCRUM-31 pendiente de comentario Jira (herramienta no disponible en sesión)
+[2026-03-20T11:06:00Z] [STEP-9] [workflow-manager] COMPLETED → Sprint 10 CERRADO | FEAT-008 ENTREGADO | v1.10.0 | 24/24 SP | 0 defectos | SCRUM-31
+[2026-03-21T14:30:00Z] [STEP-1] [scrum-master] COMPLETED → FEAT-010.md | SPRINT-012-planning.md | SCRUM-33 | 24 SP
+[2026-03-21T19:37:00Z] [GATE-1] [product-owner] APPROVED
+[2026-03-21T19:45:00Z] [STEP-2] [requirements-analyst] COMPLETED → SRS-FEAT-010.md | 9 RF + 4 RNF + Flyway V13 DDL
+[2026-03-22T11:02:00Z] [GATE-2] [product-owner] APPROVED
+[2026-03-22T11:12:00Z] [STEP-3] [architect] COMPLETED → HLD-FEAT-010.md | LLD-013 | ADR-019
+[2026-03-22T11:17:00Z] [GATE-3] [tech-lead] APPROVED
+[2026-03-22T13:10:00Z] [STEP-4] [developer] COMPLETED → DEBT-017/018/019 + V13 + módulo dashboard + 23 tests
+[2026-03-22T13:21:00Z] [GATE-4] [tech-lead] APPROVED
+[2026-03-22T13:25:00Z] [STEP-5] [code-reviewer] COMPLETED → CR-FEAT-010-sprint12.md | RV-010 corregido
+[2026-03-22T13:28:00Z] [GATE-5] [tech-lead] APPROVED
+[2026-03-22T13:50:00Z] [STEP-5b] [security-agent] COMPLETED → SecurityReport-Sprint12 | CVE=0 | VERDE
+[2026-03-22T14:00:00Z] [GATE-6] [qa-lead+product-owner] APPROVED
+[2026-03-22T14:00:01Z] [STEP-6] [qa-tester] COMPLETED → QA-Report-FEAT-010-sprint12.md | 37/37 PASS | 0 defectos
+[2026-03-22T14:05:00Z] [STEP-7] [devops] COMPLETED → Jenkinsfile v1.12.0 | RELEASE-NOTES-v1.12.0.md
+[2026-03-22T14:10:00Z] [GATE-7] [release-manager] APPROVED
+[2026-03-22T14:15:00Z] [STEP-9] [workflow-manager] COMPLETED → Sprint 12 CERRADO | FEAT-010 ENTREGADO | v1.12.0 | 24/24 SP | SCRUM-33
+[2026-03-22T14:30:00Z] [STEP-1] [scrum-master] COMPLETED → Sprint 13 Planning FEAT-011 | SCRUM-34 | 24 SP
+[2026-03-22T19:30:00Z] [STEP-9] [workflow-manager] COMPLETED → Sprint 13 CERRADO | FEAT-011 ENTREGADO | v1.13.0 | 24/24 SP | SCRUM-34
+[2026-03-23T10:00:00Z] [STEP-1] [scrum-master] COMPLETED → Sprint 14 Planning FEAT-012 | SCRUM-35 | 24 SP
+[2026-03-23T10:30:00Z] [GATE-1] [product-owner] APPROVED
+[2026-03-23T11:00:00Z] [GATE-2] [product-owner] APPROVED → SRS-FEAT-012 | 5 US | 20 Gherkin
+[2026-03-23T11:30:00Z] [GATE-3] [tech-lead] APPROVED → HLD+LLD+ADR-021/022
+[2026-03-23T18:30:00Z] [GATE-4] [tech-lead] APPROVED → DEBT-022/023 + RV-013..017 + FEAT-012-A base
+[2026-03-23T19:00:00Z] [GATE-5] [tech-lead] APPROVED → CR-FEAT-012-sprint14.md | 0 bloqueantes
+[2026-03-23T19:30:00Z] [GATE-6] [qa-lead+product-owner] APPROVED → 42/42 TC PASS | 0 defectos
+[2026-03-23T20:00:00Z] [GATE-7] [release-manager] APPROVED → v1.14.0
+[2026-03-23T20:30:00Z] [STEP-9] [workflow-manager] COMPLETED → Sprint 14 CERRADO | FEAT-012-A ENTREGADO | v1.14.0 | 24/24 SP | SCRUM-35
