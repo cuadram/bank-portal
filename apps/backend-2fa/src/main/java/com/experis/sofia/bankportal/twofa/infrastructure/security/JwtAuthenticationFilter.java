@@ -17,12 +17,9 @@ import java.util.Collections;
 /**
  * Filtro de autenticación JWT — procesa cada request una sola vez.
  *
- * <p>Extrae el JWT del header {@code Authorization: Bearer <token>},
- * lo valida mediante {@link JwtTokenProvider} y establece el contexto
- * de seguridad de Spring ({@link SecurityContextHolder}).</p>
- *
- * <p><strong>RV-007 fix:</strong> Usa {@link JwtTokenProvider#validateAndExtract(String)}
- * para obtener userId y username en una sola operación de parseo/verificación JWT.</p>
+ * <p><strong>DEBT-023 (Sprint 14):</strong> Propaga {@code jti} y {@code expiresAt}
+ * como atributos de request para que {@code ManageSessionsUseCase} pueda calcular
+ * el TTL de revocación Redis sin re-parsear el token.</p>
  *
  * <p>FEAT-001 | US-002</p>
  *
@@ -47,7 +44,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         String authHeader = request.getHeader(AUTH_HEADER);
-
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
@@ -56,20 +52,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = authHeader.substring(BEARER_PREFIX.length());
 
         try {
-            // RV-007 fix: una sola verificación de firma por request
             JwtTokenProvider.JwtClaims claims = jwtTokenProvider.validateAndExtract(token);
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                        claims.username(),
-                        null,
-                        Collections.emptyList()
-                    );
+                var authentication = new UsernamePasswordAuthenticationToken(
+                    claims.username(), null, Collections.emptyList());
                 authentication.setDetails(
                     new WebAuthenticationDetailsSource().buildDetails(request));
 
+                // Atributos disponibles para los use cases
                 request.setAttribute("authenticatedUserId", claims.userId());
+                request.setAttribute("authenticatedJti",    claims.jti());      // DEBT-023
+                request.setAttribute("jwtExpiresAt",        claims.expiresAt()); // DEBT-023
+
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (JwtTokenProvider.JwtTokenInvalidException e) {
@@ -79,12 +74,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * Excluir endpoints que gestionan su propia autenticación.
-     *
-     * <p>{@code POST /2fa/verify} usa pre-auth token (secreto diferente),
-     * no debe pasar por este filtro.</p>
-     */
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         String path = request.getServletPath();
