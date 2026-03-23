@@ -1,0 +1,52 @@
+<div class="profile-container">
+  <!-- Loading skeleton -->
+  <ng-container *ngIf="isLoading">
+    <div class="skeleton skeleton-header"></div>
+    <div class="skeleton skeleton-section"></div>
+    <div class="skeleton skeleton-section"></div>
+  </ng-container>
+
+  <!-- Error -->
+  <div *ngIf="errorMsg && !isLoading" class="alert alert-danger">{{ errorMsg }}</div>
+
+  <!-- Datos cargados -->
+  <ng-container *ngIf="!isLoading && profile">
+
+    <!-- Datos personales -->
+    <section class="profile-section">
+      <h2>Datos personales</h2>
+      <div class="profile-field"><label>Email</label><span>{{ profile.email }}</span></div>
+      <div class="profile-field"><label>Teléfono</label><span>{{ profile.phone || '—' }}</span></div>
+      <div class="profile-field" *ngIf="profile.address">
+        <label>Dirección</label>
+        <span>{{ profile.address.street }}, {{ profile.address.city }} {{ profile.address.postalCode }}</span>
+      </div>
+      <div class="profile-field"><label>Miembro desde</label><span>{{ profile.memberSince | date:'dd/MM/yyyy' }}</span></div>
+    </section>
+
+    <!-- Preferencias de notificación -->
+    <section class="profile-section">
+      <h2>Notificaciones</h2>
+      <div *ngFor="let pref of notifications" class="notification-pref">
+        <label>{{ pref.code }}</label>
+        <input type="checkbox" [checked]="pref.enabled"
+               (change)="onToggleNotification(pref.code, $any($event.target).checked)" />
+      </div>
+    </section>
+
+    <!-- Sesiones activas -->
+    <section class="profile-section">
+      <h2>Sesiones activas</h2>
+      <div *ngFor="let session of sessions" class="session-row">
+        <span class="session-agent">{{ session.userAgent }}</span>
+        <span class="session-ip">{{ session.ipAddress }}</span>
+        <span class="session-date">{{ session.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+        <span *ngIf="session.current" class="badge-current">Sesión actual</span>
+        <button *ngIf="!session.current" (click)="onRevokeSession(session.jti)" class="btn-revoke">
+          Revocar
+        </button>
+      </div>
+    </section>
+
+  </ng-container>
+</div>
