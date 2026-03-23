@@ -1,0 +1,93 @@
+{
+  "_comment": "SOFIA v1.7 — Configuración del proyecto. Editar con: python3 .sofia/scripts/sofia-wizard.py --update",
+  "sofia_version": "1.7",
+  "project": "bank-portal",
+  "client": "Experis",
+  "project_description": "Portal bancario con microservicios Java + Angular",
+  "created_at": "2026-03-18T20:18:57Z",
+  "updated_at": "2026-03-18T20:18:57Z",
+  "stack": {
+    "backend": [
+      "java"
+    ],
+    "frontend": [
+      "angular"
+    ],
+    "database": [
+      "postgresql",
+      "redis"
+    ],
+    "messaging": [],
+    "infra": [
+      "docker",
+      "jenkins"
+    ]
+  },
+  "methodology": {
+    "type": "scrumban",
+    "sprint_length_days": 14,
+    "velocity_reference_sp": 24,
+    "estimation_unit": "story_points"
+  },
+  "team_roles": {
+    "product_owner": "",
+    "tech_lead": "",
+    "scrum_master": "",
+    "qa_lead": "",
+    "release_manager": "",
+    "pm": "",
+    "security_team": "security-team",
+    "client_contact": ""
+  },
+  "jira": {
+    "project_key": "BP",
+    "sprint_board_id": null,
+    "gate_label": "sofia-gate",
+    "nc_label": "sofia-nc"
+  },
+  "confluence": {
+    "space_key": "BANKPORTAL",
+    "parent_page_id": null
+  },
+  "pipeline": {
+    "active_steps": [
+      "1",
+      "2",
+      "3",
+      "3b",
+      "4",
+      "5",
+      "5b",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "optional_steps": {
+      "5b": true,
+      "performance": false
+    },
+    "gates_enabled": true,
+    "atlassian_sync": true,
+    "auto_dashboard": true
+  },
+  "quality": {
+    "coverage_threshold": 80,
+    "max_cve_high": 3,
+    "max_cve_critical": 0,
+    "cmmi_level": 3
+  },
+  "paths": {
+    "repo": "/Users/cuadram/Downloads",
+    "docs": "docs",
+    "src": "src",
+    "infra": "infra",
+    "deliverables": "docs/deliverables"
+  },
+  "document_style": {
+    "language": "es",
+    "corporate_color": "1B3A6B",
+    "font": "Arial",
+    "paper": "A4"
+  }
+}

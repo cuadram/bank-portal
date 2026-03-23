@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SOFIA Dashboard — bank-portal</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a18;font-size:14px}
+header{background:#1B3A6B;color:#fff;padding:20px 32px;display:flex;align-items:center;justify-content:space-between}
+header h1{font-size:20px;font-weight:500}
+.container{max-width:1200px;margin:0 auto;padding:24px 20px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.metric{background:#fff;border:1px solid #e5e4df;border-radius:8px;padding:16px}
+.metric .val{font-size:28px;font-weight:500;line-height:1}
+.metric .lbl{font-size:12px;color:#888;margin-top:4px}
+.metric .sub{font-size:11px;color:#aaa;margin-top:2px}
+.metric.green .val{color:#2d6a1f}.metric.amber .val{color:#a05a00}
+.metric.red .val{color:#a01010}.metric.blue .val{color:#1B3A6B}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e5e4df;border-radius:8px;padding:20px;margin-bottom:16px}
+.card h3{font-size:12px;font-weight:500;color:#1B3A6B;margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px}
+.chart-wrap{position:relative;width:100%;height:220px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{padding:6px 10px;text-align:left;color:#888;border-bottom:1px solid #e5e4df;font-weight:500}
+td{padding:7px 10px;border-bottom:1px solid #f0efea;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:1px 7px;border-radius:8px;font-size:11px;font-weight:500}
+.badge.ok{background:#e6f3df;color:#2d6a1f}.badge.warn{background:#fff3dc;color:#a05a00}
+.badge.err{background:#fde8e8;color:#a01010}.badge.info{background:#e6eef8;color:#1B3A6B}
+.cmmi-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0efea}
+.cmmi-row:last-child{border-bottom:none}
+.cmmi-name{font-size:12px;color:#555;width:220px;flex-shrink:0;font-family:monospace}
+.cmmi-bar-wrap{flex:1;height:8px;background:#e5e4df;border-radius:4px;overflow:hidden}
+.cmmi-bar{height:100%;border-radius:4px}
+.cmmi-pct{font-size:11px;color:#888;width:36px;text-align:right}
+.footer{text-align:center;padding:20px;font-size:11px;color:#aaa}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>SOFIA Dashboard — bank-portal</h1>
+    <div style="font-size:12px;opacity:.75;margin-top:2px">Métricas CMMI MA · Sprint 7 · 18/03/2026 20:12 UTC</div>
+  </div>
+  <div style="text-align:right">
+    <div style="font-size:13px">Pipeline: <strong>in_progress</strong></div>
+    <div style="font-size:11px;opacity:.75">Security: — · CVE críticos: 0</div>
+  </div>
+</header>
+<div class="container">
+  <div class="metrics">
+    <div class="metric green">
+      <div class="val">100.0%</div>
+      <div class="lbl">Tasa de éxito del pipeline</div>
+      <div class="sub">15 completados · 0 errores</div>
+    </div>
+    <div class="metric green">
+      <div class="val">100.0%</div>
+      <div class="lbl">Tasa aprobación gates</div>
+      <div class="sub">1 aprobados · 0 rechazados</div>
+    </div>
+    <div class="metric blue">
+      <div class="val">18</div>
+      <div class="lbl">Entradas en sofia.log</div>
+      <div class="sub">4 skills activos</div>
+    </div>
+    <div class="metric green">
+      <div class="val">0</div>
+      <div class="lbl">CVEs críticos activos</div>
+      <div class="sub">Semáforo: —</div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>Actividad por skill</h3>
+      <div class="chart-wrap"><canvas id="skillChart"></canvas></div></div>
+    <div class="card"><h3>Tiempo medio por step (segundos)</h3>
+      <div class="chart-wrap"><canvas id="stepTimeChart"></canvas></div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>Distribución de estados</h3>
+      <div class="chart-wrap"><canvas id="statusChart"></canvas></div></div>
+    <div class="card"><h3>Gates — resultado acumulado</h3>
+      <div class="chart-wrap"><canvas id="gateChart"></canvas></div></div>
+  </div>
+  <div class="card"><h3>Madurez CMMI Nivel 3</h3><div class="cmmi-row"><div class="cmmi-name">REQM — Gestión requisitos</div><div class="cmmi-bar-wrap"><div class="cmmi-bar" style="width:85%;background:#185FA5"></div></div><div class="cmmi-pct">85%</div></div>
+<div class="cmmi-row"><div class="cmmi-name">PP   — Planificación</div><div class="cmmi-bar-wrap"><div class="cmmi-bar" style="width:80%;background:#185FA5"></div></div><div class="cmmi-pct">80%</div></div>
+<div class="cmmi-row"><div class="cmmi-name">PMC  — Monitorización</div><div class="cmmi-bar-wrap"><div class="cmmi-bar" style="width:65%;background:#EF9F27"></div></div><div class="cmmi-pct">65%</div></div>
+<div class="cmmi-row"><div class="cmmi-name">MA   — Medición y análisis</div><div class="cmmi-bar-wrap"><div class="cmmi-bar" style="width:50%;background:#EF9F27"></div></div><div class="cmmi-pct">50%</div></div>
+<div class="cmmi-row"><div class="cmmi-name">PPQA — Calidad proceso</div><div class="cmmi-bar-wrap"><div class="cmmi-bar" style="width:75%;background:#185FA5"></div></div><div class="cmmi-pct">75%</div></div>
+<div class="cmmi-row"><div class="cmmi-name">CM   — Config. management</div><div class="cmmi-bar-wrap"><div class="cmmi-bar" style="width:70%;background:#185FA5"></div></div><div class="cmmi-pct">70%</div></div>
+<div class="cmmi-row"><div class="cmmi-name">DAR  — Análisis decisiones</div><div class="cmmi-bar-wrap"><div class="cmmi-bar" style="width:55%;background:#EF9F27"></div></div><div class="cmmi-pct">55%</div></div>
+</div>
+  <div class="card"><h3>Últimas 20 entradas del log</h3>
+    <table><thead><tr>
+      <th>Timestamp</th><th>Step</th><th>Skill</th><th>Estado</th><th>Detalle</th>
+    </tr></thead><tbody><tr><td style="color:#888;font-size:11px">2026-03-18T20:12:33Z</td><td><span class="badge info">RESUME</span></td><td style="font-size:12px">resume.py</td><td><span class="badge info">RESUME_X</span></td><td style="color:#555;font-size:11px">usuario canceló, sin cambios</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T20:12:05Z</td><td><span class="badge info">AUDIT</span></td><td style="font-size:12px">audit-persistence.sh</td><td><span class="badge ok">COMPLETED</span></td><td style="color:#555;font-size:11px">pass=36 warn=1 fail=0 skills_ok=18</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T20:07:33Z</td><td><span class="badge info">AUDIT</span></td><td style="font-size:12px">audit-persistence.sh</td><td><span class="badge ok">COMPLETED</span></td><td style="color:#555;font-size:11px">pass=36 warn=1 fail=0 skills_ok=18</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T19:58:25Z</td><td><span class="badge info">DASHBOARD</span></td><td style="font-size:12px">sofia-dashboard.py</td><td><span class="badge ok">COMPLETED</span></td><td style="color:#555;font-size:11px">/Users/cuadram/proyectos/bank-portal/docs/quality/sofia-metr…</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T19:54:14Z</td><td><span class="badge info">AUDIT</span></td><td style="font-size:12px">audit-persistence.sh</td><td><span class="badge ok">COMPLETED</span></td><td style="color:#555;font-size:11px">pass=36 warn=1 fail=0 skills_ok=18</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T19:48:49Z</td><td><span class="badge info">DASHBOARD</span></td><td style="font-size:12px">sofia-dashboard.py</td><td><span class="badge ok">COMPLETED</span></td><td style="color:#555;font-size:11px">/Users/cuadram/proyectos/bank-portal/docs/quality/sofia-metr…</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T19:48:05Z</td><td><span class="badge info">GATE</span></td><td style="font-size:12px">gate-check.py</td><td><span class="badge warn">GATE_APPROVED</span></td><td style="color:#555;font-size:11px">step=3 feature=FEAT-004 by=tech-lead</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T19:38:10Z</td><td><span class="badge info">DASHBOARD</span></td><td style="font-size:12px">sofia-dashboard.py</td><td><span class="badge ok">COMPLETED</span></td><td style="color:#555;font-size:11px">/Users/cuadram/proyectos/bank-portal/docs/quality/sofia-metr…</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T19:23:20Z</td><td><span class="badge info">AUDIT</span></td><td style="font-size:12px">audit-persistence.sh</td><td><span class="badge ok">COMPLETED</span></td><td style="color:#555;font-size:11px">pass=36 warn=1 fail=0 skills_ok=18</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T19:22:59Z</td><td><span class="badge info">PATCH</span></td><td style="font-size:12px">patch-persistence.py</td><td><span class="badge ok">COMPLETED</span></td><td style="color:#555;font-size:11px">patched=0 skipped=16 errors=0</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T19:16:22Z</td><td><span class="badge info">AUDIT</span></td><td style="font-size:12px">audit-persistence.sh</td><td><span class="badge ok">COMPLETED</span></td><td style="color:#555;font-size:11px">pass=36 warn=1 fail=0 skills_ok=18</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T19:16:07Z</td><td><span class="badge info">PATCH</span></td><td style="font-size:12px">patch-persistence.py</td><td><span class="badge ok">COMPLETED</span></td><td style="color:#555;font-size:11px">patched=16 skipped=0 errors=0</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T19:11:35Z</td><td><span class="badge info">PATCH</span></td><td style="font-size:12px">patch-persistence.sh</td><td><span class="badge ok">COMPLETED</span></td><td style="color:#555;font-size:11px">patched=0 skipped=0 errors=16</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T19:10:53Z</td><td><span class="badge info">PATCH</span></td><td style="font-size:12px">patch-persistence.sh</td><td><span class="badge ok">COMPLETED</span></td><td style="color:#555;font-size:11px">patched=0 skipped=0 errors=16</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T19:09:32Z</td><td><span class="badge info">AUDIT</span></td><td style="font-size:12px">audit-persistence.sh</td><td><span class="badge ok">COMPLETED</span></td><td style="color:#555;font-size:11px">pass=18 warn=3 fail=16 skills_ok=2</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T19:09:13Z</td><td><span class="badge info">PATCH</span></td><td style="font-size:12px">patch-persistence.sh</td><td><span class="badge ok">COMPLETED</span></td><td style="color:#555;font-size:11px">patched=0 skipped=0 errors=16</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-18T19:02:39Z</td><td><span class="badge info">AUDIT</span></td><td style="font-size:12px">audit-persistence.sh</td><td><span class="badge ok">COMPLETED</span></td><td style="color:#555;font-size:11px">pass=14 warn=6 fail=17 skills_ok=2</td></tr>
+<tr><td style="color:#888;font-size:11px">2026-03-17T00:00:00Z</td><td><span class="badge info">INIT</span></td><td style="font-size:12px">orchestrator</td><td><span class="badge info">INITIALIZED</span></td><td style="color:#555;font-size:11px">.sofia/session.json, .sofia/sofia.log</td></tr>
+</tbody></table></div>
+  
+</div>
+<div class="footer">SOFIA v1.7 Dashboard · 18/03/2026 20:12 UTC · Evidencia CMMI MA válida</div>
+<script>
+const B='#185FA5',A='#BA7517',G='#3B6D11',R='#A32D2D';
+new Chart(document.getElementById('skillChart'),{type:'bar',data:{labels:["audit-persistence.sh", "patch-persistence.sh", "patch-persistence.py", "sofia-dashboard.py"],datasets:[{label:'Completados',data:[7, 3, 2, 3],backgroundColor:B},{label:'Errores',data:[0, 0, 0, 0],backgroundColor:R}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{x:{ticks:{font:{size:10},maxRotation:45}},y:{beginAtZero:true}}}});
+new Chart(document.getElementById('stepTimeChart'),{type:'bar',data:{labels:['S1','S2','S3','S3b','S4','S5','S5b','S6','S7','S8','S9'],datasets:[{label:'s',data:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],backgroundColor:["#185FA5", "#185FA5", "#185FA5", "#185FA5", "#185FA5", "#185FA5", "#185FA5", "#185FA5", "#185FA5", "#185FA5", "#185FA5"],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:11}}},y:{beginAtZero:true}}}});
+new Chart(document.getElementById('statusChart'),{type:'doughnut',data:{labels:["INITIALIZED", "COMPLETED", "GATE_APPROVED", "RESUME_X"],datasets:[{data:[1, 15, 1, 1],backgroundColor:["#185FA5", "#3B6D11", "#2d6a1f", "#A32D2D"]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:8}}}}});
+new Chart(document.getElementById('gateChart'),{type:'bar',data:{labels:['Aprobados','Rechazados','Pendientes','Bloqueados'],datasets:[{data:[1,0,0,0],backgroundColor:[G,R,A,'#D85A30'],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+</script>
+</body></html>
