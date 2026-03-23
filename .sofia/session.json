@@ -5,20 +5,20 @@
   "pipeline_type": "new-feature",
   "pipeline_step": "4",
   "pipeline_step_name": "developer",
-  "status": "gate_pending",
-  "timestamp": "2026-03-23T18:00:00Z",
+  "status": "paused",
+  "timestamp": "2026-03-23T18:30:00Z",
   "completed_steps": ["1","2","3","3b","4"],
   "pending_steps": ["5","5b","6","7","8","9"],
   "last_skill": "developer",
   "last_artifact": "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/profile/api/ProfileController.java",
   "gates": {
-    "1": { "status": "approved", "by": "product-owner",  "at": "2026-03-23T10:00:00Z" },
-    "2": { "status": "approved", "by": "product-owner",  "at": "2026-03-23T10:30:00Z" },
-    "3": { "status": "approved", "by": "tech-lead",      "at": "2026-03-23T11:00:00Z" },
-    "4": { "status": "pending",  "by": "tech-lead",      "at": null }
+    "1": { "status": "approved", "by": "product-owner", "at": "2026-03-23T10:00:00Z" },
+    "2": { "status": "approved", "by": "product-owner", "at": "2026-03-23T10:30:00Z" },
+    "3": { "status": "approved", "by": "tech-lead",     "at": "2026-03-23T11:00:00Z" },
+    "4": { "status": "approved", "by": "tech-lead",     "at": "2026-03-23T18:30:00Z" }
   },
   "version": "2.0",
-  "updated_at": "2026-03-23T18:00:00Z",
+  "updated_at": "2026-03-23T18:30:00Z",
   "started_at": "2026-03-23T10:00:00Z",
   "sprint_history": {
     "sprint_11": { "feature": "FEAT-009", "status": "completed", "sp_planned": 20, "sp_delivered": 20, "release": "v1.11.0" },
@@ -40,5 +40,6 @@
   "debt_resolved": ["DEBT-022","DEBT-023"],
   "rv_resolved": ["RV-013","RV-014","RV-015","RV-016","RV-017"],
   "tests_added": 20,
-  "tests_total_estimated": 153
+  "tests_total_estimated": 153,
+  "resume_next": "Step 5 — Code Reviewer Agent"
 }
