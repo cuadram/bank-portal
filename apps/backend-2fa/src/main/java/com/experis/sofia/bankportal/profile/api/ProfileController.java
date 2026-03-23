@@ -3,6 +3,7 @@ package com.experis.sofia.bankportal.profile.api;
 import com.experis.sofia.bankportal.profile.application.*;
 import com.experis.sofia.bankportal.profile.application.dto.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,26 +14,28 @@ import java.util.UUID;
  * REST API — Gestión de perfil de usuario.
  * FEAT-012-A Sprint 14 — US-1201 / US-1202 / US-1203 / US-1205
  *
+ * RV-022 fix: @Valid añadido en todos los @RequestBody.
+ *
  * userId, jti y expiresAt extraídos de atributos de request
  * inyectados por JwtAuthenticationFilter (DEBT-022/023).
  *
- * @author SOFIA Developer Agent — Sprint 14
+ * @author SOFIA Developer Agent — Sprint 14 | RV-022 fix Code Review
  */
 @RestController
 @RequestMapping("/api/v1/profile")
 @RequiredArgsConstructor
 public class ProfileController {
 
-    private final GetProfileUseCase    getProfile;
-    private final UpdateProfileUseCase updateProfile;
+    private final GetProfileUseCase     getProfile;
+    private final UpdateProfileUseCase  updateProfile;
     private final ChangePasswordUseCase changePassword;
     private final ManageSessionsUseCase manageSessions;
 
     // ── Helpers ──────────────────────────────────────────────────────────────
-    private UUID   userId(HttpServletRequest req)     { return (UUID)    req.getAttribute("authenticatedUserId"); }
-    private String jti(HttpServletRequest req)         { return (String)  req.getAttribute("authenticatedJti"); }
-    private Instant expiresAt(HttpServletRequest req)  { return (Instant) req.getAttribute("jwtExpiresAt"); }
-    private String  ip(HttpServletRequest req)         { return req.getRemoteAddr(); }
+    private UUID    userId(HttpServletRequest req)    { return (UUID)    req.getAttribute("authenticatedUserId"); }
+    private String  jti(HttpServletRequest req)       { return (String)  req.getAttribute("authenticatedJti"); }
+    private Instant expiresAt(HttpServletRequest req) { return (Instant) req.getAttribute("jwtExpiresAt"); }
+    private String  ip(HttpServletRequest req)        { return req.getRemoteAddr(); }
 
     // ── US-1201 — Ver perfil ──────────────────────────────────────────────────
     @GetMapping
@@ -43,14 +46,14 @@ public class ProfileController {
     // ── US-1202 — Actualizar datos personales ─────────────────────────────────
     @PatchMapping
     public ResponseEntity<ProfileResponse> updateProfile(
-            @RequestBody UpdateProfileRequest body, HttpServletRequest req) {
+            @Valid @RequestBody UpdateProfileRequest body, HttpServletRequest req) {  // RV-022
         return ResponseEntity.ok(updateProfile.execute(userId(req), body, ip(req)));
     }
 
     // ── US-1203 — Cambiar contraseña ──────────────────────────────────────────
     @PostMapping("/password")
     public ResponseEntity<Void> changePassword(
-            @RequestBody ChangePasswordRequest body, HttpServletRequest req) {
+            @Valid @RequestBody ChangePasswordRequest body, HttpServletRequest req) {  // RV-022
         changePassword.execute(userId(req), jti(req), body);
         return ResponseEntity.noContent().build();
     }
