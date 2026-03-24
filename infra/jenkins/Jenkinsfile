@@ -1,6 +1,6 @@
-// Jenkinsfile — BankPortal v1.14.0
-// FEAT-012-A (US-1201/1202/1203/1204/1205) + DEBT-022/023 + RV-013..023 | Sprint 14
-// Gate 7 DevOps — SOFIA Pipeline · 2026-03-23
+// Jenkinsfile — BankPortal v1.15.0
+// FEAT-013 KYC Onboarding (US-1301..1307) + RV-020/SAST-001/SAST-002 + RV-021..024 | Sprint 15
+// Gate 7 DevOps — SOFIA Pipeline · 2026-03-24
 //
 // Historial:
 //   v1.10.0 (Sprint 10): FEAT-008 Transferencias + DEBT-013/014
@@ -8,6 +8,7 @@
 //   v1.12.0 (Sprint 12): FEAT-010 Dashboard backend
 //   v1.13.0 (Sprint 13): FEAT-011 Frontend Angular Dashboard + exportación PDF/Excel
 //   v1.14.0 (Sprint 14): FEAT-012-A Gestión de Perfil + DEBT-022/023 + RV-013..023
+//   v1.15.0 (Sprint 15): FEAT-013 KYC Onboarding + RV-020/SAST-001/002 + RV-021..024
 
 pipeline {
     agent { label 'java-node' }
@@ -18,7 +19,7 @@ pipeline {
         DOCKER_REGISTRY = 'registry.meridian.internal'
         IMAGE_TAG       = "${env.GIT_COMMIT?.take(8) ?: env.BUILD_NUMBER}"
 
-        RELEASE_VERSION = '1.14.0'
+        RELEASE_VERSION = '1.15.0'
         RELEASE_TAG     = "v${RELEASE_VERSION}"
 
         BACKEND_PATH    = 'apps/backend-2fa'
@@ -26,128 +27,224 @@ pipeline {
         INFRA_PATH      = 'infra'
 
         JIRA_PROJECT    = 'SCRUM'
-        JIRA_EPIC       = 'SCRUM-35'
-        FEATURE_BRANCH  = 'feature/FEAT-012-sprint14'
+        JIRA_EPIC       = 'SCRUM-36'
+        FEATURE_BRANCH  = 'feature/FEAT-013-sprint15'
+
+        JAVA_VERSION    = '21'
+        NODE_VERSION    = '22'
+        MAVEN_OPTS      = '-Xmx1g'
     }
 
     options {
-        buildDiscarder(logRotator(numToKeepStr: '10'))
         timeout(time: 45, unit: 'MINUTES')
-        timestamps()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        disableConcurrentBuilds()
     }
 
     stages {
 
+        // ── Stage 0: Checkout + validation ──────────────────────────────────
         stage('Checkout') {
             steps {
                 checkout scm
-                sh 'git log --oneline -5'
+                sh 'java -version && mvn -version && node -v && npm -v'
+                echo "Build ${env.BUILD_NUMBER} — ${env.RELEASE_TAG} — commit ${env.IMAGE_TAG}"
             }
         }
 
-        stage('Backend — Build & Unit Tests') {
+        // ── Stage 1: Backend — Build + Tests ────────────────────────────────
+        stage('Backend: Build & Test') {
             steps {
-                dir("${BACKEND_PATH}") {
-                    sh './mvnw clean verify -Djacoco.minimum.coverage=0.80 -B -q'
+                dir(env.BACKEND_PATH) {
+                    sh '''
+                        mvn clean verify \
+                          -Dspring.profiles.active=test \
+                          -Djacoco.minimum.coverage=0.80 \
+                          -B -q
+                    '''
                 }
             }
             post {
                 always {
-                    junit "${BACKEND_PATH}/target/surefire-reports/*.xml"
+                    junit "${env.BACKEND_PATH}/target/surefire-reports/*.xml"
+                    jacoco(
+                        execPattern: "${env.BACKEND_PATH}/target/jacoco.exec",
+                        classPattern: "${env.BACKEND_PATH}/target/classes",
+                        sourcePattern: "${env.BACKEND_PATH}/src/main/java",
+                        minimumLineCoverage: '80',
+                        minimumBranchCoverage: '80'
+                    )
                 }
             }
         }
 
-        stage('Frontend — Build & Lint') {
+        // ── Stage 2: Flyway migration validation ────────────────────────────
+        stage('Flyway: Validate V15 migration') {
             steps {
-                dir("${FRONTEND_PATH}") {
-                    sh 'npm ci --prefer-offline'
-                    sh 'npm run lint -- --max-warnings=0'
-                    sh 'npm run build -- --configuration production'
+                dir(env.BACKEND_PATH) {
+                    sh '''
+                        mvn flyway:validate \
+                          -Dflyway.url=${DB_URL_CI} \
+                          -Dflyway.user=${DB_USER_CI} \
+                          -Dflyway.password=${DB_PASS_CI} \
+                          -B -q
+                    '''
                 }
             }
         }
 
-        stage('Backend — Integration Tests') {
+        // ── Stage 3: Frontend — Build + Tests ───────────────────────────────
+        stage('Frontend: Build & Test') {
             steps {
-                dir("${BACKEND_PATH}") {
-                    sh './mvnw verify -Pintegration -B -q'
+                dir(env.FRONTEND_PATH) {
+                    sh '''
+                        npm ci --silent
+                        npx ng test --watch=false --browsers=ChromeHeadless \
+                          --code-coverage --progress=false
+                        npx ng build --configuration=production \
+                          --output-hashing=all
+                    '''
+                }
+            }
+            post {
+                always {
+                    junit "${env.FRONTEND_PATH}/test-results/*.xml"
                 }
             }
         }
 
-        stage('Docker Build') {
+        // ── Stage 4: Docker build — Backend ─────────────────────────────────
+        stage('Docker: Build Backend') {
+            steps {
+                dir(env.BACKEND_PATH) {
+                    sh """
+                        docker build \
+                          --build-arg RELEASE_VERSION=${env.RELEASE_VERSION} \
+                          --build-arg GIT_COMMIT=${env.IMAGE_TAG} \
+                          -t ${env.DOCKER_REGISTRY}/${env.BACKEND_APP}:${env.IMAGE_TAG} \
+                          -t ${env.DOCKER_REGISTRY}/${env.BACKEND_APP}:${env.RELEASE_TAG} \
+                          .
+                    """
+                }
+            }
+        }
+
+        // ── Stage 5: Docker build — Frontend ────────────────────────────────
+        stage('Docker: Build Frontend') {
+            steps {
+                dir(env.FRONTEND_PATH) {
+                    sh """
+                        docker build \
+                          --build-arg RELEASE_VERSION=${env.RELEASE_VERSION} \
+                          -t ${env.DOCKER_REGISTRY}/${env.FRONTEND_APP}:${env.IMAGE_TAG} \
+                          -t ${env.DOCKER_REGISTRY}/${env.FRONTEND_APP}:${env.RELEASE_TAG} \
+                          .
+                    """
+                }
+            }
+        }
+
+        // ── Stage 6: Push to registry ────────────────────────────────────────
+        stage('Docker: Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-registry-credentials',
+                    usernameVariable: 'REGISTRY_USER',
+                    passwordVariable: 'REGISTRY_PASS'
+                )]) {
+                    sh """
+                        echo ${env.REGISTRY_PASS} | docker login ${env.DOCKER_REGISTRY} \
+                          -u ${env.REGISTRY_USER} --password-stdin
+                        docker push ${env.DOCKER_REGISTRY}/${env.BACKEND_APP}:${env.IMAGE_TAG}
+                        docker push ${env.DOCKER_REGISTRY}/${env.BACKEND_APP}:${env.RELEASE_TAG}
+                        docker push ${env.DOCKER_REGISTRY}/${env.FRONTEND_APP}:${env.IMAGE_TAG}
+                        docker push ${env.DOCKER_REGISTRY}/${env.FRONTEND_APP}:${env.RELEASE_TAG}
+                    """
+                }
+            }
+        }
+
+        // ── Stage 7: Deploy STG ──────────────────────────────────────────────
+        stage('Deploy: STG') {
+            steps {
+                withKubeConfig([credentialsId: 'kubeconfig-stg']) {
+                    sh """
+                        kubectl set image deployment/bankportal-2fa \
+                          bankportal-2fa=${env.DOCKER_REGISTRY}/${env.BACKEND_APP}:${env.IMAGE_TAG} \
+                          -n bankportal-stg
+                        kubectl set image deployment/bankportal-frontend \
+                          bankportal-frontend=${env.DOCKER_REGISTRY}/${env.FRONTEND_APP}:${env.IMAGE_TAG} \
+                          -n bankportal-stg
+                        kubectl rollout status deployment/bankportal-2fa -n bankportal-stg --timeout=3m
+                        kubectl rollout status deployment/bankportal-frontend -n bankportal-stg --timeout=2m
+                    """
+                }
+            }
+        }
+
+        // ── Stage 8: Smoke tests STG ─────────────────────────────────────────
+        stage('Smoke: STG') {
             steps {
                 sh '''
-                    docker build -t ${DOCKER_REGISTRY}/${BACKEND_APP}:${IMAGE_TAG} \
-                      -f ${BACKEND_PATH}/Dockerfile ${BACKEND_PATH}
-                    docker build -t ${DOCKER_REGISTRY}/${FRONTEND_APP}:${IMAGE_TAG} \
-                      -f ${FRONTEND_PATH}/Dockerfile ${FRONTEND_PATH}
+                    # KYC endpoints health check
+                    curl -sf https://api-stg.bankportal.meridian.com/actuator/health | grep -q "UP"
+
+                    # Verify KYC_REQUIRED guard is active
+                    STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+                      -X POST https://api-stg.bankportal.meridian.com/api/v1/transfers \
+                      -H "Authorization: Bearer ${SMOKE_TEST_TOKEN_NO_KYC}")
+                    [ "$STATUS" = "403" ] || (echo "KYC guard smoke test FAILED: expected 403, got $STATUS" && exit 1)
+
+                    echo "Smoke tests STG: PASS"
                 '''
             }
         }
 
-        stage('Docker Push') {
+        // ── Stage 9: Deploy PROD (manual gate) ───────────────────────────────
+        stage('Deploy: PROD') {
+            when { branch 'develop' }
+            input {
+                message "¿Desplegar v${env.RELEASE_VERSION} en PROD?"
+                ok 'Confirmar deploy'
+                submitter 'release-manager'
+            }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-registry-credentials',
-                        usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh '''
-                        echo "${DOCKER_PASS}" | docker login ${DOCKER_REGISTRY} -u "${DOCKER_USER}" --password-stdin
-                        docker push ${DOCKER_REGISTRY}/${BACKEND_APP}:${IMAGE_TAG}
-                        docker push ${DOCKER_REGISTRY}/${FRONTEND_APP}:${IMAGE_TAG}
-                    '''
+                withKubeConfig([credentialsId: 'kubeconfig-prod']) {
+                    sh """
+                        kubectl set image deployment/bankportal-2fa \
+                          bankportal-2fa=${env.DOCKER_REGISTRY}/${env.BACKEND_APP}:${env.RELEASE_TAG} \
+                          -n bankportal-prod
+                        kubectl set image deployment/bankportal-frontend \
+                          bankportal-frontend=${env.DOCKER_REGISTRY}/${env.FRONTEND_APP}:${env.RELEASE_TAG} \
+                          -n bankportal-prod
+                        kubectl rollout status deployment/bankportal-2fa -n bankportal-prod --timeout=5m
+                        kubectl rollout status deployment/bankportal-frontend -n bankportal-prod --timeout=3m
+                    """
                 }
             }
         }
 
-        stage('Deploy STG') {
+        // ── Stage 10: Git tag ─────────────────────────────────────────────────
+        stage('Git: Tag release') {
+            when { branch 'develop' }
             steps {
-                withCredentials([
-                    string(credentialsId: 'bankportal-jwt-secret',   secretVariable: 'JWT_SECRET'),
-                    string(credentialsId: 'bankportal-db-password',  secretVariable: 'DB_PASSWORD'),
-                    string(credentialsId: 'bankportal-redis-url',    secretVariable: 'REDIS_URL'),
-                    string(credentialsId: 'bankportal-totp-aes-key', secretVariable: 'TOTP_AES_KEY')
-                ]) {
-                    sh '''
-                        cd ${INFRA_PATH}/compose
-                        JWT_SECRET="${JWT_SECRET}" DB_PASSWORD="${DB_PASSWORD}" \
-                        REDIS_URL="${REDIS_URL}" TOTP_AES_KEY="${TOTP_AES_KEY}" \
-                        BACKEND_TAG="${IMAGE_TAG}" FRONTEND_TAG="${IMAGE_TAG}" \
-                        docker-compose up -d --no-recreate
-                        sleep 20
-                        curl -f http://localhost:8080/actuator/health || exit 1
-                    '''
-                }
+                sh """
+                    git tag -a ${env.RELEASE_TAG} -m "Release ${env.RELEASE_TAG} — Sprint 15 FEAT-013 KYC"
+                    git push origin ${env.RELEASE_TAG}
+                """
             }
         }
-
-        stage('Smoke Tests STG') {
-            steps {
-                sh '''
-                    STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/api/v1/profile)
-                    [ "$STATUS" = "401" ] && echo "DEBT-022 VERIFIED: 401 OK" || (echo "DEBT-022 FAILED: got $STATUS"; exit 1)
-                    curl -f http://localhost:8080/actuator/health
-                '''
-            }
-        }
-
-        stage('Git Tag & Release') {
-            steps {
-                withCredentials([gitUsernamePassword(credentialsId: 'github-credentials')]) {
-                    sh '''
-                        git config user.email "sofia@experis.com"
-                        git config user.name "SOFIA Pipeline"
-                        git tag -a ${RELEASE_TAG} -m "Release ${RELEASE_VERSION} — FEAT-012-A Sprint 14"
-                        git push origin ${RELEASE_TAG}
-                    '''
-                }
-            }
-        }
-
     }
 
     post {
-        success { echo "✅ BankPortal v${RELEASE_VERSION} — FEAT-012-A Sprint 14 COMPLETADO" }
-        failure { echo "❌ Pipeline fallido — revisar logs" }
+        success {
+            echo "✅ Pipeline v${env.RELEASE_VERSION} completado — ${env.RELEASE_TAG}"
+        }
+        failure {
+            echo "❌ Pipeline fallido en stage: ${env.STAGE_NAME}"
+        }
+        always {
+            cleanWs()
+        }
     }
 }

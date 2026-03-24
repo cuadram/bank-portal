@@ -3,22 +3,24 @@
   "sprint": 15,
   "feature": "FEAT-013",
   "pipeline_type": "new-feature",
-  "pipeline_step": "5",
-  "pipeline_step_name": "code-reviewer",
+  "pipeline_step": "6",
+  "pipeline_step_name": "qa-tester",
   "status": "in_progress",
-  "timestamp": "2026-03-24T10:30:00Z",
-  "completed_steps": ["1","2","3","4"],
-  "pending_steps": ["5","5b","6","7","8","9"],
-  "last_skill": "developer",
-  "last_artifact": "commit:d2d056d",
+  "timestamp": "2026-03-24T11:30:00Z",
+  "completed_steps": ["1","2","3","4","5"],
+  "pending_steps": ["6","7","8","9"],
+  "last_skill": "code-reviewer",
+  "last_artifact": "docs/code-review/CR-FEAT-013-sprint15.md",
   "gates": {
     "1": {"status":"approved","by":"product-owner","at":"2026-03-23T21:30:00Z"},
     "2": {"status":"approved","by":"requirements-analyst","at":"2026-03-24T08:45:00Z"},
     "3": {"status":"approved","by":"tech-lead","at":"2026-03-24T09:30:00Z"},
-    "4": {"status":"approved","by":"developer","at":"2026-03-24T10:30:00Z"}
+    "4": {"status":"approved","by":"developer","at":"2026-03-24T10:30:00Z"},
+    "5": {"status":"approved","by":"code-reviewer","at":"2026-03-24T11:30:00Z",
+          "findings":{"bloqueantes":1,"menores":3,"sugerencias":3,"correcciones_aplicadas":4}}
   },
   "version": "2.0",
-  "updated_at": "2026-03-24T10:30:00Z",
+  "updated_at": "2026-03-24T11:30:00Z",
   "started_at": "2026-03-23T21:00:00Z",
   "sprint_history": {
     "sprint_13": {"feature":"FEAT-011","status":"completed","sp_planned":24,"sp_delivered":24,"release":"v1.13.0"},
@@ -29,7 +31,8 @@
     "1": ["docs/sprints/SPRINT-015-planning.md","docs/backlog/FEAT-013.md"],
     "2": ["docs/srs/SRS-FEAT-013.md","confluence:2686977","jira:SCRUM-47..56"],
     "3": ["docs/architecture/HLD-FEAT-013.md","docs/architecture/ADR-023-024-KYC.md"],
-    "4": ["commit:d2d056d","apps/backend-2fa/src/main/java/.../kyc/**","apps/frontend-portal/.../kyc/**"]
+    "4": ["commit:d2d056d"],
+    "5": ["docs/code-review/CR-FEAT-013-sprint15.md","commit:7657750"]
   },
   "client": "Banco Meridian",
   "sprint_goal": "Implementar flujo completo de Onboarding KYC cumpliendo PSD2/AML/RGPD",
@@ -38,5 +41,5 @@
   "jira_epic": "SCRUM-36",
   "sp_total_accumulated": 331,
   "sprints_completed": 14,
-  "resume_next": "Step 5 — Code Reviewer — CR-FEAT-013"
+  "resume_next": "Step 6 — QA Tester — QA-FEAT-013-sprint15"
 }
