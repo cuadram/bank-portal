@@ -2,6 +2,10 @@
 # ════════════════════════════════════════════════════════════════
 #  SOFIA v1.9 — Persistence Protocol Audit · BankPortal
 #  Verifica instalación completa: 19 skills + scripts + templates
+#
+#  Fix v1.9.1: funciones ok/warn/fail usan PASS=$((PASS+1))
+#  en lugar de ((PASS++)) para evitar exit code 1 cuando el
+#  contador vale 0 (aritméticamente falso en bash).
 # ════════════════════════════════════════════════════════════════
 
 QUICK=false
@@ -12,9 +16,10 @@ SOFIA_DIR="$REPO/.sofia"
 PASS=0; WARN=0; FAIL=0; SKILLS_OK=0
 
 GREEN='\033[0;32m'; YELLOW='\033[1;33m'; RED='\033[0;31m'; NC='\033[0m'; BOLD='\033[1m'
-ok()   { echo -e "    ${GREEN}✅ $1${NC}"; ((PASS++)); }
-warn() { echo -e "    ${YELLOW}⚠️  $1${NC}"; ((WARN++)); }
-fail() { echo -e "    ${RED}❌ $1${NC}"; ((FAIL++)); }
+
+ok()   { echo -e "    ${GREEN}✅ $1${NC}"; PASS=$((PASS+1)); }
+warn() { echo -e "    ${YELLOW}⚠️  $1${NC}"; WARN=$((WARN+1)); }
+fail() { echo -e "    ${RED}❌ $1${NC}";   FAIL=$((FAIL+1)); }
 
 echo ""
 echo -e "${BOLD}╔══════════════════════════════════════════════════════════╗${NC}"
@@ -25,25 +30,31 @@ echo ""
 
 # ── 1. Estructura .sofia/ ─────────────────────────────────────────────────────
 echo "  1. Estructura .sofia/"
-[ -d "$SOFIA_DIR" ]                          && ok ".sofia/ existe"                  || fail ".sofia/ no encontrado"
-[ -f "$SOFIA_DIR/session.json" ]             && ok "session.json existe"             || warn "session.json ausente"
-[ -f "$SOFIA_DIR/sofia.log" ]                && ok "sofia.log existe"                || warn "sofia.log ausente"
-[ -d "$SOFIA_DIR/snapshots" ]                && ok "snapshots/ existe"               || warn "snapshots/ ausente"
-[ -f "$SOFIA_DIR/PERSISTENCE_PROTOCOL.md" ] && ok "PERSISTENCE_PROTOCOL.md existe"  || warn "PERSISTENCE_PROTOCOL.md ausente"
-[ -f "$SOFIA_DIR/sofia-config.json" ]        && ok "sofia-config.json existe"        || warn "sofia-config.json ausente — ejecutar sofia-wizard.py"
-[ -f "$SOFIA_DIR/templates/dashboard.html" ] && ok "templates/dashboard.html existe" || warn "templates/dashboard.html ausente"
+if [ -d "$SOFIA_DIR" ];                          then ok ".sofia/ existe";                  else fail ".sofia/ no encontrado"; fi
+if [ -f "$SOFIA_DIR/session.json" ];             then ok "session.json existe";             else warn "session.json ausente"; fi
+if [ -f "$SOFIA_DIR/sofia.log" ];                then ok "sofia.log existe";                else warn "sofia.log ausente"; fi
+if [ -d "$SOFIA_DIR/snapshots" ];                then ok "snapshots/ existe";               else warn "snapshots/ ausente"; fi
+if [ -f "$SOFIA_DIR/PERSISTENCE_PROTOCOL.md" ];  then ok "PERSISTENCE_PROTOCOL.md existe";  else warn "PERSISTENCE_PROTOCOL.md ausente"; fi
+if [ -f "$SOFIA_DIR/sofia-config.json" ];        then ok "sofia-config.json existe";        else warn "sofia-config.json ausente — ejecutar sofia-wizard.py"; fi
+if [ -f "$SOFIA_DIR/templates/dashboard.html" ]; then ok "templates/dashboard.html existe"; else warn "templates/dashboard.html ausente"; fi
 echo ""
 
 # ── 2. Validación session.json ────────────────────────────────────────────────
 if ! $QUICK; then
   echo "  2. Validación session.json"
   if [ -f "$SOFIA_DIR/session.json" ]; then
-    python3 -c "import json; json.load(open('$SOFIA_DIR/session.json'))" 2>/dev/null \
-      && ok "session.json es JSON válido" || fail "session.json JSON inválido"
+    if python3 -c "import json; json.load(open('$SOFIA_DIR/session.json'))" 2>/dev/null; then
+      ok "session.json es JSON válido"
+    else
+      fail "session.json JSON inválido"
+    fi
     VER=$(python3 -c "import json; d=json.load(open('$SOFIA_DIR/session.json')); print(d.get('version','?'))" 2>/dev/null)
-    [ -n "$VER" ] && ok "version = $VER" || warn "campo version ausente"
-    python3 -c "import json; d=json.load(open('$SOFIA_DIR/session.json')); [d[k] for k in ['status','completed_steps','last_skill','updated_at']]" 2>/dev/null \
-      && ok "campos obligatorios presentes" || warn "faltan campos en session.json"
+    if [ -n "$VER" ]; then ok "version = $VER"; else warn "campo version ausente"; fi
+    if python3 -c "import json; d=json.load(open('$SOFIA_DIR/session.json')); [d[k] for k in ['status','completed_steps','last_skill','updated_at']]" 2>/dev/null; then
+      ok "campos obligatorios presentes"
+    else
+      warn "faltan campos en session.json"
+    fi
   else
     warn "session.json no existe — omitida validación"
   fi
@@ -61,15 +72,15 @@ atlassian-agent security-agent performance-agent"
 for skill in $SKILLS; do
   SKILL_FILE="$SOFIA_DIR/skills/$skill/SKILL.md"
   if [ -f "$SKILL_FILE" ]; then
-    SIZE=$(wc -c < "$SKILL_FILE")
+    SIZE=$(wc -c < "$SKILL_FILE" | tr -d ' ')
     SCORE=0
-    grep -qi "PERSISTIDO\|persist\|session.json"    "$SKILL_FILE" 2>/dev/null && ((SCORE++))
-    grep -qi "SKILL.md\|skill"                      "$SKILL_FILE" 2>/dev/null && ((SCORE++))
-    grep -qi "artefact\|artifact\|docs/\|infra/"    "$SKILL_FILE" 2>/dev/null && ((SCORE++))
-    grep -qi "commit\|git\|Git"                     "$SKILL_FILE" 2>/dev/null && ((SCORE++))
-    grep -qi "Gate\|gate\|GATE\|HITL\|step"         "$SKILL_FILE" 2>/dev/null && ((SCORE++))
+    grep -qi "PERSISTIDO\|persist\|session.json" "$SKILL_FILE" 2>/dev/null && SCORE=$((SCORE+1))
+    grep -qi "SKILL.md\|skill"                   "$SKILL_FILE" 2>/dev/null && SCORE=$((SCORE+1))
+    grep -qi "artefact\|artifact\|docs/\|infra/"  "$SKILL_FILE" 2>/dev/null && SCORE=$((SCORE+1))
+    grep -qi "commit\|git\|Git"                  "$SKILL_FILE" 2>/dev/null && SCORE=$((SCORE+1))
+    grep -qi "Gate\|gate\|GATE\|HITL\|step"      "$SKILL_FILE" 2>/dev/null && SCORE=$((SCORE+1))
     ok "${skill} (${SIZE}B · score: ${SCORE}/5)"
-    ((SKILLS_OK++))
+    SKILLS_OK=$((SKILLS_OK+1))
   else
     fail "${skill}/SKILL.md no encontrado"
   fi
@@ -92,32 +103,33 @@ echo "  5. Scripts SOFIA"
 for s in setup-sofia-mac.sh audit-persistence.sh patch-persistence.py \
           resume.py sofia-dashboard.py gen-dashboard.js \
           atlassian-sync.py gate-check.py sofia-wizard.py sofia-projects.py; do
-  [ -f "$SOFIA_DIR/scripts/$s" ] && ok "$s" || warn "$s ausente"
+  if [ -f "$SOFIA_DIR/scripts/$s" ]; then ok "$s"; else warn "$s ausente"; fi
 done
 echo ""
 
 # ── 6. Dependencias ──────────────────────────────────────────────────────────
 if ! $QUICK; then
   echo "  6. Dependencias"
-  /opt/homebrew/opt/node@22/bin/node -e "require('docx')" 2>/dev/null \
-    && ok "npm docx disponible"        || warn "npm docx no instalado → cd \$REPO && npm install docx"
-  python3 -c "import openpyxl" 2>/dev/null \
-    && ok "python openpyxl disponible" || warn "openpyxl no instalado → pip install openpyxl --break-system-packages"
-  /opt/homebrew/opt/node@22/bin/node --version >/dev/null 2>&1 \
-    && ok "Node 22 disponible"         || warn "Node 22 no encontrado"
-  command -v uvx >/dev/null 2>&1 \
-    && ok "uvx disponible"             || warn "uvx no instalado"
-  [ -f "$REPO/CLAUDE.md" ] \
-    && ok "CLAUDE.md presente"         || fail "CLAUDE.md no encontrado"
+  if /opt/homebrew/opt/node@22/bin/node -e "require('docx')" 2>/dev/null; then
+    ok "npm docx disponible"
+  else
+    warn "npm docx no instalado → cd \$REPO && npm install docx"
+  fi
+  if python3 -c "import openpyxl" 2>/dev/null; then
+    ok "python openpyxl disponible"
+  else
+    warn "openpyxl no instalado → pip install openpyxl --break-system-packages"
+  fi
+  if /opt/homebrew/opt/node@22/bin/node --version >/dev/null 2>&1; then ok "Node 22 disponible"; else warn "Node 22 no encontrado"; fi
+  if command -v uvx >/dev/null 2>&1; then ok "uvx disponible"; else warn "uvx no instalado"; fi
+  if [ -f "$REPO/CLAUDE.md" ]; then ok "CLAUDE.md presente"; else fail "CLAUDE.md no encontrado"; fi
   echo ""
 fi
 
 # ── 7. Git hook ──────────────────────────────────────────────────────────────
 echo "  7. Git hook"
-[ -f "$REPO/.git/hooks/post-commit" ] \
-  && ok "post-commit hook instalado"  || warn "post-commit hook ausente"
-[ -f "$SOFIA_DIR/doc-agent-hook.sh" ] \
-  && ok "doc-agent-hook.sh presente"  || warn "doc-agent-hook.sh ausente"
+if [ -f "$REPO/.git/hooks/post-commit" ]; then ok "post-commit hook instalado";  else warn "post-commit hook ausente"; fi
+if [ -f "$SOFIA_DIR/doc-agent-hook.sh" ]; then ok "doc-agent-hook.sh presente";  else warn "doc-agent-hook.sh ausente"; fi
 echo ""
 
 # ── Resultado ────────────────────────────────────────────────────────────────
