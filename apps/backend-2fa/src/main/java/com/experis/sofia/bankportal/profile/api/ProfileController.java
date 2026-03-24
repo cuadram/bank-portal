@@ -2,24 +2,26 @@ package com.experis.sofia.bankportal.profile.api;
 
 import com.experis.sofia.bankportal.profile.application.*;
 import com.experis.sofia.bankportal.profile.application.dto.*;
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Bucket;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * REST API — Gestión de perfil de usuario.
- * FEAT-012-A Sprint 14 — US-1201 / US-1202 / US-1203 / US-1205
+ * FEAT-012-A Sprint 14 — US-1201/1202/1203/1205
+ * SAST-002 fix (Sprint 15): rate limiting en POST /profile/password — máx 5/10min por userId.
  *
- * RV-022 fix: @Valid añadido en todos los @RequestBody.
- *
- * userId, jti y expiresAt extraídos de atributos de request
- * inyectados por JwtAuthenticationFilter (DEBT-022/023).
- *
- * @author SOFIA Developer Agent — Sprint 14 | RV-022 fix Code Review
+ * @author SOFIA Developer Agent — Sprint 14/15
  */
 @RestController
 @RequestMapping("/api/v1/profile")
@@ -31,34 +33,47 @@ public class ProfileController {
     private final ChangePasswordUseCase changePassword;
     private final ManageSessionsUseCase manageSessions;
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
+    // SAST-002: Bucket4j — rate limiter por userId para cambio de contraseña
+    private final Map<UUID, Bucket> passwordBuckets = new ConcurrentHashMap<>();
+
     private UUID    userId(HttpServletRequest req)    { return (UUID)    req.getAttribute("authenticatedUserId"); }
     private String  jti(HttpServletRequest req)       { return (String)  req.getAttribute("authenticatedJti"); }
     private Instant expiresAt(HttpServletRequest req) { return (Instant) req.getAttribute("jwtExpiresAt"); }
     private String  ip(HttpServletRequest req)        { return req.getRemoteAddr(); }
 
-    // ── US-1201 — Ver perfil ──────────────────────────────────────────────────
     @GetMapping
     public ResponseEntity<ProfileResponse> getProfile(HttpServletRequest req) {
         return ResponseEntity.ok(getProfile.execute(userId(req)));
     }
 
-    // ── US-1202 — Actualizar datos personales ─────────────────────────────────
     @PatchMapping
     public ResponseEntity<ProfileResponse> updateProfile(
-            @Valid @RequestBody UpdateProfileRequest body, HttpServletRequest req) {  // RV-022
+            @Valid @RequestBody UpdateProfileRequest body, HttpServletRequest req) {
         return ResponseEntity.ok(updateProfile.execute(userId(req), body, ip(req)));
     }
 
-    // ── US-1203 — Cambiar contraseña ──────────────────────────────────────────
+    /** SAST-002: máx 5 intentos de cambio de contraseña por usuario cada 10 minutos. */
     @PostMapping("/password")
-    public ResponseEntity<Void> changePassword(
-            @Valid @RequestBody ChangePasswordRequest body, HttpServletRequest req) {  // RV-022
-        changePassword.execute(userId(req), jti(req), body);
+    public ResponseEntity<?> changePassword(
+            @Valid @RequestBody ChangePasswordRequest body, HttpServletRequest req) {
+        UUID uid = userId(req);
+        Bucket bucket = passwordBuckets.computeIfAbsent(uid, id ->
+                Bucket.builder()
+                      .addLimit(Bandwidth.builder()
+                              .capacity(5)
+                              .refillIntervally(5, Duration.ofMinutes(10))
+                              .build())
+                      .build());
+
+        if (!bucket.tryConsume(1))
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body(Map.of("error", "RATE_LIMIT_EXCEEDED",
+                                 "retryAfterMinutes", 10));
+
+        changePassword.execute(uid, jti(req), body);
         return ResponseEntity.noContent().build();
     }
 
-    // ── US-1205 — Revocar sesión ──────────────────────────────────────────────
     @DeleteMapping("/sessions/{jtiToRevoke}")
     public ResponseEntity<Void> revokeSession(
             @PathVariable String jtiToRevoke, HttpServletRequest req) {

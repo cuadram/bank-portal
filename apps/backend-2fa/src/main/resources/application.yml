@@ -81,6 +81,14 @@ notification:
     from: ${EMAIL_FROM:seguridad@bankmeridian.com}
     deny-base-url: ${DENY_BASE_URL:https://api.bankportal.meridian.com/v1/sessions/deny}
 
+kyc:
+  storage:
+    path: ${KYC_STORAGE_PATH:/tmp/kyc-docs}
+    encryption-key: ${KYC_ENCRYPTION_KEY:}
+    max-file-mb: ${KYC_STORAGE_MAX_FILE_MB:10}
+  grace-period-days: ${KYC_GRACE_PERIOD_DAYS:90}
+  auto-validation-enabled: ${KYC_AUTO_VALIDATION_ENABLED:true}
+
 scheduling:
   enabled: ${SCHEDULING_ENABLED:true}
 

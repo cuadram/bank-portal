@@ -1,0 +1,15 @@
+<div class="kyc-status-widget" *ngIf="!loading && !error" [ngClass]="statusClass" role="status">
+  <span class="kyc-status-widget__dot" aria-hidden="true"></span>
+  <span class="kyc-status-widget__label">{{ statusLabel }}</span>
+  <span class="kyc-status-widget__eta"
+        *ngIf="status?.status === 'SUBMITTED'">
+    Plazo estimado: {{ status?.estimatedReviewHours }}h
+  </span>
+  <p class="kyc-status-widget__reason"
+     *ngIf="status?.status === 'REJECTED' && status?.rejectionReason">
+    Motivo: {{ status?.rejectionReason }}
+  </p>
+</div>
+<div class="kyc-status-widget--loading" *ngIf="loading" aria-label="Cargando estado...">
+  <span class="kyc-spinner--sm"></span>
+</div>

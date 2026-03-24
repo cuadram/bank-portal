@@ -136,11 +136,12 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Spring Security OAuth2 Resource Server — Jwt en controllers -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-        </dependency>
+        <!--
+            DEBT-022 (Sprint 14): spring-boot-starter-oauth2-resource-server ELIMINADO.
+            Motivo: OAuth2ResourceServerAutoConfiguration registraba BearerTokenAuthenticationFilter
+            que interceptaba antes que JwtAuthenticationFilter HMAC HS256 custom → HTTP 403 en STG.
+            Autenticación JWT gestionada íntegramente por JwtAuthenticationFilter + jjwt 0.12.6.
+        -->
 
         <!-- OpenPDF — generación extractos PDF US-704 (com.lowagie.*) -->
         <dependency>

@@ -2,14 +2,13 @@ package com.experis.sofia.bankportal.account.api;
 
 import com.experis.sofia.bankportal.account.application.StatementExportUseCase;
 import com.experis.sofia.bankportal.account.application.StatementExportUseCase.StatementResult;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -31,7 +30,8 @@ import java.util.concurrent.CompletableFuture;
  *   <li>400 Bad Request si year/month están fuera de rango válido.</li>
  * </ul>
  *
- * @author SOFIA Developer Agent — US-704 Sprint 9
+ * DEBT-022 (Sprint 14): reemplazado @AuthenticationPrincipal Jwt por HttpServletRequest.
+ * @author SOFIA Developer Agent — US-704 Sprint 9 | DEBT-022 Sprint 14
  */
 @Slf4j
 @RestController
@@ -60,7 +60,7 @@ public class StatementController {
             @PathVariable int     year,
             @PathVariable int     month,
             @RequestParam(defaultValue = "pdf") String format,
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest req) {
 
         // ── Validaciones de entrada ──────────────────────────────────────────
         if (month < 1 || month > 12) {
@@ -77,7 +77,7 @@ public class StatementController {
                     ResponseEntity.badRequest().build());
         }
 
-        UUID userId = UUID.fromString(jwt.getSubject());
+        UUID userId = (UUID) req.getAttribute("authenticatedUserId");
         log.info("[US-704] GET /accounts/{}/statements/{}/{} format={} userId={}",
                 accountId, year, month, fmt, userId);
 

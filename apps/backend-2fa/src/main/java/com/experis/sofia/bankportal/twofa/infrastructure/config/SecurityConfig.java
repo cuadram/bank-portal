@@ -1,10 +1,10 @@
 package com.experis.sofia.bankportal.twofa.infrastructure.config;
 
+import com.experis.sofia.bankportal.kyc.security.KycAuthorizationFilter;
 import com.experis.sofia.bankportal.profile.infrastructure.RevokedTokenFilter;
 import com.experis.sofia.bankportal.twofa.infrastructure.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,12 +16,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * DEBT-022 (Sprint 14): OAuth2ResourceServerAutoConfiguration excluida en
- * BackendTwoFactorApplication — ya no hay conflicto con BearerTokenAuthenticationFilter.
+ * DEBT-022 (Sprint 14): OAuth2ResourceServerAutoConfiguration excluida.
+ * FEAT-012-A (Sprint 14): RevokedTokenFilter registrado (US-1205).
+ * FEAT-013 (Sprint 15): KycAuthorizationFilter registrado (US-1305).
  *
- * FEAT-012-A (Sprint 14): Se añade RevokedTokenFilter después de
- * JwtAuthenticationFilter para verificar jti revocados (US-1205).
- * Se añade /api/v1/profile/** como authenticated().
+ * Cadena de filtros:
+ *   JwtAuthenticationFilter → RevokedTokenFilter → KycAuthorizationFilter → Controller
  *
  * @since 1.0.0
  */
@@ -32,15 +32,17 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final RevokedTokenFilter      revokedTokenFilter;
+    private final KycAuthorizationFilter  kycAuthorizationFilter;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
-                          RevokedTokenFilter revokedTokenFilter) {
+                          RevokedTokenFilter revokedTokenFilter,
+                          KycAuthorizationFilter kycAuthorizationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.revokedTokenFilter      = revokedTokenFilter;
+        this.kycAuthorizationFilter  = kycAuthorizationFilter;
     }
 
     @Bean
-    @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
@@ -50,14 +52,14 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/auth/login",
                     "/2fa/verify",
-                    "/actuator/health",
-                    "/dev/token",
-                    "/dev/hash"
+                    "/actuator/health"
                 ).permitAll()
+                .requestMatchers("/api/v1/admin/**").hasRole("KYC_REVIEWER")
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(revokedTokenFilter, JwtAuthenticationFilter.class); // US-1205
+            .addFilterAfter(revokedTokenFilter, JwtAuthenticationFilter.class)    // US-1205
+            .addFilterAfter(kycAuthorizationFilter, RevokedTokenFilter.class);    // US-1305
 
         return http.build();
     }

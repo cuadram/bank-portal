@@ -1,36 +1,37 @@
-# HLD-FEAT-013 — Onboarding KYC / Verificación de Identidad
-# BankPortal / Banco Meridian
+# HLD — FEAT-013: Onboarding KYC / Verificación de Identidad
 
 ## Metadata
 
 | Campo | Valor |
 |---|---|
-| Feature | FEAT-013 — Onboarding KYC / Verificación de Identidad |
-| Proyecto | BankPortal — Banco Meridian |
-| Stack | Java 21 / Spring Boot 3.3.4 + Angular 17 |
-| Tipo de trabajo | new-feature |
+| Feature | FEAT-013 |
+| Proyecto | BankPortal |
+| Cliente | Banco Meridian |
+| Stack | Java 21 + Spring Boot 3.3 (backend) · Angular 17 (frontend) |
+| Tipo | new-feature |
 | Sprint | 15 |
+| Release | v1.15.0 |
+| Jira Epic | SCRUM-36 |
 | Versión | 1.0 |
-| Estado | PENDING APPROVAL — Gate 3 Tech Lead |
-| Fecha | 2026-03-23 |
-| Autor | SOFIA Architect Agent |
+| Estado | APPROVED — Tech Lead (2026-03-24) |
+| Normativa | PSD2 · AML EU 2018/843 · RGPD Art.9 · Circular BE 1/2010 |
 
 ---
 
-## Análisis de impacto en monorepo (Paso 0)
+## Análisis de impacto en monorepo
 
-| Servicio/Módulo | Tipo de impacto | Acción requerida |
+| Servicio / Módulo | Tipo de impacto | Acción requerida |
 |---|---|---|
-| `SecurityFilterChain` | Nuevo filtro `KycAuthorizationFilter` antes de controllers financieros | Añadir `addFilterAfter(kycFilter, RevokedTokenFilter.class)` |
-| `SecurityConfig` | Nuevo rol `ROLE_KYC_REVIEWER` | Añadir en Spring Security — no requiere cambios en BD si se gestiona via JWT claims |
-| `transfers/**` endpoints | `KycAuthorizationFilter` intercepta antes del controller | Sin cambios en controller — filtro transparente |
-| `bills/**` endpoints | Mismo que transfers | Sin cambios en controller |
-| `audit_log` (FEAT-005) | Nuevos event types: KYC_DOCUMENT_UPLOADED, KYC_AUTO_APPROVED, KYC_MANUAL_APPROVED, KYC_REJECTED | INSERT-only — compatible hacia adelante |
-| `user_notification_preferences` (FEAT-012) | Nuevos códigos de notificación KYC | Sin migración — inserción de nuevas filas |
-| Flyway V14 → V15 | Nueva migración aditiva sin modificar V14 | kyc_verifications + kyc_documents |
-| SSE (FEAT-007/008) | Reutilización del SseRegistry para notificaciones en tiempo real | Sin cambios — reutilización directa |
+| `SecurityConfig` | Registro de `KycAuthorizationFilter` | Modificar cadena filtros: `RevokedTokenFilter` → `KycAuthorizationFilter` ✅ |
+| `TransferController` | Filtro KYC intercepta `/api/v1/transfers/**` | Sin cambios en el controller — filtro actúa antes |
+| `BillController` | Filtro KYC intercepta `/api/v1/bills/**` | Sin cambios en el controller — filtro actúa antes |
+| `NotificationService` | Reutilizado para email APPROVED / REJECTED | Sin cambios — consumidor nuevo del servicio existente |
+| `AuditLogService` | Reutilizado para trazabilidad KYC | Sin cambios |
+| `UserNotification` | Reutilizado (FEAT-007) para notificaciones in-app | Sin cambios |
+| `SseEmitterRegistry` | Reutilizado para actualizaciones estado en tiempo real | Sin cambios |
+| Módulos restantes | Sin impacto | — |
 
-**Decisión:** Impacto acotado. Nuevo módulo `kyc` hexagonal independiente. El único cambio en código existente es la inserción de `KycAuthorizationFilter` en la cadena de seguridad — sin tocar controllers existentes.
+**Conclusión:** Sin cambios en contratos API existentes. El módulo `kyc` es un Bounded Context nuevo dentro del monolito modular.
 
 ---
 
@@ -38,28 +39,20 @@
 
 ```mermaid
 C4Context
-  title BankPortal — FEAT-013 Onboarding KYC
+  title BankPortal — Contexto KYC (FEAT-013)
 
-  Person(newUser, "Nuevo cliente", "Usuario registrado sin KYC — no puede operar financieramente")
-  Person(verifiedUser, "Cliente verificado", "KYC APPROVED — acceso completo al portal")
-  Person(reviewer, "Revisor KYC", "Operador Banco Meridian — rol ROLE_KYC_REVIEWER")
+  Person(cliente, "Cliente", "Nuevo cliente de Banco Meridian — persona física")
+  Person(operador, "Operador KYC", "Empleado banco con ROLE_KYC_REVIEWER")
 
-  System(bankportal, "BankPortal Backend", "Spring Boot 3.3 / Java 21. Gestiona KYC, documentos, validación y bloqueo financiero")
+  System(portal, "BankPortal", "Portal digital Banco Meridian\nBackend Spring Boot 3.3 + Angular 17\nFEAT-013: módulo KYC integrado")
 
-  System_Ext(fileStorage, "Almacenamiento seguro", "Sistema de ficheros cifrado AES-256. Documentos KYC en reposo. Path configurable KYC_STORAGE_PATH")
+  System_Ext(smtp, "SMTP Gateway\n(SendGrid)", "Envío de emails de\naprobación / rechazo KYC")
+  System_Ext(fs, "Filesystem Local\nKYC_STORAGE_PATH", "Almacenamiento cifrado\nAES-256 documentos de identidad\nADR-023")
 
-  System_Ext(postgres, "PostgreSQL 16", "kyc_verifications + kyc_documents + audit_log")
-
-  System_Ext(angular, "BankPortal Frontend", "Angular 17. KycModule con wizard 5 pasos + KycGuard")
-
-  System_Ext(smtp, "SMTP / MailHog STG", "Notificaciones email KYC APPROVED/REJECTED/EXPIRED")
-
-  Rel(newUser, angular, "Completa wizard KYC", "HTTPS")
-  Rel(reviewer, bankportal, "Revisa y decide vía API admin", "HTTPS / JWT ROLE_KYC_REVIEWER")
-  Rel(angular, bankportal, "Sube documentos + consulta estado", "HTTPS / multipart + JSON")
-  Rel(bankportal, fileStorage, "Almacena documentos cifrados", "Local FS / AES-256")
-  Rel(bankportal, postgres, "Persiste estado KYC y auditoría", "JDBC / HikariCP")
-  Rel(bankportal, smtp, "Envía notificaciones KYC", "SMTP")
+  Rel(cliente, portal, "Accede al wizard KYC\nSube documentos de identidad", "HTTPS/Angular")
+  Rel(operador, portal, "Revisa y aprueba/rechaza\nKYC pendientes", "HTTPS/Admin panel")
+  Rel(portal, smtp, "Envía notificaciones\nAPROBADO / RECHAZADO", "SMTP TLS")
+  Rel(portal, fs, "Almacena y lee\ndocumentos cifrados AES-256", "I/O local")
 ```
 
 ---
@@ -68,86 +61,124 @@ C4Context
 
 ```mermaid
 C4Container
-  title BankPortal — Componentes FEAT-013 KYC
+  title BankPortal — Componentes FEAT-013
 
-  Person(user, "Nuevo cliente")
-  Person(reviewer, "Revisor KYC")
+  Person(cliente, "Cliente")
+  Person(operador, "Operador KYC")
 
-  Container(ng, "Angular SPA", "Angular 17", "KycModule: wizard 5 pasos, KycGuard, KycService, SSE estado tiempo real")
+  Container(angular, "Angular 17 SPA", "TypeScript + Angular 17", "KycModule — wizard paso a paso\nKycGuard — rutas financieras")
 
-  Container(kycCtrl, "KycController", "Spring Boot / REST", "POST /kyc/documents, GET /kyc/status")
-  Container(adminCtrl, "KycAdminController", "Spring Boot / REST", "PATCH /admin/kyc/{id} — ROLE_KYC_REVIEWER")
+  Container(backend, "Spring Boot 3.3 API", "Java 21", "KycController /api/v1/kyc\nKycAdminController /api/v1/admin/kyc\nKycAuthorizationFilter\nUploadDocumentUseCase\nValidateDocumentUseCase\nReviewKycUseCase\nGetKycStatusUseCase\nDocumentStorageService")
 
-  Container(app, "KYC Application Layer", "Spring Boot", "UploadDocumentUseCase, ValidateDocumentUseCase, ReviewKycUseCase, GetKycStatusUseCase")
+  ContainerDb(postgres, "PostgreSQL 15", "RDBMS", "kyc_verifications\nkyc_documents\nFlyway V15")
 
-  Container(domain, "KYC Domain", "Java Entities + Enums", "KycVerification, KycDocument, KycStatus, DocumentType, ValidationRule")
+  Container(redis, "Redis", "Cache / Pub-Sub", "JWT blacklist (FEAT-001)\nSSE registry (FEAT-007)\nRate limiter (DEBT-001)\nNo usos nuevos en FEAT-013")
 
-  Container(infra, "KYC Infrastructure", "Spring Data JPA + FS", "KycVerificationRepository, KycDocumentRepository, DocumentStorageService (AES-256)")
+  System_Ext(smtp, "SMTP Gateway", "SendGrid")
+  System_Ext(fs_store, "Filesystem\nKYC_STORAGE_PATH", "Documentos cifrados AES-256")
 
-  Container(filter, "KycAuthorizationFilter", "Spring Security Filter", "OncePerRequestFilter — bloquea /transfers/** y /bills/** si KYC != APPROVED")
-
-  ContainerDb(pg, "PostgreSQL", "PostgreSQL 16", "kyc_verifications, kyc_documents")
-  ContainerDb(fs, "File Storage", "Cifrado AES-256", "Documentos KYC en reposo — KYC_STORAGE_PATH")
-
-  Rel(user, ng, "Wizard KYC", "HTTPS")
-  Rel(reviewer, adminCtrl, "Revisión manual", "HTTPS / Bearer + ROLE_KYC_REVIEWER")
-  Rel(ng, kycCtrl, "REST + Bearer JWT", "HTTPS")
-  Rel(kycCtrl, app, "Delega")
-  Rel(adminCtrl, app, "Delega")
-  Rel(app, domain, "Opera con")
-  Rel(app, infra, "Via puertos")
-  Rel(infra, pg, "JPA / JDBC")
-  Rel(infra, fs, "AES-256 encrypt/decrypt")
-  Rel(filter, pg, "Verifica kyc_status en cada request financiera")
+  Rel(cliente, angular, "Wizard KYC", "HTTPS")
+  Rel(operador, angular, "Admin panel KYC", "HTTPS")
+  Rel(angular, backend, "REST API\nBearer JWT", "HTTPS/JSON + multipart")
+  Rel(backend, postgres, "JPA/Flyway", "JDBC")
+  Rel(backend, redis, "Lettuce", "TCP 6379")
+  Rel(backend, smtp, "JavaMail", "SMTP TLS 587")
+  Rel(backend, fs_store, "DocumentStorageService\nAES-256-GCM", "I/O local")
 ```
 
 ---
 
-## Servicios nuevos y modificados
+## Flujos principales
 
-| Servicio/Módulo | Acción | Bounded Context | Descripción |
+### Flujo 1 — Subida de documento y validación automática
+
+```
+Cliente → Angular KycWizard → POST /api/v1/kyc/documents (multipart)
+  → JwtAuthenticationFilter (auth) → KycController
+  → UploadDocumentUseCase
+      → validateFile (tamaño + MIME)
+      → DocumentStorageService.store (AES-256 + SHA-256)
+      → KycDocumentRepository.save
+      → ValidateDocumentUseCase.execute (síncrono post-save)
+          → allDocumentsPresent? → si NO: status = PENDING
+          → validateDocument (caducidad + integridad)
+          → si pasa: status = APPROVED → AuditLog
+          → si falla: status = SUBMITTED → AuditLog
+  ← HTTP 201 DocumentUploadResponse {documentId, kycStatus}
+```
+
+### Flujo 2 — Revisión manual por operador
+
+```
+Operador → Angular AdminPanel → PATCH /api/v1/admin/kyc/{kycId}
+  → JwtAuthenticationFilter → @PreAuthorize(KYC_REVIEWER)
+  → KycAdminController → ReviewKycUseCase
+      → validar estado no final
+      → kyc.status = APPROVED | REJECTED
+      → NotificationService → email cliente
+      → AuditLog (reviewer_id + reviewed_at)
+  ← HTTP 200 {kycId, newStatus, reviewedAt}
+```
+
+### Flujo 3 — Bloqueo acceso financiero
+
+```
+Cliente → POST /api/v1/transfers
+  → JwtAuthenticationFilter
+  → RevokedTokenFilter
+  → KycAuthorizationFilter
+      → isFinancialEndpoint? → si
+      → kycRepo.findByUserId → status?
+          → APPROVED → chain.doFilter (pasa)
+          → PENDING / SUBMITTED / REJECTED → HTTP 403 KYC_REQUIRED
+          → sin registro → período de gracia → pasa
+```
+
+---
+
+## Servicios nuevos / modificados — resumen
+
+| Servicio | Acción | User Stories | Protocolo |
 |---|---|---|---|
-| `kyc` (backend) | NUEVO | Identity Verification | Módulo hexagonal completo — subida, validación, revisión |
-| `KycAuthorizationFilter` | NUEVO | Security | Bloquea `/transfers/**` y `/bills/**` si KYC ≠ APPROVED |
-| `SecurityConfig` | MODIFICADO | Security | Registro de `KycAuthorizationFilter` en la cadena |
-| `KycModule` (Angular) | NUEVO | Frontend | Wizard 5 pasos + KycGuard + KycService |
-| `AppRoutingModule` | MODIFICADO | Frontend | Nueva ruta `/kyc` con `canActivate: [AuthGuard]` |
-
----
-
-## Cadena de filtros Spring Security (post FEAT-013)
-
-```
-Request entrante
-    ↓
-JwtAuthenticationFilter       (autentica JWT, extrae userId/jti)
-    ↓
-RevokedTokenFilter             (verifica jti no revocado)
-    ↓
-KycAuthorizationFilter         (bloquea /transfers/** /bills/** si KYC ≠ APPROVED)
-    ↓
-Controller                     (procesa la request)
-```
-
----
-
-## Decisiones técnicas — ADRs generados
-
-- **ADR-023:** Almacenamiento de documentos KYC — filesystem local cifrado vs object storage
-- **ADR-024:** Estrategia de validación KYC — automática MVP vs integración proveedor externo
+| `KycController` | NUEVO | US-1302, US-1304 | REST/JSON + multipart |
+| `KycAdminController` | NUEVO | US-1307 | REST/JSON |
+| `KycAuthorizationFilter` | NUEVO | US-1305 | Servlet Filter |
+| `UploadDocumentUseCase` | NUEVO | US-1302 | Interno |
+| `ValidateDocumentUseCase` | NUEVO | US-1303 | Interno (síncrono) |
+| `GetKycStatusUseCase` | NUEVO | US-1304 | Interno |
+| `ReviewKycUseCase` | NUEVO | US-1307 | Interno |
+| `DocumentStorageService` | NUEVO | US-1302, US-1303 | AES-256 I/O |
+| `KycVerification` (JPA) | NUEVO | US-1301 | PostgreSQL |
+| `KycDocument` (JPA) | NUEVO | US-1301 | PostgreSQL |
+| `SecurityConfig` | MOD | US-1305 | `addFilterAfter(kycFilter)` |
+| `KycModule` (Angular) | NUEVO | US-1306 | HTTP/REST + multipart |
+| `KycGuard` (Angular) | NUEVO | US-1305 | CanActivateFn |
+| Flyway `V15__kyc_onboarding.sql` | NUEVO | US-1301 | SQL/DDL |
 
 ---
 
 ## Contrato de integración backend ↔ frontend
 
-| Método | Endpoint | Auth | Descripción |
+**Base URL:** `https://api.bankportal.meridian.com/v1`
+**Auth:** `Authorization: Bearer <JWT>` (HS256 — JwtAuthenticationFilter)
+
+| Método | Ruta | Descripción | Auth |
 |---|---|---|---|
-| GET | `/api/v1/kyc/status` | JWT | Estado KYC del usuario |
-| POST | `/api/v1/kyc/documents` | JWT | Subir documento (multipart) |
-| PATCH | `/api/v1/admin/kyc/{kycId}` | JWT + ROLE_KYC_REVIEWER | Aprobar/rechazar |
+| `GET` | `/api/v1/kyc/status` | Estado KYC actual del usuario | JWT |
+| `POST` | `/api/v1/kyc/documents` | Subir documento (multipart) | JWT |
+| `PATCH` | `/api/v1/admin/kyc/{kycId}` | Aprobar/rechazar KYC | JWT + KYC_REVIEWER |
 
 ---
 
-*SOFIA Architect Agent — Step 3 Gate 3 pending*
-*CMMI Level 3 — TS SP 1.1 · TS SP 2.1 · TS SP 2.2*
-*BankPortal Sprint 15 — FEAT-013 — 2026-03-23*
+## Decisiones técnicas
+
+| ADR | Título | Estado |
+|---|---|---|
+| ADR-023 | Almacenamiento documentos KYC: filesystem local cifrado AES-256 | Aceptado |
+| ADR-024 | Validación KYC síncrona vs asíncrona | Ver LLD |
+
+---
+
+*SOFIA Architect Agent — Step 3 | Sprint 15 · FEAT-013*
+*CMMI Level 3 — TS SP 1.1 · TS SP 2.1 · TS SP 3.1*
+*BankPortal — Banco Meridian — 2026-03-24*
