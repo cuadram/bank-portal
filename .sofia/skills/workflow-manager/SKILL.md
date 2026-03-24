@@ -1,282 +1,147 @@
-# Workflow Manager — SOFIA Software Factory v1.7
-# Gestión de gates HITL con enforcement vía Jira
+---
+name: workflow-manager
+sofia_version: "1.9"
+updated: "2026-03-24"
+changelog: "v1.9 — Gates bloqueantes vía Jira issue con gate_pending en session.json, CMMI L3 evidence tracking, sprint data JSON"
+---
 
-Gestiona todos los gates de aprobación humana del pipeline. En v1.7 los gates
-son **físicamente bloqueantes**: crea un issue de aprobación en Jira, bloquea
-el pipeline en session.json, y solo libera el siguiente step cuando el responsable
-transiciona el issue a "Approved" o "Rejected".
+# Workflow Manager — SOFIA Software Factory v1.9
 
-Se activa cuando el Orchestrator detecta un gate al final de cualquier step.
+## Rol
+Gestionar todos los gates HITL del pipeline, asegurar que las aprobaciones
+se registren en Jira, mantener el estado en session.json y garantizar la
+trazabilidad CMMI Level 3 en cada sprint. Se activa en Step 9 y en cada
+gate HITL del pipeline.
+
+## Activación
+- Invocado por el Orchestrator en cada gate HITL
+- Al cierre de sprint (Step 9)
+- On-demand: "gestiona el gate", "cierra el sprint", "estado del pipeline", "evidencias CMMI"
 
 ---
 
-## Principio fundamental v1.7
+## Gates HITL por step
 
-> Un gate es APROBADO cuando el issue Jira está en estado "Approved".
-> El pipeline NO puede avanzar por ningún otro medio.
-
-El gate deja de ser declarativo ("el PM debe aprobar") y pasa a ser
-ejecutable: ningún skill puede ejecutarse mientras `session.json.status == "gate_pending"`.
+| Gate | Step | Aprobador    | Criterio de aprobación                       |
+|------|------|--------------|----------------------------------------------|
+| G-1  | 1    | Product Owner | Sprint backlog completo, SP aceptados        |
+| G-2  | 2    | PO + SM      | SRS revisada, US con AC verificables         |
+| G-3  | 3    | Tech Lead    | HLD/LLD revisados, ADRs documentados         |
+| G-5  | 5    | Tech Lead    | 0 NCs críticas abiertas, cobertura ≥ 80%     |
+| G-6  | 6    | QA Lead      | 0 defectos bloqueantes, test plan ejecutado  |
+| G-7  | 7    | DevOps/RM    | Pipeline CI/CD verde, artefacto en registry  |
+| G-8  | 8    | PM           | Delivery Package completo (10 Word + 3 Excel)|
 
 ---
 
-## Protocolo de gate — Flujo completo
+## Protocolo de gate (para cada HITL)
 
 ```
-[Orchestrator detecta gate en step N]
-        │
-        ▼
-[1] Workflow Manager crea issue Jira
-    - Tipo: Task
-    - Summary: "[GATE] Sprint X — FEAT-XXX — Step N: [nombre del gate]"
-    - Labels: ["gate", "sofia-gate", "FEAT-XXX"]
-    - Priority: High
-    - Descripción: artefactos generados + criterios de aprobación
-        │
-        ▼
-[2] Bloquear pipeline
-    - session.json.status = "gate_pending"
-    - session.json.gates.N = {status: "pending", jira_issue_key: "BP-XXX"}
-    - sofia.log: GATE_PENDING → step N, esperando BP-XXX
-    - Informar al usuario: "Pipeline en espera. Issue de aprobación: BP-XXX"
-        │
-        ▼
-[3] Responsable actúa en Jira
-    - Revisa artefactos enlazados en el issue
-    - Transiciona a "Approved" o "Rejected"
-        │
-        ▼
-[4] Detección del resultado (al retomar la sesión)
-    python3 .sofia/scripts/gate-check.py [repo] [step] [feature]
-    → Exit 0: aprobado  → continuar pipeline
-    → Exit 1: pendiente → mantener bloqueo
-    → Exit 2: rechazado → gestionar NC
-        │
-        ▼
-[5A] APROBADO
-    - session.json.gates.N.status = "approved"
-    - session.json.status = "in_progress"
-    - Continuar al step N+1
-        │
-[5B] RECHAZADO
-    - session.json.gates.N.status = "rejected"
-    - Crear NC en session.json.ncs
-    - Volver al step N con el feedback del rechazo
-    - El Orchestrator re-invoca el skill del step N con las NCs
+1. El Orchestrator notifica: "Gate [N] listo para revisión"
+2. Workflow Manager crea issue Jira (via Atlassian Agent):
+   - Tipo: Task
+   - Summary: "GATE [N] — [FEAT-XXX] Sprint [S] — Pendiente [Aprobador]"
+   - Descripción: artefactos producidos + criterios a verificar
+   - Label: sofia-gate
+3. Actualizar session.json:
+   gate_pending: {
+     step: "N", agent: "nombre-agente",
+     jira_issue: "SCRUM-XXX",
+     waiting_for: "rol-aprobador",
+     created_at: "ISO timestamp"
+   }
+4. Escribir sofia.log: [TIMESTAMP] [GATE-N] [workflow-manager] PENDING → SCRUM-XXX
+5. DETENER — el pipeline queda bloqueado hasta aprobación
+6. Cuando el aprobador notifique en el chat o cierre el issue Jira:
+   - Limpiar gate_pending: null en session.json
+   - Registrar en sofia.log: [TIMESTAMP] [GATE-N] [workflow-manager] APPROVED
+   - Notificar al Orchestrator para continuar
 ```
 
 ---
 
-## Gates del pipeline — Detalle
+## Cierre de sprint (Step 9)
 
-| Step | Gate | Responsable | Criterio de aprobación |
-|------|------|-------------|------------------------|
-| 1  | Inclusión en sprint    | product-owner   | Scope y estimación válidos |
-| 2  | User Stories           | product-owner   | ACs completos y verificables |
-| 3  | HLD/LLD                | tech-lead       | Arquitectura alineada con plataforma |
-| 5  | Code Review (NCs)      | tech-lead       | Zero NCs abiertas |
-| 5b | Security Gate          | security-team   | Zero CVEs críticos |
-| 6  | QA                     | qa-lead + PO    | 100% tests críticos, 0 bugs bloqueantes |
-| 7  | Go/No-Go Release       | release-manager | Pipeline CI/CD verde |
-| 8  | Paquete cliente        | PM              | Documentación completa y correcta |
-| 9  | Aceptación cliente     | client          | Demo aprobada, criterios de aceptación OK |
-
----
-
-## Crear issue de gate — Instrucciones al atlassian-agent
-
-Cuando el Orchestrator invoca el Workflow Manager para crear un gate:
+Checklist obligatorio antes de cerrar:
 
 ```
-Instrucción para atlassian-agent:
-
-Crear un issue de tipo Task en Jira con:
-
-summary: "[GATE] Sprint [N] — [FEAT-XXX] — Step [N]: [nombre del gate]"
-
-description (formato ADF o markdown):
-  ## Pipeline BLOQUEADO — Acción requerida
-
-  **Proyecto:** [project_name]
-  **Feature:** [FEAT-XXX]
-  **Sprint:** [N]
-  **Step completado:** [N] — [nombre skill]
-  **Responsable de aprobación:** [rol]
-
-  ## Artefactos generados (revisar antes de aprobar)
-  [lista de rutas/enlaces de artefactos del step]
-
-  ## Criterio de aprobación
-  [criterio específico del gate]
-
-  ## Acción requerida
-  - Transicionar a **Approved** si los artefactos cumplen el criterio
-  - Transicionar a **Rejected** con comentario explicando qué corregir
-
-  _Generado por SOFIA v1.7 — [timestamp]_
-
-labels: ["gate", "sofia-gate", "[FEAT-XXX]", "sprint-[N]"]
-priority: High
-assignee: [account_id del responsable si está disponible]
-
-Retornar el issue key creado (ej: BP-123).
+☑ Todos los steps 1-8 en session.json.completed_steps
+☑ gate_pending == null
+☑ docs/deliverables/sprint-[N]-[FEAT-XXX]/ completa (13 archivos)
+☑ docs/sprints/SPRINT-[N]-data.json generado (para dashboard)
+☑ Git tag vX.N.0 creado
 ```
 
----
-
-## Consultar estado del gate — Instrucciones al atlassian-agent
+Acciones al cierre:
 
 ```
-Instrucción para atlassian-agent:
+1. Generar sprint review:
+   docs/sprints/SPRINT-[N]-review.md
 
-Consultar el issue [issue_key] con getJiraIssue.
-Extraer:
-  - fields.status.name
-  - fields.comment.comments (últimos 3)
-  - fields.assignee.displayName
-
-Interpretar:
-  - "Approved"          → gate aprobado, pipeline puede continuar
-  - "Rejected"          → gate rechazado, gestionar NC con feedback del comentario
-  - cualquier otro estado → gate pendiente, pipeline bloqueado
-
-Si el issue no existe → buscar con JQL:
-  project = [KEY] AND labels = "sofia-gate" AND labels = "[FEAT-XXX]"
-  AND summary ~ "Step [N]" ORDER BY created DESC
-```
-
----
-
-## Gestión de NCs (No Conformidades)
-
-Cuando un gate es RECHAZADO:
-
-```
-1. Registrar NC en session.json:
-   ncs["NC-[step]-[timestamp]"] = {
-     "step": "N",
-     "description": "[feedback del revisor]",
-     "severity": "mayor",   // siempre mayor si viene de un gate
-     "status": "open",
-     "assigned_to": "skill del step N",
-     "created_at": "[timestamp]"
+2. Generar SPRINT-[N]-data.json para el dashboard:
+   {
+     "sprint": N, "sp": XX, "acum": XXX,
+     "feat": "FEAT-XXX", "titulo": "...", "rel": "vX.N.0",
+     "tests": NNN, "cov": NN, "ncs": N,
+     "defects": 0, "date_closed": "2026-XX-XX"
    }
 
-2. Crear issue Jira de tipo Bug:
-   summary: "[NC] [FEAT-XXX] Step [N] — [descripción breve]"
-   labels: ["NC", "sofia-nc", "[FEAT-XXX]"]
-   priority: High
-   description: feedback completo del revisor
+3. Generar evidencias CMMI:
+   docs/cmmi/evidence-sprint-[N].md
 
-3. Escribir en sofia.log:
-   [TIMESTAMP] [STEP-N] [workflow-manager] GATE_REJECTED → [feature] | NC: [descripción]
+4. Atlassian Agent: actualizar página Confluence del sprint
 
-4. Informar al Orchestrator:
-   "Gate rechazado. NC-[ID] creada. Volver al step N con feedback: [descripción]"
+5. Generar dashboard:
+   /opt/homebrew/opt/node@22/bin/node .sofia/scripts/gen-dashboard.js
 
-5. El Orchestrator re-invoca el skill del step N con:
-   "Re-ejecutar step N. NC abierta: [descripción del rechazo]."
+6. Actualizar session.json para Sprint N+1:
+   {
+     "current_sprint": N+1,
+     "current_feature": "",
+     "current_step": null,
+     "completed_steps": [],
+     "status": "idle",
+     "gate_pending": null
+   }
+
+7. Escribir sofia.log:
+   [TIMESTAMP] [SPRINT] [orchestrator] CLOSED → Sprint N · FEAT-XXX · vX.N.0
+   [TIMESTAMP] [DASH]   [gen-dashboard.js] GENERATED → docs/quality/sofia-dashboard.html
 ```
 
 ---
 
-## Gestión de NCs resueltas
+## CMMI Level 3 — Evidence tracking
 
-Cuando el developer/skill resuelve la NC:
+Para cada sprint, generar `docs/cmmi/evidence-sprint-[N].md`:
 
-```
-1. Actualizar session.json:
-   ncs["NC-[ID]"].status = "closed"
-   ncs["NC-[ID]"].resolved_at = "[timestamp]"
+```markdown
+# CMMI Level 3 — Evidencias Sprint [N]
+Fecha cierre: [DATE] | Feature: [FEAT-XXX]
 
-2. Transicionar issue Jira de NC a "Done"
-
-3. Solicitar re-aprobación del gate:
-   → El Workflow Manager crea un NUEVO issue de gate con el mismo formato
-   → Referencia al issue de NC resuelto en la descripción
-
-4. Escribir en sofia.log:
-   [TIMESTAMP] [STEP-N] [workflow-manager] NC_CLOSED → [NC-ID] | re-gate solicitado
-```
-
----
-
-## Verificación de bloqueo — Regla del Orchestrator
-
-Antes de invocar CUALQUIER skill del pipeline:
-
-```
-1. Leer session.json.status
-2. Si status == "gate_pending":
-   a. Ejecutar: python3 .sofia/scripts/gate-check.py [repo] [step] [feature]
-   b. Si exit == 0 (aprobado)  → continuar
-   c. Si exit == 1 (pendiente) → mostrar mensaje de espera, NO continuar
-   d. Si exit == 2 (rechazado) → gestionar NC, NO continuar al step siguiente
-3. Si status == "in_progress" → continuar normalmente
-```
-
-Mensaje de espera al usuario (cuando gate está pendiente):
-
-```
-⏳ Pipeline en espera — Gate step [N] pendiente
-
-  Proyecto:   [project]
-  Feature:    [FEAT-XXX]
-  Gate:       [nombre del gate]
-  Responsable: [rol]
-  Jira issue: [BP-XXX] (si fue creado)
-  Desde:      [timestamp]
-
-  Cuando el responsable haya actuado en Jira, escribe:
-  "verificar gate step [N]" para que SOFIA compruebe el resultado.
+| PA    | Evidencia                               | Artefacto                         | Estado |
+|-------|-----------------------------------------|-----------------------------------|--------|
+| PP    | Sprint planning documentado             | SPRINT-[N]-planning.md            | ✅     |
+| PMC   | Sprint report con métricas              | Sprint-[N]-Report-PMC.docx        | ✅     |
+| RSKM  | Riesgos identificados y gestionados     | Risk-Register actualizado         | ✅     |
+| VER   | Revisión de código documentada          | CR-[FEAT-XXX]-sprint[N].md        | ✅     |
+| VAL   | QA report con criterios de aceptación   | [FEAT-XXX]-QA-Report.docx         | ✅     |
+| CM    | Tag de release en Git                   | vX.N.0                            | ✅     |
+| PPQA  | Security report generado                | SecurityReport-Sprint[N].md       | ✅     |
+| REQM  | SRS trazable a US                       | [FEAT-XXX]-SRS.docx               | ✅     |
+| DAR   | ADRs documentados                       | docs/architecture/adr/            | ✅     |
 ```
 
 ---
 
-## Persistence Protocol — Implementación obligatoria (SOFIA v1.6)
-
-```javascript
-const fs  = require('fs');
-const now = new Date().toISOString();
-
-const session = JSON.parse(fs.readFileSync('.sofia/session.json', 'utf8'));
-const step = 'N';
-
-// Actualizar gate en session.json
-if (!session.gates) session.gates = {};
-session.gates[step] = {
-  status: gateStatus,          // "pending" | "approved" | "rejected"
-  by: approverRole,
-  jira_issue_key: issueKey,
-  at: now,
-};
-session.status    = gateStatus === "approved" ? "in_progress" : "gate_pending";
-session.updated_at = now;
-fs.writeFileSync('.sofia/session.json', JSON.stringify(session, null, 2));
-
-// sofia.log
-const statusLabel = gateStatus === "approved" ? "GATE_APPROVED"
-                  : gateStatus === "rejected"  ? "GATE_REJECTED"
-                  : "GATE_PENDING";
-const logEntry = `[${now}] [STEP-${step}] [workflow-manager] ${statusLabel} → ${feature} | issue: ${issueKey || "local"}\n`;
-fs.appendFileSync('.sofia/sofia.log', logEntry);
-
-// Snapshot
-const snapPath = `.sofia/snapshots/gate-step${step}-${Date.now()}.json`;
-fs.copyFileSync('.sofia/session.json', snapPath);
-```
-
-### Bloque de confirmación
+## Persistence Protocol
 
 ```
----
-✅ PERSISTENCE CONFIRMED — WORKFLOW_MANAGER STEP-N
-- session.json: updated (gates.N = {status: [approved|rejected|pending]})
-- session.json.status: [in_progress|gate_pending]
-- sofia.log: GATE_[STATUS] entry written [TIMESTAMP]
-- snapshot: .sofia/snapshots/gate-step[N]-[timestamp].json
-- artifacts:
-  · jira://[BP-XXX] (issue de gate creado/actualizado)
-  · .sofia/gates/gate-step[N]-[FEAT-XXX].json
----
+✅ PERSISTIDO — Workflow Manager · Sprint [N] · Gate [X] / Cierre
+   .sofia/session.json (gate_pending / sprint closure)  [ACTUALIZADO]
+   .sofia/sofia.log (gate event + sprint closed)        [ENTRADA AÑADIDA]
+   docs/sprints/SPRINT-[N]-review.md                   [CREADO]
+   docs/sprints/SPRINT-[N]-data.json                   [CREADO]
+   docs/cmmi/evidence-sprint-[N].md                    [CREADO]
+   docs/quality/sofia-dashboard.html                   [REGENERADO]
 ```

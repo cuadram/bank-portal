@@ -1,52 +1,32 @@
-# Orchestrator — SOFIA Software Factory v1.6
-# Orquestador principal del pipeline de entrega
-
-Coordina el flujo completo de desarrollo entre todos los agentes especializados
-y el Workflow Manager. Opera sobre proyectos Java, .Net, Angular y React en
-arquitectura microservicios/monorepo. SIEMPRE activa esta skill cuando el usuario
-inicie: nueva feature, épica, historia de usuario, solicitud de desarrollo,
-bugfix, refactor, deuda técnica, hotfix, migración, mantenimiento, o diga frases
-como "quiero desarrollar", "necesito implementar", "nueva funcionalidad",
-"empezar proyecto", "crear módulo", "corregir", "actualizar", "optimizar",
-"migrar". También activa cuando se pida el estado del pipeline, coordinar
-agentes, o retomar un pipeline pausado por un gate humano.
-
+---
+name: orchestrator
+sofia_version: "1.9"
+updated: "2026-03-24"
+changelog: "v1.9 — Security Agent Step 5b formalizado, Dashboard Global integrado, CMMI L3 evidence gates, sprint data JSON"
 ---
 
-## Contexto SOFIA
+# Orchestrator — SOFIA Software Factory v1.9
 
-**SOFIA** es la Software Factory IA de **Experis**.
-- **Backend:** Java (Spring Boot) · .Net (C#)
-- **Frontend:** Angular · React
-- **Arquitectura:** Microservicios con organización monorepo/modular
-- **Metodología:** Scrumban (sprints + flujo continuo Kanban)
-- **Gobierno:** CMMI Nivel 3
-- **Registro oficial:** Jira + Confluence (via atlassian-agent)
-- **Notificaciones:** Microsoft Teams + Email
-- **Config proyecto:** `.sofia/sofia-config.json` (si existe)
-
-Leer `.sofia/sofia-config.json` al arrancar para obtener: client, project_name,
-stack, repo_path, jira_project_key, confluence_space, sprint_length.
-
-Este contexto debe pasarse como metadata a **todos los agentes** en cada delegación.
-
----
+## Rol
+Coordinar el pipeline completo de desarrollo de software, delegando a los 19
+agentes especializados en cada step, gestionando los gates HITL y garantizando
+la persistencia del estado en session.json y sofia.log.
 
 ## INIT — Lo primero al activarse
 
 ```
-1. Leer .sofia/session.json (si existe)
-2. Leer .sofia/sofia-config.json (si existe)
-3. Si session.json.status == "in_progress" → ejecutar RESUME PROTOCOL
-4. Si no hay sesión activa → iniciar nuevo pipeline
-5. Si .sofia/ no existe → crear estructura y session.json vacío
+1. Leer CLAUDE.md
+2. Leer .sofia/session.json          → estado del pipeline
+3. Leer .sofia/sofia-config.json     → configuración del proyecto
+4. Si session.json.status == "in_progress" → ejecutar RESUME PROTOCOL
+5. Si session.json.status == "idle"        → iniciar nuevo pipeline
+6. Si session.json no existe               → crear estructura base
 ```
 
-### Estructura mínima a crear si no existe
-
+### Estructura base (si no existe)
 ```bash
-mkdir -p .sofia/snapshots
-echo '{"version":"1.6","status":"idle","completed_steps":[]}' > .sofia/session.json
+mkdir -p .sofia/snapshots .sofia/gates .sofia/sync .sofia/templates
+echo '{"version":"1.9","status":"idle","current_sprint":0,"completed_steps":[]}' > .sofia/session.json
 touch .sofia/sofia.log
 ```
 
@@ -58,274 +38,226 @@ Si `session.json.status == "in_progress"`, presentar al usuario:
 
 ```
 ⚠️  Pipeline activo detectado
-    Proyecto: [project_name]  Feature: [feature]  Sprint: [sprint]
-    Último step completado: [last_skill] (step [N])
-    Steps completados: [completed_steps]
-    Artefactos generados: [count de artifacts]
+    Proyecto:   [project] · [client]
+    Feature:    [current_feature]     Sprint: [current_sprint]
+    Último step: [last_skill] (Step [current_step])
+    Completados: [completed_steps]
+    Próximo:    Step [N+1]
 
-    ¿Qué deseas hacer?
-    [A] Retomar desde step [N+1]
-    [B] Re-ejecutar step [N] (output anterior disponible)
-    [C] Reiniciar pipeline completo
-    [D] Ver resumen de artefactos generados
+    ¿Continuar desde Step [N+1]?
+    [A] Sí, continuar
+    [B] Re-ejecutar Step [N]
+    [C] Ver resumen de artefactos generados
 ```
-
-Al retomar, cargar el contexto acumulado de `session.json.artifacts` para
-que los steps restantes tengan acceso al output previo.
 
 ---
 
 ## Tipos de pipeline
 
-| Tipo | Trigger | Pipeline |
+| Tipo | Trigger | Steps |
 |---|---|---|
-| `new-feature` | Nueva funcionalidad, épica, módulo | Completo (pasos 1-9) |
-| `bug-fix` | Corrección de defecto no crítico | Developer → Reviewer → Security → QA gate → Docs |
-| `hotfix` | Defecto crítico en producción | Developer directo → Reviewer → gate release-manager |
-| `refactor` | Mejora técnica sin cambio funcional | Architect → Developer → Reviewer → Security → Docs |
-| `tech-debt` | Deuda técnica planificada | SM → Architect → Developer → Reviewer → Security → Docs |
-| `maintenance` | Ajuste menor, config, dependencias | Developer → Reviewer |
-| `migration` | Cambio de tecnología o versión mayor | Completo con ADR obligatorio + Security + Docs |
-| `documentation` | Solo documentación o artefactos | Documentation Agent directamente |
+| `new-feature` | Nueva funcionalidad | Completo (1–9) |
+| `tech-debt` | Deuda técnica planificada | SM → Arch → Dev → CR → Security → QA → Docs |
+| `bug-fix` | Defecto no crítico | Dev → CR → Security → QA → Docs |
+| `hotfix` | Crítico en producción | Dev → CR → gate release-manager → Docs |
+| `refactor` | Mejora técnica | Arch → Dev → CR → Security → Docs |
+| `documentation` | Solo documentación | Documentation Agent directo |
 
 ---
 
-## Pipeline completo — New Feature (pasos 1-9)
+## Pipeline estándar — New Feature (11 steps)
 
-```
-INPUT (solicitud usuario)
-  │
-  ▼
-[1] SCRUM MASTER
-    → Backlog item, estimación, sprint assignment
-    → 🔒 GATE: product-owner aprueba inclusión en sprint
-  │
-  ▼
-[2] REQUIREMENTS ANALYST
-    → User Stories + Gherkin + RTM parcial
-    → 🔒 GATE: product-owner aprueba US
-  │
-  ▼
-[3] ARCHITECT
-    → HLD + LLD + OpenAPI + ADR
-    → 🔒 GATE: tech-lead aprueba HLD/LLD
-  │
-  ▼
-[3b] DOCUMENTATION AGENT
-    → Diagramas (C4, Secuencia, Clean Arch) + HLD.docx + LLD.docx
-    → Sin gate — automático post-aprobación Architect
-  │
-  ▼
-[4] DEVELOPER
-    → Código + tests unitarios + documentación inline
-    → Stack: Java | .Net | Angular | React | Node (según sofia-config)
-  │
-  ▼
-[5] CODE REVIEWER
-    → Checklist + métricas + NCs si aplica
-    → 🔒 GATE: NCs resueltas por developer antes de continuar
-  │
-  ▼
-[5b] SECURITY AGENT  ← NUEVO en v1.6
-    → SAST + OWASP dependency check + secrets scan + SecurityReport.docx
-    → 🔒 GATE BLOQUEANTE: si CVE críticos > 0, no avanza a QA
-  │
-  ▼
-[6] QA / TESTER
-    → Plan de pruebas + ejecución + reporte
-    → 🔒 GATE: qa-lead aprueba + product-owner acepta
-  │
-  ▼
-[7] DEVOPS / CI-CD
-    → Pipeline config + IaC + release notes
-    → 🔒 GATE: release-manager go/no-go
-  │
-  ▼
-[8] DOCUMENTATION AGENT
-    → Paquete completo cliente: 10 Word + 3 Excel
-    → 🔒 GATE: PM aprueba antes de enviar al cliente
-  │
-  ▼
-[9] WORKFLOW MANAGER
-    → Sprint review → aceptación cliente
-    → 🔒 GATE: cliente firma aceptación
-  │
-  ▼
-OUTPUT — Delivery Package completo
-```
+| Step | Agente               | Gate    | Artefactos principales                      |
+|------|----------------------|---------|---------------------------------------------|
+| 1    | Scrum Master         | HITL PO | Sprint planning, backlog item               |
+| 2    | Requirements Analyst | HITL PO | SRS.md con US y criterios CMMI              |
+| 3    | Architect            | HITL TL | HLD.md, LLD.md, ADRs                        |
+| 3b   | Documentation Agent  | AUTO    | HLD.docx, LLD.docx, diagramas C4/Mermaid   |
+| 4    | Developer            | —       | Código fuente, tests unitarios              |
+| 5    | Code Reviewer        | HITL TL | CR report, NCs categorizadas                |
+| 5b   | Security Agent       | AUTO*   | Security report, DEBT backlog update        |
+| 6    | QA Tester            | HITL QA | Test plan, casos prueba, QA report          |
+| 7    | DevOps               | HITL DV | Jenkinsfile, Docker, release tag            |
+| 8    | Documentation Agent  | HITL PM | 10 Word + 3 Excel → docs/deliverables/      |
+| 9    | Workflow Manager     | —       | Cierre sprint, evidencias CMMI, dashboard   |
+
+*AUTO con gate BLOQUEANTE si cve_critical > 0
 
 ---
 
 ## Protocolo de delegación
 
-Para cada paso del pipeline, ejecutar en orden:
+Para cada step, el Orchestrator DEBE:
 
 ```
-1. Anunciar: "> 🔁 Activando agente: [NOMBRE SKILL] — Step [N]"
-2. Actualizar session.json: status = "in_progress", pipeline_step = N
-3. Escribir sofia.log: [TIMESTAMP] [STEP-N] [orchestrator] DELEGATING → [skill-name]
-4. Pasar contexto SOFIA completo (de sofia-config.json)
-5. Pasar output acumulado del paso anterior (de session.json.artifacts)
-6. Invocar skill con instrucción de persistencia explícita:
-   "Al completar, actualiza .sofia/session.json y .sofia/sofia.log según PERSISTENCE_PROTOCOL.md"
-7. Ejecutar POST-STEP VALIDATION (ver sección siguiente)
-8. Evaluar gate: ¿este paso tiene gate humano?
-   → SÍ: Delegar al Workflow Manager
-   → NO: Continuar al siguiente step
+1. Anunciar: "🔄 Iniciando Step N — [Nombre Agente]"
+2. Leer el SKILL.md del agente: .sofia/skills/[agente]/SKILL.md
+3. Pasar contexto completo (sprint, feature, step anterior, artifacts)
+4. Instruir: "Al completar, actualiza session.json y sofia.log. Incluye bloque ✅ PERSISTIDO."
+5. Esperar bloque ✅ PERSISTIDO del agente
+6. Verificar: completed_steps contiene step N en session.json
+7. Si gate HITL: delegar a Workflow Manager, establecer gate_pending, DETENER
+8. Solo con gate aprobado: avanzar al step siguiente
 ```
 
 ---
 
-## POST-STEP VALIDATION — Obligatorio tras cada delegación
+## Delegación al Security Agent (Step 5b)
 
 ```
-Después de recibir la respuesta del skill, verificar en orden:
+Actúa como Security Agent.
+Lee: .sofia/skills/security-agent/SKILL.md
+Sprint: [N] · Feature: [FEAT-XXX]
 
-CHECK 1 — Bloque de confirmación
-  ¿La respuesta contiene "✅ PERSISTENCE CONFIRMED"?
-  → NO: Emitir "⚠️ Persistence missing" y re-invocar skill (máx 2 intentos)
+Revisar:
+  - docs/code-review/CR-[FEAT-XXX]-sprint[N].md
+  - apps/[backend]/src/ (código nuevo)
+  - pom.xml / package.json (dependencias)
 
-CHECK 2 — session.json actualizado
-  Leer .sofia/session.json via filesystem
-  ¿completed_steps contiene step N?
-  → NO: Re-invocar skill con:
-    "session.json no refleja el step como completado.
-     Ejecuta el Persistence Protocol antes de retornar."
+Genera:
+  - docs/security/SecurityReport-Sprint[N]-[FEAT-XXX].md
+  - Actualizar docs/backlog/DEBT-BACKLOG.md
+  - Actualizar session.json security.open_debts
 
-CHECK 3 — Artefactos en disco
-  Para cada ruta en session.json.artifacts.N:
-    ¿El archivo existe?
-  → Alguno falta: Re-invocar skill con lista de archivos faltantes
-
-CHECK 4 — sofia.log entry
-  ¿sofia.log tiene línea COMPLETED para step N?
-  → NO (warning): Registrar en log del orchestrator pero no bloquear
-
-RESULTADO:
-  CHECK 1 + 2 + 3 PASS → ✅ Step N validado → continuar a step N+1
-  Fallo en 2 intentos → Escalar a Workflow Manager con status = "ERROR"
-                         Escribir en sofia.log: [TIMESTAMP] [STEP-N] [orchestrator] ERROR → persistence_failure
+Gate: si cve_critical > 0 → BLOQUEANTE, no avanzar a Step 6.
 ```
 
 ---
 
-## Protocolo de gate humano
+## Delegación al Documentation Agent (Steps 3b y 8)
 
-Cuando un paso requiere aprobación humana:
-
+### Step 3b (post-Gate 3)
 ```
-1. Delegar al Workflow Manager con:
-   - step actual
-   - artefactos generados (rutas)
-   - responsable de aprobación
-   - criterios de aprobación
-
-2. Actualizar session.json:
-   - status = "gate_pending"
-   - gates.N = {status: "pending", by: "rol", at: timestamp}
-
-3. Escribir sofia.log: GATE_PENDING
-
-4. DETENER el pipeline — NO continuar al siguiente step
-
-5. Al retomar (nueva sesión o mensaje del usuario):
-   - Si gate aprobado: continuar al step N+1
-   - Si gate rechazado: registrar NC, volver al step N con feedback
+Actúa como Documentation Agent — Step 3b.
+Lee: .sofia/skills/documentation-agent/SKILL.md
+Genera: HLD.docx + LLD.docx + diagramas → docs/architecture/
+Fuentes: docs/architecture/hld/ + docs/architecture/lld/
 ```
+
+### Step 8 (post-Gate 7, gate PM)
+```
+Actúa como Documentation Agent — Step 8.
+Lee: .sofia/skills/documentation-agent/SKILL.md
+Genera: Delivery Package completo →
+  docs/deliverables/sprint-[N]-[FEAT-XXX]/
+    10 documentos Word + 3 Excel (NC-Tracker, Decision-Log, Quality-Dashboard)
+Genera también: docs/sprints/SPRINT-[N]-data.json (para dashboard)
+Gate: PM aprueba antes de cierre de sprint.
+```
+
+---
+
+## Dashboard Global
+
+Al cerrar un sprint (Step 9), el Orchestrator invoca:
+```bash
+/opt/homebrew/opt/node@22/bin/node .sofia/scripts/gen-dashboard.js
+```
+→ Output: `docs/quality/sofia-dashboard.html`
+
+---
+
+## Gestión de gates HITL
+
+```json
+// session.json cuando gate está pendiente:
+{
+  "gate_pending": {
+    "step": "3",
+    "agent": "architect",
+    "jira_issue": "SCRUM-XXX",
+    "waiting_for": "tech-lead",
+    "created_at": "2026-XX-XXTXX:XX:XXZ"
+  }
+}
+```
+
+El Orchestrator NO avanza si `gate_pending != null`.
 
 ---
 
 ## Gestión de No Conformidades (NCs)
 
-```
-Si un gate se rechaza o un reviewer detecta NCs:
-
-1. Crear NC en session.json bajo "ncs":
-   {
-     "NC-001": {
-       "step": N,
-       "skill": "code-reviewer",
-       "description": "...",
-       "severity": "mayor|menor",
-       "assigned_to": "developer",
-       "status": "open"
-     }
-   }
-
-2. Escribir sofia.log: [TIMESTAMP] [STEP-N] [orchestrator] NC_CREATED → NC-001
-
-3. Volver al step correspondiente con el contexto de la NC
-
-4. Una vez resuelta: status = "closed", registrar en log
-```
-
----
-
-## Contrato de contexto — Lo que se pasa a cada skill
-
+Si un gate se rechaza:
 ```json
-{
-  "sofia_context": {
-    "project": "[de sofia-config.json]",
-    "client": "[de sofia-config.json]",
-    "stack": "[backend + frontend de sofia-config.json]",
-    "sprint": "[sprint actual]",
-    "feature": "[FEAT-XXX actual]",
-    "methodology": "Scrumban",
-    "governance": "CMMI Level 3",
-    "tools": {
-      "issue_tracker": "Jira",
-      "wiki": "Confluence",
-      "ci_cd": "Jenkins",
-      "notifications": "Teams"
-    }
-  },
-  "pipeline_context": {
-    "step": "N",
-    "type": "new-feature|bug-fix|...",
-    "previous_artifacts": "[session.json.artifacts para steps anteriores]",
-    "completed_steps": "[array]"
-  },
-  "persistence_instruction": "Antes de retornar, actualiza .sofia/session.json y .sofia/sofia.log según PERSISTENCE_PROTOCOL.md e incluye el bloque ✅ PERSISTENCE CONFIRMED."
+"ncs": {
+  "NC-001": {
+    "step": 5,
+    "skill": "code-reviewer",
+    "description": "...",
+    "severity": "mayor|menor",
+    "assigned_to": "developer",
+    "status": "open"
+  }
 }
 ```
 
 ---
 
-## Estado del pipeline — Resumen visual
+## Actualización session.json — formato v1.9
 
-Al recibir "estado del pipeline" o "status":
+```json
+{
+  "version": "1.9",
+  "sofia_version": "1.9",
+  "status": "in-progress|idle|gate-pending|sprint-closed",
+  "project": "bank-portal",
+  "client": "Banco Meridian",
+  "current_sprint": 17,
+  "current_feature": "FEAT-015",
+  "current_step": "3",
+  "completed_steps": ["1", "2"],
+  "last_skill": "requirements-analyst",
+  "gate_pending": null,
+  "security": {
+    "last_audit": "2026-03-24",
+    "open_debts": []
+  },
+  "metrics": {
+    "total_sp": 377,
+    "total_tests": 553,
+    "coverage": 84,
+    "defects": 0
+  },
+  "updated_at": "2026-XX-XXTXX:XX:XXZ",
+  "sofia_version": "1.9"
+}
+```
+
+## Formato sofia.log
 
 ```
-📊 SOFIA Pipeline Status
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Proyecto:  [project_name]
-Feature:   [feature]
-Sprint:    [sprint]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[✅] Step 1  Scrum Master       → docs/backlog/FEAT-XXX.md
-[✅] Step 2  Requirements       → docs/requirements/
-[✅] Step 3  Architect          → docs/architecture/
-[✅] Step 3b Documentation      → docs/deliverables/sprint-N/
-[🔄] Step 4  Developer          → en progreso
-[ ]  Step 5  Code Reviewer
-[ ]  Step 5b Security Agent
-[ ]  Step 6  QA Tester
-[ ]  Step 7  DevOps
-[ ]  Step 8  Documentation
-[ ]  Step 9  Workflow Manager
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Velocidad estimada: [SP completados]/[SP totales] SP
+[2026-03-24T10:00:00Z] [STEP-1]  [scrum-master]         COMPLETED → docs/sprints/SPRINT-17-planning.md
+[2026-03-24T10:30:00Z] [GATE-1]  [workflow-manager]     PENDING   → SCRUM-XXX waiting PO
+[2026-03-24T11:00:00Z] [GATE-1]  [workflow-manager]     APPROVED  → SCRUM-XXX closed by PO
+[2026-03-24T12:00:00Z] [STEP-3]  [architect]            COMPLETED → docs/architecture/hld/HLD-FEAT-015.md
+[2026-03-24T12:01:00Z] [STEP-3b] [documentation-agent]  COMPLETED → HLD.docx + 2x LLD.docx
+[2026-03-24T16:00:00Z] [STEP-5b] [security-agent]       COMPLETED → SecurityReport-Sprint17.md
+[2026-03-24T16:30:00Z] [STEP-8]  [documentation-agent]  COMPLETED → 10 Word + 3 Excel
+[2026-03-24T16:45:00Z] [SPRINT]  [orchestrator]         CLOSED    → Sprint 17 · FEAT-015 · v1.17.0
+[2026-03-24T16:46:00Z] [DASH]    [gen-dashboard.js]     GENERATED → docs/quality/sofia-dashboard.html
 ```
 
 ---
 
-## Reglas de oro del Orchestrator
+## Persistence Protocol — OBLIGATORIO
 
-1. **Nunca saltar un step** sin motivo explícito del usuario
-2. **Nunca continuar** si el POST-STEP VALIDATION falla dos veces
-3. **Siempre pasar el contexto completo** (sofia-context + artifacts previos) al delegar
-4. **Nunca escribir código** — delegar siempre al developer skill
-5. **Nunca aprobar gates** por cuenta propia — los gates son siempre humanos
-6. **Siempre actualizar session.json** antes y después de cada delegación
-7. **Si el usuario interrumpe el pipeline** a mitad, guardar estado con status = "paused"
+Todo agente que genere artefactos DEBE:
+1. Escribir artefactos a disco antes de cerrar su paso
+2. Confirmar con bloque `✅ PERSISTIDO` listando cada archivo y ruta
+3. El Orchestrator actualiza session.json (completed_steps, last_skill, updated_at)
+4. Añade entrada en sofia.log con timestamp ISO-8601
+
+**El Orchestrator NO avanza al siguiente step sin bloque de confirmación.**
+
+---
+
+## Reglas de oro
+
+1. Nunca saltar un step sin motivo explícito del usuario
+2. Nunca continuar si un gate HITL está pendiente
+3. Siempre pasar el contexto completo al delegar
+4. Nunca escribir código — delegar siempre al developer skill
+5. Nunca aprobar gates por cuenta propia
+6. Siempre actualizar session.json antes y después de cada delegación
+7. Si cve_critical > 0 en Step 5b → pipeline BLOQUEADO hasta remediar

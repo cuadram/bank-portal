@@ -1,27 +1,17 @@
 {
-  "_comment": "SOFIA v1.7 — Configuración del proyecto. Editar con: python3 .sofia/scripts/sofia-wizard.py --update",
-  "sofia_version": "1.7",
+  "_comment": "SOFIA v1.9 — Configuración del proyecto. Editar con: python3 .sofia/scripts/sofia-wizard.py --update",
+  "sofia_version": "1.9",
   "project": "bank-portal",
-  "client": "Experis",
+  "client": "Banco Meridian",
   "project_description": "Portal bancario con microservicios Java + Angular",
   "created_at": "2026-03-18T20:18:57Z",
-  "updated_at": "2026-03-18T20:18:57Z",
+  "updated_at": "2026-03-24T17:00:00Z",
   "stack": {
-    "backend": [
-      "java"
-    ],
-    "frontend": [
-      "angular"
-    ],
-    "database": [
-      "postgresql",
-      "redis"
-    ],
+    "backend": ["java"],
+    "frontend": ["angular"],
+    "database": ["postgresql", "redis"],
     "messaging": [],
-    "infra": [
-      "docker",
-      "jenkins"
-    ]
+    "infra": ["docker", "jenkins"]
   },
   "methodology": {
     "type": "scrumban",
@@ -40,33 +30,20 @@
     "client_contact": ""
   },
   "jira": {
-    "project_key": "BP",
+    "project_key": "SCRUM",
+    "cloud_id": "8898340d-94ed-45c2-8831-395d407a4e77",
     "sprint_board_id": null,
     "gate_label": "sofia-gate",
     "nc_label": "sofia-nc"
   },
   "confluence": {
-    "space_key": "BANKPORTAL",
-    "parent_page_id": null
+    "space_key": "SOFIA",
+    "space_id": "393220",
+    "parent_page_id": "229379"
   },
   "pipeline": {
-    "active_steps": [
-      "1",
-      "2",
-      "3",
-      "3b",
-      "4",
-      "5",
-      "5b",
-      "6",
-      "7",
-      "8",
-      "9"
-    ],
-    "optional_steps": {
-      "5b": true,
-      "performance": false
-    },
+    "active_steps": ["1","2","3","3b","4","5","5b","6","7","8","9"],
+    "optional_steps": { "5b": true, "performance": false },
     "gates_enabled": true,
     "atlassian_sync": true,
     "auto_dashboard": true
@@ -78,7 +55,11 @@
     "cmmi_level": 3
   },
   "paths": {
-    "repo": "/Users/cuadram/Downloads",
+    "repo": "/Users/cuadram/proyectos/bank-portal",
+    "node": "/opt/homebrew/opt/node@22/bin/node",
+    "npx":  "/opt/homebrew/opt/node@22/bin/npx",
+    "python3": "/usr/bin/python3",
+    "uvx": "uvx",
     "docs": "docs",
     "src": "src",
     "infra": "infra",
@@ -89,5 +70,9 @@
     "corporate_color": "1B3A6B",
     "font": "Arial",
     "paper": "A4"
+  },
+  "dashboard": {
+    "output": "docs/quality/sofia-dashboard.html",
+    "auto_open": false
   }
 }

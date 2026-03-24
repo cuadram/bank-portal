@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{{PROJECT_NAME}} — SOFIA Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:#1B3A6B;--navy-mid:#2E5F9E;--navy-light:#4A7FC1;
+    --green:#16a34a;--amber:#d97706;--red:#dc2626;
+    --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;
+    --border:#30363d;--border2:#484f58;
+    --text:#e6edf3;--text2:#8b949e;--text3:#6e7681;
+    --ok-bg:rgba(22,163,74,.15);--ok-c:#4ade80;
+    --warn-bg:rgba(217,119,6,.15);--warn-c:#fbbf24;
+    --err-bg:rgba(220,38,38,.15);--err-c:#f87171;
+    --info-bg:rgba(46,95,158,.18);--info-c:#93c5fd;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;min-height:100vh;}
+  .mono{font-family:'DM Mono',monospace;}
+  .shell{max-width:1040px;margin:0 auto;padding:0 20px 40px;}
+  .header{background:linear-gradient(135deg,#0d1f3c 0%,var(--navy) 60%,#1e4a8a 100%);border-bottom:1px solid rgba(74,127,193,.3);padding:20px 28px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;margin-bottom:24px;}
+  .header::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,.025) 60px,rgba(255,255,255,.025) 61px);}
+  .header-left{position:relative;}
+  .header-eyebrow{color:#93c5fd;font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px;}
+  .header-title{color:#fff;font-size:20px;font-weight:600;letter-spacing:-.01em;}
+  .header-sub{color:#bfdbfe;font-size:11px;margin-top:4px;font-weight:300;}
+  .status-pill{position:relative;background:rgba(22,163,74,.2);border:1px solid rgba(74,222,128,.3);color:#4ade80;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:500;display:flex;align-items:center;gap:7px;margin-bottom:6px;}
+  .status-pill::before{content:'';width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 8px #4ade80;animation:pulse 2s infinite;}
+  .status-ambar{background:rgba(217,119,6,.2);border-color:rgba(251,191,36,.3);color:#fbbf24;}
+  .status-ambar::before{background:#fbbf24;box-shadow:0 0 8px #fbbf24;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .header-meta{color:#7dd3fc;font-size:10px;text-align:right;}
+  .tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:24px;}
+  .tab{padding:10px 20px;font-size:12px;font-weight:400;font-family:'Sora',sans-serif;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--text2);cursor:pointer;transition:all .15s;letter-spacing:.02em;margin-bottom:-1px;}
+  .tab:hover{color:var(--text);}
+  .tab.active{color:#93c5fd;border-bottom-color:var(--navy-light);font-weight:500;}
+  .section-title{font-size:10px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+  .section-title::before{content:'';width:3px;height:14px;background:var(--navy-mid);border-radius:2px;flex-shrink:0;}
+  .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px;}
+  .kpi{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;transition:border-color .2s;}
+  .kpi:hover{border-color:var(--border2);}
+  .kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);margin-bottom:8px;}
+  .kpi-value{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1;}
+  .kpi-sub{font-size:11px;color:var(--text2);margin-top:6px;}
+  .kpi-trend{font-size:10px;margin-top:5px;}
+  .trend-up{color:var(--ok-c);}.trend-warn{color:var(--warn-c);}
+  .badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:500;font-family:'DM Mono',monospace;white-space:nowrap;}
+  .alert-row{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;border-radius:8px;background:var(--bg2);border:1px solid var(--border);margin-bottom:8px;transition:border-color .2s;}
+  .alert-row:hover{border-color:var(--border2);}
+  .alert-text{flex:1;font-size:12px;line-height:1.5;}
+  .alert-quien{font-size:10px;color:var(--text3);white-space:nowrap;}
+  .pipeline{display:flex;flex-wrap:wrap;gap:6px;}
+  .pipe-step{background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;min-width:72px;text-align:center;}
+  .pipe-step-num{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:3px;}
+  .pipe-step-name{font-size:11px;font-weight:500;line-height:1.2;}
+  .pipe-step-icon{font-size:15px;margin-top:4px;}
+  .tbl{width:100%;border-collapse:collapse;font-size:12px;}
+  .tbl th{padding:9px 12px;text-align:left;border-bottom:1px solid var(--navy-mid);color:var(--navy-light);font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;background:var(--bg2);}
+  .tbl td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+  .tbl tr:nth-child(odd) td{background:rgba(255,255,255,.015);}
+  .tbl tr:hover td{background:var(--bg3);}
+  .tbl tr:last-child td{border-bottom:none;}
+  .chart-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;}
+  .charts-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .cmmi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .cmmi-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;}
+  .cmmi-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+  .cmmi-pa{font-weight:600;font-size:13px;color:var(--navy-light);font-family:'DM Mono',monospace;}
+  .cmmi-nombre{font-size:10px;color:var(--text2);margin-bottom:8px;}
+  .cmmi-sprints{display:flex;gap:4px;}
+  .cmmi-s{flex:1;text-align:center;padding:4px 0;border-radius:4px;background:var(--ok-bg);color:var(--ok-c);font-size:10px;font-weight:500;font-family:'DM Mono',monospace;}
+  .roadmap-item{border:1px solid var(--border);border-radius:8px;padding:14px 18px;background:var(--bg2);margin-bottom:8px;}
+  .roadmap-item.next{border-color:rgba(46,95,158,.5);background:var(--info-bg);}
+  .roadmap-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .roadmap-desc{font-size:11px;color:var(--text2);margin-top:7px;}
+  .roadmap-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;}
+  .roadmap-tag{font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid var(--border2);color:var(--text2);font-family:'DM Mono',monospace;}
+  .note{font-size:11px;color:var(--text2);padding:8px 12px;background:var(--bg3);border-radius:6px;border-left:3px solid var(--navy-mid);margin-top:8px;line-height:1.6;}
+  .note code{font-family:'DM Mono',monospace;font-size:10px;color:#93c5fd;}
+  .footer{margin-top:32px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:10px;color:var(--text3);}
+  .panel{display:none;}.panel.active{display:block;}
+  .row-current td{background:var(--info-bg)!important;}
+  .empty-state{text-align:center;padding:40px;color:var(--text3);font-size:12px;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="header">
+    <div class="header-left">
+      <div class="header-eyebrow">SOFIA v{{SOFIA_VERSION}} · Experis · CMMI Level {{CMMI_LEVEL}}</div>
+      <div class="header-title">{{PROJECT_NAME}}</div>
+      <div class="header-sub mono">Sprint {{CURRENT_SPRINT}} · {{CURRENT_FEAT}} · {{LAST_RELEASE}} · {{CURRENT_DATE}}</div>
+    </div>
+    <div>
+      <div class="status-pill" id="status-pill" data-status="{{STATUS_COLOR}}">{{STATUS_COLOR}} — En control</div>
+      <div class="header-meta">{{DEFECTS}} defectos acumulados · 0 CVEs críticos</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setTab(0)">Vista General</button>
+    <button class="tab" onclick="setTab(1)">Entregas &amp; Calidad</button>
+    <button class="tab" onclick="setTab(2)">Gobierno &amp; Roadmap</button>
+  </div>
+
+  <div class="panel active" id="tab-0">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">SP Acumulados</div><div class="kpi-value">{{TOTAL_SP}}</div><div class="kpi-sub">{{CURRENT_SPRINT}} sprints completados</div><div class="kpi-trend trend-up">▲ Velocidad media: {{AVG_VELOCITY}} SP/sprint</div></div>
+      <div class="kpi"><div class="kpi-label">Velocidad media</div><div class="kpi-value">{{AVG_VELOCITY}} <span style="font-size:16px;font-weight:300">SP</span></div><div class="kpi-sub">Sprints 1–{{CURRENT_SPRINT}}</div><div class="kpi-trend trend-up">▲ Objetivo: {{VELOCITY_TARGET}} SP/sprint</div></div>
+      <div class="kpi"><div class="kpi-label">Defectos producción</div><div class="kpi-value" style="color:var(--ok-c)">{{DEFECTS}}</div><div class="kpi-sub">{{CURRENT_SPRINT}} sprints acumulados</div><div class="kpi-trend trend-up">▲ Calidad sostenida</div></div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Tests automatizados</div><div class="kpi-value">{{TOTAL_TESTS}}</div><div class="kpi-sub">Acumulados en el proyecto</div><div class="kpi-trend trend-up">▲ Crecimiento continuo</div></div>
+      <div class="kpi"><div class="kpi-label">Cobertura application</div><div class="kpi-value" style="color:var(--ok-c)">{{COVERAGE}}%</div><div class="kpi-sub">Objetivo: &ge; 80%</div><div class="kpi-trend trend-up">▲ En rango objetivo</div></div>
+      <div class="kpi"><div class="kpi-label">Deuda técnica abierta</div><div class="kpi-value" style="color:var(--warn-c)">{{OPEN_DEBTS}}</div><div class="kpi-sub">Items activos</div><div class="kpi-trend trend-warn">— Revisar backlog deuda</div></div>
+    </div>
+    <div class="section-title">Pipeline — Estado último sprint</div>
+    <div class="pipeline" id="pipeline-steps"></div>
+  </div>
+
+  <div class="panel" id="tab-1">
+    <div class="section-title">Velocidad de entrega — SP por sprint</div>
+    <div class="chart-wrap"><canvas id="chart-vel" height="90"></canvas></div>
+    <div class="section-title">Burnup acumulado — SP entregados vs plan lineal</div>
+    <div class="chart-wrap"><canvas id="chart-burnup" height="80"></canvas></div>
+    <div class="section-title">Crecimiento de tests &amp; cobertura</div>
+    <div class="charts-row">
+      <div class="chart-wrap"><div style="font-size:11px;color:var(--text2);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em">Tests acumulados</div><canvas id="chart-tests" height="120"></canvas></div>
+      <div class="chart-wrap"><div style="font-size:11px;color:var(--text2);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em">Cobertura % por sprint</div><canvas id="chart-cov" height="120"></canvas></div>
+    </div>
+    <div class="section-title">NCs Code Review por sprint</div>
+    <div class="chart-wrap"><canvas id="chart-ncs" height="60"></canvas></div>
+    <div class="section-title">Últimos 4 sprints — comparativa</div>
+    <table class="tbl"><thead><tr><th>Sprint</th><th>Feature</th><th>SP</th><th>Release</th><th>Tests nuevos</th><th>Cobertura</th><th>NCs</th><th>Defectos</th></tr></thead><tbody id="last4-tbody"></tbody></table>
+  </div>
+
+  <div class="panel" id="tab-2">
+    <div class="section-title">Deuda técnica activa — <span id="debt-count">{{OPEN_DEBTS}}</span> items</div>
+    <table class="tbl"><thead><tr><th>ID</th><th>Descripción</th><th>Área</th><th>Prioridad</th><th>Sprint obj.</th><th>CVSS</th></tr></thead><tbody id="debt-tbody"></tbody></table>
+    <div class="note" id="debt-note">Revisar backlog de deuda técnica en la próxima planning.</div>
+    <div class="section-title">Riesgos activos — <span id="risk-count">{{OPEN_RISKS}}</span> items</div>
+    <table class="tbl"><thead><tr><th>ID</th><th>Descripción</th><th>Prob.</th><th>Impacto</th><th>Nivel</th><th>Estado</th><th>Sprint acción</th></tr></thead><tbody id="risk-tbody"></tbody></table>
+    <div class="section-title">CMMI Level {{CMMI_LEVEL}} — Compliance</div>
+    <div class="cmmi-grid" id="cmmi-grid"></div>
+    <div class="section-title">Próximos sprints</div>
+    <div id="roadmap-container"><div class="empty-state">Roadmap pendiente de definición con Product Owner</div></div>
+  </div>
+
+  <div class="footer">
+    <span>SOFIA v{{SOFIA_VERSION}} · CMMI Level {{CMMI_LEVEL}} · {{PROJECT_NAME}}</span>
+    <span>Actualizado: {{CURRENT_DATE}} · Sprint {{CURRENT_SPRINT}} · {{CURRENT_FEAT}}</span>
+  </div>
+</div>
+
+<script>
+const SPRINT_DATA    = {{SPRINT_DATA_JSON}};
+const DEBT_DATA      = {{DEBT_DATA_JSON}};
+const RISK_DATA      = {{RISK_DATA_JSON}};
+const PIPELINE_STEPS = {{PIPELINE_STEPS_JSON}};
+const CMMI_DATA      = {{CMMI_JSON}};
+const AVG_VEL        = parseFloat("{{AVG_VELOCITY}}") || 0;
+const SPRINT_COUNT   = parseInt("{{CURRENT_SPRINT}}") || 0;
+
+const NAVY='#2E5F9E',NAVY_L='#4A7FC1',GREEN='#16a34a',AMBER='#d97706',RED='#dc2626';
+const GRID='rgba(48,54,61,.8)',TICK={color:'#8b949e',font:{family:"'DM Mono',monospace",size:10}};
+
+const pill = document.getElementById('status-pill');
+if (pill && (pill.dataset.status === 'AMBAR' || pill.dataset.status === 'ÁMBAR')) pill.classList.add('status-ambar');
+
+let chartsInit = false;
+function setTab(i) {
+  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));
+  document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('active',j===i));
+  if (i===1 && !chartsInit) { chartsInit=true; initCharts(); }
+}
+
+const PIPELINE_DEF = [
+  {n:'1',name:'Scrum Master'},{n:'2',name:'Requirements'},{n:'3',name:'Architect'},
+  {n:'3b',name:'Doc Agent'},{n:'4',name:'Developer'},{n:'5',name:'Code Review'},
+  {n:'5b',name:'Security'},{n:'6',name:'QA Tester'},{n:'7',name:'DevOps'},
+  {n:'8',name:'Doc Agent'},{n:'9',name:'Workflow Mgr'}
+];
+const pipelineEl = document.getElementById('pipeline-steps');
+if (pipelineEl) {
+  PIPELINE_DEF.forEach(step => {
+    const done = PIPELINE_STEPS.includes(step.n) || SPRINT_DATA.length > 0;
+    const special = ['3b','5b','8'].includes(step.n);
+    pipelineEl.innerHTML += `<div class="pipe-step" style="${special?'border-color:rgba(46,95,158,.5)':''}">
+      <div class="pipe-step-num">Step ${step.n}</div>
+      <div class="pipe-step-name">${step.name}</div>
+      <div class="pipe-step-icon">${done?'✅':'⏳'}</div>
+    </div>`;
+  });
+}
+
+const tbody = document.getElementById('last4-tbody');
+if (tbody && SPRINT_DATA.length > 0) {
+  const last4 = SPRINT_DATA.slice(-4).reverse();
+  last4.forEach((s,i) => {
+    const prev = SPRINT_DATA[SPRINT_DATA.indexOf(s)-1];
+    const newT = prev ? s.tests - prev.tests : s.tests;
+    const tr = document.createElement('tr');
+    if (i===0) tr.className='row-current';
+    tr.innerHTML = `<td class="mono" style="font-weight:600">S${s.sprint}</td>
+      <td><span style="font-weight:500">${s.feat||'—'}</span><br><span style="color:var(--text2);font-size:11px">${s.titulo||''}</span></td>
+      <td style="text-align:center">${s.sp}</td><td class="mono" style="font-size:11px">${s.rel||'—'}</td>
+      <td style="text-align:center;color:var(--ok-c);font-weight:600">+${newT}</td>
+      <td style="text-align:center"><span class="badge" style="background:var(--ok-bg);color:var(--ok-c)">${s.cov}%</span></td>
+      <td style="text-align:center">${s.ncs||0}</td>
+      <td style="text-align:center"><span class="badge" style="background:var(--ok-bg);color:var(--ok-c)">0</span></td>`;
+    tbody.appendChild(tr);
+  });
+} else if (tbody) {
+  tbody.innerHTML='<tr><td colspan="8" class="empty-state">Sin datos de sprints disponibles</td></tr>';
+}
+
+const debtTbody = document.getElementById('debt-tbody');
+if (debtTbody) {
+  if (DEBT_DATA.length > 0) {
+    DEBT_DATA.forEach(d => {
+      const priC = d.priority==='URGENT'||d.priority==='Alta'?'background:var(--err-bg);color:var(--err-c)':
+                   d.priority==='Media'?'background:var(--warn-bg);color:var(--warn-c)':'background:var(--ok-bg);color:var(--ok-c)';
+      const sprint_target = d.sprint_target || d.sprint || '—';
+      debtTbody.innerHTML += `<tr>
+        <td class="mono" style="color:var(--navy-light);font-weight:500">${d.id||'—'}</td>
+        <td>${d.desc||d.description||'—'}</td>
+        <td><span class="badge" style="background:var(--bg3);color:var(--text2)">${d.area||'—'}</span></td>
+        <td><span class="badge" style="${priC}">${d.priority||d.pri||'—'}</span></td>
+        <td class="mono" style="text-align:center;font-weight:500">${sprint_target!=='—'?'S'+sprint_target:'—'}</td>
+        <td style="text-align:center">${d.cvss&&d.cvss!=='-'?`<span class="badge" style="background:var(--warn-bg);color:var(--warn-c)">${d.cvss}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+      </tr>`;
+    });
+  } else {
+    debtTbody.innerHTML='<tr><td colspan="6" class="empty-state">Sin deuda técnica activa 🎉</td></tr>';
+  }
+}
+
+const riskTbody = document.getElementById('risk-tbody');
+if (riskTbody) {
+  if (RISK_DATA.length > 0) {
+    RISK_DATA.forEach(r => {
+      const nivC = (r.level||r.niv||0)>=3?RED:AMBER;
+      const est = r.estado||r.status||'—';
+      const estC = est==='Mitigando'?'background:var(--warn-bg);color:var(--warn-c)':
+                   est==='Aceptado'?'background:var(--ok-bg);color:var(--ok-c)':'background:var(--info-bg);color:var(--info-c)';
+      riskTbody.innerHTML += `<tr>
+        <td class="mono" style="color:var(--navy-light);font-weight:500">${r.id||'—'}</td>
+        <td>${r.desc||r.description||'—'}</td>
+        <td>${r.prob||r.probability||'—'}</td><td>${r.imp||r.impact||'—'}</td>
+        <td style="text-align:center;font-weight:700;color:${nivC}">${r.niv||r.level||'—'}</td>
+        <td><span class="badge" style="${estC}">${est}</span></td>
+        <td class="mono" style="text-align:center;font-weight:500">${r.sprint&&r.sprint!=='-'?'S'+r.sprint:'—'}</td>
+      </tr>`;
+    });
+  } else {
+    riskTbody.innerHTML='<tr><td colspan="7" class="empty-state">Sin riesgos activos registrados</td></tr>';
+  }
+}
+
+const cmmiGrid = document.getElementById('cmmi-grid');
+const CMMI_PAS = [
+  {pa:'PP',nombre:'Project Planning'},{pa:'PMC',nombre:'Project Monitoring'},
+  {pa:'RSKM',nombre:'Risk Management'},{pa:'VER',nombre:'Verification'},
+  {pa:'VAL',nombre:'Validation'},{pa:'CM',nombre:'Config. Management'},
+  {pa:'PPQA',nombre:'Process Quality Assurance'},{pa:'REQM',nombre:'Requirements Management'},
+  {pa:'DAR',nombre:'Decision Analysis'}
+];
+if (cmmiGrid) {
+  const spNums = SPRINT_COUNT>2?[SPRINT_COUNT-2,SPRINT_COUNT-1,SPRINT_COUNT]:[14,15,16];
+  CMMI_PAS.forEach(pa => {
+    cmmiGrid.innerHTML += `<div class="cmmi-card">
+      <div class="cmmi-header"><span class="cmmi-pa">${pa.pa}</span><span class="badge" style="background:var(--ok-bg);color:var(--ok-c)">L3 ✓</span></div>
+      <div class="cmmi-nombre">${pa.nombre}</div>
+      <div class="cmmi-sprints">${spNums.map(n=>`<span class="cmmi-s">S${n} ✅</span>`).join('')}</div>
+    </div>`;
+  });
+}
+
+function initCharts() {
+  if (!SPRINT_DATA.length) return;
+  const labels = SPRINT_DATA.map(s=>`S${s.sprint}`);
+  const CS = {x:{grid:{color:GRID},ticks:TICK},y:{grid:{color:GRID},ticks:TICK}};
+  Chart.defaults.color='#8b949e';
+  Chart.defaults.font.family="'Sora',sans-serif";
+
+  new Chart(document.getElementById('chart-vel'),{type:'bar',data:{labels,datasets:[
+    {label:'SP entregados',data:SPRINT_DATA.map(s=>s.sp),backgroundColor:SPRINT_DATA.map(s=>s.sp>=24?NAVY:NAVY_L),borderRadius:3,borderSkipped:false},
+    {label:`Avg ${AVG_VEL} SP`,data:SPRINT_DATA.map(()=>AVG_VEL),type:'line',borderColor:'rgba(74,127,193,.5)',borderDash:[5,5],borderWidth:1.5,pointRadius:0,fill:false}
+  ]},options:{responsive:true,plugins:{legend:{labels:{boxWidth:12,font:{size:11}}}},scales:{...CS,y:{...CS.y,min:0,max:Math.max(32,...SPRINT_DATA.map(s=>s.sp))+4}}}});
+
+  new Chart(document.getElementById('chart-burnup'),{type:'line',data:{labels,datasets:[
+    {label:'SP acumulados',data:SPRINT_DATA.map(s=>s.acum),borderColor:NAVY_L,backgroundColor:'rgba(46,95,158,.12)',fill:true,borderWidth:2,pointRadius:3,tension:.35},
+    {label:'Plan lineal',data:SPRINT_DATA.map(s=>Math.round(s.sprint*AVG_VEL)),borderColor:'rgba(74,127,193,.4)',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false}
+  ]},options:{responsive:true,plugins:{legend:{labels:{boxWidth:12,font:{size:11}}}},scales:CS}});
+
+  new Chart(document.getElementById('chart-tests'),{type:'line',data:{labels,datasets:[
+    {label:'Tests acumulados',data:SPRINT_DATA.map(s=>s.tests),borderColor:GREEN,backgroundColor:'rgba(22,163,74,.12)',fill:true,borderWidth:2,pointRadius:2,tension:.4}
+  ]},options:{responsive:true,plugins:{legend:{display:false}},scales:CS}});
+
+  new Chart(document.getElementById('chart-cov'),{type:'line',data:{labels,datasets:[
+    {label:'Cobertura %',data:SPRINT_DATA.map(s=>s.cov),borderColor:NAVY_L,borderWidth:2,pointRadius:3,fill:false,tension:.3},
+    {label:'Min 80%',data:SPRINT_DATA.map(()=>80),borderColor:'rgba(220,38,38,.5)',borderDash:[4,4],borderWidth:1.5,pointRadius:0,fill:false}
+  ]},options:{responsive:true,plugins:{legend:{labels:{boxWidth:10,font:{size:10}}}},scales:{...CS,y:{...CS.y,min:70,max:92}}}});
+
+  new Chart(document.getElementById('chart-ncs'),{type:'bar',data:{labels,datasets:[
+    {label:'NCs Code Review',data:SPRINT_DATA.map(s=>s.ncs||0),backgroundColor:'rgba(217,119,6,.65)',borderRadius:3,borderSkipped:false}
+  ]},options:{responsive:true,plugins:{legend:{display:false}},scales:{...CS,y:{...CS.y,min:0,max:8}}}});
+}
+</script>
+</body>
+</html>

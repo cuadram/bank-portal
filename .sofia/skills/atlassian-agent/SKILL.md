@@ -1,276 +1,134 @@
-# Atlassian Agent — SOFIA Software Factory v1.7
-# Sincronización bidireccional Jira + Confluence
-
-Se activa en dos modos:
-1. **Auto-sync** (invocado por Orchestrator tras POST-STEP VALIDATION):
-   Lee los archivos de `.sofia/sync/` y ejecuta las acciones en Jira y Confluence.
-2. **Manual** (invocado por el usuario): Consultas, búsquedas, creación de items.
-
-Triggers manuales: "actualiza Jira", "crea issue", "sube a Confluence",
-"sincroniza sprint", "estado en Jira", "linkea artefacto", "crea página".
-
+---
+name: atlassian-agent
+sofia_version: "1.9"
+updated: "2026-03-24"
+changelog: "v1.9 — Protocolo de inicio reforzado, anti-patterns documentados, auto-sync, spaceId numérico obligatorio"
 ---
 
-## Contexto SOFIA
+# Atlassian Agent — SOFIA Software Factory v1.9
 
-- **Jira project key**: leer de `.sofia/sofia-config.json` → `jira_project_key`
-- **Confluence space**: leer de `.sofia/sofia-config.json` → `confluence_space`
-- **Metodología**: Scrumban — sprints + backlog continuo
-- **Gobierno**: CMMI Nivel 3 — Confluence es el sistema de registro oficial
+## Rol
+Sincronizar artefactos del pipeline con Jira (issues, transiciones, comentarios)
+y Confluence (páginas de sprint, arquitectura, QA). Se activa en cada gate HITL
+y al cierre de sprint. Requiere MCP Atlassian activo.
 
----
-
-## Modo Auto-Sync — Invocado por Orchestrator
-
-### Protocolo de invocación
-
-El Orchestrator invoca este skill tras cada POST-STEP VALIDATION exitoso:
+## Entorno BankPortal (referencia)
 
 ```
-1. Ejecutar: python3 .sofia/scripts/atlassian-sync.py [repo] [step] [feature]
-2. Leer archivos generados en .sofia/sync/:
-   · jira-sync-step[N]-[timestamp].md
-   · confluence-sync-step[N]-[timestamp].md
-3. Invocar atlassian-agent con el contenido de esos archivos
-4. El agent ejecuta las acciones MCP y confirma
+URL:              nemtec.atlassian.net
+CloudID:          8898340d-94ed-45c2-8831-395d407a4e77
+Jira proyecto:    SCRUM (lab.sw_2025)
+Confluence space: 393220 (numérico — NUNCA la key textual)
 ```
 
-### Acciones por step
-
-| Step | Jira transition | Confluence | Artefactos |
-|------|----------------|------------|------------|
-| 1  | → In Progress         | Sprint Planning / Backlog        | docs/backlog/ |
-| 2  | → Requirements Review | Requirements / User Stories      | docs/requirements/ |
-| 3  | → Architecture Review | Architecture / HLD-LLD           | docs/architecture/ |
-| 3b | (sin transición)      | Architecture / Diagrams          | docs/deliverables/ |
-| 4  | → In Review           | Development / Implementation     | src/ |
-| 5  | → Code Review         | Quality / Code Review            | docs/quality/ |
-| 5b | → Security Review     | Security / Security Report       | docs/security/ |
-| 6  | → QA                  | Quality / Test Results           | docs/quality/ |
-| 7  | → Ready for Release   | DevOps / CI-CD                   | infra/ |
-| 8  | → Documentation Review| Deliverables / Client Package    | docs/deliverables/ |
-| 9  | → Done                | Sprint Review / Acceptance       | todos |
-
----
-
-## Acciones Jira — Detalle
-
-### Buscar issues del sprint activo
-
+**Árbol Confluence BankPortal:**
 ```
-Usar: searchJiraIssuesUsingJql
-JQL: project = [KEY] AND labels = "[FEATURE]" AND sprint in openSprints()
-Campos: summary, status, assignee, labels, priority
+393383 (homepage)
+└── 229379  BankPortal — Banco Meridian
+    ├── 65958   Arquitectura
+    ├── 229398  Requisitos
+    ├── 262402  QA
+    └── 98309   Sprints
 ```
 
-### Transicionar issue
-
+**Transiciones Jira:**
 ```
-1. getTransitionsForJiraIssue → obtener ID de la transición objetivo
-2. transitionJiraIssue → ejecutar la transición
-```
-
-### Añadir comentario con artefactos
-
-```
-Usar: addCommentToJiraIssue
-Formato ADF con:
-- Resumen del step completado
-- Lista de artefactos (como enlaces si están en Confluence)
-- Timestamp y nombre del agente SOFIA
-- Resultado de gate si aplica
-```
-
-### Crear issue de NC (No Conformidad)
-
-Cuando un gate es rechazado:
-```
-Usar: createJiraIssue
-- type: Bug
-- summary: "[NC] [FEATURE] Step [N] — [descripción del rechazo]"
-- labels: ["NC", feature, "sofia-generated"]
-- priority: según severidad (mayor → High, menor → Medium)
-- assignee: developer del sprint
-```
-
-### Cerrar NC resuelta
-
-```
-Usar: transitionJiraIssue → "Done"
-Añadir comentario: "NC resuelta en re-ejecución de step [N]. Verificado por [skill]."
+11 = Por hacer
+21 = En curso
+31 = Finalizada
 ```
 
 ---
 
-## Acciones Confluence — Detalle
-
-### Buscar o crear página del sprint
+## Protocolo de inicio — SIEMPRE ejecutar primero
 
 ```
-Usar: searchConfluenceUsingCql
-CQL: title = "Sprint [N] — [section]" AND space = "[SPACE]"
+PASO 1: Atlassian:getAccessibleAtlassianResources()
+  → Verificar cloudId disponible
+  → Si falla: MCP Atlassian no conectado — notificar y detener
 
-Si no existe → createConfluencePage:
-- title: "Sprint [N] — [section]"
-- space: [SPACE]
-- parent: página del sprint (buscar "Sprint [N]")
-```
+PASO 2: Para Confluence — obtener spaceId numérico:
+  Atlassian:getConfluenceSpaces(cloudId, keys: ["SOFIA"])
+  → Usar el campo "id" (Long numérico) como spaceId
+  → NUNCA usar la key textual como spaceId (causa error 400)
 
-### Actualizar sección de artefactos
-
-```
-Usar: getConfluencePage → obtener contenido actual
-Añadir sección con tabla:
-| Campo | Valor |
-|-------|-------|
-| Feature | [FEAT-XXX] |
-| Step completado | [N] — [nombre] |
-| Timestamp | [ISO] |
-| Artefactos | enlaces a los ficheros |
-| Gate | Aprobado por [rol] |
-
-Usar: updateConfluencePage con el contenido ampliado
-```
-
-### Adjuntar SecurityReport
-
-En step 5b, si el SecurityReport existe:
-```
-Subir SecurityReport.docx a la página "Security / Sprint [N]"
-Añadir tabla resumen:
-- Semáforo: VERDE/AMARILLO/ROJO
-- CVE críticos: 0
-- CVE altos: N
-- Gate: Aprobado/Bloqueado
-```
-
-### Crear página de Sprint Review (step 9)
-
-Al cerrar la feature:
-```
-createConfluencePage:
-- title: "Sprint Review — Sprint [N] — [FEATURE]"
-- Contenido: tabla con todos los steps, artefactos y gates del pipeline
-- Incluir: velocity (SP completados), defect rate, security status
+PASO 3: Verificar proyecto Jira:
+  Atlassian:getVisibleJiraProjects(cloudId)
+  → Confirmar que el proyecto existe
 ```
 
 ---
 
-## Modo Manual — Operaciones disponibles
+## Anti-patterns críticos — NO HACER
 
-### Consultas frecuentes
+| Anti-pattern | Consecuencia | Corrección |
+|---|---|---|
+| Usar key textual como spaceId | Error 400 | Usar id numérico de getConfluenceSpaces |
+| Crear página sin verificar padre | Error 404 | Verificar parentId antes |
+| Transición sin obtener transitions | Error inválido | getTransitionsForJiraIssue primero |
+| CQL sin comillas en títulos con espacios | Resultados vacíos | Comillas dobles en CQL |
+| Asumir cloudId entre entornos | Error 403 | Siempre obtener via getAccessibleAtlassianResources |
+
+---
+
+## Acciones por evento del pipeline
+
+### Gate HITL (cualquier step)
+```
+1. Crear issue Jira:
+   summary: "GATE [N] — [FEAT-XXX] Sprint [S] — Pendiente [Rol]"
+   tipo: Task · label: sofia-gate
+   assignee: lookupJiraAccountId del aprobador
+
+2. Crear/actualizar página Confluence sprint:
+   parent: 98309 (Sprints)
+   contenido: estado pipeline + artefactos + criterios gate
+```
+
+### Cierre de sprint (Step 9)
+```
+1. Transicionar issues del sprint a "Finalizada" (31)
+2. Actualizar página Confluence sprint con resultado final:
+   - Métricas: SP, tests, cobertura, defectos, NCs
+   - Delivery Package: lista de 13 documentos
+   - Deuda técnica nueva
+   - Próximo sprint
+3. Crear página evidencias CMMI si corresponde
+```
+
+### On-demand
+- "publica el HLD en Confluence" → crear en 65958 (Arquitectura)
+- "crea issue para DEBT-XXX" → createJiraIssue tipo Bug
+- "transiciona SCRUM-XXX a en curso" → getTransitions → transitionJiraIssue
+
+---
+
+## Formato página Confluence (sprint)
 
 ```
-"¿cuál es el estado de FEAT-005?"
-→ searchJiraIssuesUsingJql: project=BP AND labels="FEAT-005"
-→ Mostrar: status, assignee, sprint, últimos comentarios
+Sprint [N] · [FEAT-XXX] · [RELEASE]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Estado: 🟢 Completado / 🟡 En progreso / 🔴 Bloqueado
 
-"muéstrame el sprint activo"
-→ searchJiraIssuesUsingJql: project=BP AND sprint in openSprints()
-→ Agrupar por status, mostrar velocity parcial
+## Métricas
+| SP | Tests nuevos | Cobertura | Defectos | NCs CR |
+|----|--------------|-----------| ---------|--------|
+| 24 | +62          | 84%       | 0        | 2      |
 
-"¿qué NCs hay abiertas?"
-→ searchJiraIssuesUsingJql: project=BP AND issuetype=Bug AND labels=NC AND status != Done
-```
+## Delivery Package
+[Lista docs/deliverables/sprint-[N]-[FEAT-XXX]/]
 
-### Creación manual
-
-```
-"crea issue para [descripción]"
-→ createJiraIssue con tipo Story/Task/Bug según contexto
-
-"crea página de retrospectiva del sprint [N]"
-→ createConfluencePage con template de retrospectiva SOFIA
-```
-
-### Dashboard de sprint
-
-```
-"dame el estado del sprint"
-→ Mostrar tabla con:
-  - US completadas vs total
-  - Gates aprobados vs total
-  - NCs abiertas
-  - Velocity acumulada (SP)
-  - Security status
+## Deuda técnica generada
+[Lista DEBT-XXX → sprint objetivo]
 ```
 
 ---
 
-## Persistence Protocol — Implementación obligatoria (SOFIA v1.6)
-
-Al completar cualquier acción de sincronización:
-
-```javascript
-const fs  = require('fs');
-const now = new Date().toISOString();
-
-const session = JSON.parse(fs.readFileSync('.sofia/session.json', 'utf8'));
-const step = '*'; // atlassian-agent opera en múltiples steps
-if (!session.atlassian_sync) session.atlassian_sync = [];
-session.atlassian_sync.push({
-  step: currentStep,
-  feature: currentFeature,
-  jira_updated: true,
-  confluence_updated: true,
-  synced_at: now
-});
-session.updated_at = now;
-fs.writeFileSync('.sofia/session.json', JSON.stringify(session, null, 2));
-
-const logEntry = `[${now}] [STEP-*] [atlassian-agent] COMPLETED → jira+confluence synced | step=${currentStep} feature=${currentFeature}\n`;
-fs.appendFileSync('.sofia/sofia.log', logEntry);
-
-const snapPath = `.sofia/snapshots/step-atlassian-${Date.now()}.json`;
-fs.copyFileSync('.sofia/session.json', snapPath);
-```
-
-### Bloque de confirmación
+## Persistence Protocol
 
 ```
----
-✅ PERSISTENCE CONFIRMED — ATLASSIAN_AGENT STEP-*
-- session.json: updated (atlassian_sync entry added)
-- sofia.log: entry written [TIMESTAMP]
-- snapshot: .sofia/snapshots/step-atlassian-[timestamp].json
-- artifacts:
-  · jira://[PROJECT]-[ISSUE-KEY] (transición + comentario)
-  · confluence://[SPACE]/[PAGE-TITLE] (sección actualizada)
----
+✅ PERSISTIDO — Atlassian Agent · Sprint [N]
+   Jira SCRUM-XXX (gate issue)          [CREADO/ACTUALIZADO]
+   Confluence página Sprint [N]         [CREADA/ACTUALIZADA]
+   .sofia/sofia.log                     [ENTRADA AÑADIDA]
 ```
-
----
-
-## Manejo de errores
-
-```
-Si Jira no está disponible:
-  → Guardar prompt en .sofia/sync/pending/ con timestamp
-  → Marcar en session.json: atlassian_sync.pending = true
-  → Informar al Orchestrator: "Sync pendiente — ejecutar cuando Jira esté disponible"
-
-Si la transición no existe (estado ya alcanzado):
-  → No fallar — añadir comentario igualmente
-  → Registrar warning en sofia.log
-
-Si la página Confluence no existe:
-  → Crearla automáticamente con el contenido generado
-  → Nunca fallar por página no encontrada
-```
-
----
-
-## sofia-config.json — Campos requeridos
-
-```json
-{
-  "project": "bank-portal",
-  "client": "Experis",
-  "jira_project_key": "BP",
-  "confluence_space": "BANKPORTAL",
-  "jira_sprint_board_id": 1,
-  "confluence_parent_page_id": null
-}
-```
-
-Si `sofia-config.json` no existe, usar valores por defecto del contexto del proyecto.
