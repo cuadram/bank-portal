@@ -1,1 +1,5 @@
 [2026-03-24T10:30:00Z] [STEP-3] [architect] COMPLETED → HLD-FEAT-013.md | LLD-FEAT-013-backend.md | LLD-FEAT-013-frontend.md | ADR-024 | Gate-3 PENDING Tech Lead
+[2026-03-24T14:30:00Z] [STEP-2] [requirements-analyst] COMPLETED → docs/requirements/SRS-FEAT-014.md | 7 RF documentados | 9 US con Gherkin | RTM completa | Gate-2 PENDING Product Owner
+[2026-03-24T14:30:00Z] [STEP-2] [requirements-analyst] GATE_APPROVED → Product Owner | SRS-FEAT-014 APPROVED
+[2026-03-24T15:00:00Z] [STEP-3] [architect] STARTED → FEAT-014 Notificaciones Push & In-App
+[2026-03-24T15:00:00Z] [STEP-3] [architect] COMPLETED → HLD-FEAT-014.md | LLD-FEAT-014-backend.md | LLD-FEAT-014-frontend.md | ADR-025-vapid-vs-fcm.md | notifications-api-v1.yaml | Gate-3 PENDING Tech Lead

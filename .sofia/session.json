@@ -3,19 +3,21 @@
   "sprint": 16,
   "feature": "FEAT-014",
   "pipeline_type": "new-feature",
-  "pipeline_step": "1",
-  "pipeline_step_name": "planning",
-  "status": "in-progress",
-  "timestamp": "2026-03-24T14:00:00Z",
-  "completed_steps": ["1"],
-  "pending_steps": ["2","3","4","5","6","7","8","9"],
-  "last_skill": "scrum-master",
-  "last_artifact": "docs/sprints/SPRINT-016-planning.md",
+  "pipeline_step": "3b",
+  "pipeline_step_name": "documentation-agent",
+  "status": "in_progress",
+  "timestamp": "2026-03-24T15:30:00Z",
+  "completed_steps": ["1", "2", "3"],
+  "pending_steps": ["4","5","5b","6","7","8","9"],
+  "last_skill": "documentation-agent",
+  "last_artifact": "docs/deliverables/sprint-16-FEAT-014/",
   "gates": {
-    "1": {"status":"approved","by":"product-owner","at":"2026-03-24T14:00:00Z"}
+    "1": {"status":"approved","by":"product-owner","at":"2026-03-24T14:00:00Z"},
+    "2": {"status":"approved","by":"product-owner","at":"2026-03-24T14:30:00Z"},
+    "3": {"status":"approved","by":"tech-lead","at":"2026-03-24T15:00:00Z"}
   },
   "version": "2.0",
-  "updated_at": "2026-03-24T14:00:00Z",
+  "updated_at": "2026-03-24T15:30:00Z",
   "started_at": "2026-03-24T14:00:00Z",
   "sprint_history": {
     "sprint_13": {"feature":"FEAT-011","status":"completed","sp_planned":24,"sp_delivered":24,"release":"v1.13.0"},
@@ -24,7 +26,15 @@
     "sprint_16": {"feature":"FEAT-014","status":"in-progress","sp_planned":24,"sp_delivered":0,"release":"v1.16.0"}
   },
   "artifacts": {
-    "1": ["docs/sprints/SPRINT-016-planning.md","docs/backlog/FEAT-014.md","jira:SCRUM-57..66"]
+    "1": ["docs/sprints/SPRINT-016-planning.md","docs/backlog/FEAT-014.md","jira:SCRUM-57..66"],
+    "2": ["docs/requirements/SRS-FEAT-014.md"],
+    "3": [
+      "docs/architecture/HLD-FEAT-014.md",
+      "docs/architecture/lld/LLD-FEAT-014-backend.md",
+      "docs/architecture/lld/LLD-FEAT-014-frontend.md",
+      "docs/architecture/adr/ADR-025-vapid-vs-fcm.md",
+      "docs/architecture/openapi/notifications-api-v1.yaml"
+    ]
   },
   "release": "v1.16.0",
   "sp_total_accumulated": 355,
@@ -47,5 +57,5 @@
       "US-1407": "SCRUM-66"
     }
   },
-  "resume_next": "Sprint 16 — Step 2 — Requirements Analyst — SRS-FEAT-014"
+  "resume_next": "Sprint 16 — Step 4 — Developer — FEAT-014 implementación"
 }
