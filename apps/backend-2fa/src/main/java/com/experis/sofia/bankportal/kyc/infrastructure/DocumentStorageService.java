@@ -1,5 +1,6 @@
 package com.experis.sofia.bankportal.kyc.infrastructure;
 
+import com.experis.sofia.bankportal.kyc.domain.DocumentStoragePort;
 import lombok.extern.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -32,7 +33,7 @@ import java.util.UUID;
  */
 @Slf4j
 @Component
-public class DocumentStorageService {
+public class DocumentStorageService implements DocumentStoragePort {
 
     private static final String AES_ALGO     = "AES/GCM/NoPadding";
     private static final int    GCM_TAG_BITS = 128;
@@ -62,7 +63,8 @@ public class DocumentStorageService {
      * @param file  fichero recibido del cliente (multipart)
      * @return      ruta relativa del fichero + hash SHA-256 del contenido original
      */
-    public StorageResult store(MultipartFile file) {
+    @Override
+    public DocumentStoragePort.StorageResult store(MultipartFile file) {
         byte[] plainBytes;
         try (InputStream in = file.getInputStream()) {
             plainBytes = in.readAllBytes();
@@ -88,13 +90,14 @@ public class DocumentStorageService {
         }
 
         log.debug("[ADR-023] Documento almacenado: {} (sha256={})", filename, sha256.substring(0, 8) + "…");
-        return new StorageResult(filename, sha256);
+        return new DocumentStoragePort.StorageResult(filename, sha256);
     }
 
     /**
      * Verifica la integridad del fichero almacenado recalculando el SHA-256
      * del contenido descifrado y comparando con el hash persistido en BD.
      */
+    @Override
     public boolean verifyIntegrity(String filePath, String expectedHash) {
         Path file = storagePath.resolve(filePath);
         if (!Files.exists(file)) {
@@ -164,9 +167,6 @@ public class DocumentStorageService {
     }
 
     // ── public types ─────────────────────────────────────────────────────────
-
-    /** Resultado de almacenar un documento. */
-    public record StorageResult(String filePath, String sha256Hash) {}
 
     /** Excepción de operaciones de almacenamiento. */
     public static class StorageException extends RuntimeException {

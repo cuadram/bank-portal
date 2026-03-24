@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -33,11 +32,8 @@ public class KycAuthorizationFilter extends OncePerRequestFilter {
 
     private final KycVerificationRepository kycRepo;
 
-    @Value("${kyc.grace-period-days:90}")
-    private int gracePeriodDays;
-
     private static final String[] FINANCIAL_PREFIXES = {
-            "/api/v1/transfers", "/api/v1/bills"
+            "/api/v1/transfers", "/api/v1/bills", "/api/v1/payments"
     };
 
     @Override

@@ -3,7 +3,7 @@ package com.experis.sofia.bankportal.kyc;
 import com.experis.sofia.bankportal.audit.domain.AuditLogService;
 import com.experis.sofia.bankportal.kyc.application.ValidateDocumentUseCase;
 import com.experis.sofia.bankportal.kyc.domain.*;
-import com.experis.sofia.bankportal.kyc.infrastructure.DocumentStorageService;
+import com.experis.sofia.bankportal.kyc.domain.DocumentStoragePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ class ValidateDocumentUseCaseTest {
 
     @Mock KycVerificationRepository kycRepo;
     @Mock KycDocumentRepository     docRepo;
-    @Mock DocumentStorageService    storageService;
+    @Mock DocumentStoragePort       storageService;
     @Mock AuditLogService           auditLog;
 
     @InjectMocks ValidateDocumentUseCase useCase;

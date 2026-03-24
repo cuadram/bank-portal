@@ -2,9 +2,11 @@ package com.experis.sofia.bankportal.kyc.application;
 
 import com.experis.sofia.bankportal.audit.domain.AuditLogService;
 import com.experis.sofia.bankportal.kyc.domain.*;
-import com.experis.sofia.bankportal.kyc.infrastructure.DocumentStorageService;
+import com.experis.sofia.bankportal.kyc.domain.DocumentStoragePort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.Slf4j;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
@@ -25,8 +27,14 @@ public class ValidateDocumentUseCase {
 
     private final KycVerificationRepository kycRepo;
     private final KycDocumentRepository     docRepo;
-    private final DocumentStorageService    storageService;
+    private final DocumentStoragePort       storageService;
     private final AuditLogService           auditLog;
+
+    @Async
+    @EventListener
+    public void onDocumentSubmitted(KycDocumentSubmittedEvent event) {
+        execute(event.kycId(), event.userId());
+    }
 
     @Transactional
     public void execute(UUID kycId, UUID userId) {

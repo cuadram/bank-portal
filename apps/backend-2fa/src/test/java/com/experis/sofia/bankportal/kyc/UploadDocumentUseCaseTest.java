@@ -1,11 +1,12 @@
 package com.experis.sofia.bankportal.kyc;
 
 import com.experis.sofia.bankportal.audit.domain.AuditLogService;
+import com.experis.sofia.bankportal.kyc.application.KycDocumentSubmittedEvent;
 import com.experis.sofia.bankportal.kyc.application.UploadDocumentUseCase;
-import com.experis.sofia.bankportal.kyc.application.ValidateDocumentUseCase;
+import org.springframework.context.ApplicationEventPublisher;
 import com.experis.sofia.bankportal.kyc.application.dto.DocumentUploadResponse;
 import com.experis.sofia.bankportal.kyc.domain.*;
-import com.experis.sofia.bankportal.kyc.infrastructure.DocumentStorageService;
+import com.experis.sofia.bankportal.kyc.domain.DocumentStoragePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,8 +33,8 @@ class UploadDocumentUseCaseTest {
 
     @Mock KycVerificationRepository kycRepo;
     @Mock KycDocumentRepository     docRepo;
-    @Mock DocumentStorageService    storageService;
-    @Mock ValidateDocumentUseCase   validateUseCase;
+    @Mock DocumentStoragePort       storageService;
+    @Mock ApplicationEventPublisher eventPublisher;
     @Mock AuditLogService           auditLog;
 
     @InjectMocks UploadDocumentUseCase useCase;
@@ -57,17 +58,14 @@ class UploadDocumentUseCaseTest {
         when(kycRepo.findByUserId(userId)).thenReturn(Optional.of(pendingKyc));
         when(docRepo.existsByKycIdAndDocumentTypeAndSide(any(), any(), any())).thenReturn(false);
         when(storageService.store(file))
-                .thenReturn(new DocumentStorageService.StorageResult("f.enc", "abc123"));
+                .thenReturn(new DocumentStoragePort.StorageResult("f.enc", "abc123"));
         when(docRepo.save(any())).thenAnswer(i -> i.getArgument(0));
-        KycVerification submitted = new KycVerification();
-        submitted.setStatus(KycStatus.SUBMITTED);
-        when(kycRepo.findById(pendingKyc.getId())).thenReturn(Optional.of(submitted));
 
         DocumentUploadResponse resp = useCase.execute(userId, DocumentType.DNI, "FRONT", file);
 
-        assertThat(resp.kycStatus()).isEqualTo(KycStatus.SUBMITTED);
+        assertThat(resp.kycStatus()).isEqualTo(KycStatus.PENDING);
         verify(storageService).store(file);
-        verify(validateUseCase).execute(any(), eq(userId));
+        verify(eventPublisher).publishEvent(any(KycDocumentSubmittedEvent.class));
         verify(auditLog).log(eq("KYC_DOCUMENT_UPLOADED"), eq(userId), any());
     }
 
@@ -127,7 +125,7 @@ class UploadDocumentUseCaseTest {
         when(kycRepo.save(any())).thenReturn(pendingKyc);
         when(docRepo.existsByKycIdAndDocumentTypeAndSide(any(), any(), any())).thenReturn(false);
         when(storageService.store(any()))
-                .thenReturn(new DocumentStorageService.StorageResult("f.enc", "hash"));
+                .thenReturn(new DocumentStoragePort.StorageResult("f.enc", "hash"));
         when(docRepo.save(any())).thenAnswer(i -> i.getArgument(0));
         KycVerification after = new KycVerification();
         after.setStatus(KycStatus.SUBMITTED);

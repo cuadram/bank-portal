@@ -3,10 +3,10 @@ package com.experis.sofia.bankportal.kyc.application;
 import com.experis.sofia.bankportal.audit.domain.AuditLogService;
 import com.experis.sofia.bankportal.kyc.application.dto.DocumentUploadResponse;
 import com.experis.sofia.bankportal.kyc.domain.*;
-import com.experis.sofia.bankportal.kyc.infrastructure.DocumentStorageService;
+import com.experis.sofia.bankportal.kyc.domain.DocumentStoragePort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,12 +28,9 @@ public class UploadDocumentUseCase {
 
     private final KycVerificationRepository kycRepo;
     private final KycDocumentRepository     docRepo;
-    private final DocumentStorageService    storageService;
-    private final ValidateDocumentUseCase   validateUseCase;
+    private final DocumentStoragePort       storageService;
+    private final ApplicationEventPublisher eventPublisher;
     private final AuditLogService           auditLog;
-
-    @Value("${kyc.grace-period-days:90}")
-    private int gracePeriodDays;
 
     @Transactional
     public DocumentUploadResponse execute(UUID userId,
@@ -59,7 +56,7 @@ public class UploadDocumentUseCase {
             throw new KycException("DOCUMENT_ALREADY_UPLOADED");
 
         // Almacenar cifrado + calcular hash SHA-256
-        DocumentStorageService.StorageResult stored = storageService.store(file);
+        DocumentStoragePort.StorageResult stored = storageService.store(file);
 
         // Persistir documento
         KycDocument doc = new KycDocument();
@@ -74,12 +71,10 @@ public class UploadDocumentUseCase {
                 "type=" + documentType + " side=" + side);
         log.info("[US-1302] Documento subido userId={} type={} side={}", userId, documentType, side);
 
-        // Ejecutar validación automática en la misma transacción
-        validateUseCase.execute(kyc.getId(), userId);
+        // Publicar evento — validación asíncrona post-commit (ADR-024 / RV-022)
+        eventPublisher.publishEvent(new KycDocumentSubmittedEvent(this, kyc.getId(), userId));
 
-        // Refrescar estado tras posible cambio
-        KycVerification updated = kycRepo.findById(kyc.getId()).orElseThrow();
-        return new DocumentUploadResponse(doc.getId(), updated.getStatus());
+        return new DocumentUploadResponse(doc.getId(), kyc.getStatus());
     }
 
     private void validateFile(MultipartFile file) {
