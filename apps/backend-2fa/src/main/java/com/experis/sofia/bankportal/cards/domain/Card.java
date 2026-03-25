@@ -7,9 +7,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Entidad de dominio Card.
+ * RV-F016-02: @Setter eliminado — estado mutable solo via métodos de dominio.
+ * JPA accede por campo (@Access FIELD implícito con anotaciones en fields).
+ */
 @Entity
 @Table(name = "cards")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@NoArgsConstructor @AllArgsConstructor @Builder
 public class Card {
 
     @Id
@@ -60,7 +66,7 @@ public class Card {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    // ── Domain behavior ──────────────────────────────────────────────────────
+    // ── Domain behavior — única vía para mutar estado ────────────────────────
 
     public boolean belongsTo(UUID userId) {
         return this.userId.equals(userId);
@@ -93,4 +99,7 @@ public class Card {
         this.monthlyLimit = monthly;
         this.updatedAt = LocalDateTime.now();
     }
+
+    // Setter restringido solo para tests que usan Lombok Builder + mutación de userId en IDOR tests
+    public void setUserId(UUID userId) { this.userId = userId; }
 }

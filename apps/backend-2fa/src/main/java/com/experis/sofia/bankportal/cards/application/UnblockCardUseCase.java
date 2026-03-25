@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
+/** RV-F016-03: usa CardMaskingUtil */
 @Service
 @RequiredArgsConstructor
 public class UnblockCardUseCase {
@@ -32,12 +33,7 @@ public class UnblockCardUseCase {
         card.unblock();
         cardRepository.save(card);
 
-        auditLog.log("CARD_UNBLOCKED", userId.toString(), maskCardId(cardId));
+        auditLog.log("CARD_UNBLOCKED", userId.toString(), CardMaskingUtil.maskId(cardId));
         pushService.sendAsync(userId, NotificationEventType.CARD_UNBLOCKED);
-    }
-
-    private String maskCardId(UUID cardId) {
-        String s = cardId.toString();
-        return "****-****-****-" + s.substring(s.length() - 4);
     }
 }

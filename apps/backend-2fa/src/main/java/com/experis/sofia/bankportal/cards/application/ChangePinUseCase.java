@@ -4,12 +4,16 @@ import com.experis.sofia.bankportal.cards.domain.*;
 import com.experis.sofia.bankportal.audit.AuditLogService;
 import com.experis.sofia.bankportal.twofa.application.OtpValidationUseCase;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+/**
+ * RV-F016-03: usa CardMaskingUtil (DRY)
+ * RV-F016-04: inyecta PasswordEncoder (interfaz, no BCrypt concreto)
+ */
 @Service
 @RequiredArgsConstructor
 public class ChangePinUseCase {
@@ -21,7 +25,7 @@ public class ChangePinUseCase {
     private final OtpValidationUseCase otpValidation;
     private final CoreBankingPort coreBankingPort;
     private final AuditLogService auditLog;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder; // RV-F016-04: interfaz
 
     @Transactional
     public void execute(UUID cardId, UUID userId, String newPin, String otpCode) {
@@ -39,16 +43,10 @@ public class ChangePinUseCase {
         if (!card.belongsTo(userId))
             throw new CardAccessDeniedException("IDOR: card " + cardId + " does not belong to user " + userId);
 
-        // PIN nunca almacenado en BankPortal — delegado al core bancario
         String pinHash = passwordEncoder.encode(newPin);
         coreBankingPort.changePin(cardId, pinHash);
 
-        // Audit: PIN nunca en el log
-        auditLog.log("CARD_PIN_CHANGED", userId.toString(), maskCardId(cardId));
-    }
-
-    private String maskCardId(UUID cardId) {
-        String s = cardId.toString();
-        return "****-****-****-" + s.substring(s.length() - 4);
+        // RV-F016-03: maskId centralizado
+        auditLog.log("CARD_PIN_CHANGED", userId.toString(), CardMaskingUtil.maskId(cardId));
     }
 }

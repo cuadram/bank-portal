@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
+/** RV-F016-03: usa CardMaskingUtil (DRY — elimina maskCardId() local) */
 @Service
 @RequiredArgsConstructor
 public class BlockCardUseCase {
@@ -32,12 +33,7 @@ public class BlockCardUseCase {
         card.block();
         cardRepository.save(card);
 
-        auditLog.log("CARD_BLOCKED", userId.toString(), maskCardId(cardId));
+        auditLog.log("CARD_BLOCKED", userId.toString(), CardMaskingUtil.maskId(cardId));
         pushService.sendAsync(userId, NotificationEventType.CARD_BLOCKED);
-    }
-
-    private String maskCardId(UUID cardId) {
-        String s = cardId.toString();
-        return "****-****-****-" + s.substring(s.length() - 4);
     }
 }

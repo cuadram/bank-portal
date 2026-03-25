@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+/** RV-F016-03: usa CardMaskingUtil */
 @Service
 @RequiredArgsConstructor
 public class UpdateCardLimitsUseCase {
@@ -37,7 +38,8 @@ public class UpdateCardLimitsUseCase {
         cardRepository.save(card);
 
         auditLog.log("CARD_LIMITS_UPDATED", userId.toString(),
-            "prev=" + prevDaily + "/" + prevMonthly + " new=" + daily + "/" + monthly);
+            CardMaskingUtil.maskId(cardId) + " prev=" + prevDaily + "/" + prevMonthly
+            + " new=" + daily + "/" + monthly);
         pushService.sendAsync(userId, NotificationEventType.CARD_LIMITS_UPDATED);
     }
 }

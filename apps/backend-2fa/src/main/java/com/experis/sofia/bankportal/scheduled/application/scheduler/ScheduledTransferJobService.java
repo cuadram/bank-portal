@@ -10,22 +10,21 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Job diario que localiza todas las transferencias vencidas y las ejecuta.
- *
- * ADR-028 Sprint 18: ShedLock JDBC garantiza ejecución única en multi-instancia.
- * DEBT-030 Sprint 18: findDueTransfers paginado en batches de 500 — previene OOM.
- *
- * @author SOFIA Developer Agent — FEAT-016 Sprint 18
+ * ADR-028: ShedLock JDBC — ejecución única en multi-instancia.
+ * DEBT-030: paginación batches de 500.
+ * RV-F016-05: LocalDate.now() con timezone explícito (Europe/Madrid).
  */
 @Component
 public class ScheduledTransferJobService {
 
     private static final Logger LOG = Logger.getLogger(ScheduledTransferJobService.class.getName());
     private static final int BATCH_SIZE = 500;
+    private static final ZoneId ZONE = ZoneId.of("Europe/Madrid");
 
     private final ScheduledTransferRepository    repository;
     private final ExecuteScheduledTransferUseCase executeUseCase;
@@ -36,24 +35,18 @@ public class ScheduledTransferJobService {
         this.executeUseCase = executeUseCase;
     }
 
-    /**
-     * ADR-028: @SchedulerLock garantiza que solo una instancia ejecuta el job.
-     * lockAtLeastFor=PT5M evita re-ejecución si el job termina muy rápido.
-     * lockAtMostFor=PT10M libera el lock aunque la instancia falle.
-     * DEBT-030: iteración por páginas de 500.
-     */
     @Scheduled(cron = "${scheduler.cron:0 0 6 * * *}")
     @SchedulerLock(
-        name        = "scheduledTransferJob",
+        name           = "scheduledTransferJob",
         lockAtLeastFor = "PT5M",
         lockAtMostFor  = "PT10M"
     )
     public void runDailyJob() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZONE); // RV-F016-05: timezone explícito
         int ok = 0, errors = 0, page = 0;
         Page<ScheduledTransfer> batch;
 
-        LOG.info("[ScheduledTransferJob] Iniciando — " + today);
+        LOG.info("[ScheduledTransferJob] Iniciando — " + today + " (" + ZONE + ")");
 
         do {
             batch = repository.findDueTransfers(today, PageRequest.of(page++, BATCH_SIZE));
