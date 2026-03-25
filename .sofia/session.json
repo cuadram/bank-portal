@@ -1,62 +1,201 @@
 {
   "version": "1.9",
   "sofia_version": "1.9",
-  "status": "idle",
+  "status": "in_progress",
   "project": "bank-portal",
   "client": "Banco Meridian",
-  "current_sprint": 17,
-  "current_feature": "",
-  "current_step": null,
-  "completed_steps": [],
-  "last_skill": "workflow-manager",
-  "gate_pending": null,
+  "current_sprint": 18,
+  "current_feature": "FEAT-016",
+  "current_step": "3",
+  "pipeline_step": "3b",
+  "pipeline_step_name": "documentation-agent",
+  "completed_steps": [
+    "1",
+    "2",
+    "3"
+  ],
+  "last_skill": "architect",
+  "last_skill_output_path": "docs/architecture/",
+  "gate_pending": "gate-step3-tech-lead",
+  "sprint_goal": "Gestión completa de tarjetas: consulta, bloqueo/desbloqueo 2FA, límites, cambio PIN + ADR-028 ShedLock + DEBT-026/030 + V17c",
+  "sprint_capacity_sp": 24,
+  "artifacts": {
+    "1": [
+      "docs/sprints/SPRINT-018-planning.md",
+      "docs/backlog/FEAT-016.md"
+    ],
+    "2": [
+      "docs/requirements/SRS-FEAT-016.md"
+    ],
+    "3": [
+      "docs/architecture/hld/HLD-FEAT-016.md",
+      "docs/architecture/lld/LLD-016-cards-backend.md",
+      "docs/architecture/lld/LLD-016-cards-frontend.md",
+      "docs/architecture/adr/ADR-028-shedlock-scheduler.md"
+    ]
+  },
+  "gates": {
+    "1": {
+      "status": "approved",
+      "by": "product-owner",
+      "at": "2026-03-25T12:00:00Z"
+    },
+    "2": {
+      "status": "approved",
+      "by": "product-owner",
+      "at": "2026-03-25T12:00:00Z"
+    },
+    "3": {
+      "status": "pending",
+      "by": "tech-lead",
+      "sla": "48h",
+      "at": null
+    }
+  },
   "security": {
     "last_audit": "2026-03-24",
     "open_debts": [
-      { "id": "DEBT-026", "area": "Backend",    "priority": "Baja",  "cvss": "-",   "sprint_target": 18 },
-      { "id": "DEBT-027", "area": "Arch",       "priority": "Media", "cvss": "-",   "sprint_target": 17 },
-      { "id": "DEBT-028", "area": "Security",   "priority": "Media", "cvss": "4.1", "sprint_target": 17 },
-      { "id": "DEBT-029", "area": "Compliance", "priority": "Baja",  "cvss": "-",   "sprint_target": 17 }
+      {
+        "id": "DEBT-026",
+        "area": "Backend",
+        "priority": "Baja",
+        "cvss": "-",
+        "sprint_target": 18
+      },
+      {
+        "id": "DEBT-027",
+        "area": "Arch",
+        "priority": "Media",
+        "cvss": "-",
+        "sprint_target": 17
+      },
+      {
+        "id": "DEBT-028",
+        "area": "Security",
+        "priority": "MUST",
+        "cvss": "4.1",
+        "sprint_target": 17
+      },
+      {
+        "id": "DEBT-029",
+        "area": "Compliance",
+        "priority": "Baja",
+        "cvss": "-",
+        "sprint_target": 17
+      }
     ]
   },
   "risks": {
     "active": [
-      { "id": "R-016-01", "desc": "push_subscriptions.auth en claro en BD", "prob": "Media", "imp": "Alta", "niv": 3, "estado": "Mitigando", "sprint": 17 },
-      { "id": "R-016-02", "desc": "Safari iOS <16.4 sin Web Push",           "prob": "Alta",  "imp": "Media","niv": 2, "estado": "Aceptado",   "sprint": "-" },
-      { "id": "R-016-05", "desc": ">500 SSE concurrentes sin prueba carga",  "prob": "Baja",  "imp": "Media","niv": 2, "estado": "Planificado","sprint": 17 }
+      {
+        "id": "R-016-01",
+        "desc": "push_subscriptions.auth en claro en BD",
+        "prob": "Media",
+        "imp": "Alta",
+        "niv": 3,
+        "estado": "Mitigando",
+        "sprint": 17
+      },
+      {
+        "id": "R-016-02",
+        "desc": "Safari iOS <16.4 sin Web Push",
+        "prob": "Alta",
+        "imp": "Media",
+        "niv": 2,
+        "estado": "Aceptado",
+        "sprint": "-"
+      },
+      {
+        "id": "R-016-05",
+        "desc": ">500 SSE concurrentes sin prueba carga",
+        "prob": "Baja",
+        "imp": "Media",
+        "niv": 2,
+        "estado": "Planificado",
+        "sprint": 17
+      },
+      {
+        "id": "R-015-01",
+        "desc": "Scheduler en múltiples instancias",
+        "prob": "Media",
+        "imp": "Alta",
+        "niv": 3,
+        "estado": "Mitigado-diferido",
+        "sprint": 18
+      },
+      {
+        "id": "R-015-02",
+        "desc": "NextExecutionDate incorrecta meses cortos",
+        "prob": "Media",
+        "imp": "Media",
+        "niv": 2,
+        "estado": "Planificado",
+        "sprint": 17
+      }
     ]
   },
   "metrics": {
-    "total_sp": 377,
-    "total_tests": 553,
-    "coverage": 84,
+    "total_sp": 401,
+    "total_tests": 615,
+    "coverage": 85,
     "defects": 0,
-    "ncs_last_sprint": 2
+    "ncs_last_sprint": 3
   },
   "sprint_history": {
-    "sprint_01": { "feature": "FEAT-001", "status": "completed", "sp": 24, "acum": 24,  "tests": 40,  "cov": 76, "ncs": 3, "rel": "v1.1.0" },
-    "sprint_02": { "feature": "FEAT-001", "status": "completed", "sp": 24, "acum": 48,  "tests": 66,  "cov": 78, "ncs": 2, "rel": "v1.2.0" },
-    "sprint_03": { "feature": "FEAT-002", "status": "completed", "sp": 24, "acum": 72,  "tests": 100, "cov": 79, "ncs": 2, "rel": "v1.3.0" },
-    "sprint_04": { "feature": "FEAT-003", "status": "completed", "sp": 24, "acum": 96,  "tests": 121, "cov": 80, "ncs": 2, "rel": "v1.4.0" },
-    "sprint_05": { "feature": "FEAT-005", "status": "completed", "sp": 24, "acum": 120, "tests": 149, "cov": 81, "ncs": 3, "rel": "v1.5.0" },
-    "sprint_06": { "feature": "FEAT-005", "status": "completed", "sp": 22, "acum": 142, "tests": 177, "cov": 82, "ncs": 2, "rel": "v1.6.0" },
-    "sprint_07": { "feature": "FEAT-006", "status": "completed", "sp": 24, "acum": 166, "tests": 205, "cov": 83, "ncs": 2, "rel": "v1.7.0" },
-    "sprint_08": { "feature": "FEAT-004", "status": "completed", "sp": 24, "acum": 190, "tests": 227, "cov": 82, "ncs": 2, "rel": "v1.8.0" },
-    "sprint_09": { "feature": "FEAT-007", "status": "completed", "sp": 23, "acum": 213, "tests": 255, "cov": 83, "ncs": 2, "rel": "v1.9.0" },
-    "sprint_10": { "feature": "FEAT-008", "status": "completed", "sp": 24, "acum": 237, "tests": 283, "cov": 84, "ncs": 2, "rel": "v1.10.0" },
-    "sprint_11": { "feature": "FEAT-009", "status": "completed", "sp": 20, "acum": 257, "tests": 309, "cov": 83, "ncs": 1, "rel": "v1.11.0" },
-    "sprint_12": { "feature": "FEAT-010", "status": "completed", "sp": 24, "acum": 281, "tests": 343, "cov": 84, "ncs": 2, "rel": "v1.12.0" },
-    "sprint_13": { "feature": "FEAT-011", "status": "completed", "sp": 24, "acum": 305, "tests": 400, "cov": 85, "ncs": 3, "rel": "v1.13.0" },
-    "sprint_14": { "feature": "FEAT-012", "status": "completed", "sp": 24, "acum": 329, "tests": 444, "cov": 85, "ncs": 5, "rel": "v1.14.0" },
-    "sprint_15": { "feature": "FEAT-013", "status": "completed", "sp": 24, "acum": 353, "tests": 491, "cov": 85, "ncs": 4, "rel": "v1.15.0" },
-    "sprint_16": { "feature": "FEAT-014", "status": "completed", "sp": 24, "acum": 377, "tests": 553, "cov": 84, "ncs": 2, "rel": "v1.16.0", "closed_at": "2026-03-24" }
+    "sprint_16": {
+      "feature": "FEAT-014",
+      "status": "completed",
+      "sp": 24,
+      "acum": 377,
+      "tests": 553,
+      "cov": 84,
+      "ncs": 2,
+      "rel": "v1.16.0",
+      "closed_at": "2026-03-24"
+    },
+    "sprint_17": {
+      "feature": "FEAT-015",
+      "status": "completed",
+      "sp": 24,
+      "acum": 401,
+      "tests": 615,
+      "cov": 85,
+      "ncs": 3,
+      "rel": "v1.17.0",
+      "closed_at": "2026-04-22"
+    },
+    "sprint_18": {
+      "feature": "FEAT-016",
+      "status": "in_progress",
+      "sp": 24,
+      "acum": null,
+      "tests": null,
+      "cov": null,
+      "ncs": null,
+      "rel": "v1.18.0"
+    }
   },
   "cmmi": {
     "level": 3,
     "active": true,
-    "evidence_sprints": [14, 15, 16],
-    "process_areas": ["PP","PMC","RSKM","VER","VAL","CM","PPQA","REQM","DAR"]
+    "evidence_sprints": [
+      14,
+      15,
+      16
+    ],
+    "process_areas": [
+      "PP",
+      "PMC",
+      "RSKM",
+      "VER",
+      "VAL",
+      "CM",
+      "PPQA",
+      "REQM",
+      "DAR"
+    ]
   },
-  "updated_at": "2026-03-24T16:59:00Z",
-  "resume_next": "Sprint 17 — Pendiente planning. Deuda: DEBT-027/028/029 (~7 SP) + FEAT-015 TBD (~17 SP)"
+  "adrs_pending": [],
+  "updated_at": "2026-03-25T11:10:57.837Z",
+  "resume_next": "Sprint 18 — GATE 3 pendiente Tech Lead (HLD+LLD+ADR-028). Siguiente: Step 3b Doc Agent + Step 4 Developer."
 }
