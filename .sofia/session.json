@@ -6,17 +6,19 @@
   "client": "Banco Meridian",
   "current_sprint": 18,
   "current_feature": "FEAT-016",
-  "current_step": "3",
-  "pipeline_step": "3b",
-  "pipeline_step_name": "documentation-agent",
+  "current_step": "5",
+  "pipeline_step": "5",
+  "pipeline_step_name": "code-reviewer",
   "completed_steps": [
     "1",
     "2",
-    "3"
+    "3",
+    "3b",
+    "4"
   ],
   "last_skill": "architect",
   "last_skill_output_path": "docs/architecture/",
-  "gate_pending": "gate-step3-tech-lead",
+  "gate_pending": "gate-step4-tech-lead",
   "sprint_goal": "Gestión completa de tarjetas: consulta, bloqueo/desbloqueo 2FA, límites, cambio PIN + ADR-028 ShedLock + DEBT-026/030 + V17c",
   "sprint_capacity_sp": 24,
   "artifacts": {
@@ -32,6 +34,36 @@
       "docs/architecture/lld/LLD-016-cards-backend.md",
       "docs/architecture/lld/LLD-016-cards-frontend.md",
       "docs/architecture/adr/ADR-028-shedlock-scheduler.md"
+    ],
+    "4": [
+      "apps/backend-2fa/src/main/resources/db/migration/V18__cards_management.sql",
+      "apps/backend-2fa/src/main/resources/db/migration/V18b__drop_push_plain_columns.sql",
+      "apps/backend-2fa/src/main/resources/db/migration/V18c__shedlock.sql",
+      "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/cards/domain/Card.java",
+      "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/cards/domain/CardRepository.java",
+      "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/cards/domain/CoreBankingPort.java",
+      "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/cards/application/BlockCardUseCase.java",
+      "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/cards/application/UnblockCardUseCase.java",
+      "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/cards/application/UpdateCardLimitsUseCase.java",
+      "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/cards/application/ChangePinUseCase.java",
+      "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/cards/application/GetCardsUseCase.java",
+      "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/cards/application/GetCardDetailUseCase.java",
+      "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/cards/infrastructure/persistence/CardJpaRepository.java",
+      "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/cards/infrastructure/persistence/CardRepositoryAdapter.java",
+      "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/cards/infrastructure/corebanking/CoreBankingAdapter.java",
+      "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/cards/infrastructure/web/CardController.java",
+      "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/scheduled/application/scheduler/ScheduledTransferJobService.java",
+      "apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/cards/application/BlockCardUseCaseTest.java",
+      "apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/cards/application/UpdateCardLimitsUseCaseTest.java",
+      "apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/cards/application/ChangePinUseCaseTest.java",
+      "apps/frontend-portal/src/app/features/cards/cards.module.ts",
+      "apps/frontend-portal/src/app/features/cards/services/card.service.ts",
+      "apps/frontend-portal/src/app/features/cards/components/card-list/card-list.component.ts",
+      "apps/frontend-portal/src/app/features/cards/components/card-detail/card-detail.component.ts"
+    ],
+    "3b": [
+      "docs/deliverables/sprint-18-FEAT-016/word/HLD-FEAT-016-Sprint18.docx",
+      "docs/deliverables/sprint-18-FEAT-016/word/LLD-016-cards-backend-Sprint18.docx"
     ]
   },
   "gates": {
@@ -46,10 +78,21 @@
       "at": "2026-03-25T12:00:00Z"
     },
     "3": {
+      "status": "approved",
+      "by": "tech-lead",
+      "at": "2026-03-25T12:30:00Z"
+    },
+    "4": {
       "status": "pending",
       "by": "tech-lead",
       "sla": "48h",
       "at": null
+    },
+    "3b": {
+      "status": "completed",
+      "by": "documentation-agent",
+      "at": "2026-03-25T12:35:00Z",
+      "note": "Sin gate propio — automático post-arch"
     }
   },
   "security": {
@@ -196,6 +239,16 @@
     ]
   },
   "adrs_pending": [],
-  "updated_at": "2026-03-25T11:10:57.837Z",
-  "resume_next": "Sprint 18 — GATE 3 pendiente Tech Lead (HLD+LLD+ADR-028). Siguiente: Step 3b Doc Agent + Step 4 Developer."
+  "updated_at": "2026-03-25T11:56:28.968Z",
+  "resume_next": "Sprint 18 — GATE 4 pendiente Tech Lead. Siguiente: Step 5 Code Reviewer.",
+  "dev_metrics": {
+    "artefactos": 24,
+    "flyway": 3,
+    "domain_classes": 7,
+    "use_cases": 6,
+    "infra_classes": 3,
+    "controller_endpoints": 6,
+    "unit_tests": 18,
+    "angular_components": 4
+  }
 }

@@ -1,0 +1,34 @@
+<div class="cards-container">
+  <h2>Mis tarjetas</h2>
+
+  <div *ngIf="loading" class="loading">Cargando tarjetas...</div>
+
+  <div *ngIf="!loading" class="cards-grid">
+    <div
+      *ngFor="let card of cards"
+      class="card-item"
+      role="button"
+      tabindex="0"
+      [attr.aria-label]="'Tarjeta ' + card.cardType + ' ' + card.panMasked"
+      (click)="goToDetail(card.id)"
+      (keydown.enter)="goToDetail(card.id)">
+
+      <div class="card-header">
+        <span class="card-type">{{ card.cardType }}</span>
+        <span [ngClass]="statusBadge(card.status).cssClass"
+              role="status"
+              [attr.aria-live]="'polite'">
+          {{ statusBadge(card.status).label }}
+        </span>
+      </div>
+
+      <div class="card-pan">{{ card.panMasked }}</div>
+      <div class="card-expiry">Caduca: {{ card.expirationDate }}</div>
+
+      <div class="card-limits">
+        <span>Límite diario: {{ card.dailyLimit | currency:'EUR' }}</span>
+        <span>Límite mensual: {{ card.monthlyLimit | currency:'EUR' }}</span>
+      </div>
+    </div>
+  </div>
+</div>

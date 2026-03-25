@@ -1,0 +1,43 @@
+package com.experis.sofia.bankportal.cards.application;
+
+import com.experis.sofia.bankportal.cards.domain.*;
+import com.experis.sofia.bankportal.audit.AuditLogService;
+import com.experis.sofia.bankportal.notification.application.WebPushService;
+import com.experis.sofia.bankportal.notification.domain.NotificationEventType;
+import com.experis.sofia.bankportal.twofa.application.OtpValidationUseCase;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.math.BigDecimal;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class UpdateCardLimitsUseCase {
+
+    private final CardRepository cardRepository;
+    private final OtpValidationUseCase otpValidation;
+    private final AuditLogService auditLog;
+    private final WebPushService pushService;
+
+    @Transactional
+    public void execute(UUID cardId, UUID userId, BigDecimal daily, BigDecimal monthly, String otpCode) {
+        otpValidation.validate(userId, otpCode);
+
+        Card card = cardRepository.findById(cardId)
+            .orElseThrow(() -> new CardNotFoundException("Card not found: " + cardId));
+
+        if (!card.belongsTo(userId))
+            throw new CardAccessDeniedException("IDOR: card " + cardId + " does not belong to user " + userId);
+
+        BigDecimal prevDaily = card.getDailyLimit();
+        BigDecimal prevMonthly = card.getMonthlyLimit();
+
+        card.updateLimits(daily, monthly);
+        cardRepository.save(card);
+
+        auditLog.log("CARD_LIMITS_UPDATED", userId.toString(),
+            "prev=" + prevDaily + "/" + prevMonthly + " new=" + daily + "/" + monthly);
+        pushService.sendAsync(userId, NotificationEventType.CARD_LIMITS_UPDATED);
+    }
+}
