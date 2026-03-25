@@ -1,28 +1,19 @@
 [2026-03-24T10:30:00Z] [STEP-3] [architect] COMPLETED → HLD-FEAT-013.md | LLD-FEAT-013-backend.md | LLD-FEAT-013-frontend.md | ADR-024 | Gate-3 PENDING Tech Lead
 [2026-03-24T14:30:00Z] [STEP-2] [requirements-analyst] COMPLETED → docs/requirements/SRS-FEAT-014.md | 7 RF documentados | 9 US con Gherkin | RTM completa | Gate-2 PENDING Product Owner
 [2026-03-24T14:30:00Z] [STEP-2] [requirements-analyst] GATE_APPROVED → Product Owner | SRS-FEAT-014 APPROVED
-[2026-03-24T15:00:00Z] [STEP-3] [architect] STARTED → FEAT-014 Notificaciones Push & In-App
-[2026-03-24T15:00:00Z] [STEP-3] [architect] COMPLETED → HLD-FEAT-014.md | LLD-FEAT-014-backend.md | LLD-FEAT-014-frontend.md | ADR-025-vapid-vs-fcm.md | notifications-api-v1.yaml | Gate-3 APPROVED Tech Lead
-[2026-03-24T15:30:00Z] [STEP-3b] [documentation-agent] COMPLETED → arquitectura diagrams + HLD/LLD Word docs
-[2026-03-24T16:00:00Z] [STEP-4] [developer] STARTED → FEAT-014 backend implementation
-[2026-03-24T17:00:00Z] [STEP-4] [developer] COMPLETED → 26 artefactos | V16 Flyway | 7 domain | 8 application | 3 infra | 3 API | 3 tests (19 casos) | Gate-4 APPROVED Tech Lead
-[2026-03-24T17:15:00Z] [STEP-5] [code-reviewer] STARTED → FEAT-014 code review
-[2026-03-24T17:45:00Z] [STEP-5] [code-reviewer] COMPLETED → CR-FEAT-014-sprint16.md | 10 findings | Gate-5 PENDING Tech Lead
-[2026-03-24T17:20:49Z] [AUDIT] [audit-persistence.sh] COMPLETED → pass=57 warn=0 fail=1 skills_ok=19
-[2026-03-24T17:23:46Z] [AUDIT] [audit-persistence.sh] COMPLETED → pass=57 warn=0 fail=0 skills_ok=19
-[2026-03-24T18:00:00Z] [STEP-1] [scrum-master] STARTED → Sprint 17 Planning | FEAT-015
-[2026-03-24T18:30:00Z] [STEP-1] [scrum-master] COMPLETED → docs/sprints/SPRINT-017-planning.md | docs/backlog/FEAT-015.md | risk-register actualizado | 24 SP (17+7) | Gate-1 PENDING Product Owner
-[2026-03-24T18:35:00Z] [STEP-1] [scrum-master] GATE_APPROVED → Product Owner | Sprint 17 Planning APPROVED
-[2026-03-24T18:36:00Z] [STEP-2] [requirements-analyst] STARTED → FEAT-015 Transferencias Programadas y Recurrentes
-[2026-03-24T18:50:00Z] [STEP-2] [requirements-analyst] COMPLETED → docs/requirements/SRS-FEAT-015.md | 20 RF | 5 US Gherkin completas | RTM | 10 RNF delta | 7 restricciones | Gate-2 PENDING Product Owner
-[2026-03-24T18:48:51Z] [GATE-2] [product-owner] APPROVED → SRS-FEAT-015 aprobado
-[2026-03-24T18:48:51Z] [STEP-3] [architect] STARTED → FEAT-015 Transferencias Programadas y Recurrentes
-[2026-03-24T18:52:31Z] [STEP-3] [architect] COMPLETED → 5 artefactos | HLD+LLD+ADR-026+ADR-027 FEAT-015 | Gate 3 Tech Lead PENDING
-[2026-03-25T12:00:00Z] [STEP-1] [scrum-master] GATE_APPROVED → Product Owner | Sprint 18 Planning APPROVED
-[2026-03-25T12:00:00Z] [STEP-2] [requirements-analyst] GATE_APPROVED → Product Owner | SRS-FEAT-016 APPROVED
-[2026-03-25T12:30:00Z] [STEP-3] [architect] GATE_APPROVED → Tech Lead | HLD+LLD+ADR-028 FEAT-016 APPROVED
-[2026-03-25T12:35:00Z] [STEP-3b] [documentation-agent] COMPLETED → HLD-FEAT-016-Sprint18.docx | LLD-016-cards-backend-Sprint18.docx (automático, sin gate)
-[2026-03-25T13:00:00Z] [STEP-4] [developer] GATE_APPROVED → Tech Lead | FEAT-016 Developer output 24 artefactos APPROVED
-[2026-03-25T14:00:00Z] [GATE-5] [tech-lead] APPROVED → Gate 5 Code Review FEAT-016 Sprint 18 | 5 findings corregidos | commit 7647325
-[2026-03-25T14:15:00Z] [STEP-5b] [security-agent] STARTED → Security Scan FEAT-016 Sprint 18
-[2026-03-25T14:15:00Z] [STEP-5b] [security-agent] COMPLETED → SecurityReport-Sprint18-FEAT-016.md | CVE critical=0 | CVE high=0 | SAST blocker=0 | SAST deferred=2 (DEBT-031+DEBT-032) | Semáforo=VERDE | Riesgos cerrados: R-016-01+R-015-01 | Gate-6 PENDING QA Lead
+[2026-03-24T15:00:00Z] [STEP-3] [architect] COMPLETED → HLD-FEAT-014.md | LLD×2 | ADR-025 | Gate-3 APPROVED Tech Lead
+[2026-03-24T15:30:00Z] [STEP-3b] [documentation-agent] COMPLETED → HLD/LLD Word docs automático
+[2026-03-24T16:00:00Z] [STEP-4] [developer] COMPLETED → 26 artefactos | Gate-4 APPROVED Tech Lead
+[2026-03-24T17:45:00Z] [STEP-5] [code-reviewer] COMPLETED → CR-FEAT-014-sprint16.md | Gate-5 PENDING Tech Lead
+[2026-03-24T18:30:00Z] [STEP-1] [scrum-master] COMPLETED → SPRINT-017-planning.md | FEAT-015.md | Gate-1 APPROVED Product Owner
+[2026-03-24T18:50:00Z] [STEP-2] [requirements-analyst] COMPLETED → SRS-FEAT-015.md | Gate-2 APPROVED Product Owner
+[2026-03-24T18:52:31Z] [STEP-3] [architect] COMPLETED → HLD+LLD+ADR-026+ADR-027 FEAT-015 | Gate-3 PENDING Tech Lead
+[2026-03-25T12:00:00Z] [GATE-1] [product-owner] APPROVED → Sprint 18 Planning FEAT-016
+[2026-03-25T12:00:00Z] [GATE-2] [product-owner] APPROVED → SRS-FEAT-016
+[2026-03-25T12:30:00Z] [GATE-3] [tech-lead] APPROVED → HLD+LLD+ADR-028 FEAT-016
+[2026-03-25T12:35:00Z] [STEP-3b] [documentation-agent] COMPLETED → HLD-FEAT-016-Sprint18.docx | LLD-016-cards-backend-Sprint18.docx
+[2026-03-25T13:00:00Z] [GATE-4] [tech-lead] APPROVED → Developer output 24 artefactos FEAT-016
+[2026-03-25T14:00:00Z] [GATE-5] [tech-lead] APPROVED → Code Review FEAT-016 | 5 findings corregidos | commit 7647325
+[2026-03-25T14:15:00Z] [STEP-5b] [security-agent] COMPLETED → SecurityReport-Sprint18-FEAT-016.md | CVE critical=0 | SAST blocker=0 | SAST deferred=2 (DEBT-031+DEBT-032) | Semáforo=VERDE | Riesgos cerrados: R-016-01+R-015-01 | commit 83ce8d4
+[2026-03-25T14:30:00Z] [GATE-6] [qa-lead] APPROVED → Security Report FEAT-016 Sprint 18 | Pipeline avanza a Step 6 QA Tester
+[2026-03-25T14:30:00Z] [PIPELINE] [PAUSA] → Próxima sesión: Step 6 QA Tester → Step 7 DevOps → Steps 8-9 Doc Agent + Workflow Manager

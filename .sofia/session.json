@@ -1,19 +1,19 @@
 {
   "version": "1.9",
   "sofia_version": "1.9",
-  "status": "in_progress",
+  "status": "paused",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 18,
   "current_feature": "FEAT-016",
-  "current_step": "6",
-  "pipeline_step": "6",
+  "current_step": "7",
+  "pipeline_step": "7",
   "pipeline_step_name": "qa-tester",
   "completed_steps": ["1","2","3","3b","4","5","5b"],
   "pending_steps": ["6","7","8","9"],
   "last_skill": "security-agent",
   "last_skill_output_path": "docs/security/SecurityReport-Sprint18-FEAT-016.md",
-  "gate_pending": "gate-step6-qa-lead",
+  "gate_pending": "none",
   "sprint_goal": "Gestión completa de tarjetas: consulta, bloqueo/desbloqueo 2FA, límites, cambio PIN + ADR-028 ShedLock + DEBT-026/030 + V17c",
   "sprint_capacity_sp": 24,
   "artifacts": {
@@ -58,7 +58,7 @@
     "4": {"status":"approved","by":"tech-lead","at":"2026-03-25T13:00:00Z"},
     "5": {"status":"approved","by":"tech-lead","at":"2026-03-25T14:00:00Z"},
     "5b": {"status":"completed","by":"security-agent","at":"2026-03-25T14:15:00Z","semaphore":"GREEN","cve_critical":0,"cve_high":0,"sast_blocker":0,"sast_deferred":2,"debt_new":["DEBT-031","DEBT-032"],"risks_closed":["R-016-01","R-015-01"]},
-    "6": {"status":"pending","by":"qa-lead","sla":"24h","at":null}
+    "6": {"status":"approved","by":"qa-lead","at":"2026-03-25T14:30:00Z"}
   },
   "security": {
     "last_audit": "2026-03-25",
@@ -101,6 +101,6 @@
     "fixed": ["RV-F016-01","RV-F016-02","RV-F016-03","RV-F016-04","RV-F016-05"],
     "deferred": ["RV-F016-06","RV-F016-07"]
   },
-  "updated_at": "2026-03-25T14:15:00Z",
-  "resume_next": "Sprint 18 — Step 6 — QA Tester — FEAT-016"
+  "updated_at": "2026-03-25T14:30:00Z",
+  "resume_next": "Sprint 18 — Step 6 — QA Tester — FEAT-016 Gestión de Tarjetas"
 }
