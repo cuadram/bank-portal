@@ -6,35 +6,21 @@
   "client": "Banco Meridian",
   "current_sprint": 18,
   "current_feature": "FEAT-016",
-  "current_step": "5",
-  "pipeline_step": "5",
-  "pipeline_step_name": "code-reviewer",
-  "completed_steps": [
-    "1",
-    "2",
-    "3",
-    "3b",
-    "4"
-  ],
-  "last_skill": "architect",
-  "last_skill_output_path": "docs/architecture/",
-  "gate_pending": "gate-step4-tech-lead",
+  "current_step": "6",
+  "pipeline_step": "6",
+  "pipeline_step_name": "qa-tester",
+  "completed_steps": ["1","2","3","3b","4","5","5b"],
+  "pending_steps": ["6","7","8","9"],
+  "last_skill": "security-agent",
+  "last_skill_output_path": "docs/security/SecurityReport-Sprint18-FEAT-016.md",
+  "gate_pending": "gate-step6-qa-lead",
   "sprint_goal": "Gestión completa de tarjetas: consulta, bloqueo/desbloqueo 2FA, límites, cambio PIN + ADR-028 ShedLock + DEBT-026/030 + V17c",
   "sprint_capacity_sp": 24,
   "artifacts": {
-    "1": [
-      "docs/sprints/SPRINT-018-planning.md",
-      "docs/backlog/FEAT-016.md"
-    ],
-    "2": [
-      "docs/requirements/SRS-FEAT-016.md"
-    ],
-    "3": [
-      "docs/architecture/hld/HLD-FEAT-016.md",
-      "docs/architecture/lld/LLD-016-cards-backend.md",
-      "docs/architecture/lld/LLD-016-cards-frontend.md",
-      "docs/architecture/adr/ADR-028-shedlock-scheduler.md"
-    ],
+    "1": ["docs/sprints/SPRINT-018-planning.md","docs/backlog/FEAT-016.md"],
+    "2": ["docs/requirements/SRS-FEAT-016.md"],
+    "3": ["docs/architecture/hld/HLD-FEAT-016.md","docs/architecture/lld/LLD-016-cards-backend.md","docs/architecture/lld/LLD-016-cards-frontend.md","docs/architecture/adr/ADR-028-shedlock-scheduler.md"],
+    "3b": ["docs/deliverables/sprint-18-FEAT-016/word/HLD-FEAT-016-Sprint18.docx","docs/deliverables/sprint-18-FEAT-016/word/LLD-016-cards-backend-Sprint18.docx"],
     "4": [
       "apps/backend-2fa/src/main/resources/db/migration/V18__cards_management.sql",
       "apps/backend-2fa/src/main/resources/db/migration/V18b__drop_push_plain_columns.sql",
@@ -61,121 +47,32 @@
       "apps/frontend-portal/src/app/features/cards/components/card-list/card-list.component.ts",
       "apps/frontend-portal/src/app/features/cards/components/card-detail/card-detail.component.ts"
     ],
-    "3b": [
-      "docs/deliverables/sprint-18-FEAT-016/word/HLD-FEAT-016-Sprint18.docx",
-      "docs/deliverables/sprint-18-FEAT-016/word/LLD-016-cards-backend-Sprint18.docx"
-    ]
+    "5": ["docs/code-review/CR-FEAT-016-sprint18.md"],
+    "5b": ["docs/security/SecurityReport-Sprint18-FEAT-016.md"]
   },
   "gates": {
-    "1": {
-      "status": "approved",
-      "by": "product-owner",
-      "at": "2026-03-25T12:00:00Z"
-    },
-    "2": {
-      "status": "approved",
-      "by": "product-owner",
-      "at": "2026-03-25T12:00:00Z"
-    },
-    "3": {
-      "status": "approved",
-      "by": "tech-lead",
-      "at": "2026-03-25T12:30:00Z"
-    },
-    "4": {
-      "status": "pending",
-      "by": "tech-lead",
-      "sla": "48h",
-      "at": null
-    },
-    "3b": {
-      "status": "completed",
-      "by": "documentation-agent",
-      "at": "2026-03-25T12:35:00Z",
-      "note": "Sin gate propio — automático post-arch"
-    }
+    "1": {"status":"approved","by":"product-owner","at":"2026-03-25T12:00:00Z"},
+    "2": {"status":"approved","by":"product-owner","at":"2026-03-25T12:00:00Z"},
+    "3": {"status":"approved","by":"tech-lead","at":"2026-03-25T12:30:00Z"},
+    "3b": {"status":"completed","by":"documentation-agent","at":"2026-03-25T12:35:00Z","note":"Sin gate propio — automático post-arch"},
+    "4": {"status":"approved","by":"tech-lead","at":"2026-03-25T13:00:00Z"},
+    "5": {"status":"approved","by":"tech-lead","at":"2026-03-25T14:00:00Z"},
+    "5b": {"status":"completed","by":"security-agent","at":"2026-03-25T14:15:00Z","semaphore":"GREEN","cve_critical":0,"cve_high":0,"sast_blocker":0,"sast_deferred":2,"debt_new":["DEBT-031","DEBT-032"],"risks_closed":["R-016-01","R-015-01"]},
+    "6": {"status":"pending","by":"qa-lead","sla":"24h","at":null}
   },
   "security": {
-    "last_audit": "2026-03-24",
+    "last_audit": "2026-03-25",
+    "semaphore": "GREEN",
+    "cve_critical": 0,
+    "cve_high": 0,
+    "sast_findings": 2,
+    "sast_blocker": 0,
     "open_debts": [
-      {
-        "id": "DEBT-026",
-        "area": "Backend",
-        "priority": "Baja",
-        "cvss": "-",
-        "sprint_target": 18
-      },
-      {
-        "id": "DEBT-027",
-        "area": "Arch",
-        "priority": "Media",
-        "cvss": "-",
-        "sprint_target": 17
-      },
-      {
-        "id": "DEBT-028",
-        "area": "Security",
-        "priority": "MUST",
-        "cvss": "4.1",
-        "sprint_target": 17
-      },
-      {
-        "id": "DEBT-029",
-        "area": "Compliance",
-        "priority": "Baja",
-        "cvss": "-",
-        "sprint_target": 17
-      }
-    ]
-  },
-  "risks": {
-    "active": [
-      {
-        "id": "R-016-01",
-        "desc": "push_subscriptions.auth en claro en BD",
-        "prob": "Media",
-        "imp": "Alta",
-        "niv": 3,
-        "estado": "Mitigando",
-        "sprint": 17
-      },
-      {
-        "id": "R-016-02",
-        "desc": "Safari iOS <16.4 sin Web Push",
-        "prob": "Alta",
-        "imp": "Media",
-        "niv": 2,
-        "estado": "Aceptado",
-        "sprint": "-"
-      },
-      {
-        "id": "R-016-05",
-        "desc": ">500 SSE concurrentes sin prueba carga",
-        "prob": "Baja",
-        "imp": "Media",
-        "niv": 2,
-        "estado": "Planificado",
-        "sprint": 17
-      },
-      {
-        "id": "R-015-01",
-        "desc": "Scheduler en múltiples instancias",
-        "prob": "Media",
-        "imp": "Alta",
-        "niv": 3,
-        "estado": "Mitigado-diferido",
-        "sprint": 18
-      },
-      {
-        "id": "R-015-02",
-        "desc": "NextExecutionDate incorrecta meses cortos",
-        "prob": "Media",
-        "imp": "Media",
-        "niv": 2,
-        "estado": "Planificado",
-        "sprint": 17
-      }
-    ]
+      {"id":"DEBT-031","area":"Security","priority":"Media","cvss":"4.2","sprint_target":19,"desc":"Rate limiting /cards/{id}/pin"},
+      {"id":"DEBT-032","area":"Security/Infra","priority":"Baja","cvss":"2.7","sprint_target":"Pre-producción","desc":"mTLS CoreBankingAdapter"}
+    ],
+    "risks_closed_this_sprint": ["R-016-01","R-015-01"],
+    "pci_dss_compliant": true
   },
   "metrics": {
     "total_sp": 401,
@@ -185,70 +82,25 @@
     "ncs_last_sprint": 3
   },
   "sprint_history": {
-    "sprint_16": {
-      "feature": "FEAT-014",
-      "status": "completed",
-      "sp": 24,
-      "acum": 377,
-      "tests": 553,
-      "cov": 84,
-      "ncs": 2,
-      "rel": "v1.16.0",
-      "closed_at": "2026-03-24"
-    },
-    "sprint_17": {
-      "feature": "FEAT-015",
-      "status": "completed",
-      "sp": 24,
-      "acum": 401,
-      "tests": 615,
-      "cov": 85,
-      "ncs": 3,
-      "rel": "v1.17.0",
-      "closed_at": "2026-04-22"
-    },
-    "sprint_18": {
-      "feature": "FEAT-016",
-      "status": "in_progress",
-      "sp": 24,
-      "acum": null,
-      "tests": null,
-      "cov": null,
-      "ncs": null,
-      "rel": "v1.18.0"
-    }
+    "sprint_16": {"feature":"FEAT-014","status":"completed","sp":24,"acum":377,"tests":553,"cov":84,"ncs":2,"rel":"v1.16.0","closed_at":"2026-03-24"},
+    "sprint_17": {"feature":"FEAT-015","status":"completed","sp":24,"acum":401,"tests":615,"cov":85,"ncs":3,"rel":"v1.17.0","closed_at":"2026-04-22"},
+    "sprint_18": {"feature":"FEAT-016","status":"in_progress","sp":24,"acum":null,"tests":null,"cov":null,"ncs":null,"rel":"v1.18.0"}
   },
   "cmmi": {
     "level": 3,
     "active": true,
-    "evidence_sprints": [
-      14,
-      15,
-      16
-    ],
-    "process_areas": [
-      "PP",
-      "PMC",
-      "RSKM",
-      "VER",
-      "VAL",
-      "CM",
-      "PPQA",
-      "REQM",
-      "DAR"
-    ]
+    "evidence_sprints": [14,15,16],
+    "process_areas": ["PP","PMC","RSKM","VER","VAL","CM","PPQA","REQM","DAR"]
   },
-  "adrs_pending": [],
-  "updated_at": "2026-03-25T11:56:28.968Z",
-  "resume_next": "Sprint 18 — GATE 4 pendiente Tech Lead. Siguiente: Step 5 Code Reviewer.",
-  "dev_metrics": {
-    "artefactos": 24,
-    "flyway": 3,
-    "domain_classes": 7,
-    "use_cases": 6,
-    "infra_classes": 3,
-    "controller_endpoints": 6,
-    "unit_tests": 18,
-    "angular_components": 4
-  }
+  "code_review": {
+    "commit_base": "768250a",
+    "commit_fixes": "7647325",
+    "findings_blocker": 1,
+    "findings_minor": 4,
+    "findings_suggestion": 2,
+    "fixed": ["RV-F016-01","RV-F016-02","RV-F016-03","RV-F016-04","RV-F016-05"],
+    "deferred": ["RV-F016-06","RV-F016-07"]
+  },
+  "updated_at": "2026-03-25T14:15:00Z",
+  "resume_next": "Sprint 18 — Step 6 — QA Tester — FEAT-016"
 }
