@@ -1,0 +1,38 @@
+# Perfil de integration tests — DEBT-030
+# Las properties de BD se inyectan dinámicamente desde Testcontainers (@DynamicPropertySource)
+# Este fichero solo define las properties NO gestionadas por Testcontainers
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+logging:
+  level:
+    root: WARN
+    com.experis.sofia.bankportal: INFO
+    org.testcontainers: WARN
+    org.springframework.test: WARN
+
+# JWT para tests
+jwt:
+  secret: "test-jwt-hmac-secret-minimum-32bytes!!"
+  pre-auth-secret: "test-preauth-secret-32bytes-ok!!"
+
+# KYC stub
+kyc:
+  storage-path: /tmp/kyc-test
+  encryption-key: "dGhpcnR5LXR3by1ieXRlLWtleS1mb3ItYWVzLTI1NiE="
+
+# Bank core stub
+bank:
+  core:
+    base-url: http://localhost:9999
+    api-key: stub-key-test
+
+# Deshabilitar Redis en tests (usar mock)
+spring.data.redis.repositories.enabled: false
