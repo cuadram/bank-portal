@@ -308,7 +308,7 @@
     ],
     "verdict": "APPROVED"
   },
-  "updated_at": "2026-03-27T15:19:17.114Z",
+  "updated_at": "2026-03-27T15:37:33.000Z",
   "resume_next": "Sprint 20 FEAT-018 pendiente definicion PO",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -421,7 +421,11 @@
     "evidence": "docs/qa/TEST-EXECUTION-UNIT-S19-verification-2026-03-27.txt",
     "java_version": "21.0.10",
     "maven_version": "3.9.13",
-    "command": "mvn clean test -Dsurefire.excludes=**/*IT.java"
+    "command": "mvn clean test -Dsurefire.excludes=**/*IT.java",
+    "commit": "48c2a0dcc6dcb4495c77b5c6c8fc64eb39234dbb",
+    "confluence_updated": "4915202",
+    "confluence_version": 2,
+    "dashboard_output": "docs/dashboard/bankportal-global-dashboard.html"
   },
   "bugs_found_post_sprint19": [
     {
