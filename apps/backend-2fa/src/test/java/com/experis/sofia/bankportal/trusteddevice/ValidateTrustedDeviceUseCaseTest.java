@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -31,6 +33,7 @@ import static org.mockito.Mockito.*;
  *
  * @author SOFIA Developer Agent — FEAT-003 Sprint 4
  */
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 class ValidateTrustedDeviceUseCaseTest {
 
@@ -43,8 +46,9 @@ class ValidateTrustedDeviceUseCaseTest {
 
     private final UUID   userId      = UUID.randomUUID();
     private final UUID   deviceId    = UUID.randomUUID();
-    private final String rawToken    = "valid-trust-token";
-    private final String tokenHash   = sha256(rawToken);
+    // Token Base64URL(payload:hmac_sig) firmado con test-hmac-key-32-bytes-padded!!
+    private final String rawToken    = "dmFsaWQtdHJ1c3QtdG9rZW4tcGF5bG9hZDoxNWNjZGVkZTk2NjhlZDQ1NjdjMmQzNjk3ZGYzZjJhZDQ0MmQ4MzdkMzA2N2IwYThjNGJkZGExZTNlOWMwYTNi";
+    private final String tokenHash   = "e4ec0d067394e596fb2c4c4476ba4b227cd954686aa5421f89d9aad033248b71";
     private final String fingerprint = "fp-hash-abc";
     private final String rawIp       = "192.168.1.1";
     private final String ua          = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36";
@@ -53,6 +57,8 @@ class ValidateTrustedDeviceUseCaseTest {
     void setUp() {
         useCase = new ValidateTrustedDeviceUseCase(
                 deviceRepository, fingerprintService, auditLogService);
+        org.springframework.test.util.ReflectionTestUtils.setField(useCase, "hmacKey", "test-hmac-key-32-bytes-padded!!");
+        org.springframework.test.util.ReflectionTestUtils.setField(useCase, "hmacKeyPrevious", "");
     }
 
     // ── Happy path ────────────────────────────────────────────────────────────

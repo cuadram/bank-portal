@@ -1,7 +1,7 @@
 package com.experis.sofia.bankportal.cards.application;
 
 import com.experis.sofia.bankportal.cards.domain.*;
-import com.experis.sofia.bankportal.audit.AuditLogService;
+import com.experis.sofia.bankportal.audit.domain.AuditLogService;
 import com.experis.sofia.bankportal.twofa.application.OtpValidationUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +48,7 @@ class ChangePinUseCaseTest {
         useCase.execute(cardId, userId, "7291", "123456");
 
         verify(coreBankingPort).changePin(eq(cardId), eq("$2a$hash"));
-        verify(auditLog).log(eq("CARD_PIN_CHANGED"), anyString(), anyString());
+        verify(auditLog).log(eq("CARD_PIN_CHANGED"), any(UUID.class), anyString());
     }
 
     @Test
@@ -98,7 +98,7 @@ class ChangePinUseCaseTest {
 
         useCase.execute(cardId, userId, "7291", "123456");
 
-        verify(auditLog).log(eq("CARD_PIN_CHANGED"), anyString(),
+        verify(auditLog).log(eq("CARD_PIN_CHANGED"), any(UUID.class),
             argThat(msg -> !msg.contains("7291")));
     }
 

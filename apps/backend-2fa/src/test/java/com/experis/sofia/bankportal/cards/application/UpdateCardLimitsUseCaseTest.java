@@ -1,8 +1,8 @@
 package com.experis.sofia.bankportal.cards.application;
 
 import com.experis.sofia.bankportal.cards.domain.*;
-import com.experis.sofia.bankportal.audit.AuditLogService;
-import com.experis.sofia.bankportal.notification.application.WebPushService;
+import com.experis.sofia.bankportal.audit.domain.AuditLogService;
+import com.experis.sofia.bankportal.notification.infrastructure.WebPushService;
 import com.experis.sofia.bankportal.twofa.application.OtpValidationUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,8 +49,8 @@ class UpdateCardLimitsUseCaseTest {
 
         assertThat(card.getDailyLimit()).isEqualByComparingTo("800");
         assertThat(card.getMonthlyLimit()).isEqualByComparingTo("3000");
-        verify(auditLog).log(eq("CARD_LIMITS_UPDATED"), anyString(), anyString());
-        verify(pushService).sendAsync(eq(userId), any());
+        verify(auditLog).log(eq("CARD_LIMITS_UPDATED"), eq(userId), anyString());
+        verify(pushService).sendToUser(eq(userId), anyString(), anyString(), any());
     }
 
     @Test

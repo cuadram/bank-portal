@@ -68,14 +68,12 @@ class SseRegistryTest {
 
         @Test @DisplayName("Pool lleno + mismo usuario → reemplaza sin excepcion")
         void poolFull_sameUser_noException() {
-            for (int i = 0; i < SseRegistry.MAX_TOTAL_CONNECTIONS; i++) {
+            // Llenar pool con MAX-1 usuarios aleatorios + USER_A
+            for (int i = 0; i < SseRegistry.MAX_TOTAL_CONNECTIONS - 1; i++) {
                 registry.register(UUID.randomUUID());
             }
-            // USER_A no está en el pool → primero lo registramos quitando uno
-            registry.invalidate(registry.activeConnections() > 0
-                    ? registry.register(USER_A).equals(null) ? USER_A : USER_A
-                    : USER_A);
-            // El pool tiene espacio ahora — registrar USER_A no debe lanzar
+            registry.register(USER_A); // pool ahora lleno, USER_A está dentro
+            // Pool lleno + mismo usuario USER_A → debe reemplazar sin excepción
             assertThatNoException().isThrownBy(() -> registry.register(USER_A));
         }
     }

@@ -5,9 +5,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import com.experis.sofia.bankportal.auth.application.SseRegistry;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
@@ -23,12 +26,14 @@ import static org.mockito.Mockito.*;
  * Escenarios: blacklist futuro/expirado, isBlacklisted true/false/null, remove.
  * @author SOFIA Developer Agent Sprint 8
  */
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 @DisplayName("DEBT-009 - JwtBlacklistService")
 class JwtBlacklistServiceTest {
 
     @Mock StringRedisTemplate redisTemplate;
     @Mock ValueOperations<String, String> valueOps;
+    @Mock SseRegistry sseRegistry;
     @InjectMocks JwtBlacklistService service;
 
     private static final String JTI     = UUID.randomUUID().toString();

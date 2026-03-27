@@ -14,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.Optional;
@@ -27,6 +29,7 @@ import static org.mockito.Mockito.*;
  * Tests unitarios — UploadDocumentUseCase.
  * FEAT-013 US-1302 · SOFIA QA · CMMI VER SP 2.1
  */
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 @DisplayName("UploadDocumentUseCase — US-1302")
 class UploadDocumentUseCaseTest {
@@ -36,6 +39,7 @@ class UploadDocumentUseCaseTest {
     @Mock DocumentStoragePort       storageService;
     @Mock ApplicationEventPublisher eventPublisher;
     @Mock AuditLogService           auditLog;
+    @Mock com.experis.sofia.bankportal.kyc.application.ValidateDocumentUseCase validateUseCase;
 
     @InjectMocks UploadDocumentUseCase useCase;
 

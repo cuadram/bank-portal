@@ -24,27 +24,28 @@
         <bucket4j.version>8.10.1</bucket4j.version>
         <jjwt.version>0.12.6</jjwt.version>
         <jacoco.version>0.8.12</jacoco.version>
-        <!--
-            Umbral 80% aplicado solo sobre clases con lógica de negocio testeable a nivel unitario.
-            Las clases excluidas son testeadas a nivel E2E/integración (Testcontainers):
-              - domain/model        : records y enums sin lógica ejecutable
-              - domain/exception    : wrappers de excepción (solo constructores)
-              - domain/repository   : interfaces (contratos de puerto, sin implementación)
-              - infrastructure/config/*Properties : @ConfigurationProperties records
-              - infrastructure/config/SecurityConfig : Spring Security DSL (testeable con MockMvc)
-              - infrastructure/config/TotpConfig : @Configuration wiring (testeable con Spring context)
-              - infrastructure/security/JwtAuthenticationFilter : testeable con Spring context
-              - infrastructure/persistence/** : JPA entities e interfaces Spring Data
-              - BackendTwoFactorApplication : Spring Boot main (sin lógica)
-            CMMI Nivel 3 — VER/VAL: cobertura unitaria sobre lógica de negocio pura.
-        -->
         <jacoco.minimum.coverage>0.80</jacoco.minimum.coverage>
         <testcontainers.version>1.20.1</testcontainers.version>
-        <!-- Tests E2E desactivados por defecto; activar con perfil 'integration' -->
+        <!-- FEAT-014: Web Push VAPID -->
+        <webpush.version>5.1.1</webpush.version>
+        <bouncycastle.version>1.78.1</bouncycastle.version>
         <surefire.excludes>**/*E2ETest.java,**/*IntegrationTest.java</surefire.excludes>
     </properties>
 
     <dependencies>
+        <!-- ── FEAT-014: Web Push VAPID (nl.martijndwars:web-push) ──────── -->
+        <dependency>
+            <groupId>nl.martijndwars</groupId>
+            <artifactId>web-push</artifactId>
+            <version>${webpush.version}</version>
+        </dependency>
+        <!-- Bouncy Castle — requerido por web-push para criptografía EC P-256 -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>${bouncycastle.version}</version>
+        </dependency>
+
         <!-- OpenPDF — generación PDF (LGPL) — US-1107 FEAT-011 -->
         <dependency>
             <groupId>com.github.librepdf</groupId>
@@ -88,7 +89,7 @@
             <version>${totp.version}</version>
         </dependency>
 
-        <!-- Rate limiting Bucket4j — ADR-002 (groupId com.bucket4j, package io.github.bucket4j) -->
+        <!-- Rate limiting Bucket4j — ADR-002 -->
         <dependency>
             <groupId>com.bucket4j</groupId>
             <artifactId>bucket4j-core</artifactId>
@@ -129,41 +130,27 @@
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
 
-        <!-- Lombok — @Slf4j, @RequiredArgsConstructor (todos los servicios) -->
+        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
 
-        <!--
-            DEBT-022 (Sprint 14): spring-boot-starter-oauth2-resource-server ELIMINADO.
-            Motivo: OAuth2ResourceServerAutoConfiguration registraba BearerTokenAuthenticationFilter
-            que interceptaba antes que JwtAuthenticationFilter HMAC HS256 custom → HTTP 403 en STG.
-            Autenticación JWT gestionada íntegramente por JwtAuthenticationFilter + jjwt 0.12.6.
-        -->
-
-        <!-- OpenPDF — generación extractos PDF US-704 (com.lowagie.*) -->
-        <dependency>
-            <groupId>com.github.librepdf</groupId>
-            <artifactId>openpdf</artifactId>
-            <version>1.3.30</version>
-        </dependency>
-
-        <!-- Apache Commons CSV — ExportSecurityHistoryUseCase -->
+        <!-- Apache Commons CSV -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
             <version>1.11.0</version>
         </dependency>
 
-        <!-- Spring Mail — SecurityNotificationAdapter (jakarta.mail.internet.*) -->
+        <!-- Spring Mail -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
-        <!-- Resilience4j — ADR-017 FEAT-009 Circuit Breaker + Retry + TimeLimiter -->
+        <!-- Resilience4j — ADR-017 FEAT-009 -->
         <dependency>
             <groupId>io.github.resilience4j</groupId>
             <artifactId>resilience4j-spring-boot3</artifactId>
@@ -175,34 +162,31 @@
             <version>2.2.0</version>
         </dependency>
 
-        <!-- Spring Data Redis — DEBT-011 SSE Pub/Sub + DEBT-009 JWT blacklist -->
+        <!-- Spring Data Redis — SSE Pub/Sub + JWT blacklist -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
-        <!-- Spring Cache — @Cacheable/@CacheEvict en TransactionHistoryUseCase -->
+        <!-- Spring Cache -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
 
-        <!-- Actuator — health checks, métricas, Flyway endpoint -->
+        <!-- Actuator -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <!-- Micrometer — SimpleMeterRegistry en tests (SseEventPublisherTest) -->
+        <!-- Micrometer -->
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
         </dependency>
 
-        <!-- Spring Scheduling — @Scheduled en NotificationPurgeJob -->
-        <!-- Incluido en spring-boot-starter-web, declarado explícitamente para claridad -->
-
-        <!-- Utils -->
+        <!-- Config processor -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
@@ -217,11 +201,14 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- Testcontainers — NC-BANKPORTAL-002 fix (RV-002) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-testcontainers</artifactId>
@@ -239,8 +226,18 @@
             <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
+        <!-- ShedLock — ADR-028 distributed job locking -->
+        <dependency>
+            <groupId>net.javacrumbs.shedlock</groupId>
+            <artifactId>shedlock-spring</artifactId>
+            <version>5.16.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.javacrumbs.shedlock</groupId>
+            <artifactId>shedlock-provider-jdbc-template</artifactId>
+            <version>5.16.0</version>
+        </dependency>
 
-        <!-- H2 para tests unitarios con Spring context (si aplica) -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -251,10 +248,23 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.32</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <!-- Excluir Lombok del fat JAR — solo necesario en compilación -->
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
@@ -264,7 +274,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Surefire: excluye E2E por defecto; se activan con perfil integration -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -275,38 +284,24 @@
                 </configuration>
             </plugin>
 
-            <!--
-                JaCoCo: cobertura mínima 80% sobre clases con lógica de negocio testeable.
-                CMMI Nivel 3 — VER/VAL Sprint 01 — FEAT-001
-            -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
                 <configuration>
-                    <!--
-                        Clases excluidas del análisis de cobertura unitaria.
-                        Razón: carecen de lógica de negocio testeable a nivel unitario;
-                        se verifican a nivel E2E/integración con Testcontainers (L5/L6).
-                    -->
                     <excludes>
-                        <!-- Spring Boot entry point — sin lógica -->
                         <exclude>**/BackendTwoFactorApplication.class</exclude>
-                        <!-- Domain model: records y enums — sin lógica ejecutable -->
                         <exclude>**/domain/model/**</exclude>
-                        <!-- Domain exceptions: wrappers — solo constructores delegados -->
                         <exclude>**/domain/exception/**</exclude>
-                        <!-- Domain repositories: interfaces (puertos de salida hexagonal) -->
                         <exclude>**/domain/repository/**</exclude>
-                        <!-- @ConfigurationProperties records — sin lógica, solo binding -->
                         <exclude>**/infrastructure/config/JwtProperties.class</exclude>
                         <exclude>**/infrastructure/config/RateLimitProperties.class</exclude>
                         <exclude>**/infrastructure/config/TotpProperties.class</exclude>
-                        <!-- @Configuration wiring — testeable con Spring context (L5) -->
                         <exclude>**/infrastructure/config/SecurityConfig.class</exclude>
                         <exclude>**/infrastructure/config/TotpConfig.class</exclude>
-                        <!-- Servlet filter — testeable con MockMvc/Spring context (L5) -->
                         <exclude>**/infrastructure/security/JwtAuthenticationFilter.class</exclude>
+                        <!-- FEAT-014: stub pendiente de activación con PushService real -->
+                        <exclude>**/notification/infrastructure/WebPushService.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -334,6 +329,7 @@
                                 <exclude>**/infrastructure/config/SecurityConfig.class</exclude>
                                 <exclude>**/infrastructure/config/TotpConfig.class</exclude>
                                 <exclude>**/infrastructure/security/JwtAuthenticationFilter.class</exclude>
+                                <exclude>**/notification/infrastructure/WebPushService.class</exclude>
                             </excludes>
                             <rules>
                                 <rule>
@@ -360,12 +356,6 @@
     </build>
 
     <profiles>
-        <!--
-            Perfil integration: activa tests E2E con Testcontainers (PostgreSQL real).
-            Uso: mvn verify -Pintegration
-            Requiere: Docker activo
-            CMMI Nivel 3 — VAL: validación E2E con infraestructura real
-        -->
         <profile>
             <id>integration</id>
             <build>
@@ -374,7 +364,6 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <!-- En modo integration ejecuta TODOS los tests (unit + E2E) -->
                             <excludes>
                                 <exclude>NINGUNO_EXCLUIDO_INTENCIONALMENTE</exclude>
                             </excludes>
@@ -385,22 +374,10 @@
                             </includes>
                         </configuration>
                     </plugin>
-                    <!-- En integración el check de cobertura se relaja: E2E aumenta coverage -->
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <version>${jacoco.version}</version>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/BackendTwoFactorApplication.class</exclude>
-                                <exclude>**/domain/model/**</exclude>
-                                <exclude>**/domain/exception/**</exclude>
-                                <exclude>**/domain/repository/**</exclude>
-                                <exclude>**/infrastructure/config/JwtProperties.class</exclude>
-                                <exclude>**/infrastructure/config/RateLimitProperties.class</exclude>
-                                <exclude>**/infrastructure/config/TotpProperties.class</exclude>
-                            </excludes>
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>prepare-agent</id>
@@ -411,7 +388,6 @@
                                 <phase>test</phase>
                                 <goals><goal>report</goal></goals>
                             </execution>
-                            <!-- En integración el check se omite: la métrica la da el informe -->
                             <execution>
                                 <id>check</id>
                                 <goals><goal>check</goal></goals>

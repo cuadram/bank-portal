@@ -1,0 +1,404 @@
+START: 2026-03-27T15:56:26
+END: 2026-03-27T15:56:40
+RC: 0
+
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------< com.experis.sofia:bankportal-backend-2fa >--------------
+[INFO] Building BankPortal :: Backend 2FA 1.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ bankportal-backend-2fa ---
+[INFO] Deleting /Users/cuadram/proyectos/bank-portal/apps/backend-2fa/target
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (prepare-agent) @ bankportal-backend-2fa ---
+[INFO] argLine set to -javaagent:/Users/cuadram/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/Users/cuadram/proyectos/bank-portal/apps/backend-2fa/target/jacoco.exec,excludes=**/BackendTwoFactorApplication.class:**/domain/model/**:**/domain/exception/**:**/domain/repository/**:**/infrastructure/config/JwtProperties.class:**/infrastructure/config/RateLimitProperties.class:**/infrastructure/config/TotpProperties.class:**/infrastructure/config/SecurityConfig.class:**/infrastructure/config/TotpConfig.class:**/infrastructure/security/JwtAuthenticationFilter.class:**/notification/infrastructure/WebPushService.class
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ bankportal-backend-2fa ---
+[INFO] Copying 3 resources from src/main/resources to target/classes
+[INFO] Copying 22 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ bankportal-backend-2fa ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 336 source files with javac [debug parameters release 21] to target/classes
+[WARNING] /Users/cuadram/proyectos/bank-portal/apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/session/application/usecase/AuditLogService.java:[8,8] deprecated item is not annotated with @Deprecated
+[INFO] /Users/cuadram/proyectos/bank-portal/apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/account/application/StatementExportUseCase.java: Some input files use or override a deprecated API.
+[INFO] /Users/cuadram/proyectos/bank-portal/apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/account/application/StatementExportUseCase.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ bankportal-backend-2fa ---
+[INFO] Copying 3 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ bankportal-backend-2fa ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 77 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] /Users/cuadram/proyectos/bank-portal/apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/auth/AccountLockUseCaseTest.java: Some input files use or override a deprecated API.
+[INFO] /Users/cuadram/proyectos/bank-portal/apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/auth/AccountLockUseCaseTest.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ bankportal-backend-2fa ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.experis.sofia.bankportal.twofa.unit.infrastructure.security.PreAuthTokenProviderTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.577 s -- in com.experis.sofia.bankportal.twofa.unit.infrastructure.security.PreAuthTokenProviderTest
+[INFO] Running com.experis.sofia.bankportal.twofa.unit.infrastructure.security.JwtTokenProviderTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 s -- in com.experis.sofia.bankportal.twofa.unit.infrastructure.security.JwtTokenProviderTest
+[INFO] Running com.experis.sofia.bankportal.twofa.unit.infrastructure.security.RateLimiterServiceTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in com.experis.sofia.bankportal.twofa.unit.infrastructure.security.RateLimiterServiceTest
+[INFO] Running com.experis.sofia.bankportal.twofa.unit.infrastructure.security.JwtTokenProviderDebt023Test
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in com.experis.sofia.bankportal.twofa.unit.infrastructure.security.JwtTokenProviderDebt023Test
+[INFO] Running com.experis.sofia.bankportal.twofa.unit.domain.service.CryptoServiceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.experis.sofia.bankportal.twofa.unit.domain.service.CryptoServiceTest
+[INFO] Running com.experis.sofia.bankportal.twofa.unit.domain.service.TotpServiceTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.142 s -- in com.experis.sofia.bankportal.twofa.unit.domain.service.TotpServiceTest
+[INFO] Running com.experis.sofia.bankportal.twofa.unit.domain.service.RecoveryCodeGeneratorServiceTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.experis.sofia.bankportal.twofa.unit.domain.service.RecoveryCodeGeneratorServiceTest
+[INFO] Running com.experis.sofia.bankportal.bill.BillLookupAndPayUseCaseTest
+15:56:36.106 [main] INFO com.experis.sofia.bankportal.bill.application.BillLookupAndPayUseCase -- [US-904] Factura pagada: ref=1234****7890 paymentId=72efc4d5-fb42-4df1-b0e1-a91ac4845a74 userId=c646c3e7-bf77-48f2-ac22-b83f96d76e68 coreTxnId=TXN-002
+15:56:36.120 [main] INFO com.experis.sofia.bankportal.bill.application.BillLookupAndPayUseCase -- [US-904] Factura pagada: ref=1234****7890 paymentId=0f13e68b-d13e-4f5d-8349-5994982a53b8 userId=5dcd18f8-0f5b-4594-8d4b-f1b2e289d143 coreTxnId=TXN-003
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.280 s -- in com.experis.sofia.bankportal.bill.BillLookupAndPayUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.bill.BillPaymentUseCaseTest
+15:56:36.164 [main] INFO com.experis.sofia.bankportal.bill.application.BillPaymentUseCase -- [US-903] Recibo pagado: billId=6d1807bc-3b21-4032-babf-96ac2740703d paymentId=e9d48d2c-281c-44e6-9cf6-a406612f9480 userId=16772bf6-82e8-492c-899a-2f9e5fc15ac0 coreTxnId=TXN-001
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.051 s -- in com.experis.sofia.bankportal.bill.BillPaymentUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.kyc.ReviewKycUseCaseTest
+15:56:36.277 [main] INFO com.experis.sofia.bankportal.kyc.application.ReviewKycUseCase -- [US-1307] KYC REJECTED reviewerId=83186806-cf77-42e5-9a5c-4e2e09977a1f kycId=2a3a61ac-59e1-4f22-a161-494fddb92cc0
+15:56:36.279 [main] INFO com.experis.sofia.bankportal.kyc.application.ReviewKycUseCase -- [US-1307] KYC APPROVED reviewerId=f700a71a-3f37-40fe-824d-3d948fee3b38 kycId=840d3627-bd3c-45bb-9787-a8d3b5f0cab2
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.103 s -- in com.experis.sofia.bankportal.kyc.ReviewKycUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.kyc.ValidateDocumentUseCaseTest
+15:56:36.368 [main] WARN com.experis.sofia.bankportal.kyc.application.ValidateDocumentUseCase -- [US-1303] Documento caducado userId=5fcf5aa8-a652-42cf-92e4-1e7f4210b9e2 docId=2d3fb76e-77e4-4e60-b118-854c9b3137e0
+15:56:36.369 [main] INFO com.experis.sofia.bankportal.kyc.application.ValidateDocumentUseCase -- [US-1303] KYC derivado a revisión manual userId=5fcf5aa8-a652-42cf-92e4-1e7f4210b9e2
+15:56:36.373 [main] INFO com.experis.sofia.bankportal.kyc.application.ValidateDocumentUseCase -- [US-1303] KYC auto-aprobado userId=f77e6aa6-8e9b-45c3-82fc-927df6f02b57
+15:56:36.380 [main] INFO com.experis.sofia.bankportal.kyc.application.ValidateDocumentUseCase -- [US-1303] KYC auto-aprobado userId=8856b140-bbe7-4979-bb87-d05de7bf193f
+15:56:36.383 [main] WARN com.experis.sofia.bankportal.kyc.application.ValidateDocumentUseCase -- [US-1303] Hash inválido userId=bf82e4bc-bec0-4b90-8d70-f3259f59d9e5 docId=06fdabee-da37-465e-9e50-340da001e04c
+15:56:36.383 [main] INFO com.experis.sofia.bankportal.kyc.application.ValidateDocumentUseCase -- [US-1303] KYC derivado a revisión manual userId=bf82e4bc-bec0-4b90-8d70-f3259f59d9e5
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.094 s -- in com.experis.sofia.bankportal.kyc.ValidateDocumentUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.kyc.UploadDocumentUseCaseTest
+15:56:36.483 [main] INFO com.experis.sofia.bankportal.kyc.application.UploadDocumentUseCase -- [US-1302] Documento subido userId=f03bee8a-3017-4f6c-8006-83aaa155a847 type=DNI side=FRONT
+15:56:36.510 [main] INFO com.experis.sofia.bankportal.kyc.application.UploadDocumentUseCase -- [US-1302] Documento subido userId=4f8864b4-fa71-4229-9846-6860c77f3f0f type=DNI side=FRONT
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.128 s -- in com.experis.sofia.bankportal.kyc.UploadDocumentUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.kyc.GetKycStatusUseCaseTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 s -- in com.experis.sofia.bankportal.kyc.GetKycStatusUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.directdebit.MandateCreateServiceTest
+15:56:36.656 [main] INFO com.experis.sofia.bankportal.directdebit.service.MandateCreateService -- [MANDATE_CREATED] userId=f968a186-4fd5-402d-b246-cb2da8b8015c mandateRef=BNK-F968A1-1774623396 creditor=Gym Club SA
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.118 s -- in com.experis.sofia.bankportal.directdebit.MandateCreateServiceTest
+[INFO] Running com.experis.sofia.bankportal.directdebit.MandateCancelServiceTest
+15:56:36.770 [main] INFO com.experis.sofia.bankportal.directdebit.service.MandateCancelService -- [MANDATE_CANCELLED] userId=c305f904-4753-488e-8c58-0f9dbedbad9c mandateId=51ff92f4-4680-4976-b2d8-f024362374e7 creditor=Test SA
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.104 s -- in com.experis.sofia.bankportal.directdebit.MandateCancelServiceTest
+[INFO] Running com.experis.sofia.bankportal.directdebit.HolidayCalendarServiceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.experis.sofia.bankportal.directdebit.HolidayCalendarServiceTest
+[INFO] Running com.experis.sofia.bankportal.directdebit.IbanValidatorTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.051 s -- in com.experis.sofia.bankportal.directdebit.IbanValidatorTest
+[INFO] Running com.experis.sofia.bankportal.auth.LoginContextUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.auth.LoginContextUseCaseTest$ConfirmContext
+15:56:36.940 [main] INFO com.experis.sofia.bankportal.auth.application.LoginContextUseCase -- [US-603] Contexto confirmado · user=0b46f41c-9df2-4250-ba9c-48b634d3016d subnet=192.168.1
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.101 s -- in com.experis.sofia.bankportal.auth.LoginContextUseCaseTest$ConfirmContext
+[INFO] Running com.experis.sofia.bankportal.auth.LoginContextUseCaseTest$SealedInterfaceFlags
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.experis.sofia.bankportal.auth.LoginContextUseCaseTest$SealedInterfaceFlags
+[INFO] Running com.experis.sofia.bankportal.auth.LoginContextUseCaseTest$EvaluateContext
+15:56:36.963 [main] INFO com.experis.sofia.bankportal.auth.application.LoginContextUseCase -- [US-603] Subnet nueva detectada · user=0b46f41c-9df2-4250-ba9c-48b634d3016d subnet=192.168.1
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.experis.sofia.bankportal.auth.LoginContextUseCaseTest$EvaluateContext
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.126 s -- in com.experis.sofia.bankportal.auth.LoginContextUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.auth.AccountLockUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.auth.AccountLockUseCaseTest$UnlockAccount
+15:56:37.062 [main] INFO com.experis.sofia.bankportal.auth.application.AccountLockUseCase -- Account UNLOCKED for userId=97f5667f-8445-4ac8-862a-f6e5a1e59eeb reason=RECOVERY_CODE
+15:56:37.064 [main] INFO com.experis.sofia.bankportal.auth.application.AccountLockUseCase -- Account UNLOCKED for userId=1c3d092e-276d-4b80-b1c3-5d2155c95bfc reason=EMAIL_LINK
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.experis.sofia.bankportal.auth.AccountLockUseCaseTest$UnlockAccount
+[INFO] Running com.experis.sofia.bankportal.auth.AccountLockUseCaseTest$LockAccount
+15:56:37.070 [main] WARN com.experis.sofia.bankportal.auth.application.AccountLockUseCase -- Account LOCKED for userId=7c2f6656-0cea-4e16-9ca7-1d4792337b87 after max failed OTP attempts
+15:56:37.072 [main] WARN com.experis.sofia.bankportal.auth.application.AccountLockUseCase -- Account LOCKED for userId=2a79a741-4a0f-47d1-99f6-8fffdef4458a after max failed OTP attempts
+15:56:37.072 [main] ERROR com.experis.sofia.bankportal.auth.application.AccountLockUseCase -- Failed to send account-locked email for userId=2a79a741-4a0f-47d1-99f6-8fffdef4458a — retry via job: SMTP server unavailable
+15:56:37.074 [main] WARN com.experis.sofia.bankportal.auth.application.AccountLockUseCase -- Account LOCKED for userId=2b5e6e27-ec7c-4023-8d5e-b38a4e51a448 after max failed OTP attempts
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.experis.sofia.bankportal.auth.AccountLockUseCaseTest$LockAccount
+[INFO] Running com.experis.sofia.bankportal.auth.AccountLockUseCaseTest$RecordFailedAttempt
+15:56:37.084 [main] INFO com.experis.sofia.bankportal.auth.application.AccountLockUseCase -- Failed OTP attempt for userId=fe95168b-3e06-4991-b23b-82b174b65a4e ip=192.168.1.1
+15:56:37.087 [main] INFO com.experis.sofia.bankportal.auth.application.AccountLockUseCase -- Failed OTP attempt for userId=3c4f0e69-7b7f-44be-abe2-7bfb693410ea ip=192.168.1.1
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.experis.sofia.bankportal.auth.AccountLockUseCaseTest$RecordFailedAttempt
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.116 s -- in com.experis.sofia.bankportal.auth.AccountLockUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.auth.application.SseRegistryTest
+[INFO] Running com.experis.sofia.bankportal.auth.application.SseRegistryTest$Invalidate
+15:56:37.119 [main] INFO com.experis.sofia.bankportal.auth.application.SseRegistry -- [SSE] Conexión invalidada por JWT blacklist userId=3e707b9f-062c-4dce-929a-8889865a65f4
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.experis.sofia.bankportal.auth.application.SseRegistryTest$Invalidate
+[INFO] Running com.experis.sofia.bankportal.auth.application.SseRegistryTest$Send
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.experis.sofia.bankportal.auth.application.SseRegistryTest$Send
+[INFO] Running com.experis.sofia.bankportal.auth.application.SseRegistryTest$Register
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.experis.sofia.bankportal.auth.application.SseRegistryTest$Register
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.048 s -- in com.experis.sofia.bankportal.auth.application.SseRegistryTest
+[INFO] Running com.experis.sofia.bankportal.auth.infrastructure.JwtBlacklistServiceTest
+[INFO] Running com.experis.sofia.bankportal.auth.infrastructure.JwtBlacklistServiceTest$IsBlacklisted
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.experis.sofia.bankportal.auth.infrastructure.JwtBlacklistServiceTest$IsBlacklisted
+[INFO] Running com.experis.sofia.bankportal.auth.infrastructure.JwtBlacklistServiceTest$Blacklist
+15:56:37.546 [main] INFO com.experis.sofia.bankportal.auth.infrastructure.JwtBlacklistService -- [DEBT-009] JWT blacklisted jti=71213efa-633e-4cad-90bf-89e09cf1cc6a userId=95f48315-9b24-473a-8965-6957a651f2fc ttl=599s
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.experis.sofia.bankportal.auth.infrastructure.JwtBlacklistServiceTest$Blacklist
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.393 s -- in com.experis.sofia.bankportal.auth.infrastructure.JwtBlacklistServiceTest
+[INFO] Running com.experis.sofia.bankportal.auth.AccountUnlockUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.auth.AccountUnlockUseCaseTest$UnlockByToken
+15:56:37.623 [main] INFO com.experis.sofia.bankportal.auth.application.AccountUnlockUseCase -- [US-602] Cuenta desbloqueada · user=75ac0f87-c46f-4a0e-b282-601f43115fec
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.067 s -- in com.experis.sofia.bankportal.auth.AccountUnlockUseCaseTest$UnlockByToken
+[INFO] Running com.experis.sofia.bankportal.auth.AccountUnlockUseCaseTest$RequestUnlock
+15:56:37.635 [main] INFO com.experis.sofia.bankportal.auth.application.AccountUnlockUseCase -- [US-602] Unlock link enviado · user=75ac0f87-c46f-4a0e-b282-601f43115fec
+15:56:37.641 [main] INFO com.experis.sofia.bankportal.auth.application.AccountUnlockUseCase -- [US-602] Unlock link enviado · user=75ac0f87-c46f-4a0e-b282-601f43115fec
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in com.experis.sofia.bankportal.auth.AccountUnlockUseCaseTest$RequestUnlock
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.090 s -- in com.experis.sofia.bankportal.auth.AccountUnlockUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.notification.ManagePushSubscriptionUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.notification.ManagePushSubscriptionUseCaseTest$UnsubscribeTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.062 s -- in com.experis.sofia.bankportal.notification.ManagePushSubscriptionUseCaseTest$UnsubscribeTests
+[INFO] Running com.experis.sofia.bankportal.notification.ManagePushSubscriptionUseCaseTest$SubscribeTests
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 s -- in com.experis.sofia.bankportal.notification.ManagePushSubscriptionUseCaseTest$SubscribeTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.084 s -- in com.experis.sofia.bankportal.notification.ManagePushSubscriptionUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.notification.NotificationHubTest
+[INFO] Running com.experis.sofia.bankportal.notification.NotificationHubTest$PersistenceTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.181 s -- in com.experis.sofia.bankportal.notification.NotificationHubTest$PersistenceTests
+[INFO] Running com.experis.sofia.bankportal.notification.NotificationHubTest$HighSeverityTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.experis.sofia.bankportal.notification.NotificationHubTest$HighSeverityTests
+[INFO] Running com.experis.sofia.bankportal.notification.NotificationHubTest$InfoSeverityTests
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in com.experis.sofia.bankportal.notification.NotificationHubTest$InfoSeverityTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.208 s -- in com.experis.sofia.bankportal.notification.NotificationHubTest
+[INFO] Running com.experis.sofia.bankportal.notification.ManageNotificationsUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.notification.ManageNotificationsUseCaseTest$Entity
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.experis.sofia.bankportal.notification.ManageNotificationsUseCaseTest$Entity
+[INFO] Running com.experis.sofia.bankportal.notification.ManageNotificationsUseCaseTest$MarkAllAsRead
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.experis.sofia.bankportal.notification.ManageNotificationsUseCaseTest$MarkAllAsRead
+[INFO] Running com.experis.sofia.bankportal.notification.ManageNotificationsUseCaseTest$MarkOneAsRead
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.experis.sofia.bankportal.notification.ManageNotificationsUseCaseTest$MarkOneAsRead
+[INFO] Running com.experis.sofia.bankportal.notification.ManageNotificationsUseCaseTest$CountUnread
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.experis.sofia.bankportal.notification.ManageNotificationsUseCaseTest$CountUnread
+[INFO] Running com.experis.sofia.bankportal.notification.ManageNotificationsUseCaseTest$ListNotifications
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.experis.sofia.bankportal.notification.ManageNotificationsUseCaseTest$ListNotifications
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.045 s -- in com.experis.sofia.bankportal.notification.ManageNotificationsUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.notification.NotificationControllerTest
+[WARNING] Tests run: 6, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 0 s -- in com.experis.sofia.bankportal.notification.NotificationControllerTest
+[INFO] Running com.experis.sofia.bankportal.notification.NotificationActionServiceTest
+[INFO] Running com.experis.sofia.bankportal.notification.NotificationActionServiceTest$RevokeSession
+15:56:38.096 [main] INFO com.experis.sofia.bankportal.notification.application.NotificationActionService -- [US-304] Sesión revocada desde notificación notifId=e7fee84d-2908-4f7c-9985-44a0d6ec6741 sessionId=a1eec05d-a053-4e60-9817-304e2a108223 userId=35faf7db-eb4b-4d64-92de-d08d31c911ca
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.068 s -- in com.experis.sofia.bankportal.notification.NotificationActionServiceTest$RevokeSession
+[INFO] Running com.experis.sofia.bankportal.notification.NotificationActionServiceTest$ResolveActionUrl
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s -- in com.experis.sofia.bankportal.notification.NotificationActionServiceTest$ResolveActionUrl
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.095 s -- in com.experis.sofia.bankportal.notification.NotificationActionServiceTest
+[INFO] Running com.experis.sofia.bankportal.notification.ManagePreferencesUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.notification.ManagePreferencesUseCaseTest$GetPreferencesTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.experis.sofia.bankportal.notification.ManagePreferencesUseCaseTest$GetPreferencesTests
+[INFO] Running com.experis.sofia.bankportal.notification.ManagePreferencesUseCaseTest$UpdatePreferenceTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.experis.sofia.bankportal.notification.ManagePreferencesUseCaseTest$UpdatePreferenceTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.experis.sofia.bankportal.notification.ManagePreferencesUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.notification.NotificationHistoryUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.notification.NotificationHistoryUseCaseTest$ReturnAndAudit
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.experis.sofia.bankportal.notification.NotificationHistoryUseCaseTest$ReturnAndAudit
+[INFO] Running com.experis.sofia.bankportal.notification.NotificationHistoryUseCaseTest$WindowStart
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.experis.sofia.bankportal.notification.NotificationHistoryUseCaseTest$WindowStart
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 s -- in com.experis.sofia.bankportal.notification.NotificationHistoryUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.notification.MarkNotificationsUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.notification.MarkNotificationsUseCaseTest$MarkAllAsRead
+15:56:38.190 [main] INFO com.experis.sofia.bankportal.notification.application.MarkNotificationsUseCase -- [US-302] Mark-all-read userId=dccfa65d-f641-4931-9ac7-03146867b823 updated=3
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.experis.sofia.bankportal.notification.MarkNotificationsUseCaseTest$MarkAllAsRead
+[INFO] Running com.experis.sofia.bankportal.notification.MarkNotificationsUseCaseTest$MarkAsRead
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.experis.sofia.bankportal.notification.MarkNotificationsUseCaseTest$MarkAsRead
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s -- in com.experis.sofia.bankportal.notification.MarkNotificationsUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.notification.infrastructure.redis.SseEventPublisherTest
+15:56:38.257 [main] WARN com.experis.sofia.bankportal.notification.infrastructure.redis.SseEventPublisher -- [DEBT-011] Redis no disponible, fallback local userId=7dd05410-e37a-4618-a93e-a34e3b3cce5d
+15:56:38.266 [main] WARN com.experis.sofia.bankportal.notification.infrastructure.redis.SseEventPublisher -- [DEBT-011] Redis broadcast no disponible, fallback local
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.061 s -- in com.experis.sofia.bankportal.notification.infrastructure.redis.SseEventPublisherTest
+[INFO] Running com.experis.sofia.bankportal.cards.application.UpdateCardLimitsUseCaseTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.066 s -- in com.experis.sofia.bankportal.cards.application.UpdateCardLimitsUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.cards.application.BlockCardUseCaseTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in com.experis.sofia.bankportal.cards.application.BlockCardUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.cards.application.ChangePinUseCaseTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.070 s -- in com.experis.sofia.bankportal.cards.application.ChangePinUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.transfer.TransferUseCaseTest
+15:56:38.535 [main] INFO com.experis.sofia.bankportal.transfer.application.TransferUseCase -- [US-801] Transferencia completada userId=ed6f77e4-d8fd-4d8d-94d7-481a09d5e1cb transferId=f38bb42e-f585-460f-8c80-fca8f446018b amount=200.00
+15:56:38.538 [main] INFO com.experis.sofia.bankportal.transfer.application.TransferUseCase -- [US-801] Transferencia completada userId=372f42bf-203a-40ca-9dfe-0eeabe2434ad transferId=641b29b2-d7f1-47e4-b182-0f2a724e187e amount=500.00
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.100 s -- in com.experis.sofia.bankportal.transfer.TransferUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.transfer.RateLimitFilterTest
+15:56:38.701 [main] WARN com.experis.sofia.bankportal.transfer.infrastructure.RateLimitFilter -- [DEBT-016] Rate limiter Redis no disponible — fail-open para key=rl:transfer:bc2fa117-d23b-475e-9f06-db41bc423ff1: Redis down
+15:56:38.709 [main] WARN com.experis.sofia.bankportal.transfer.infrastructure.RateLimitFilter -- [DEBT-016] TRANSFER_RATE_LIMIT_EXCEEDED subject=98bf55fe-a465-4dce-a69d-4614ba8bb4c8
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.161 s -- in com.experis.sofia.bankportal.transfer.RateLimitFilterTest
+[INFO] Running com.experis.sofia.bankportal.transfer.TransferLimitValidationServiceTest
+15:56:38.743 [main] WARN com.experis.sofia.bankportal.transfer.application.TransferLimitValidationService -- Límite por operación superado: userId=8be62d2c-60d6-4425-b145-5c368b190ec4 amount=2500.00 limit=2000.00
+15:56:38.751 [main] ERROR com.experis.sofia.bankportal.transfer.application.TransferLimitValidationService -- Redis no disponible para validación de límites userId=1f3a40ed-cb9f-4bf1-8aea-b054e40df07c — operación permitida
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.040 s -- in com.experis.sofia.bankportal.transfer.TransferLimitValidationServiceTest
+[INFO] Running com.experis.sofia.bankportal.transfer.TransferToBeneficiaryUseCaseTest
+15:56:38.802 [main] INFO com.experis.sofia.bankportal.transfer.application.TransferToBeneficiaryUseCase -- [US-802] Transferencia a beneficiario completada userId=0079ccaa-13eb-45b5-b333-7f25ba0e581e alias=Test Alias amount=300.00
+15:56:38.804 [main] INFO com.experis.sofia.bankportal.transfer.application.TransferToBeneficiaryUseCase -- [US-802] Transferencia a beneficiario completada userId=eebe0e84-0bfb-4bfd-a7a9-ff15bea1eb60 alias=Test Alias amount=200.00
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.044 s -- in com.experis.sofia.bankportal.transfer.TransferToBeneficiaryUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.trusteddevice.ManageTrustedDevicesUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.trusteddevice.ManageTrustedDevicesUseCaseTest$TrustedDeviceEntity
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.036 s -- in com.experis.sofia.bankportal.trusteddevice.ManageTrustedDevicesUseCaseTest$TrustedDeviceEntity
+[INFO] Running com.experis.sofia.bankportal.trusteddevice.ManageTrustedDevicesUseCaseTest$RevokeAll
+15:56:38.852 [main] INFO com.experis.sofia.bankportal.trusteddevice.application.ManageTrustedDevicesUseCase -- All trusted devices revoked for userId=4ebe2842-7343-46bb-8bfe-279006f0587c count=2
+15:56:38.853 [main] INFO com.experis.sofia.bankportal.trusteddevice.application.ManageTrustedDevicesUseCase -- All trusted devices revoked for userId=47e04475-c134-4ef1-9e3e-add09897f3bc count=0
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.experis.sofia.bankportal.trusteddevice.ManageTrustedDevicesUseCaseTest$RevokeAll
+[INFO] Running com.experis.sofia.bankportal.trusteddevice.ManageTrustedDevicesUseCaseTest$RevokeOne
+15:56:38.867 [main] INFO com.experis.sofia.bankportal.trusteddevice.application.ManageTrustedDevicesUseCase -- Trusted device revoked userId=4140afa1-95ff-4ca2-9929-f21eed5ac1f4 deviceId=8ab93169-9214-4520-b3cc-e4e323d17afb
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.experis.sofia.bankportal.trusteddevice.ManageTrustedDevicesUseCaseTest$RevokeOne
+[INFO] Running com.experis.sofia.bankportal.trusteddevice.ManageTrustedDevicesUseCaseTest$ListActive
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.experis.sofia.bankportal.trusteddevice.ManageTrustedDevicesUseCaseTest$ListActive
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.069 s -- in com.experis.sofia.bankportal.trusteddevice.ManageTrustedDevicesUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.trusteddevice.ValidateTrustedDeviceUseCaseDualKeyTest
+[INFO] Running com.experis.sofia.bankportal.trusteddevice.ValidateTrustedDeviceUseCaseDualKeyTest$BaseErrors
+15:56:38.923 [main] WARN com.experis.sofia.bankportal.trusteddevice.application.ValidateTrustedDeviceUseCase -- Trust token userId mismatch — possible theft attempt userId=a4b86eef-ff28-4ac5-abfc-acaeb7ad2712
+15:56:38.926 [main] INFO com.experis.sofia.bankportal.trusteddevice.application.ValidateTrustedDeviceUseCase -- Device fingerprint mismatch for userId=8823c25d-523e-4460-ae02-e48a206769d3 — OTP required
+15:56:38.931 [main] INFO com.experis.sofia.bankportal.trusteddevice.application.ValidateTrustedDeviceUseCase -- Inactive/expired trusted device for userId=2cec3c70-b996-4a00-bd3c-e3e2037df72a
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.046 s -- in com.experis.sofia.bankportal.trusteddevice.ValidateTrustedDeviceUseCaseDualKeyTest$BaseErrors
+[INFO] Running com.experis.sofia.bankportal.trusteddevice.ValidateTrustedDeviceUseCaseDualKeyTest$PreviousKey
+15:56:38.937 [main] INFO com.experis.sofia.bankportal.trusteddevice.application.ValidateTrustedDeviceUseCase -- Trusted device login via grace key for userId=c7ee7c1f-76c7-444c-84ef-3a33b737f1c2 deviceId=2b0461e7-dacd-4571-80a5-d55db4502f83
+15:56:38.940 [main] INFO com.experis.sofia.bankportal.trusteddevice.application.ValidateTrustedDeviceUseCase -- Trust token HMAC verification failed for userId=7b412040-205a-42b5-b443-828244bd5d5c
+15:56:38.942 [main] INFO com.experis.sofia.bankportal.trusteddevice.application.ValidateTrustedDeviceUseCase -- Trust token HMAC verification failed for userId=a77740ea-013a-4b04-ba76-b6f0393696a9
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.experis.sofia.bankportal.trusteddevice.ValidateTrustedDeviceUseCaseDualKeyTest$PreviousKey
+[INFO] Running com.experis.sofia.bankportal.trusteddevice.ValidateTrustedDeviceUseCaseDualKeyTest$CurrentKey
+15:56:38.948 [main] INFO com.experis.sofia.bankportal.trusteddevice.application.ValidateTrustedDeviceUseCase -- Trusted device login — OTP skipped for userId=7a521597-4cb5-429e-8530-4c15fc5aa7e5 deviceId=fe6374f6-0a3a-4519-9c55-abd98e8834b9
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.experis.sofia.bankportal.trusteddevice.ValidateTrustedDeviceUseCaseDualKeyTest$CurrentKey
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.067 s -- in com.experis.sofia.bankportal.trusteddevice.ValidateTrustedDeviceUseCaseDualKeyTest
+[INFO] Running com.experis.sofia.bankportal.trusteddevice.ValidateTrustedDeviceUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.trusteddevice.ValidateTrustedDeviceUseCaseTest$ErrorPaths
+15:56:38.960 [main] WARN com.experis.sofia.bankportal.trusteddevice.application.ValidateTrustedDeviceUseCase -- Trust token userId mismatch — possible theft attempt userId=7759325c-4d36-42b6-98a5-c2d256851f36
+15:56:38.962 [main] INFO com.experis.sofia.bankportal.trusteddevice.application.ValidateTrustedDeviceUseCase -- Device fingerprint mismatch for userId=604c5a3b-6bdf-42bb-8cba-98ee06dbb79e — OTP required
+15:56:38.963 [main] INFO com.experis.sofia.bankportal.trusteddevice.application.ValidateTrustedDeviceUseCase -- Inactive/expired trusted device for userId=d3402a5a-b6d9-4618-a7f8-8a43f68fd743
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.experis.sofia.bankportal.trusteddevice.ValidateTrustedDeviceUseCaseTest$ErrorPaths
+[INFO] Running com.experis.sofia.bankportal.trusteddevice.ValidateTrustedDeviceUseCaseTest$HappyPath
+15:56:38.970 [main] INFO com.experis.sofia.bankportal.trusteddevice.application.ValidateTrustedDeviceUseCase -- Trusted device login — OTP skipped for userId=a5248c17-7771-460f-a6da-26114be4385c deviceId=61a5637f-81f8-45f3-bc42-f9abed6961b3
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.experis.sofia.bankportal.trusteddevice.ValidateTrustedDeviceUseCaseTest$HappyPath
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s -- in com.experis.sofia.bankportal.trusteddevice.ValidateTrustedDeviceUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.dashboard.DashboardResolvePeriodTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.experis.sofia.bankportal.dashboard.DashboardResolvePeriodTest
+[INFO] Running com.experis.sofia.bankportal.dashboard.SpendingCategorizationEngineTest
+15:56:38.988 [main] INFO com.experis.sofia.bankportal.dashboard.application.SpendingCategorizationEngine -- [US-1002] Gasto categorizado como OTROS: concept='Transferencia 12345' issuer='null'
+15:56:38.988 [main] INFO com.experis.sofia.bankportal.dashboard.application.SpendingCategorizationEngine -- [US-1002] Gasto categorizado como OTROS: concept='null' issuer='null'
+15:56:38.990 [main] INFO com.experis.sofia.bankportal.dashboard.application.SpendingCategorizationEngine -- [US-1002] Gasto categorizado como OTROS: concept='null' issuer='null'
+15:56:38.990 [main] INFO com.experis.sofia.bankportal.dashboard.application.SpendingCategorizationEngine -- [US-1002] Gasto categorizado como OTROS: concept='null' issuer='null'
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.experis.sofia.bankportal.dashboard.SpendingCategorizationEngineTest
+[INFO] Running com.experis.sofia.bankportal.dashboard.DashboardExportUseCaseTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.experis.sofia.bankportal.dashboard.DashboardExportUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.dashboard.DashboardSummaryUseCaseTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.040 s -- in com.experis.sofia.bankportal.dashboard.DashboardSummaryUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.dashboard.BudgetAlertServiceTest
+15:56:39.104 [main] INFO com.experis.sofia.bankportal.dashboard.application.BudgetAlertService -- [US-1005] Alerta disparada: userId=2626e3e6-11f4-4eac-847e-af24ccb7a4dc period=2026-03 used=83.3%
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.058 s -- in com.experis.sofia.bankportal.dashboard.BudgetAlertServiceTest
+[INFO] Running com.experis.sofia.bankportal.dashboard.MonthlyEvolutionUseCaseTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.experis.sofia.bankportal.dashboard.MonthlyEvolutionUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.dashboard.MonthComparisonUseCaseTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.experis.sofia.bankportal.dashboard.MonthComparisonUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.dashboard.SpendingCategoryServiceTest
+15:56:39.135 [main] INFO com.experis.sofia.bankportal.dashboard.application.SpendingCategorizationEngine -- [US-1002] Gasto categorizado como OTROS: concept='null' issuer='null'
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in com.experis.sofia.bankportal.dashboard.SpendingCategoryServiceTest
+[INFO] Running com.experis.sofia.bankportal.audit.unit.application.SecurityPreferencesUseCaseTest
+15:56:39.147 [main] INFO com.experis.sofia.bankportal.audit.application.SecurityPreferencesUseCase -- Updating session timeout for userId=7813028c-6c19-4ef7-bf12-a9c6fbfb7ae1 to 60min
+15:56:39.148 [main] INFO com.experis.sofia.bankportal.audit.application.SecurityPreferencesUseCase -- Updating notification preferences for userId=50dfc663-99cd-4109-9285-9adb2e5b1702 types=[SESSION_REVOKED, LOGIN_FAILED_ATTEMPTS]
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.experis.sofia.bankportal.audit.unit.application.SecurityPreferencesUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.audit.unit.application.SecurityDashboardUseCaseTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.077 s -- in com.experis.sofia.bankportal.audit.unit.application.SecurityDashboardUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.audit.SecurityConfigHistoryUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.audit.SecurityConfigHistoryUseCaseTest$ReturnAndAudit
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.experis.sofia.bankportal.audit.SecurityConfigHistoryUseCaseTest$ReturnAndAudit
+[INFO] Running com.experis.sofia.bankportal.audit.SecurityConfigHistoryUseCaseTest$WindowComputation
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.experis.sofia.bankportal.audit.SecurityConfigHistoryUseCaseTest$WindowComputation
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s -- in com.experis.sofia.bankportal.audit.SecurityConfigHistoryUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.profile.UpdateProfileValidationTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.experis.sofia.bankportal.profile.UpdateProfileValidationTest
+[INFO] Running com.experis.sofia.bankportal.profile.ChangePasswordPolicyTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.experis.sofia.bankportal.profile.ChangePasswordPolicyTest
+[INFO] Running com.experis.sofia.bankportal.beneficiary.BeneficiaryManagementUseCaseTest
+15:56:39.311 [main] INFO com.experis.sofia.bankportal.beneficiary.application.BeneficiaryManagementUseCase -- [US-803] Beneficiario eliminado (soft) userId=86043a0e-47ea-46ed-b376-7d4f9510e9c0 id=b23ccaae-9c56-41e9-ae92-e49a33dfa75c
+15:56:39.313 [main] INFO com.experis.sofia.bankportal.beneficiary.application.BeneficiaryManagementUseCase -- [US-803] Beneficiario añadido userId=8479d014-24ea-4f1c-932b-60ba2292e115 iban=ES91****1332
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.040 s -- in com.experis.sofia.bankportal.beneficiary.BeneficiaryManagementUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.account.NotificationPurgeJobTest
+15:56:39.417 [main] INFO com.experis.sofia.bankportal.notification.infrastructure.NotificationPurgeJob -- [DEBT-012] purge.notifications.count=42 elapsed=0ms cutoff=2025-12-27T14:56:39.417876Z
+15:56:39.428 [main] INFO com.experis.sofia.bankportal.notification.infrastructure.NotificationPurgeJob -- [DEBT-012] purge.notifications.count=0 elapsed=0ms cutoff=2025-12-27T14:56:39.428297Z
+15:56:39.429 [main] INFO com.experis.sofia.bankportal.notification.infrastructure.NotificationPurgeJob -- [DEBT-012] purge.notifications.count=0 elapsed=0ms cutoff=2025-12-27T14:56:39.429633Z
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.112 s -- in com.experis.sofia.bankportal.account.NotificationPurgeJobTest
+[INFO] Running com.experis.sofia.bankportal.account.TransactionHistoryUseCaseTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.067 s -- in com.experis.sofia.bankportal.account.TransactionHistoryUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.account.AccountSummaryUseCaseTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.experis.sofia.bankportal.account.AccountSummaryUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.account.TransactionCategorizationServiceTest
+[INFO] Tests run: 23, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.081 s -- in com.experis.sofia.bankportal.account.TransactionCategorizationServiceTest
+[INFO] Running com.experis.sofia.bankportal.account.StatementExportUseCaseTest
+15:56:39.619 [main] INFO com.experis.sofia.bankportal.account.application.StatementExportUseCase -- [US-704] Iniciando exportación extracto accountId=96483d44-a238-4f07-9852-16f8a9620c1c periodo=2026-01 format=xlsx
+15:56:39.621 [main] INFO com.experis.sofia.bankportal.account.application.StatementExportUseCase -- [US-704] Iniciando exportación extracto accountId=cc6dd04f-8488-488b-b7bb-0b9471ca8b93 periodo=2026-02 format=csv
+15:56:39.622 [main] INFO com.experis.sofia.bankportal.account.application.StatementExportUseCase -- [US-704] Extracto generado filename=extracto-ES1234-2026-02.csv bytes=182 hash=3a2543ba15214946…
+15:56:39.624 [main] INFO com.experis.sofia.bankportal.account.application.StatementExportUseCase -- [US-704] Iniciando exportación extracto accountId=ab87eed7-7211-41e8-bc4b-f34eab268b05 periodo=2026-01 format=pdf
+15:56:39.624 [main] INFO com.experis.sofia.bankportal.account.application.StatementExportUseCase -- [US-704] Sin movimientos accountId=ab87eed7-7211-41e8-bc4b-f34eab268b05 periodo=2026-1
+15:56:39.626 [main] INFO com.experis.sofia.bankportal.account.application.StatementExportUseCase -- [US-704] Iniciando exportación extracto accountId=14b76e7a-c5e5-4ab6-89ce-153c19d26f52 periodo=2026-04 format=csv
+15:56:39.627 [main] INFO com.experis.sofia.bankportal.account.application.StatementExportUseCase -- [US-704] Extracto generado filename=extracto-ES1234-2026-04.csv bytes=108 hash=1bc87d83232a35e8…
+15:56:39.628 [main] INFO com.experis.sofia.bankportal.account.application.StatementExportUseCase -- [US-704] Iniciando exportación extracto accountId=8d792eb3-002b-4a20-aa63-12314b98721c periodo=2026-03 format=csv
+15:56:39.628 [main] INFO com.experis.sofia.bankportal.account.application.StatementExportUseCase -- [US-704] Extracto generado filename=extracto-ES1234-2026-03.csv bytes=111 hash=e60ce552d1edb78c…
+15:56:39.629 [main] INFO com.experis.sofia.bankportal.account.application.StatementExportUseCase -- [US-704] Iniciando exportación extracto accountId=d04da335-533c-444c-aab3-db7ba9c6d7a2 periodo=2026-01 format=csv
+15:56:39.630 [main] INFO com.experis.sofia.bankportal.account.application.StatementExportUseCase -- [US-704] Iniciando exportación extracto accountId=ab71b14f-bceb-4a7b-8a8e-ba1c6c699ca5 periodo=2026-02 format=csv
+15:56:39.630 [main] INFO com.experis.sofia.bankportal.account.application.StatementExportUseCase -- [US-704] Extracto generado filename=extracto-ES1234-2026-02.csv bytes=117 hash=fe74fb1ec41b34d6…
+15:56:39.631 [main] INFO com.experis.sofia.bankportal.account.application.StatementExportUseCase -- [US-704] Iniciando exportación extracto accountId=eff53d57-2a92-4f63-98c9-0cd8069baf2f periodo=2026-02 format=pdf
+15:56:39.846 [main] INFO com.experis.sofia.bankportal.account.application.StatementExportUseCase -- [US-704] Extracto generado filename=extracto-ES1234-2026-02.pdf bytes=9976 hash=db91acfc3a7cd53e…
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.256 s -- in com.experis.sofia.bankportal.account.StatementExportUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.scheduled.domain.NextExecutionDateCalculatorTest
+[INFO] Running com.experis.sofia.bankportal.scheduled.domain.NextExecutionDateCalculatorTest$OnceTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.experis.sofia.bankportal.scheduled.domain.NextExecutionDateCalculatorTest$OnceTests
+[INFO] Running com.experis.sofia.bankportal.scheduled.domain.NextExecutionDateCalculatorTest$WeeklyTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.experis.sofia.bankportal.scheduled.domain.NextExecutionDateCalculatorTest$WeeklyTests
+[INFO] Running com.experis.sofia.bankportal.scheduled.domain.NextExecutionDateCalculatorTest$MonthlyTests
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.experis.sofia.bankportal.scheduled.domain.NextExecutionDateCalculatorTest$MonthlyTests
+[INFO] Running com.experis.sofia.bankportal.scheduled.domain.NextExecutionDateCalculatorTest$BiweeklyTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.experis.sofia.bankportal.scheduled.domain.NextExecutionDateCalculatorTest$BiweeklyTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in com.experis.sofia.bankportal.scheduled.domain.NextExecutionDateCalculatorTest
+[INFO] Running com.experis.sofia.bankportal.scheduled.domain.ScheduledTransferTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.experis.sofia.bankportal.scheduled.domain.ScheduledTransferTest
+[INFO] Running com.experis.sofia.bankportal.session.api.SessionControllerTest
+[WARNING] Tests run: 5, Failures: 0, Errors: 0, Skipped: 5, Time elapsed: 0.001 s -- in com.experis.sofia.bankportal.session.api.SessionControllerTest
+[INFO] Running com.experis.sofia.bankportal.session.application.RevokeSessionUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.session.application.RevokeSessionUseCaseTest$ErrorPaths
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.035 s -- in com.experis.sofia.bankportal.session.application.RevokeSessionUseCaseTest$ErrorPaths
+[INFO] Running com.experis.sofia.bankportal.session.application.RevokeSessionUseCaseTest$HappyPath
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.experis.sofia.bankportal.session.application.RevokeSessionUseCaseTest$HappyPath
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.039 s -- in com.experis.sofia.bankportal.session.application.RevokeSessionUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.session.application.CreateSessionOnLoginUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.session.application.CreateSessionOnLoginUseCaseTest$AtLimit
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.experis.sofia.bankportal.session.application.CreateSessionOnLoginUseCaseTest$AtLimit
+[INFO] Running com.experis.sofia.bankportal.session.application.CreateSessionOnLoginUseCaseTest$BelowLimit
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.experis.sofia.bankportal.session.application.CreateSessionOnLoginUseCaseTest$BelowLimit
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in com.experis.sofia.bankportal.session.application.CreateSessionOnLoginUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.session.application.DenySessionByLinkUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.session.application.DenySessionByLinkUseCaseTest$ErrorPaths
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.experis.sofia.bankportal.session.application.DenySessionByLinkUseCaseTest$ErrorPaths
+[INFO] Running com.experis.sofia.bankportal.session.application.DenySessionByLinkUseCaseTest$HappyPath
+15:56:39.937 [main] INFO com.experis.sofia.bankportal.session.application.usecase.DenySessionByLinkUseCase -- Session denied by email link: jti=e2af343c-71d2-4171-9aaa-07eb6423cab8 userId=bb84d55f-891f-4d95-a72b-49480eeddb34
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.experis.sofia.bankportal.session.application.DenySessionByLinkUseCaseTest$HappyPath
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in com.experis.sofia.bankportal.session.application.DenySessionByLinkUseCaseTest
+[INFO] Running com.experis.sofia.bankportal.session.domain.SessionDomainServiceTest
+[INFO] Running com.experis.sofia.bankportal.session.domain.SessionDomainServiceTest$MaskIp
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.experis.sofia.bankportal.session.domain.SessionDomainServiceTest$MaskIp
+[INFO] Running com.experis.sofia.bankportal.session.domain.SessionDomainServiceTest$ValidateTimeout
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.experis.sofia.bankportal.session.domain.SessionDomainServiceTest$ValidateTimeout
+[INFO] Running com.experis.sofia.bankportal.session.domain.SessionDomainServiceTest$FindLruSession
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.experis.sofia.bankportal.session.domain.SessionDomainServiceTest$FindLruSession
+[INFO] Running com.experis.sofia.bankportal.session.domain.SessionDomainServiceTest$IsExpiredByInactivity
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.experis.sofia.bankportal.session.domain.SessionDomainServiceTest$IsExpiredByInactivity
+[INFO] Running com.experis.sofia.bankportal.session.domain.SessionDomainServiceTest$IsActive
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.experis.sofia.bankportal.session.domain.SessionDomainServiceTest$IsActive
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in com.experis.sofia.bankportal.session.domain.SessionDomainServiceTest
+[INFO] Running com.experis.sofia.bankportal.session.domain.DeviceFingerprintServiceTest
+[INFO] Running com.experis.sofia.bankportal.session.domain.DeviceFingerprintServiceTest$ExtractIpSubnet
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.experis.sofia.bankportal.session.domain.DeviceFingerprintServiceTest$ExtractIpSubnet
+[INFO] Running com.experis.sofia.bankportal.session.domain.DeviceFingerprintServiceTest$ComputeHash
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.experis.sofia.bankportal.session.domain.DeviceFingerprintServiceTest$ComputeHash
+[INFO] Running com.experis.sofia.bankportal.session.domain.DeviceFingerprintServiceTest$ExtractDeviceInfo
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.experis.sofia.bankportal.session.domain.DeviceFingerprintServiceTest$ExtractDeviceInfo
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.experis.sofia.bankportal.session.domain.DeviceFingerprintServiceTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[WARNING] Tests run: 446, Failures: 0, Errors: 0, Skipped: 11
+[INFO] 
+[INFO] 
+[INFO] --- jacoco:0.8.12:report (report) @ bankportal-backend-2fa ---
+[INFO] Loading execution data file /Users/cuadram/proyectos/bank-portal/apps/backend-2fa/target/jacoco.exec
+[INFO] Analyzed bundle 'BankPortal :: Backend 2FA' with 376 classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  13.535 s
+[INFO] Finished at: 2026-03-27T15:56:40+01:00
+[INFO] ------------------------------------------------------------------------
+
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (/Users/cuadram/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.19/byte-buddy-agent-1.14.19.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
