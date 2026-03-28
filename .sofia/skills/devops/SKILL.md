@@ -87,6 +87,117 @@ de despliegue multi-target y gate de go/no-go integrado con el Workflow Manager.
 
 ---
 
+---
+
+## Reglas críticas derivadas de lecciones aprendidas
+
+### LA-019-05 — CI SIEMPRE usa build de producción Angular
+
+El build de desarrollo local NO activa las mismas validaciones que producción.
+El pipeline Jenkins/GitHub Actions DEBE usar `--configuration=production`:
+
+```groovy
+// Jenkinsfile — stage Build Angular (CORRECTO)
+stage('Build Angular') {
+  steps {
+    sh 'node node_modules/.bin/ng build --configuration=production'
+    // Si falla -> artefactos invalidos -> no pasar a siguiente stage
+  }
+}
+
+// INCORRECTO — no activa budget CSS ni environment.prod.ts
+sh 'node node_modules/.bin/ng build'
+```
+
+Dockerfile del frontend DEBE especificar `--configuration=production`:
+```dockerfile
+# CORRECTO
+RUN node node_modules/.bin/ng build --configuration=production
+
+# INCORRECTO
+RUN node node_modules/.bin/ng build
+```
+
+Verificación obligatoria antes de cerrar cualquier pipeline de frontend:
+```bash
+# Ejecutar localmente antes de hacer push
+docker compose build --no-cache frontend
+# Exit code 0 = OK | Exit code 1 = errores de build de producción
+```
+
+### LA-019-07 — Smoke test actualizado es artefacto obligatorio del pipeline
+
+Cada release DEBE tener un smoke test que cubra los endpoints del sprint corriente.
+El smoke test se ejecuta en el stage post-deploy de STG antes de aprobar G-6:
+
+```groovy
+// Jenkinsfile — stage Smoke Test STG
+stage('Smoke Test — STG') {
+  steps {
+    sh """
+      # El smoke test debe existir para la versión actual
+      SMOKE_SCRIPT="infra/compose/smoke-test-v\${VERSION}.sh"
+      if [ ! -f "\$SMOKE_SCRIPT" ]; then
+        echo "ERROR: smoke test no encontrado para v\${VERSION}"
+        echo "Crear infra/compose/smoke-test-v\${VERSION}.sh antes del release"
+        exit 1
+      fi
+      chmod +x \$SMOKE_SCRIPT
+      STG_URL=\${STG_BASE_URL} ./\$SMOKE_SCRIPT
+    """
+  }
+  post {
+    failure {
+      // Smoke test fallido = deploy rechazado + pipeline BLOCKED
+      error('Smoke test FAILED — deploy de STG rechazado')
+    }
+  }
+}
+```
+
+Estructura del smoke test por sprint:
+```bash
+#!/bin/bash
+# smoke-test-vX.YY.sh — generado como artefacto de G-4
+# Cubre: login + endpoints nuevos del sprint + regresion critica
+
+BASE_URL="${STG_URL:-http://localhost:8181}"
+PASS=0; FAIL=0
+
+check() {
+  local desc="$1" url="$2" expected="$3"
+  code=$(curl -s -o /dev/null -w "%{http_code}" "$url")
+  if [ "$code" = "$expected" ]; then
+    echo "PASS: $desc"
+    ((PASS++))
+  else
+    echo "FAIL: $desc [esperado=$expected obtenido=$code]"
+    ((FAIL++))
+  fi
+}
+
+# Auth
+TOKEN=$(curl -s -X POST "$BASE_URL/auth/login" \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"a.delacuadra@nemtec.es","password":"Angel@123"}' \
+  | python3 -c "import sys,json; print(json.load(sys.stdin)['accessToken'])")
+
+[ -n "$TOKEN" ] && echo "PASS: Login" && ((PASS++)) || { echo "FAIL: Login"; ((FAIL++)); }
+
+# Endpoints del sprint actual
+check "GET /api/v1/nuevo-endpoint"       "$BASE_URL/api/v1/nuevo-endpoint" "200"
+check "GET /api/v1/nuevo-endpoint sin auth" "$BASE_URL/api/v1/nuevo-endpoint" "401"
+
+# Regresion endpoints criticos
+check "GET /api/v1/accounts"      "$BASE_URL/api/v1/accounts" "200"
+check "GET /actuator/health"      "$BASE_URL/actuator/health" "200"
+
+echo "Resultado: $PASS PASS / $FAIL FAIL"
+[ $FAIL -eq 0 ] && exit 0 || exit 1
+```
+
+---
+
 ## Principios DevOps obligatorios
 
 | Principio | Regla concreta en SOFIA |

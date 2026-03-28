@@ -28,7 +28,7 @@
   "last_skill": "workflow-manager",
   "last_skill_output_path": "docs/architecture/",
   "gate_pending": null,
-  "sprint_goal": "Gestion completa domiciliaciones bancarias: alta, consulta, baja y notificaciones push — SEPA DD Core · PSD2 Art.77/80",
+  "sprint_goal": "Gestion completa domiciliaciones bancarias: alta, consulta, baja y notificaciones push \u2014 SEPA DD Core \u00b7 PSD2 Art.77/80",
   "sprint_capacity_sp": 24,
   "artifacts": {
     "1": [
@@ -308,7 +308,7 @@
     ],
     "verdict": "APPROVED"
   },
-  "updated_at": "2026-03-27T15:37:33.000Z",
+  "updated_at": "2026-03-28T10:58:55.362427",
   "resume_next": "Sprint 20 FEAT-018 pendiente definicion PO",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -405,9 +405,100 @@
       "id": "LA-019-03",
       "sprint": 19,
       "type": "process",
-      "description": "Gates G-6..G-9 auto-aprobados incorrectamente. Corrección: cada gate HITL requiere parada explícita individual.",
+      "description": "Gates G-6..G-9 auto-aprobados incorrectamente. Correcci\u00f3n: cada gate HITL requiere parada expl\u00edcita individual.",
       "correction": "Desde Sprint 20: parada obligatoria en cada gate HITL con pregunta al rol definido.",
       "registered_at": "2026-03-27T14:06:00.285397Z"
+    },
+    {
+      "id": "LA-019-04",
+      "sprint": 19,
+      "type": "testing",
+      "description": "Tests unitarios no detectan conflictos de beans Spring \u2014 requieren @SpringBootTest completo",
+      "correction": "G-4 requiere IT smoke test por feature nueva"
+    },
+    {
+      "id": "LA-019-05",
+      "sprint": 19,
+      "type": "devops",
+      "description": "Build Angular sin --configuration=production no activa budget CSS ni environment.prod.ts",
+      "correction": "CI y Dockerfile usan siempre ng build --configuration=production"
+    },
+    {
+      "id": "LA-019-06",
+      "sprint": 19,
+      "type": "process",
+      "description": "Patr\u00f3n DEBT-022 no verificable autom\u00e1ticamente en Code Review",
+      "correction": "Script grep DEBT-022 obligatorio en G-5"
+    },
+    {
+      "id": "LA-019-07",
+      "sprint": 19,
+      "type": "testing",
+      "description": "Smoke test desactualizado \u2014 no cubre endpoints del sprint corriente",
+      "correction": "smoke-test actualizado obligatorio como artefacto de G-4"
+    },
+    {
+      "id": "LA-019-08",
+      "sprint": 19,
+      "type": "architecture",
+      "description": "@Profile(!production) activa Mock en STG \u2014 BD real nunca consultada",
+      "correction": "Mocks solo con @Profile(mock) o @Profile(test). @Primary en adaptador real."
+    },
+    {
+      "id": "LA-019-09",
+      "sprint": 19,
+      "type": "config",
+      "description": "environment.prod.ts desincronizado con environment.ts",
+      "correction": "Validaci\u00f3n autom\u00e1tica de campos en CI"
+    },
+    {
+      "id": "LA-019-10",
+      "sprint": 19,
+      "type": "frontend",
+      "description": "M\u00f3dulos Angular nuevos no registrados en router",
+      "correction": "Checklist G-4 incluye verificaci\u00f3n de registro en app-routing.module.ts"
+    },
+    {
+      "id": "LA-019-11",
+      "sprint": 19,
+      "type": "frontend",
+      "description": "Componentes de ruta usan @Input para params \u2014 nunca se populan",
+      "correction": "Usar siempre ActivatedRoute.paramMap en componentes de ruta"
+    },
+    {
+      "id": "LA-019-12",
+      "sprint": 19,
+      "type": "data",
+      "description": "UUIDs inv\u00e1lidos en seeds SQL (caracteres no hex)",
+      "correction": "Validar UUIDs con regex antes de ejecutar seeds"
+    },
+    {
+      "id": "LA-019-13",
+      "sprint": 19,
+      "type": "database",
+      "description": "timestamp without time zone vs Instant Java \u2014 incompatibilidad de tipos",
+      "correction": "LLD incluye mapa de tipos BD\u2192Java. Usar LocalDateTime para columnas sin timezone."
+    },
+    {
+      "id": "LA-019-14",
+      "sprint": 19,
+      "type": "frontend",
+      "description": "OnPush + paramMap no dispara CD al cambiar cuenta",
+      "correction": "OnPush solo cuando se garantiza inmutabilidad y markForCheck() en todos los observables"
+    },
+    {
+      "id": "LA-019-15",
+      "sprint": 19,
+      "type": "backend",
+      "description": "Named params JdbcClient contaminados por concatenaci\u00f3n de text blocks",
+      "correction": "SQL din\u00e1mico siempre usa par\u00e1metros posicionales (?)"
+    },
+    {
+      "id": "LA-019-16",
+      "sprint": 19,
+      "type": "process",
+      "description": "QA no declara si prueba contra Mock o BD real",
+      "correction": "Informe QA obliga campo: Repositorio activo: MOCK|JPA-REAL"
     }
   ],
   "unit_test_verification": {
@@ -432,8 +523,8 @@
       "id": "BUG-S19-001",
       "severity": "HIGH",
       "class": "TransactionCategorizationService",
-      "description": "RECIBO DOMICILIADO AGUA categorizado como RECIBO_UTIL en lugar de DOMICILIACION — prioridad de reglas incorrecta",
-      "impact": "Categorización errónea de domiciliaciones SEPA DD",
+      "description": "RECIBO DOMICILIADO AGUA categorizado como RECIBO_UTIL en lugar de DOMICILIACION \u2014 prioridad de reglas incorrecta",
+      "impact": "Categorizaci\u00f3n err\u00f3nea de domiciliaciones SEPA DD",
       "fixed": true,
       "fixed_at": "2026-03-27T14:57:17.000Z"
     },
@@ -441,8 +532,8 @@
       "id": "BUG-S19-002",
       "severity": "HIGH",
       "class": "NextExecutionDateCalculator",
-      "description": "Transferencias programadas día-31: siguiente ejecución cae en Feb-28 en lugar de Mar-31 — violación PSD2/SEPA",
-      "impact": "Transferencias programadas día-31 ejecutadas en fecha incorrecta",
+      "description": "Transferencias programadas d\u00eda-31: siguiente ejecuci\u00f3n cae en Feb-28 en lugar de Mar-31 \u2014 violaci\u00f3n PSD2/SEPA",
+      "impact": "Transferencias programadas d\u00eda-31 ejecutadas en fecha incorrecta",
       "fixed": true,
       "fixed_at": "2026-03-27T14:57:17.000Z"
     }
@@ -454,5 +545,93 @@
     "stub_alignment_fixes": 4,
     "context_fixes": 3,
     "applied_at": "2026-03-27T14:57:17.000Z"
+  },
+  "smoke_test": {
+    "executed_at": "2026-03-27T20:51:05+01:00",
+    "result": "PASS",
+    "total": 17,
+    "ok": 17,
+    "fail": 0,
+    "log": "docs/qa/SMOKE-TEST-v1.19.0-20260327-205105.log",
+    "script": "infra/compose/smoke-test-v1.19.sh"
+  },
+  "hotfix": {
+    "version": "v1.19.0-hotfix",
+    "date": "2026-03-27",
+    "bugs_fixed": [
+      "BUG-POST-S19-001: ConflictingBeanDefinitionException ibanValidator",
+      "BUG-POST-S19-002: HTTP 403 en lugar de 401 sin JWT",
+      "BUG-POST-S19-003: HTTP 500 DirectDebitController AuthenticationPrincipal",
+      "BUG-POST-S19-004: Flyway V20 ENUM\u2192VARCHAR migration fix"
+    ],
+    "migrations_added": [
+      "V20__fix_mandate_enum_varchar.sql"
+    ],
+    "report": "docs/qa/HOTFIX-REPORT-v1.19.0-20260327.md",
+    "lessons": [
+      "LA-019-04",
+      "LA-019-05"
+    ]
+  },
+  "post_mortem": "docs/qa/POST-MORTEM-STG-v1.19.0-20260328.md",
+  "skills_updated_s20": [
+    "qa-tester",
+    "java-developer",
+    "angular-developer",
+    "code-reviewer",
+    "devops",
+    "architect",
+    "developer-core",
+    "orchestrator"
+  ],
+  "lessons_applied_to_skills": {
+    "qa-tester": [
+      "LA-019-07",
+      "LA-019-08",
+      "LA-019-16"
+    ],
+    "java-developer": [
+      "LA-019-04",
+      "LA-019-06",
+      "LA-019-08",
+      "LA-019-13",
+      "LA-019-15"
+    ],
+    "angular-developer": [
+      "LA-019-05",
+      "LA-019-09",
+      "LA-019-10",
+      "LA-019-11",
+      "LA-019-12",
+      "LA-019-14"
+    ],
+    "code-reviewer": [
+      "LA-019-06",
+      "LA-019-08",
+      "LA-019-09",
+      "LA-019-10",
+      "LA-019-11",
+      "LA-019-13",
+      "LA-019-15"
+    ],
+    "devops": [
+      "LA-019-05",
+      "LA-019-07"
+    ],
+    "architect": [
+      "LA-019-08",
+      "LA-019-13"
+    ],
+    "developer-core": [
+      "LA-019-04",
+      "LA-019-07",
+      "LA-019-08"
+    ],
+    "orchestrator": [
+      "LA-019-04",
+      "LA-019-07",
+      "LA-019-08",
+      "LA-019-13"
+    ]
   }
 }

@@ -53,6 +53,118 @@ Manejo de errores, Javadoc, Tests, Migraciones Flyway
 Seguir el proceso definido en `developer-core/SKILL.md` → sección
 "Proceso de implementación universal" → Modo indicado por el Orchestrator
 
+---
+
+## Reglas críticas derivadas de lecciones aprendidas
+
+### LA-019-04 — IT Smoke test obligatorio por feature
+
+Cada nueva feature backend DEBE incluir como artefacto de G-4:
+
+```java
+// docs/qa/IT-SMOKE-FEAT-XXX.java
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+@ActiveProfiles("test")
+class SpringContextIT extends IntegrationTestBase {
+    @Test void context_starts() { assertThat(mockMvc).isNotNull(); }
+
+    @Test void newEndpoint_returns401WithoutToken() throws Exception {
+        mockMvc.perform(get("/api/v1/nuevo-endpoint"))
+               .andExpect(status().isUnauthorized());
+    }
+
+    @Test void newEndpoint_returns200WithValidToken() throws Exception {
+        mockMvc.perform(get("/api/v1/nuevo-endpoint")
+               .header("Authorization", "Bearer " + obtenerJwt()))
+               .andExpect(status().isOk());
+    }
+}
+```
+
+### LA-019-06 — Patrón DEBT-022 OBLIGATORIO en todos los controllers
+
+NINGUN controller nuevo puede usar `@AuthenticationPrincipal`.
+SIEMPRE usar `HttpServletRequest.getAttribute("authenticatedUserId")`:
+
+```java
+// CORRECTO — patrón DEBT-022
+@GetMapping("/recurso")
+public ResponseEntity<?> getRecurso(HttpServletRequest request) {
+    UUID userId = (UUID) request.getAttribute("authenticatedUserId");
+    // ...
+}
+
+// INCORRECTO — BLOQUEANTE en Code Review
+@GetMapping("/recurso")
+public ResponseEntity<?> getRecurso(
+        @AuthenticationPrincipal(expression="userId") UUID userId) { // NUNCA
+    // ...
+}
+```
+
+### LA-019-08 — Perfiles de Spring: mocks solo con @Profile("mock")
+
+```java
+// CORRECTO — solo activo con spring.profiles.active=mock
+@Component
+@Profile("mock")
+public class MockAccountRepositoryAdapter implements AccountRepositoryPort { ... }
+
+// CORRECTO — activo en todos los perfiles excepto cuando hay @Profile("mock")
+@Component
+@Primary  // sobrescribe cualquier mock residual
+public class JpaAccountRepositoryAdapter implements AccountRepositoryPort { ... }
+
+// INCORRECTO — activo en dev, test Y staging
+@Component
+@Profile("!production")  // NUNCA — activa el mock en STG
+public class MockAccountRepositoryAdapter implements AccountRepositoryPort { ... }
+```
+
+### LA-019-13 — Tipos de columnas BD: timestamp vs Instant
+
+PostgreSQL tiene dos tipos de timestamp — usar el correcto en Java:
+
+| Tipo PostgreSQL | Tipo Java | Uso |
+|---|---|---|
+| `timestamp without time zone` | `LocalDateTime` / `Timestamp` | Fechas de negocio (transaction_date) |
+| `timestamp with time zone` (`timestamptz`) | `Instant` / `OffsetDateTime` | Auditoría (created_at, updated_at) |
+
+El LLD DEBE especificar el tipo por columna. Si la columna es
+`timestamp without time zone` y se pasa un `Instant`, PostgreSQL
+rechaza la comparación silenciosamente en los filtros.
+
+```java
+// CORRECTO — timestamp without time zone
+conditions.append(" AND t.transaction_date >= ?::timestamp");
+args.add(instant.toString().replace("Z", ""));
+
+// O usar LocalDateTime directamente
+LocalDateTime from = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
+args.add(from);
+```
+
+### LA-019-15 — SQL dinámico con JdbcClient: usar parámetros posicionales
+
+```java
+// CORRECTO — parámetros posicionales (?)
+String sql = "SELECT * FROM tabla WHERE id = ? " +
+             conditions.toString() + " ORDER BY fecha DESC";
+List<Object> args = new ArrayList<>();
+args.add(id);
+// ... añadir args según conditions
+return jdbc.sql(sql).params(args).query(...).list();
+
+// INCORRECTO — named params + concatenación = bug
+String sql = """
+    SELECT * FROM tabla WHERE id = :id
+    """ + conditions + """
+    ORDER BY fecha DESC
+    """;
+// :idORDER — Spring JdbcClient parsea el nombre del param hasta el espacio
+// Si no hay espacio entre :param y la siguiente palabra -> error silencioso
+```
+
 ## Checklist de entrega
 Completar el checklist universal de `developer-core/SKILL.md` más el
 checklist adicional de `developer-core/references/java.md`

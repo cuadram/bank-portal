@@ -141,6 +141,44 @@ Confirmar cobertura del Developer — no reescribir tests.
 [ ] Si cobertura < 80% -> GAP bloqueante -> documentar y notificar
 ```
 
+### Paso 1b — Verificar smoke test actualizado (LA-019-07 OBLIGATORIO)
+
+Antes de ejecutar ninguna prueba, verificar que existe un smoke test actualizado
+para los endpoints del sprint corriente:
+
+```
+[ ] Existe infra/compose/smoke-test-vX.YY.sh para la version actual?
+[ ] El script cubre TODOS los endpoints nuevos del sprint?
+[ ] El script cubre login + JWT flow?
+[ ] El script cubre endpoints de regresion criticos de sprints anteriores?
+[ ] El script se ejecuta contra STG real (no mock)?
+```
+
+Si el smoke test no existe o no cubre los nuevos endpoints:
+```
+GAP BLOQUEANTE — LA-019-07
+Se requiere generar smoke-test-vX.YY.sh como artefacto de G-4.
+El Developer Agent debe crearlo antes de pasar a G-6.
+El QA NO puede aprobar sin smoke test ejecutado con 100% OK.
+```
+
+### Paso 1c — Verificar perfil de repositorio activo en STG (LA-019-08 OBLIGATORIO)
+
+Antes de ejecutar pruebas, verificar que STG usa repositorios reales:
+
+```bash
+# Verificar perfil activo en el backend STG
+docker logs [backend-container] 2>&1 | grep "profile"
+# Debe mostrar: staging (NUNCA: mock, test)
+
+# Verificar que NO hay MockRepositoryAdapter activo
+grep -r "@Profile" apps/backend/src/main/java | grep -v test | grep -v Mock
+# Si hay @Profile(\"!production\") en un adapter -> BLOQUEANTE
+```
+
+Regla: los mocks solo se activan con `@Profile("mock")` o `@Profile("test")`.
+Nunca con `@Profile("!production")` que los activa en STG.
+
 ### Paso 2b — Auditoria de integration tests (OBLIGATORIO)
 
 El QA DEBE verificar este checklist antes de aprobar cualquier sprint backend:
@@ -762,6 +800,13 @@ Evidencia: [link a screenshot / log / response payload]
 
 ## Exit Criteria
 [checklist del tipo de trabajo correspondiente]
+
+## Repositorio activo (LA-019-16 OBLIGATORIO)
+**Repositorio STG:** [MOCK | JPA-REAL]
+**Datos de prueba:** [MOCK-HARDCODED | SEED-BD]
+
+> Si el repositorio es MOCK, el gate G-6 se marca como INCOMPLETO.
+> Todas las pruebas deben ejecutarse contra JPA-REAL + SEED-BD.
 
 ## Veredicto QA
 [LISTO PARA RELEASE | CONDICIONADO — defectos pendientes | NO LISTO — bloqueantes abiertos]

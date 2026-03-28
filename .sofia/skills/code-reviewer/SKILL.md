@@ -39,6 +39,66 @@ para mayores, y decisión libre del Developer para sugerencias.
 
 Revisar en este orden exacto — de mayor a menor impacto:
 
+---
+
+## Checklist obligatorio derivado de lecciones aprendidas — ejecutar SIEMPRE
+
+Antes de iniciar la revisión por niveles, ejecutar estos checks automáticos:
+
+### CHECK-LA-019-06 — Patrón DEBT-022 en todos los controllers nuevos
+```bash
+# BLOQUEANTE si devuelve resultados en controllers fuera de /test/
+grep -rn "@AuthenticationPrincipal" apps/backend-2fa/src/main/java \
+  --include="*.java" | grep -v "/test/" | grep -v "Mock"
+# Resultado esperado: 0 líneas. Si hay resultados -> BLOQUEANTE RV-DEBT022
+```
+
+### CHECK-LA-019-08 — Perfiles Spring: mocks no usan @Profile("!production")
+```bash
+# BLOQUEANTE si devuelve resultados
+grep -rn "@Profile.*!production" apps/backend-2fa/src/main/java \
+  --include="*.java"
+# Resultado esperado: 0 líneas. Si hay resultados -> BLOQUEANTE RV-PROFILE
+```
+
+### CHECK-LA-019-09 — environment.prod.ts sincronizado con environment.ts
+```bash
+# Verificar que los campos de prod coinciden con dev
+node -e "
+  const fs = require('fs');
+  const dev  = fs.readFileSync('apps/frontend-portal/src/environments/environment.ts','utf8');
+  const prod = fs.readFileSync('apps/frontend-portal/src/environments/environment.prod.ts','utf8');
+  const devKeys  = [...dev.matchAll(/  (\w+):/g)].map(m=>m[1]).filter(k=>k!=='production');
+  const prodKeys = [...prod.matchAll(/  (\w+):/g)].map(m=>m[1]).filter(k=>k!=='production');
+  const missing  = devKeys.filter(k => !prodKeys.includes(k));
+  if (missing.length) { console.error('BLOQUEANTE — campos faltantes en prod:', missing); process.exit(1); }
+  console.log('OK — environment.prod.ts sincronizado');
+"
+```
+
+### CHECK-LA-019-10 — Módulos Angular nuevos registrados en router
+```bash
+# Para cada módulo nuevo en esta feature, verificar que está en app-routing
+for MODULE in $(find apps/frontend-portal/src/app/features -name "*.module.ts" \
+  | xargs grep -l "NgModule" | grep -v spec); do
+  MODULE_NAME=$(basename $MODULE .module.ts)
+  if ! grep -q "$MODULE_NAME" apps/frontend-portal/src/app/app-routing.module.ts; then
+    echo "BLOQUEANTE — módulo no registrado en router: $MODULE_NAME"
+  fi
+done
+```
+
+### CHECK-LA-019-15 — Named params no contaminados por concatenación
+```bash
+# MAYOR si hay named params en SQL dinámico construido con concatenación
+grep -rn '":.*+.*\"' apps/backend-2fa/src/main/java --include="*.java" | grep -v "test"
+# Alternativa: buscar named params en strings concatenados
+grep -rn 'append.*":' apps/backend-2fa/src/main/java --include="*.java" | grep -v "test"
+# Si aparecen -> verificar manualmente que no hay ambigüedad de parsing
+```
+
+---
+
 ### Nivel 1 — Arquitectura y Diseño
 Verificar que la implementación respeta el LLD aprobado:
 
@@ -102,6 +162,9 @@ Si hay desviación no aprobada del contrato → **BLOQUEANTE**
 - ¿Se cubren happy path, error path y edge cases?
 - ¿Los mocks están bien configurados (no ocultan bugs)?
 - ¿Hay al menos un test por cada escenario Gherkin del SRS?
+- ¿Existe `SpringContextIT` que levante el contexto completo? (LA-019-04) → MAYOR si no existe
+- ¿Existe `DatabaseSchemaIT` con columnas críticas del feature? (LA-019-13) → MAYOR si no existe
+- ¿El adaptador real tiene `@Primary` y el mock tiene `@Profile("mock")`? (LA-019-08) → BLOQUEANTE si no
 
 ### Nivel 6 — Documentación por stack
 
@@ -261,6 +324,15 @@ GIT
 □ Conventional Commits aplicado
 □ PR referencia ticket Jira
 □ PR ≤ 400 líneas
+
+LECCIONES APRENDIDAS LA-019 (checks automáticos ejecutados)
+□ LA-019-06: grep @AuthenticationPrincipal → 0 resultados en controllers
+□ LA-019-08: grep @Profile(!production) → 0 resultados en adapters
+□ LA-019-09: environment.prod.ts tiene los mismos campos que environment.ts
+□ LA-019-10: todos los nuevos módulos Angular en app-routing.module.ts
+□ LA-019-11: componentes de ruta usan ActivatedRoute.paramMap (no @Input)
+□ LA-019-13: SpringContextIT y DatabaseSchemaIT presentes (o justificado)
+□ LA-019-15: SQL dinámico usa parámetros posicionales (?), no named params concatenados
 ```
 
 ## Acciones requeridas post-review

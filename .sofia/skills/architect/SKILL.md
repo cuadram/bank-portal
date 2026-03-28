@@ -37,6 +37,56 @@ observabilidad y despliegue independiente.
 
 ---
 
+---
+
+## Reglas críticas derivadas de lecciones aprendidas
+
+### LA-019-08 — Estrategia de perfiles Spring: el Architect la define en el LLD
+
+El LLD debe especificar la estrategia de perfiles para cada adaptador:
+
+```
+Adaptador real (JPA/HTTP):  @Primary, sin @Profile  → activo en todos los entornos
+Adaptador mock (test):      @Profile("mock")         → solo activo cuando se declara explicitamente
+Adaptador mock (test):      NUNCA @Profile("!production") → activa en dev Y staging
+```
+
+Plantilla de diseño para cada puerto de dominio en el LLD:
+```
+[Puerto de dominio]
+- Interface: XxxRepositoryPort
+- Implementación real: JpaXxxRepositoryAdapter (@Primary)
+  - Activa en: dev, staging, production
+  - Perfil: sin @Profile (activa por defecto)
+- Implementación mock: MockXxxRepositoryAdapter
+  - Activa en: tests unitarios unicamente
+  - Perfil: @Profile("mock")
+```
+
+### LA-019-13 — Mapa de tipos BD→Java obligatorio en el LLD
+
+El LLD DEBE incluir una tabla de tipos para cada tabla nueva o modificada.
+Esta tabla es la fuente de verdad para el Developer y el QA:
+
+```markdown
+## Mapa de tipos — [nombre_tabla]
+
+| Columna | Tipo PostgreSQL | Tipo Java | Notas |
+|---|---|---|---|
+| id | uuid | UUID | Usar rs.getObject("id", UUID.class) |
+| created_at | timestamptz | Instant | Timestamp with timezone |
+| updated_at | timestamptz | Instant | Timestamp with timezone |
+| transaction_date | timestamp | LocalDateTime | WITHOUT TIME ZONE — NO Instant |
+| amount | numeric(15,2) | BigDecimal | NO double/float |
+| status | varchar(20) | String / Enum.name() | NO PostgreSQL ENUM |
+| user_id | uuid | UUID | FK — UUID no String |
+
+REGLA: `timestamp without time zone` → SIEMPRE `LocalDateTime` en Java.
+NUNCA usar `Instant` para columnas sin zona horaria — los filtros fallan silenciosamente.
+```
+
+---
+
 ## Principios de diseño obligatorios
 
 | Principio | Regla concreta |
@@ -397,6 +447,12 @@ CONSISTENCIA
 □ Contrato de integración backend ↔ frontend alineado entre ambos LLDs
 □ Estructura de paquetes coincide con el stack declarado en el Orchestrator
 □ Los RNF del SRS están reflejados en el diseño (timeouts, circuit breakers, etc.)
+
+LECCIONES APRENDIDAS LA-019
+□ LA-019-08: estrategia de perfiles definida por cada puerto de dominio
+    (JPA: @Primary sin perfil | Mock: @Profile("mock") exclusivamente)
+□ LA-019-13: mapa de tipos BD→Java incluido para cada tabla nueva o modificada
+    (timestamp without TZ → LocalDateTime | timestamptz → Instant)
 ```
 
 
