@@ -366,8 +366,8 @@
     ],
     "verdict": "APPROVED"
   },
-  "updated_at": "2026-03-30T18:42:40.686Z",
-  "resume_next": "HOTFIX-S20 APLICADO (commit 07519ea). Sprint 21: PO define FEAT-019 para arrancar pipeline.",
+  "updated_at": "2026-03-30T18:51:48.731Z",
+  "resume_next": "GUARDRAILS v1.0 activados (commit 2b7e283). Sprint 21: PO define FEAT-019.",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
   "gate8_approved_at": "2026-03-25T17:00:00Z",
@@ -946,5 +946,26 @@
       "CLEAN-001: arbol es/meridian/bankportal eliminado"
     ],
     "status": "APPLIED"
+  },
+  "guardrails": {
+    "version": "1.0",
+    "activated_at": "2026-03-30T18:51:48.730Z",
+    "commit": "2b7e28359271a43535d06dad13e31d1ee604e0bf",
+    "origin": "RCA HOTFIX-S20",
+    "lessons": [
+      "LA-020-09",
+      "LA-020-10",
+      "LA-020-11"
+    ],
+    "checks_total": 6,
+    "script": ".sofia/scripts/guardrail-pre-gate.js",
+    "spring_context_it": "CREADO",
+    "integration_test_base": "CREADO",
+    "skills_updated": [
+      "java-developer",
+      "code-reviewer",
+      "orchestrator"
+    ],
+    "sofia_config_updated": true
   }
 }

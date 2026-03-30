@@ -131,3 +131,4 @@
 [2026-03-30T14:20:12.821Z] [PACKAGE] sofia-deploy-v2.3.zip REGENERADO → 486.1 KB skills fa-agent v2.2 + orchestrator v2.2 incluidos
 [2026-03-30T15:17:10.368Z] [HOTFIX-S20] commit 07519ea — paquete corregido, API Transaction adaptada, TransactionExportRepository creado, pdfbox 3.0.2+spring-retry en pom.xml, directorio es.meridian eliminado
 [2026-03-30T18:42:40.687Z] [RCA-HOTFIX-S20] LA-020-09/10/11 registradas: paquete sin verificar, CR sin contraste codebase, SpringContextIT ausente
+[2026-03-30T18:51:48.732Z] [GUARDRAILS-v1.0] commit 2b7e283 — GR-001..006 activados, SpringContextIT creado, 3 skills actualizados
