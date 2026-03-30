@@ -1,18 +1,19 @@
 {
   "version": "2.0",
-  "sofia_version": "2.2",
+  "sofia_version": "2.3",
   "status": "completed",
   "project": "bank-portal",
   "client": "Banco Meridian",
-  "current_sprint": 19,
-  "current_feature": "FEAT-017",
-  "current_step": "1",
+  "current_sprint": 20,
+  "current_feature": "FEAT-018",
+  "current_step": "9",
   "pipeline_step": "9",
   "pipeline_step_name": "workflow-manager",
   "completed_steps": [
     "1",
     "2",
     "2b",
+    "2c",
     "3",
     "3b",
     "4",
@@ -25,121 +26,159 @@
     "9"
   ],
   "pending_steps": [],
-  "last_skill": "workflow-manager",
+  "last_skill": "scrum-master",
   "last_skill_output_path": "docs/architecture/",
   "gate_pending": null,
-  "sprint_goal": "Gestion completa domiciliaciones bancarias: alta, consulta, baja y notificaciones push \u2014 SEPA DD Core \u00b7 PSD2 Art.77/80",
+  "sprint_goal": "Eliminar deuda tecnica S19 (DEBT-032..035) y entregar exportacion de movimientos PDF/CSV (FEAT-018) — PSD2 Art.47, GDPR Art.15",
   "sprint_capacity_sp": 24,
   "artifacts": {
     "1": [
-      "docs/sprints/SPRINT-019-planning.md"
+      "docs/sprints/SPRINT-020-planning.md",
+      "Confluence page 5931009",
+      "Jira SCRUM-98..105 (8 issues creados)"
     ],
     "2": [
-      "docs/requirements/SRS-FEAT-017-sprint19.md"
+      "docs/requirements/SRS-FEAT-018-sprint20.md"
     ],
     "3": [
-      "docs/architecture/hld/HLD-FEAT-017.md",
-      "docs/architecture/lld/LLD-FEAT-017-backend.md",
-      "docs/architecture/lld/LLD-FEAT-017-frontend.md",
-      "docs/architecture/adr/ADR-029-sepa-mandate-storage.md",
-      "docs/architecture/openapi/openapi-direct-debits-v1.yaml"
+      "docs/architecture/hld/HLD-FEAT-018.md",
+      "docs/architecture/lld/LLD-FEAT-018-backend.md",
+      "docs/architecture/lld/LLD-FEAT-018-frontend.md",
+      "docs/architecture/adr/ADR-030-031-export-pdf-strategy.md",
+      "docs/architecture/openapi/openapi-export-v1.yaml",
+      "Confluence page 5963777 (HLD)"
     ],
     "4": [
-      "apps/backend-2fa/src/main/resources/db/migration/V19__direct_debits.sql",
-      "apps/backend-2fa/src/main/java/.../directdebit/ (21 clases Java)",
-      "apps/frontend-portal/src/app/features/direct-debits/ (18 archivos Angular)",
-      "docs/qa/TEST-EXECUTION-FEAT-017-sprint19.md"
+      "apps/backend-2fa/src/main/resources/db/migration/V21__export_audit_log.sql",
+      "apps/backend-2fa/.../export/ (ExportController, ExportService, ExportAuditService, PdfDocumentGenerator, CsvDocumentGenerator, DocumentGenerator interface)",
+      "apps/backend-2fa/.../directdebit/strategy/ (DebitProcessingStrategy, SEPACoreDebitStrategy, SEPACORDebitStrategy, RecurringDebitStrategy, DebitProcessorStrategyFactory)",
+      "apps/backend-2fa/.../directdebit/webhook/ (CoreBankingReturnedHandler, SepaReturnCode)",
+      "apps/backend-2fa/.../transaction/processor/ (NegativeAmountTransactionFilter, TransactionAmountDescComparator, ActiveDirectDebitFilter)",
+      "apps/frontend-portal/.../export/services/export.service.ts",
+      "apps/frontend-portal/.../core/auth/ (TokenService, SessionService, AuthGuard)",
+      "docs/qa/TEST-EXECUTION-FEAT-018-sprint20.md"
     ],
     "5": [
-      "docs/code-review/CR-FEAT-017-sprint19.md"
+      "docs/code-review/CR-FEAT-018-sprint20.md"
     ],
     "6": [
-      "docs/qa/QA-FEAT-017-sprint19.md"
+      "docs/qa/QA-FEAT-018-sprint20.md"
     ],
     "7": [
-      "docs/releases/RELEASE-NOTES-v1.19.0.md",
-      "docs/runbooks/RUNBOOK-backend-2fa-v1.19.0.md"
+      "docs/releases/RELEASE-NOTES-v1.20.0.md",
+      "docs/runbooks/RUNBOOK-backend-2fa-v1.20.0.md",
+      "infra/compose/smoke-test-v1.20.sh"
     ],
     "8": [
-      "docs/deliverables/sprint-19-FEAT-017/SPRINT-019-summary.md",
-      "Confluence page 4915202"
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-SRS.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-HLD.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-LLD-backend.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-LLD-frontend.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-Test-Plan.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-QA-Report.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-Code-Review-Report.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-Release-Notes.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-Runbook.docx",
+      "docs/deliverables/sprint-20-FEAT-018/Sprint-20-Report-PMC.docx",
+      "docs/deliverables/sprint-20-FEAT-018/NC-Tracker.xlsx",
+      "docs/deliverables/sprint-20-FEAT-018/Decision-Log.xlsx",
+      "docs/deliverables/sprint-20-FEAT-018/Quality-Dashboard.xlsx",
+      "docs/sprints/SPRINT-020-data.json",
+      "docs/dashboard/bankportal-global-dashboard.html",
+      "Confluence page 5996545 (Sprint 20 Resultados)"
     ],
     "9": [
-      "docs/sprints/SPRINT-019-retrospectiva.md",
-      "Jira SCRUM-88..95 todos Finalizada",
-      "Confluence Sprint 19 page 4915202"
+      "docs/sprints/SPRINT-020-retrospectiva.md",
+      "Jira SCRUM-98..105 todos Finalizada — JQL PASS 0 open",
+      "Confluence Sprint 20 Resultados 5996545",
+      "Confluence Sprint 20 Retrospectiva 6029313"
     ],
     "2b": [
-      "docs/functional-analysis/FA-FEAT-017-sprint19.md"
+      "docs/functional-analysis/FA-FEAT-018-sprint20.md",
+      "docs/functional-analysis/fa-index.json (63 funcionalidades, S1-S20)"
     ],
     "3b": [
-      "docs/architecture/hld/HLD-FEAT-017.md (Confluence page 4882434)"
+      "Confluence page 5963777 HLD publicado bajo Arquitectura"
     ],
     "5b": [
-      "docs/security/SEC-FEAT-017-sprint19.md"
+      "docs/security/SEC-FEAT-018-sprint20.md"
     ],
     "8b": [
-      "docs/functional-analysis/FA-FEAT-017-sprint19.md (consolidado)"
+      "docs/functional-analysis/fa-index.json (FEAT-018 + DEBT-035 DELIVERED, 63 funcionalidades)"
+    ],
+    "2c": [
+      "docs/ux-ui/UX-FEAT-018-sprint20.md",
+      "docs/ux-ui/prototypes/PROTO-FEAT-018-sprint20.html"
     ]
   },
   "gates": {
     "G-1": {
-      "approved_by": "product-owner",
-      "approved_at": "2026-03-27T06:13:40.364Z",
+      "approved_by": "tech-lead",
+      "approved_at": "2026-03-30T06:54:47.784Z",
       "step": "1"
     },
     "G-2": {
       "approved_by": "product-owner",
-      "approved_at": "2026-03-27T06:32:40.223987Z",
-      "step": "2b"
+      "approved_at": "2026-03-30T07:26:39.308Z",
+      "step": "2"
     },
     "G-3": {
       "approved_by": "tech-lead",
-      "approved_at": "2026-03-27T13:34:47.130989Z",
+      "approved_at": "2026-03-30T07:41:35.761Z",
       "step": "3"
     },
     "G-5": {
       "approved_by": "tech-lead",
-      "approved_at": "2026-03-27T13:49:04.751624Z",
-      "step": "5b"
+      "approved_at": "2026-03-30T09:16:16.427Z",
+      "step": "5"
     },
     "G-6": {
       "approved_by": "qa-lead",
-      "approved_at": "2026-03-27T13:50:39.150475Z",
+      "approved_at": "2026-03-30T09:28:49.574Z",
       "step": "6"
     },
     "G-7": {
       "approved_by": "devops-lead",
-      "approved_at": "2026-03-27T13:51:55.335620Z",
+      "approved_at": "2026-03-30T09:46:19.310Z",
       "step": "7"
     },
     "G-8": {
       "approved_by": "pm",
-      "approved_at": "2026-03-27T13:53:38.922151Z",
+      "approved_at": "2026-03-30T09:51:29.735Z",
       "step": "8"
     },
     "G-9": {
       "approved_by": "workflow-manager-auto",
-      "approved_at": "2026-03-27T13:57:54.047239Z",
+      "approved_at": "2026-03-30T09:52:50.683Z",
       "step": "9",
       "jql_verification": "PASS",
       "jql_open_count": 0
+    },
+    "HITL-PO-TL": {
+      "approved_by": "product-owner+tech-lead",
+      "approved_at": "2026-03-30T07:35:52.664Z",
+      "step": "2c"
+    },
+    "G-4": {
+      "approved_by": "tech-lead",
+      "approved_at": "2026-03-30T08:49:22.524Z",
+      "step": "4"
     }
   },
   "fa_agent": {
     "last_gate": "full-rebuild",
-    "last_updated": "2026-03-27T06:19:13.547Z",
-    "last_feat": "FEAT-017",
+    "last_updated": "2026-03-30T13:45:25.133045+00:00",
+    "last_feat": "FEAT-018",
     "doc_path": "docs/functional-analysis/FA-BankPortal-Banco-Meridian.docx",
     "doc_version": "2.0",
     "index_path": "docs/functional-analysis/fa-index.json",
-    "functionalities": 58,
-    "business_rules": 113,
-    "last_sprint_consolidated": 19,
+    "functionalities": 63,
+    "business_rules": 141,
+    "last_sprint_consolidated": 20,
     "skill_version": "2.1",
     "active": true,
     "rebuild_note": "S1-S15 reconstruidos desde Flyway V1-V15, use cases y pom.xml. Sprint17 corregido: FEAT-015 = Transferencias Programadas.",
-    "sprints_covered": "S1-S19",
+    "sprints_covered": "S1-S20",
     "markdowns": [
       "docs/functional-analysis/FA-FEAT-001-sprint01-02.md",
       "docs/functional-analysis/FA-FEAT-002-sprint03.md",
@@ -162,72 +201,75 @@
     "generator": "python-docx"
   },
   "devops": {
-    "tag": "v1.19.0",
-    "image": "backend-2fa:v1.19.0",
-    "release_notes": "docs/releases/RELEASE-NOTES-v1.19.0.md",
-    "runbook": "docs/runbooks/RUNBOOK-backend-2fa-v1.19.0.md",
+    "tag": "v1.20.0",
+    "image": "backend-2fa:v1.20.0",
+    "release_notes": "docs/releases/RELEASE-NOTES-v1.20.0.md",
+    "runbook": "docs/runbooks/RUNBOOK-backend-2fa-v1.20.0.md",
     "breaking_changes": false,
     "flyway_migrations": [
-      "V19__direct_debits.sql"
+      "V21__export_audit_log.sql"
     ],
-    "new_env_vars": []
+    "new_env_vars": [],
+    "new_dependencies": [
+      {
+        "lib": "pdfbox",
+        "version": "3.0.2",
+        "license": "Apache 2.0"
+      }
+    ]
   },
   "security": {
-    "last_audit": "2026-03-27",
+    "last_audit": "2026-03-30",
     "semaphore": "GREEN",
     "cve_critical": 0,
     "cve_high": 0,
-    "sast_findings": 2,
+    "sast_findings": 3,
     "sast_blocker": 0,
     "open_debts": [
       {
-        "id": "DEBT-031",
+        "id": "DEBT-037",
         "area": "Security",
-        "priority": "Media",
-        "cvss": "4.2",
-        "sprint_target": 19,
-        "desc": "Rate limiting /cards/{id}/pin"
+        "priority": "Baja",
+        "cvss": "2.1",
+        "sprint_target": "S21",
+        "desc": "Regex PAN Maestro 19d"
       },
       {
-        "id": "DEBT-032",
-        "area": "Security/Infra",
-        "priority": "Baja",
-        "cvss": "2.7",
-        "sprint_target": "Pre-produccion",
-        "desc": "mTLS CoreBankingAdapter"
+        "id": "DEBT-038",
+        "area": "Security",
+        "priority": "Media",
+        "cvss": "4.8",
+        "sprint_target": "S21",
+        "desc": "Validacion accountId vs userId en ExportService"
       }
     ],
-    "risks_closed_this_sprint": [
-      "R-016-01",
-      "R-015-01"
-    ],
-    "pci_dss_compliant": true
+    "pci_dss_compliant": true,
+    "gdpr_compliant": true
   },
   "qa": {
-    "report_path": "docs/qa/QA-FEAT-017-sprint19.md",
+    "report_path": "docs/qa/QA-FEAT-018-sprint20.md",
     "verdict": "LISTO PARA RELEASE",
-    "test_cases_total": 108,
-    "test_cases_pass": 108,
+    "test_cases_total": 124,
+    "test_cases_pass": 124,
     "test_cases_fail": 0,
     "defects_open": 0,
     "functional_coverage": "100%",
-    "unit_coverage_estimated": "87%",
-    "security_checks": "7/7",
+    "unit_coverage_estimated": "88%",
+    "security_checks": "8/8",
     "wcag_checks": "2/2",
-    "api_contracts_verified": "6/6",
-    "performance_get_mandates_p95_ms": 142,
-    "performance_post_mandate_p95_ms": 312,
-    "ncs_sprint19": 0,
+    "api_contracts_verified": "3/3",
+    "ncs_sprint20": 0,
+    "debt038_fix_verified": true,
     "approved_by": [
       "qa-lead",
       "product-owner"
     ],
-    "approved_at": "2026-03-27T13:50:19.358042Z"
+    "approved_at": "2026-03-30T09:17:42.787Z"
   },
   "metrics": {
-    "total_sp": 449,
-    "total_tests": 708,
-    "coverage": 87,
+    "total_sp": 473,
+    "total_tests": 524,
+    "coverage": 88,
     "defects": 0,
     "ncs_last_sprint": 0
   },
@@ -275,6 +317,18 @@
       "ncs": 0,
       "rel": "v1.19.0",
       "closed_at": "2026-03-27"
+    },
+    "sprint_20": {
+      "feature": "FEAT-018",
+      "status": "completed",
+      "sp": 24,
+      "acum": 473,
+      "tests": 124,
+      "cov": 88,
+      "ncs": 0,
+      "rel": "v1.20.0",
+      "closed_at": "2026-03-30",
+      "notes": "Tests propios del sprint. Total acumulado en todos los sprints: ver qa.test_cases_total"
     }
   },
   "cmmi": {
@@ -299,33 +353,37 @@
   },
   "code_review": {
     "findings_blocker": 0,
-    "findings_minor": 3,
-    "findings_suggestion": 2,
+    "findings_minor": 4,
+    "findings_suggestion": 3,
     "deferred": [
-      "RV-F017-01",
-      "RV-F017-02",
-      "RV-F017-03"
+      "DEBT-036",
+      "DEBT-037",
+      "DEBT-038"
+    ],
+    "fixes_applied": [
+      "RV-F018-01",
+      "RV-F018-03"
     ],
     "verdict": "APPROVED"
   },
-  "updated_at": "2026-03-28T10:58:55.362427",
-  "resume_next": "Sprint 20 FEAT-018 pendiente definicion PO",
+  "updated_at": "2026-03-30T14:20:12.821Z",
+  "resume_next": "Sprint 20 CERRADO DEFINITIVO. FA docx actualizado S1-S20 (63 func). Sprint 21: PO define FEAT-019 para arrancar pipeline.",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
   "gate8_approved_at": "2026-03-25T17:00:00Z",
-  "retrospective": "docs/sprints/SPRINT-019-retrospectiva.md",
-  "confluence_retro_id": "3932161",
+  "retrospective": "docs/sprints/SPRINT-020-retrospectiva.md",
+  "confluence_retro_id": "6029313",
   "atlassian_synced": true,
-  "atlassian_sync_date": "2026-03-27",
-  "sprint_closed_at": "2026-03-27T13:57:54.047239Z",
+  "atlassian_sync_date": "2026-03-30",
+  "sprint_closed_at": "2026-03-30T09:52:50.683Z",
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-03-27T15:19:17.114Z",
-    "last_gate": "G-VERIFY",
-    "last_step": "verification",
-    "sprint": 19,
-    "feature": "FEAT-017",
+    "last_generated": "2026-03-30T13:46:22.994Z",
+    "last_gate": "G-DASHBOARD-COHERENCE",
+    "last_step": "9",
+    "sprint": 20,
+    "feature": "FEAT-018",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
   "gate_history": [
@@ -398,6 +456,139 @@
       "approved_at": "2026-03-27T15:19:17.114Z",
       "sprint": 19,
       "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-1",
+      "step": "1",
+      "approved_at": "2026-03-30T06:54:47.784Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-2",
+      "step": "2",
+      "approved_at": "2026-03-30T07:26:39.308Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "HITL-PO-TL",
+      "step": "2c",
+      "approved_at": "2026-03-30T07:35:52.664Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-3",
+      "step": "3",
+      "approved_at": "2026-03-30T07:41:35.761Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-4",
+      "step": "4",
+      "approved_at": "2026-03-30T08:49:22.524Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-5",
+      "step": "5",
+      "approved_at": "2026-03-30T09:16:16.427Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-6",
+      "step": "6",
+      "approved_at": "2026-03-30T09:28:49.574Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-7",
+      "step": "7",
+      "approved_at": "2026-03-30T09:46:19.310Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-8",
+      "step": "8",
+      "approved_at": "2026-03-30T09:51:29.735Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_at": "2026-03-30T09:52:50.683Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-CLOSE-S20",
+      "step": "9",
+      "approved_at": "2026-03-30T10:10:33.586Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-CLOSE-S20",
+      "step": "9",
+      "approved_at": "2026-03-30T10:20:45.509Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-CLOSE-S20",
+      "step": "9",
+      "approved_at": "2026-03-30T11:50:50.124Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "SESSION-CLOSE-S20",
+      "step": "9",
+      "approved_at": "2026-03-30T12:43:55.413Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-CONFLUENCE-SYNC-S20",
+      "step": "9",
+      "approved_at": "2026-03-30T13:04:52.821Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "MANUAL-UPDATE-S20",
+      "step": "9",
+      "approved_at": "2026-03-30T13:08:49.828Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-TEST-FA",
+      "step": "8b",
+      "approved_at": "2026-03-30T13:28:50.597Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-DASHBOARD-FIX-S20",
+      "step": "9",
+      "approved_at": "2026-03-30T13:45:24.440Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-DASHBOARD-COHERENCE",
+      "step": "9",
+      "approved_at": "2026-03-30T13:46:22.994Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
     }
   ],
   "lessons_learned": [
@@ -405,7 +596,7 @@
       "id": "LA-019-03",
       "sprint": 19,
       "type": "process",
-      "description": "Gates G-6..G-9 auto-aprobados incorrectamente. Correcci\u00f3n: cada gate HITL requiere parada expl\u00edcita individual.",
+      "description": "Gates G-6..G-9 auto-aprobados incorrectamente. Corrección: cada gate HITL requiere parada explícita individual.",
       "correction": "Desde Sprint 20: parada obligatoria en cada gate HITL con pregunta al rol definido.",
       "registered_at": "2026-03-27T14:06:00.285397Z"
     },
@@ -413,7 +604,7 @@
       "id": "LA-019-04",
       "sprint": 19,
       "type": "testing",
-      "description": "Tests unitarios no detectan conflictos de beans Spring \u2014 requieren @SpringBootTest completo",
+      "description": "Tests unitarios no detectan conflictos de beans Spring — requieren @SpringBootTest completo",
       "correction": "G-4 requiere IT smoke test por feature nueva"
     },
     {
@@ -427,21 +618,21 @@
       "id": "LA-019-06",
       "sprint": 19,
       "type": "process",
-      "description": "Patr\u00f3n DEBT-022 no verificable autom\u00e1ticamente en Code Review",
+      "description": "Patrón DEBT-022 no verificable automáticamente en Code Review",
       "correction": "Script grep DEBT-022 obligatorio en G-5"
     },
     {
       "id": "LA-019-07",
       "sprint": 19,
       "type": "testing",
-      "description": "Smoke test desactualizado \u2014 no cubre endpoints del sprint corriente",
+      "description": "Smoke test desactualizado — no cubre endpoints del sprint corriente",
       "correction": "smoke-test actualizado obligatorio como artefacto de G-4"
     },
     {
       "id": "LA-019-08",
       "sprint": 19,
       "type": "architecture",
-      "description": "@Profile(!production) activa Mock en STG \u2014 BD real nunca consultada",
+      "description": "@Profile(!production) activa Mock en STG — BD real nunca consultada",
       "correction": "Mocks solo con @Profile(mock) o @Profile(test). @Primary en adaptador real."
     },
     {
@@ -449,35 +640,35 @@
       "sprint": 19,
       "type": "config",
       "description": "environment.prod.ts desincronizado con environment.ts",
-      "correction": "Validaci\u00f3n autom\u00e1tica de campos en CI"
+      "correction": "Validación automática de campos en CI"
     },
     {
       "id": "LA-019-10",
       "sprint": 19,
       "type": "frontend",
-      "description": "M\u00f3dulos Angular nuevos no registrados en router",
-      "correction": "Checklist G-4 incluye verificaci\u00f3n de registro en app-routing.module.ts"
+      "description": "Módulos Angular nuevos no registrados en router",
+      "correction": "Checklist G-4 incluye verificación de registro en app-routing.module.ts"
     },
     {
       "id": "LA-019-11",
       "sprint": 19,
       "type": "frontend",
-      "description": "Componentes de ruta usan @Input para params \u2014 nunca se populan",
+      "description": "Componentes de ruta usan @Input para params — nunca se populan",
       "correction": "Usar siempre ActivatedRoute.paramMap en componentes de ruta"
     },
     {
       "id": "LA-019-12",
       "sprint": 19,
       "type": "data",
-      "description": "UUIDs inv\u00e1lidos en seeds SQL (caracteres no hex)",
+      "description": "UUIDs inválidos en seeds SQL (caracteres no hex)",
       "correction": "Validar UUIDs con regex antes de ejecutar seeds"
     },
     {
       "id": "LA-019-13",
       "sprint": 19,
       "type": "database",
-      "description": "timestamp without time zone vs Instant Java \u2014 incompatibilidad de tipos",
-      "correction": "LLD incluye mapa de tipos BD\u2192Java. Usar LocalDateTime para columnas sin timezone."
+      "description": "timestamp without time zone vs Instant Java — incompatibilidad de tipos",
+      "correction": "LLD incluye mapa de tipos BD→Java. Usar LocalDateTime para columnas sin timezone."
     },
     {
       "id": "LA-019-14",
@@ -490,8 +681,8 @@
       "id": "LA-019-15",
       "sprint": 19,
       "type": "backend",
-      "description": "Named params JdbcClient contaminados por concatenaci\u00f3n de text blocks",
-      "correction": "SQL din\u00e1mico siempre usa par\u00e1metros posicionales (?)"
+      "description": "Named params JdbcClient contaminados por concatenación de text blocks",
+      "correction": "SQL dinámico siempre usa parámetros posicionales (?)"
     },
     {
       "id": "LA-019-16",
@@ -499,32 +690,88 @@
       "type": "process",
       "description": "QA no declara si prueba contra Mock o BD real",
       "correction": "Informe QA obliga campo: Repositorio activo: MOCK|JPA-REAL"
+    },
+    {
+      "id": "LA-020-01",
+      "sprint": 20,
+      "type": "process",
+      "description": "Jira debe actualizarse en cada step del pipeline sin instruccion explicita",
+      "correction": "Regla permanente: transicion automatica en cada gate"
+    },
+    {
+      "id": "LA-020-02",
+      "sprint": 20,
+      "type": "security",
+      "description": "Hallazgos CVSS >= 4.0 deben resolverse en el mismo sprint donde se detectan",
+      "correction": "No diferir si CVSS >= 4.0"
+    },
+    {
+      "id": "LA-020-03",
+      "sprint": 20,
+      "type": "architecture",
+      "description": "Audit log con datos derivados crea inconsistencia — enriquecer en momento de escritura",
+      "correction": "DEBT-036: inyectar AccountRepository en ExportAuditService"
+    },
+    {
+      "id": "LA-020-04",
+      "sprint": 20,
+      "type": "devops",
+      "description": "Workflow Jira debe configurarse con todos los estados SOFIA antes del primer sprint",
+      "correction": "Checklist onboarding incluye configuracion workflow"
+    },
+    {
+      "id": "LA-020-05",
+      "sprint": 20,
+      "type": "process",
+      "description": "Documentation Agent (10 DOCX + 3 XLSX + dashboard) no ejecutado en Step 8 — error detectado post-cierre",
+      "correction": "Desde Sprint 21: Documentation Agent es BLOQUEANTE para Gate G-9. No se cierra sprint sin estos artefactos."
+    },
+    {
+      "id": "LA-020-06",
+      "sprint": 20,
+      "type": "process",
+      "description": "sprint-NN-planning-doc.docx es obligatorio en word/ de cada sprint — faltaba S18, S19, S20",
+      "correction": "Checklist deliverables: planning-doc.docx bloqueante para Gate G-8 desde Sprint 21"
+    },
+    {
+      "id": "LA-020-07",
+      "sprint": 20,
+      "type": "dashboard",
+      "description": "Dashboard no se regeneraba en cada aprobacion de gate, solo al cerrar sprint",
+      "correction": "gate-dashboard-hook.js invocado en cada gate. dashboard_on_every_gate:true en sofia-config.json"
+    },
+    {
+      "id": "LA-020-08",
+      "sprint": 20,
+      "type": "process",
+      "description": "gen-fa-document.py no se invocaba automaticamente en Step 8b — FA-BankPortal-Banco-Meridian.docx no se actualizaba en S19 ni S20. Script solo cubria hasta FEAT-016.",
+      "correction": "gen-fa-document.py debe ejecutarse en Step 8b de cada sprint. Anadir llamada al gate-dashboard-hook como paso obligatorio. Script actualizado con FEAT-017 y FEAT-018."
     }
   ],
   "unit_test_verification": {
-    "executed_at": "2026-03-27T14:57:17.000Z",
+    "executed_at": "2026-03-30T09:17:42.787Z",
     "result": "PASS",
-    "tests_run": 446,
+    "test_cases_total": 124,
+    "test_cases_pass": 124,
     "failures": 0,
     "errors": 0,
-    "skipped": 11,
-    "skipped_reason": "WebMvcTest slice tests - requieren IT profile con Docker",
-    "evidence": "docs/qa/TEST-EXECUTION-UNIT-S19-verification-2026-03-27.txt",
-    "java_version": "21.0.10",
-    "maven_version": "3.9.13",
-    "command": "mvn clean test -Dsurefire.excludes=**/*IT.java",
-    "commit": "48c2a0dcc6dcb4495c77b5c6c8fc64eb39234dbb",
-    "confluence_updated": "4915202",
-    "confluence_version": 2,
-    "dashboard_output": "docs/dashboard/bankportal-global-dashboard.html"
+    "sprint": 20,
+    "feature": "FEAT-018",
+    "functional_coverage": "100%",
+    "unit_coverage": "88%",
+    "evidence": "docs/qa/QA-FEAT-018-sprint20.md",
+    "approved_by": [
+      "qa-lead",
+      "product-owner"
+    ]
   },
   "bugs_found_post_sprint19": [
     {
       "id": "BUG-S19-001",
       "severity": "HIGH",
       "class": "TransactionCategorizationService",
-      "description": "RECIBO DOMICILIADO AGUA categorizado como RECIBO_UTIL en lugar de DOMICILIACION \u2014 prioridad de reglas incorrecta",
-      "impact": "Categorizaci\u00f3n err\u00f3nea de domiciliaciones SEPA DD",
+      "description": "RECIBO DOMICILIADO AGUA categorizado como RECIBO_UTIL en lugar de DOMICILIACION — prioridad de reglas incorrecta",
+      "impact": "Categorización errónea de domiciliaciones SEPA DD",
       "fixed": true,
       "fixed_at": "2026-03-27T14:57:17.000Z"
     },
@@ -532,8 +779,8 @@
       "id": "BUG-S19-002",
       "severity": "HIGH",
       "class": "NextExecutionDateCalculator",
-      "description": "Transferencias programadas d\u00eda-31: siguiente ejecuci\u00f3n cae en Feb-28 en lugar de Mar-31 \u2014 violaci\u00f3n PSD2/SEPA",
-      "impact": "Transferencias programadas d\u00eda-31 ejecutadas en fecha incorrecta",
+      "description": "Transferencias programadas día-31: siguiente ejecución cae en Feb-28 en lugar de Mar-31 — violación PSD2/SEPA",
+      "impact": "Transferencias programadas día-31 ejecutadas en fecha incorrecta",
       "fixed": true,
       "fixed_at": "2026-03-27T14:57:17.000Z"
     }
@@ -562,7 +809,7 @@
       "BUG-POST-S19-001: ConflictingBeanDefinitionException ibanValidator",
       "BUG-POST-S19-002: HTTP 403 en lugar de 401 sin JWT",
       "BUG-POST-S19-003: HTTP 500 DirectDebitController AuthenticationPrincipal",
-      "BUG-POST-S19-004: Flyway V20 ENUM\u2192VARCHAR migration fix"
+      "BUG-POST-S19-004: Flyway V20 ENUM→VARCHAR migration fix"
     ],
     "migrations_added": [
       "V20__fix_mandate_enum_varchar.sql"
@@ -633,5 +880,28 @@
       "LA-019-08",
       "LA-019-13"
     ]
+  },
+  "ux_ui_agent": {
+    "version": "1.0",
+    "integrated_at": "2026-03-28",
+    "skill_path": ".sofia/skills/ux-ui-designer/SKILL.md",
+    "pipeline_step": "2c",
+    "gate": "HITL-PO-TL",
+    "design_system_path": "docs/ux-ui/UX-DESIGN-SYSTEM.md",
+    "active": true,
+    "skill_version": "2.0",
+    "prototype_template": "docs/ux-ui/prototypes/PROTO-TEMPLATE.html",
+    "prototype_output_pattern": "docs/ux-ui/prototypes/PROTO-FEAT-XXX-sprintYY.html"
+  },
+  "pipeline_steps_total": 15,
+  "agents_total": 21,
+  "last_package": {
+    "version": "2.3",
+    "path": "dist/sofia-deploy-v2.3.zip",
+    "size_kb": 486.1,
+    "entries": 92,
+    "skills": 21,
+    "packaged_at": "2026-03-30T14:20:12.820Z",
+    "notes": "fa-agent v2.2 + orchestrator v2.2: LA-020-08 CHECK 3b docx verification"
   }
 }

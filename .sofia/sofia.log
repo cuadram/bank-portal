@@ -58,3 +58,74 @@
 [2026-03-27T15:15:42.886Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: unknown · Step: ? · Sprint 19
 [2026-03-27T15:19:17.114Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-VERIFY · Step: verification · Sprint 19
 [2026-03-28T10:58:55.363559] [LA-019] [skills-update] COMPLETED -> 8 skills actualizados con 13 lecciones aprendidas
+[2026-03-28T10:28:36.576Z] [SOFIA-UPGRADE] v2.2→v2.3 | UX/UI Designer Agent v1.0 | Step 2c HITL PO+TL | 21 agentes | 15 steps | Design System v1.0
+[2026-03-28T10:37:15.856Z] [UX-UI-AGENT] SKILL upgraded v1.0→v2.0 | Fase 10: prototipo visual HTML | PROTO-TEMPLATE.html (56KB) created
+[2026-03-28T11:04:32.499Z] [PACKAGE] sofia-deploy-v2.3.zip CREATED → 477.9 KB · 21 skills · 40 files · 92 entries
+[2026-03-30T06:53:19.271Z] STEP-1-START Sprint20 FEAT-018+DEBT-032..035 24SP Planning OK Jira:SCRUM-98..105 Confluence:5931009 gate_pending:G-1
+[2026-03-30T06:54:47.784Z] GATE-G1-APPROVED Sprint20 FEAT-018 approved_by:tech-lead jira:sprint-iniciado
+[2026-03-30T06:54:47.784Z] STEP-2-START Sprint20 Requirements Analyst SRS FEAT-018+DEBT-032..035
+[2026-03-30T06:56:01.302Z] STEP-2-DONE Sprint20 SRS-FEAT-018-sprint20.md generado gate_pending:G-2
+[2026-03-30T07:26:39.308Z] GATE-G2-APPROVED Sprint20 FEAT-018 approved_by:product-owner SRS-OK
+[2026-03-30T07:26:39.308Z] STEP-2b-START Sprint20 FA-Agent FEAT-018
+[2026-03-30T07:30:32.574Z] STEP-2b-DONE FA-FEAT-018 fa-index:63-funcionalidades FEAT-017+FEAT-018 added
+[2026-03-30T07:30:32.574Z] STEP-2c-DONE UX-FEAT-018 prototipo PROTO-FEAT-018-sprint20.html gate:HITL-PO-TL
+[2026-03-30T07:35:52.664Z] GATE-HITL-PO-TL-APPROVED Sprint20 FEAT-018 approved_by:product-owner+tech-lead
+[2026-03-30T07:35:52.664Z] STEP-3-START Sprint20 Architect HLD+LLD+ADR+OpenAPI FEAT-018
+[2026-03-30T07:38:59.504Z] STEP-3-DONE HLD+LLD-backend+LLD-frontend+ADR-030+ADR-031+OpenAPI Confluence:5963777 gate:G-3
+[2026-03-30T07:41:35.761Z] GATE-G3-APPROVED Sprint20 FEAT-018 approved_by:tech-lead
+[2026-03-30T07:41:35.761Z] STEP-3b-DONE Confluence HLD:5963777 synced
+[2026-03-30T07:41:35.761Z] STEP-4-START Sprint20 Developer Backend+Frontend+Flyway FEAT-018+DEBT-032..035
+[2026-03-30T08:03:57.021Z] STEP-4-DONE Sprint20 FEAT-018+DEBT-032..035 backend+frontend+tests gate:G-4
+[2026-03-30T08:03:57.021Z] DEV-ARTIFACTS: V21-flyway ExportCtrl ExportSvc PdfGen CsvGen StrategyPattern ReturnedHandler LambdaRefactor AuthSplit ExportServiceAngular
+[2026-03-30T08:49:22.524Z] GATE-G4-APPROVED Sprint20 FEAT-018 approved_by:tech-lead
+[2026-03-30T08:49:22.524Z] STEP-5-START Sprint20 Code Review + Step 5b Security
+[2026-03-30T08:51:21.277Z] STEP-5-DONE CR-FEAT-018: 0-bloqueantes 4-menores 3-sugerencias APPROVED fixes:RV-F018-01+03
+[2026-03-30T08:51:21.277Z] STEP-5b-DONE SEC-FEAT-018: GREEN 0-CVE-criticos 3-SAST-bajos PCI-GDPR-PASS DEBT-037+038
+[2026-03-30T09:16:16.427Z] GATE-G5-APPROVED Sprint20 approved_by:tech-lead CR-OK SEC-GREEN DEBT-038-fix-in-S20
+[2026-03-30T09:16:16.427Z] STEP-6-START Sprint20 QA Engineer — DEBT-038 fix + QA report
+[2026-03-30T09:17:42.787Z] STEP-6-DONE QA-FEAT-018: 124/124 PASS 0-FAIL 88%-coverage NCS:0 DEBT038-verified gate:G-6
+[2026-03-30T09:28:49.574Z] GATE-G6-APPROVED Sprint20 approved_by:qa-lead 124/124-PASS NCS:0 88%
+[2026-03-30T09:28:49.574Z] STEP-7-START Sprint20 DevOps Release Notes + Runbook v1.20.0
+[2026-03-30T09:30:24.719Z] STEP-7-DONE RELEASE-NOTES-v1.20.0 RUNBOOK smoke-test-v1.20.sh gate:G-7
+[2026-03-30T09:46:19.310Z] GATE-G7-APPROVED Sprint20 approved_by:devops-lead release-notes+runbook+smoke-OK
+[2026-03-30T09:46:19.310Z] STEP-8-START Sprint20 Client Deliverables + FA-Agent
+[2026-03-30T09:48:35.132Z] STEP-8-DONE SPRINT-020-summary Confluence:5996545 gate:G-8
+[2026-03-30T09:48:35.132Z] STEP-8b-DONE fa-index:63-funcionalidades FEAT-018+DEBT-035 DELIVERED
+[2026-03-30T09:48:35.132Z] JIRA-SYNC: SCRUM-98..105 todos Finalizada
+[2026-03-30T09:51:29.735Z] GATE-G8-APPROVED Sprint20 approved_by:pm summary-OK metrics-OK debt-registered
+[2026-03-30T09:51:29.735Z] STEP-9-START Sprint20 Workflow Manager sprint-close retrospectiva Atlassian-sync
+[2026-03-30T09:52:50.683Z] STEP-9-DONE Retrospectiva Confluence:6029313 JQL-PASS:0-open
+[2026-03-30T09:52:50.683Z] SPRINT-20-CLOSED v1.20.0 FEAT-018+DEBT-032..035 473SP 524tests 88% NCS:0
+[2026-03-30T09:52:50.683Z] GATE-G9-AUTO-APPROVED jql_open:0 atlassian_synced:True
+[2026-03-30T09:52:50.683Z] LA-020-01 LA-020-02 LA-020-03 LA-020-04 registered
+[2026-03-30T10:10:33.586Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-CLOSE-S20 · Step: 9 · Sprint 20
+[2026-03-30T10:20:45.509Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-CLOSE-S20 · Step: 9 · Sprint 20
+[2026-03-30T10:30:46.210Z] SPRINT-20-DEFINITIVELY-CLOSED 10-DOCX 3-XLSX dashboard-global LA-020-05-registered
+[2026-03-30T11:18:40Z] LA-020-06: sprint-NN-planning-doc.docx es OBLIGATORIO en word/ de cada sprint. Generados S18,S19,S20.
+[2026-03-30T11:50:50.124Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-CLOSE-S20 · Step: 9 · Sprint 20
+[2026-03-30T11:50:50.060Z] DASHBOARD-REGEN gate:G-CLOSE-S20 step:9 trigger:gate-approval
+[2026-03-30T12:43:23Z] LA-020-06 LA-020-07 registered in session.json
+[2026-03-30T12:43:23Z] SPRINT-20-SESSION-CLOSED-FINAL todas las LAs S20 persistidas
+[2026-03-30T12:43:55.413Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: SESSION-CLOSE-S20 · Step: 9 · Sprint 20
+[2026-03-30T12:43:55.349Z] DASHBOARD-REGEN gate:SESSION-CLOSE-S20 step:9 trigger:gate-approval
+[2026-03-30T13:04:52.821Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-CONFLUENCE-SYNC-S20 · Step: 9 · Sprint 20
+[2026-03-30T13:04:52.755Z] DASHBOARD-REGEN gate:G-CONFLUENCE-SYNC-S20 step:9 trigger:gate-approval
+[2026-03-30T13:08:49.828Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: MANUAL-UPDATE-S20 · Step: 9 · Sprint 20
+[2026-03-30T13:08:49.753Z] DASHBOARD-REGEN gate:MANUAL-UPDATE-S20 step:9 trigger:gate-approval
+[2026-03-30T13:25:14.171256+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 52 func | 86 RN
+[2026-03-30T13:28:24Z] LA-020-08 registered: gen-fa-document.py no invocado en S19/S20. FA docx actualizado FEAT-001..FEAT-018 63-func 130+RN
+[2026-03-30T13:28:24Z] FA-AGENT REBUILT: FA-BankPortal-Banco-Meridian.docx v2.3 S1-S20 63-func FEAT-017+FEAT-018 incluidas
+[2026-03-30T13:28:50.597Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-TEST-FA · Step: 8b · Sprint 20
+[2026-03-30T13:28:50.521Z] DASHBOARD-REGEN gate:G-TEST-FA step:8b trigger:gate-approval
+[2026-03-30T13:28:51.380054+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 63 func | 130+ RN
+[2026-03-30T13:28:50.521Z] FA-DOCX-REGEN gate:G-TEST-FA step:8b trigger:gate-approval LA-020-08
+[2026-03-30T13:45:24.440Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-DASHBOARD-FIX-S20 · Step: 9 · Sprint 20
+[2026-03-30T13:45:24.366Z] DASHBOARD-REGEN gate:G-DASHBOARD-FIX-S20 step:9 trigger:gate-approval
+[2026-03-30T13:45:25.133045+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 63 func | 130+ RN
+[2026-03-30T13:45:24.366Z] FA-DOCX-REGEN gate:G-DASHBOARD-FIX-S20 step:9 trigger:gate-approval LA-020-08
+[2026-03-30T13:46:22.994Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-DASHBOARD-COHERENCE · Step: 9 · Sprint 20
+[2026-03-30T14:08:49.369Z] [PACKAGE] sofia-deploy-v2.3.zip CREATED → 481.5 KB · 21 skills · 40 files · 92 entries
+[2026-03-30T14:09:20.865Z] [SOFIA-CORRECTIONS] session.json corregido: fa_agent.functionalities=63, unit_test_verification=S20, last_package=481.5KB
+[2026-03-30T14:19:15.367858Z] [SKILL-UPDATE] fa-agent v2.2 + orchestrator v2.2 — LA-020-08 aplicada: verificacion real .docx en Gate 8b (CHECK 3b)
+[2026-03-30T14:20:05.344Z] [PACKAGE] sofia-deploy-v2.3.zip CREATED → 486.1 KB · 21 skills · 40 files · 92 entries
+[2026-03-30T14:20:12.821Z] [PACKAGE] sofia-deploy-v2.3.zip REGENERADO → 486.1 KB skills fa-agent v2.2 + orchestrator v2.2 incluidos
