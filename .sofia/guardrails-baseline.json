@@ -1,0 +1,19 @@
+{
+  "_comment": "Issues pre-existentes excluidos de GR-005 y GR-006. Solo añadir ficheros con deuda CONOCIDA y registrada en backlog.",
+  "gr005_whitelist": [
+    "bankportal/account/domain/Account.java",
+    "bankportal/account/domain/AccountRepositoryPort.java",
+    "bankportal/account/infrastructure/MockAccountRepositoryAdapter.java",
+    "bankportal/auth/api/DevTokenController.java"
+  ],
+  "gr006_whitelist": [
+    "bankportal/account/api/AccountController.java",
+    "bankportal/account/api/StatementController.java",
+    "bankportal/beneficiary/api/BeneficiaryController.java",
+    "bankportal/scheduled/api/ScheduledTransferController.java",
+    "bankportal/transfer/api/TransferController.java",
+    "bankportal/transfer/api/TransferLimitsController.java"
+  ],
+  "_debt_reference": "DEBT-022 — pendiente de resolución en sprints futuros",
+  "_updated": "2026-03-30"
+}
