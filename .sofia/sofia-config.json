@@ -1,17 +1,27 @@
 {
-  "_comment": "SOFIA v1.9 — Configuración del proyecto. Editar con: python3 .sofia/scripts/sofia-wizard.py --update",
-  "sofia_version": "1.9",
+  "_comment": "SOFIA v2.0 — Configuración del proyecto. Editar con: python3 .sofia/scripts/sofia-wizard.py --update",
+  "sofia_version": "2.3",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "project_description": "Portal bancario con microservicios Java + Angular",
   "created_at": "2026-03-18T20:18:57Z",
-  "updated_at": "2026-03-24T17:00:00Z",
+  "updated_at": "2026-03-30T18:49:18.664Z",
   "stack": {
-    "backend": ["java"],
-    "frontend": ["angular"],
-    "database": ["postgresql", "redis"],
+    "backend": [
+      "java"
+    ],
+    "frontend": [
+      "angular"
+    ],
+    "database": [
+      "postgresql",
+      "redis"
+    ],
     "messaging": [],
-    "infra": ["docker", "jenkins"]
+    "infra": [
+      "docker",
+      "jenkins"
+    ]
   },
   "methodology": {
     "type": "scrumban",
@@ -42,11 +52,30 @@
     "parent_page_id": "229379"
   },
   "pipeline": {
-    "active_steps": ["1","2","3","3b","4","5","5b","6","7","8","9"],
-    "optional_steps": { "5b": true, "performance": false },
+    "active_steps": [
+      "1",
+      "2",
+      "2b",
+      "2c",
+      "3",
+      "3b",
+      "4",
+      "5",
+      "5b",
+      "6",
+      "7",
+      "8",
+      "8b",
+      "9"
+    ],
+    "optional_steps": {
+      "5b": true,
+      "performance": false
+    },
     "gates_enabled": true,
     "atlassian_sync": true,
-    "auto_dashboard": true
+    "auto_dashboard": true,
+    "fa_agent_enabled": true
   },
   "quality": {
     "coverage_threshold": 80,
@@ -57,13 +86,14 @@
   "paths": {
     "repo": "/Users/cuadram/proyectos/bank-portal",
     "node": "/opt/homebrew/opt/node@22/bin/node",
-    "npx":  "/opt/homebrew/opt/node@22/bin/npx",
+    "npx": "/opt/homebrew/opt/node@22/bin/npx",
     "python3": "/usr/bin/python3",
     "uvx": "uvx",
     "docs": "docs",
     "src": "src",
     "infra": "infra",
-    "deliverables": "docs/deliverables"
+    "deliverables": "docs/deliverables",
+    "functional_analysis": "docs/functional-analysis"
   },
   "document_style": {
     "language": "es",
@@ -74,5 +104,123 @@
   "dashboard": {
     "output": "docs/quality/sofia-dashboard.html",
     "auto_open": false
+  },
+  "fa_agent": {
+    "enabled": true,
+    "skill_version": "2.1",
+    "generator": "python-docx",
+    "script": ".sofia/scripts/gen-fa-document.py",
+    "output_dir": "docs/functional-analysis",
+    "doc_name_pattern": "FA-{project}-{client}.docx",
+    "index_file": "fa-index.json",
+    "gates": [
+      "2b",
+      "3b",
+      "8b"
+    ],
+    "banking_domains": [
+      "retail",
+      "minorista",
+      "mayorista"
+    ],
+    "regulations": [
+      "PSD2",
+      "SEPA-SDD",
+      "SEPA-SCT",
+      "PCI-DSS",
+      "Basilea-III",
+      "EMIR",
+      "GDPR",
+      "AML-KYC"
+    ]
+  },
+  "workflow_directives": {
+    "version": "2026-03-26",
+    "persist_all_artifacts": true,
+    "read_disk_on_continue": true,
+    "gates_explicit_approval": true,
+    "gates_jira_confluence_sync": true,
+    "test_evidence_logs_required": true,
+    "dashboard_standard": "SOFIA-v1.9+",
+    "all_deliverables_mandatory": true,
+    "dashboard_on_every_gate": true,
+    "gate_hook_script": ".sofia/scripts/gate-dashboard-hook.js",
+    "cmmi_lights_in_dashboard": true
+  },
+  "agents": {
+    "total": 21,
+    "new_in_v2": [
+      "fa-agent"
+    ]
+  },
+  "guardrails": {
+    "version": "1.0",
+    "activated": "2026-03-30",
+    "origin": "RCA HOTFIX-S20 — LA-020-09/10/11",
+    "script": ".sofia/scripts/guardrail-pre-gate.js",
+    "spring_context_it": "apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/integration/SpringContextIT.java",
+    "integration_test_base": "apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/integration/config/IntegrationTestBase.java",
+    "checks": {
+      "GR-001": {
+        "name": "Package root verification",
+        "blocking": true,
+        "gate": "G-4b",
+        "la": "LA-020-09"
+      },
+      "GR-002": {
+        "name": "API Surface — methods exist in real entity",
+        "blocking": true,
+        "gate": "G-4b",
+        "la": "LA-020-09"
+      },
+      "GR-003": {
+        "name": "SpringContextIT must exist",
+        "blocking": true,
+        "gate": "G-4b",
+        "la": "LA-020-11"
+      },
+      "GR-004": {
+        "name": "mvn compile EXIT 0",
+        "blocking": true,
+        "gate": "G-4b",
+        "la": "LA-020-11"
+      },
+      "GR-005": {
+        "name": "CR package cross-check vs codebase",
+        "blocking": true,
+        "gate": "G-5",
+        "la": "LA-020-10"
+      },
+      "GR-006": {
+        "name": "CR API methods vs real class",
+        "blocking": true,
+        "gate": "G-5",
+        "la": "LA-020-10"
+      }
+    },
+    "root_package": "com.experis.sofia.bankportal",
+    "root_package_file": "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/twofa/BackendTwoFactorApplication.java",
+    "known_wrong_methods": [
+      "getValueDate",
+      "getDescription",
+      "getBalance",
+      "getCurrency",
+      "getAccountingDate"
+    ],
+    "mandatory_pre_gate": {
+      "G-4b": [
+        "GR-001",
+        "GR-002",
+        "GR-003",
+        "GR-004"
+      ],
+      "G-5": [
+        "GR-005",
+        "GR-006"
+      ],
+      "G-6": [
+        "GR-003"
+      ]
+    }
   }
 }

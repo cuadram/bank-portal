@@ -18,11 +18,62 @@ description: >
 Implementar servicios backend en Java 17+ con Spring Boot 3.x siguiendo los
 principios de Clean Architecture, DDD y los estándares de calidad SOFIA.
 
+## ⛔ GUARDRAILS — Ejecutar ANTES de escribir cualquier fichero Java
+
+Estos checks son BLOQUEANTES. Si fallan, no se escribe código.
+
+### GR-001 — Verificación de paquete raíz (LA-020-09)
+
+```bash
+# PASO 1: Leer el paquete raíz REAL desde disco
+cat apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/twofa/BackendTwoFactorApplication.java | head -1
+# → package com.experis.sofia.bankportal.twofa;
+# Paquete raíz = com.experis.sofia.bankportal
+
+# PASO 2: Confirmar estructura
+ls apps/backend-2fa/src/main/java/
+# → Debe mostrar SOLO 'com'
+```
+
+**REGLA: TODOS los ficheros nuevos deben empezar con el paquete leído en PASO 1.**
+**NUNCA inferir el paquete del nombre del cliente, LLD o memoria.**
+
+### GR-002 — Verificar API Surface antes de usar cualquier clase existente (LA-020-09)
+
+```bash
+# Antes de llamar a métodos de una entidad existente, leerla desde disco:
+cat apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/account/domain/Transaction.java
+# Métodos REALES: getTransactionDate(), getConcept(), getAmount(), getBalanceAfter(), getType()
+# INEXISTENTES: getValueDate(), getDescription(), getBalance(), getCurrency()
+#
+# Regla: si usas X.getY(), hacer grep "getY" en la clase X antes de escribirlo.
+```
+
+### GR-003 — SpringContextIT obligatorio en G-4b (LA-020-11)
+
+```bash
+# Verificar que existe:
+ls apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/integration/SpringContextIT.java
+# Si NO existe → crearlo es el PRIMER artefacto del sprint, antes que cualquier clase de negocio.
+# Plantilla: .sofia/skills/java-developer/SKILL.md → sección SpringContextIT
+```
+
+### GR-004 — mvn compile antes de declarar G-4b (LA-020-11)
+
+```bash
+JAVA_HOME=/opt/homebrew/opt/openjdk@21 mvn compile -q -f apps/backend-2fa/pom.xml
+# EXIT 0 obligatorio. Si falla → corregir antes de declarar G-4b.
+# Un test unitario que pasa NO equivale a compilación exitosa.
+```
+
+---
+
 ## Instrucción de inicio obligatoria
 
 **Antes de escribir cualquier línea de código:**
-1. Leer `developer-core/SKILL.md` → principios universales, proceso, checklist
-2. Leer `developer-core/references/java.md` → convenciones Spring Boot, JUnit 5, Maven
+1. **Ejecutar GR-001 a GR-004** (sección anterior) — BLOQUEANTE
+2. Leer `developer-core/SKILL.md` → principios universales, proceso, checklist
+3. Leer `developer-core/references/java.md` → convenciones Spring Boot, JUnit 5, Maven
 
 ## Input esperado del Orchestrator
 ```

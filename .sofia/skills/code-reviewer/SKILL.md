@@ -41,6 +41,50 @@ Revisar en este orden exacto — de mayor a menor impacto:
 
 ---
 
+## ⛔ GUARDRAIL GR-005 — Cross-check de paquete contra el codebase real (LA-020-10)
+
+Ejecutar ANTES de emitir cualquier veredicto. BLOQUEANTE si falla.
+
+```bash
+# 1. Obtener paquete raíz real del proyecto
+ROOT_PKG=$(cat apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/twofa/BackendTwoFactorApplication.java | head -1 | grep -oP "package \K[^;]+" | sed "s/\.[^.]*$//")
+echo "Paquete raíz: $ROOT_PKG"
+
+# 2. Verificar que TODOS los ficheros nuevos del sprint usan ese paquete
+# (sustituir FEAT-XXX y módulos nuevos según el sprint)
+grep -rn "^package" apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/export/ 2>/dev/null
+grep -rn "^package" apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/transaction/ 2>/dev/null
+
+# 3. Si aparece CUALQUIER línea que NO empiece con "package com.experis.sofia.bankportal" → BLOQUEANTE
+```
+
+**REGLA CR-GR-001: La verificación de paquete no es "los ficheros nuevos son consistentes entre sí".**
+**Es "los ficheros nuevos usan el mismo paquete que el proyecto existente".**
+**Consistencia interna entre ficheros incorrectos NO equivale a corrección.**
+
+### GR-006 — Verificación de métodos referenciados contra entidades reales (LA-020-10)
+
+```bash
+# Para cada clase de dominio usada en el código nuevo:
+# Extraer métodos usados vs métodos que existen
+
+# Ejemplo para Transaction:
+METHODS_USED=$(grep -h "tx\.\.get" apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/export/service/generator/*.java 2>/dev/null | grep -oP "get\w+" | sort -u)
+METHODS_REAL=$(grep -oP "public \S+ \K(get\w+)(?=\(\))" apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/account/domain/Transaction.java 2>/dev/null | sort -u)
+# Verificar que METHODS_USED ⊆ METHODS_REAL
+```
+
+**REGLA: Si un método usado no aparece en la clase real → BLOQUEANTE.**
+
+### GR-007 — SpringContextIT existente (LA-020-10)
+
+```bash
+ls apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/integration/SpringContextIT.java
+# Si NO existe → MAYOR en el CR (bloqueante en G-4b)
+```
+
+---
+
 ## Checklist obligatorio derivado de lecciones aprendidas — ejecutar SIEMPRE
 
 Antes de iniciar la revisión por niveles, ejecutar estos checks automáticos:

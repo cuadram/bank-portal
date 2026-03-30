@@ -1,7 +1,5 @@
 package com.experis.sofia.bankportal.integration.config;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -9,21 +7,25 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.UUID;
-
 /**
- * Clase base para integration tests — DEBT-030.
+ * Base para todos los integration tests del proyecto BankPortal.
+ * Levanta PostgreSQL real con Testcontainers — singleton pattern (withReuse).
  *
- * Levanta un PostgreSQL real con Testcontainers y el contexto Spring completo.
- * Todos los integration tests extienden esta clase.
- * La anotación @SpringBootTest arranca el contexto completo — detecta beans
- * faltantes, SQL incorrecto y configuración incompleta en tiempo de build.
+ * GUARDRAIL GR-003: Este fichero es OBLIGATORIO y BLOQUEANTE para Gate G-4b.
+ * Un test hijo que herede esta clase detecta en < 60s:
+ *   - Beans faltantes (NoSuchBeanDefinitionException)
+ *   - Paquetes incorrectos (clases no escaneadas por Spring)
+ *   - SQL con columnas inexistentes (BadSqlGrammarException)
+ *   - Properties no configuradas (IllegalArgumentException)
  *
- * @author SOFIA Developer Agent — Sprint 19 DEBT-030
+ * HOTFIX-S20: este test habría detectado el paquete incorrecto es.meridian en 30s.
+ *
+ * @author SOFIA Developer Agent — Guardrail GR-003
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -31,67 +33,35 @@ import java.util.UUID;
 @Testcontainers
 public abstract class IntegrationTestBase {
 
-    // ── PostgreSQL compartido entre todos los tests (singleton pattern) ────────
     @Container
     static final PostgreSQLContainer<?> POSTGRES =
-        new PostgreSQLContainer<>("postgres:16-alpine")
-            .withDatabaseName("bankportal_test")
-            .withUsername("test")
-            .withPassword("test")
-            .withReuse(true);  // reutiliza el contenedor entre runs en local
+            new PostgreSQLContainer<>("postgres:16-alpine")
+                    .withDatabaseName("bankportal_test")
+                    .withUsername("test")
+                    .withPassword("test")
+                    .withReuse(true);
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url",      POSTGRES::getJdbcUrl);
         registry.add("spring.datasource.username", POSTGRES::getUsername);
         registry.add("spring.datasource.password", POSTGRES::getPassword);
-        registry.add("spring.redis.url",           () -> "redis://localhost:6379");
         registry.add("spring.flyway.enabled",      () -> "true");
-        registry.add("kyc.encryption-key",         () -> "dGhpcnR5LXR3by1ieXRlLWtleS1mb3ItYWVzLTI1NiE=");
-        registry.add("bank.core.base-url",         () -> "http://localhost:9999");
-        registry.add("bank.core.api-key",          () -> "stub-key-test");
-        registry.add("jwt.secret",                 () -> "test-jwt-hmac-secret-minimum-32bytes!!");
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "none");
+        // JWT mínimo para que SecurityConfig arranque
+        registry.add("application.security.jwt.secret-key",
+                () -> "test-jwt-secret-key-minimum-32-characters-for-hmac");
+        registry.add("application.security.jwt.expiration", () -> "3600000");
+        // Stub de propiedades opcionales para evitar IllegalArgumentException
+        registry.add("spring.mail.host",     () -> "localhost");
+        registry.add("spring.mail.port",     () -> "1025");
+        registry.add("spring.data.redis.host", () -> "localhost");
+        registry.add("spring.data.redis.port", () -> "6379");
     }
 
-    @Autowired protected MockMvc mockMvc;
-    @Autowired protected JdbcClient jdbc;
+    @Autowired
+    protected MockMvc mockMvc;
 
-    protected UUID testUserId;
-    protected UUID testAccountId;
-
-    @BeforeEach
-    void setupTestData() {
-        // Limpiar datos entre tests
-        jdbc.sql("DELETE FROM transactions WHERE account_id IN (SELECT id FROM accounts WHERE user_id = :uid)")
-            .param("uid", testUserId != null ? testUserId : UUID.randomUUID()).update();
-
-        // Usuario de prueba estándar
-        testUserId = UUID.randomUUID();
-        jdbc.sql("""
-            INSERT INTO users (id, username, email, password_hash, account_status)
-            VALUES (:id, :user, :email, :hash, 'ACTIVE')
-            """)
-            .param("id",    testUserId)
-            .param("user",  "test_" + testUserId.toString().substring(0, 8))
-            .param("email", "test_" + testUserId.toString().substring(0, 8) + "@test.com")
-            .param("hash",  "$2a$12$FW17clKR8aD4WYaAavj7nOounbbk4MwV7/aOYuFg8QhF3hqboouKG")
-            .update();
-
-        // Cuenta de prueba estándar
-        testAccountId = UUID.randomUUID();
-        jdbc.sql("""
-            INSERT INTO accounts (id, user_id, alias, iban, type, status)
-            VALUES (:id, :uid, 'Cuenta Test', 'ES0000000000000000000001', 'CORRIENTE', 'ACTIVE')
-            """)
-            .param("id",  testAccountId)
-            .param("uid", testUserId)
-            .update();
-
-        jdbc.sql("""
-            INSERT INTO account_balances (account_id, available_balance, retained_balance)
-            VALUES (:id, 5000.00, 0.00)
-            """)
-            .param("id", testAccountId)
-            .update();
-    }
+    @Autowired
+    protected JdbcClient jdbc;
 }
