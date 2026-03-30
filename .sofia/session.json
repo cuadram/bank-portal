@@ -366,8 +366,8 @@
     ],
     "verdict": "APPROVED"
   },
-  "updated_at": "2026-03-30T14:20:12.821Z",
-  "resume_next": "Sprint 20 CERRADO DEFINITIVO. FA docx actualizado S1-S20 (63 func). Sprint 21: PO define FEAT-019 para arrancar pipeline.",
+  "updated_at": "2026-03-30T15:17:10.368Z",
+  "resume_next": "HOTFIX-S20 APLICADO (commit 07519ea). Sprint 21: PO define FEAT-019 para arrancar pipeline.",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
   "gate8_approved_at": "2026-03-25T17:00:00Z",
@@ -903,5 +903,24 @@
     "skills": 21,
     "packaged_at": "2026-03-30T14:20:12.820Z",
     "notes": "fa-agent v2.2 + orchestrator v2.2: LA-020-08 CHECK 3b docx verification"
+  },
+  "hotfix_s20": {
+    "version": "HOTFIX-S20",
+    "commit": "07519ea95104779aa5196f79b23293a319cf5d63",
+    "date": "2026-03-30T15:17:10.367Z",
+    "scope": "export/** + directdebit/webhook/ + transaction/processor/ + pom.xml",
+    "issues_fixed": [
+      "PACK-001: paquete es.meridian.bankportal → com.experis.sofia.bankportal (16 ficheros)",
+      "API-001: PdfDocumentGenerator usa getTransactionDate/getConcept/getBalanceAfter",
+      "API-002: CsvDocumentGenerator sin getCurrency/getAccountingDate (no existen en Transaction)",
+      "API-003: CoreBankingReturnedHandler usa DebitMandateRepository + NotificationService reales",
+      "API-004: ActiveDirectDebitFilter usa DebitStatus enum (no String)",
+      "NEW-001: TransactionExportRepository creado (JdbcClient, queries posicionales LA-019-15)",
+      "NEW-002: ExportAuditLogRepository creado",
+      "NEW-003: ExportLimitExceededException + ExportRangeException creadas",
+      "POM-001: pdfbox 3.0.2 + spring-retry añadidos",
+      "CLEAN-001: arbol es/meridian/bankportal eliminado"
+    ],
+    "status": "APPLIED"
   }
 }
