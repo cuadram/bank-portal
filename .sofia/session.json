@@ -366,7 +366,7 @@
     ],
     "verdict": "APPROVED"
   },
-  "updated_at": "2026-03-30T15:17:10.368Z",
+  "updated_at": "2026-03-30T18:42:40.686Z",
   "resume_next": "HOTFIX-S20 APLICADO (commit 07519ea). Sprint 21: PO define FEAT-019 para arrancar pipeline.",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -746,6 +746,30 @@
       "type": "process",
       "description": "gen-fa-document.py no se invocaba automaticamente en Step 8b — FA-BankPortal-Banco-Meridian.docx no se actualizaba en S19 ni S20. Script solo cubria hasta FEAT-016.",
       "correction": "gen-fa-document.py debe ejecutarse en Step 8b de cada sprint. Anadir llamada al gate-dashboard-hook como paso obligatorio. Script actualizado con FEAT-017 y FEAT-018."
+    },
+    {
+      "id": "LA-020-09",
+      "sprint": 20,
+      "type": "process",
+      "description": "Developer Agent generó ficheros bajo paquete incorrecto (es.meridian) inferido de documentación, sin verificar paquete raíz real del proyecto.",
+      "correction": "REGLA PERMANENTE: antes de crear cualquier fichero Java en un sprint, el Developer Agent DEBE ejecutar: (1) cat BankPortalApplication.java | head -1 para obtener el package raíz real, (2) ls src/main/java/ para confirmar estructura. Sin esta verificación el fichero no se escribe.",
+      "registered_at": "2026-03-30T18:42:40.685Z"
+    },
+    {
+      "id": "LA-020-10",
+      "sprint": 20,
+      "type": "code-review",
+      "description": "Code Reviewer validó consistencia interna entre ficheros nuevos pero no contra el codebase real. Marcó paquete incorrecto como correcto porque era uniforme entre los nuevos ficheros.",
+      "correction": "REGLA PERMANENTE: el Code Reviewer DEBE ejecutar grep del package raíz contra los nuevos ficheros y contrastar con el package del proyecto. Checklist G-5 añade: grep -r \"^package\" src/main/java/com/ | head -1 vs package de cada fichero nuevo. Discrepancia = bloqueante.",
+      "registered_at": "2026-03-30T18:42:40.686Z"
+    },
+    {
+      "id": "LA-020-11",
+      "sprint": 20,
+      "type": "testing",
+      "description": "Sprint 20 cerrado sin SpringContextIT ni integrations tests. 446 unit tests pasando ocultaron que la build no compilaría. Gate G-4b aprobado sin mvn compile real.",
+      "correction": "REGLA PERMANENTE: SpringContextIT es BLOQUEANTE para Gate G-4b. Si no existe en el proyecto, el Developer Agent lo crea en el mismo step. mvn compile (no mvn test) debe ejecutarse via sofia-shell antes de declarar G-4b OK. Sin BUILD SUCCESS en consola el gate no se aprueba.",
+      "registered_at": "2026-03-30T18:42:40.686Z"
     }
   ],
   "unit_test_verification": {
