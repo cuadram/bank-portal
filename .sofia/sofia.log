@@ -137,3 +137,69 @@
 [2026-03-30T18:55:50.756Z] [GUARDRAIL] Gate G-4b — 6 checks OK
 [2026-03-30T18:56:02.779Z] [GUARDRAIL] Gate G-5 — 6 checks OK
 [2026-03-30T19:00:34.521Z] [DASHBOARD] Regenerado: 21 agentes, guardrails v1.0, HOTFIX-S20, 3 tabs, 25 LAs
+[2026-03-31T07:25:57.589Z] [STEP-1] [scrum-master] SPRINT-21 STARTED → FEAT-019 Centro de Privacidad y Perfil | 8 Jira issues (SCRUM-106..113) | Confluence 6520833 | planning.md | Gate G-1 PENDING
+[2026-03-31T07:26:23.113Z] [STEP-1] [scrum-master] SPRINT-21 STARTED > FEAT-019 Centro de Privacidad y Perfil | 8 Jira issues SCRUM-106..113 | Confluence 6520833 | SPRINT-021-planning.md | Gate G-1 PENDING
+[2026-03-31T07:28:37.429Z] [GATE-G-1] [APPROVED] PO+Tech Lead | Sprint 21 FEAT-019 | Proceeding to Step 2
+[2026-03-31T15:56:36.520Z] [GATE-G-1] [APPROVED] product-owner+tech-lead | Sprint 21 FEAT-019 | proceeding to Step 2
+[2026-03-31T15:57:47.806Z] [GATE-G-1] [APPROVED] product-owner+tech-lead | Sprint 21 FEAT-019 | Proceeding Step 2
+[2026-03-31T16:04:09.264Z] [STEP-2] [requirements] COMPLETED > SRS-FEAT-019-sprint21.md
+[2026-03-31T16:04:09.264Z] [STEP-2b] [fa-agent] COMPLETED > FA-FEAT-019-sprint21.md | fa-index.json 70 funcionalidades
+[2026-03-31T16:04:09.264Z] [STEP-2c] [ux-ui-designer] COMPLETED > UX-FEAT-019.md | PROTO-FEAT-019-sprint21.html | Gate HITL-PO-TL PENDING
+[2026-03-31T16:07:40.795Z] [GATE-HITL-PO-TL] [APPROVED] PO+TechLead | Sprint 21 FEAT-019 | Proceeding to Step 3 Architect
+[2026-03-31T16:14:04.941Z] [STEP-3] [architect] COMPLETED > HLD-FEAT-019.md | LLD-backend | LLD-frontend | ADR-032-033 | openapi-privacy-v1.yaml
+[2026-03-31T16:14:04.941Z] [STEP-3b] [architect] COMPLETED > Confluence 6619138 HLD publicado | Gate G-3 PENDING
+[2026-03-31T16:18:21.098Z] [FA-AGENT] fa-index.json corregido: 37 RN-F019 añadidas | total_business_rules: 166 (era 141 campo, 129 real) | total_functionalities: 70
+[2026-03-31T16:20:34.752Z] [FA-VALIDATE] OK: total_functionalities: 70 ✓
+[2026-03-31T16:20:34.760Z] [FA-VALIDATE] OK: total_business_rules: 166 ✓
+[2026-03-31T16:20:34.760Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-03-31T16:20:34.761Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-03-31T16:20:34.761Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-03-31T16:20:34.761Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-03-31T16:20:34.761Z] [FA-VALIDATE] OK: last_sprint: 21 coincide con datos ✓
+[2026-03-31T16:20:34.761Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-03-31T16:20:34.762Z] [FA-VALIDATE] PASS — 70 funcionalidades, 166 reglas | sprint 21 | FEAT-019
+[2026-03-31T16:22:28.742Z] [LA-021-01] REGISTERED — FA-Agent v2.3: validate-fa-index.js creado + SKILL.md actualizado + business_rules Gate 2b BLOQUEANTE
+[2026-03-31T16:22:49.454Z] [FA-VALIDATE] OK: total_functionalities: 70 ✓
+[2026-03-31T16:22:49.463Z] [FA-VALIDATE] ERROR: total_business_rules declarado (999) != real (166). CORRIGIENDO automáticamente.
+[2026-03-31T16:22:49.463Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-03-31T16:22:49.463Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-03-31T16:22:49.463Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-03-31T16:22:49.463Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-03-31T16:22:49.464Z] [FA-VALIDATE] OK: last_sprint: 21 coincide con datos ✓
+[2026-03-31T16:22:49.464Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-03-31T16:22:49.464Z] [FA-VALIDATE] FAIL — 1 errores detectados
+[2026-03-31T16:23:01.888Z] [FA-VALIDATE] OK: total_functionalities: 70 ✓
+[2026-03-31T16:23:01.897Z] [FA-VALIDATE] OK: total_business_rules: 166 ✓
+[2026-03-31T16:23:01.897Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-03-31T16:23:01.897Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-03-31T16:23:01.898Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-03-31T16:23:01.898Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-03-31T16:23:01.898Z] [FA-VALIDATE] OK: last_sprint: 21 coincide con datos ✓
+[2026-03-31T16:23:01.898Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-03-31T16:23:01.899Z] [FA-VALIDATE] PASS — 70 funcionalidades, 166 reglas | sprint 21 | FEAT-019
+[2026-03-31T16:29:12.934703+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 63 func | 130+ RN
+[2026-03-31T16:29:34.421Z] [FA-VALIDATE] OK: total_functionalities: 70 ✓
+[2026-03-31T16:29:34.429Z] [FA-VALIDATE] OK: total_business_rules: 166 ✓
+[2026-03-31T16:29:34.429Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-03-31T16:29:34.429Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-03-31T16:29:34.429Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-03-31T16:29:34.430Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-03-31T16:29:34.430Z] [FA-VALIDATE] OK: last_sprint: 21 coincide con datos ✓
+[2026-03-31T16:29:34.430Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-03-31T16:29:34.431Z] [FA-VALIDATE] PASS — 70 funcionalidades, 166 reglas | sprint 21 | FEAT-019
+[2026-03-31T16:29:44.128Z] [FA-AGENT] docx regenerado con FEAT-019 | 68.0 KB | validate-fa-index PASS | gen-fa-document.py actualizado S1-S21
+[2026-03-31T16:37:02.748927+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 63 func | 130+ RN
+[2026-03-31T16:47:52.736864+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 63 func | 130+ RN
+[2026-03-31T16:50:30.493Z] [FA-VALIDATE] OK: total_functionalities: 70 ✓
+[2026-03-31T16:50:30.502Z] [FA-VALIDATE] OK: total_business_rules: 166 ✓
+[2026-03-31T16:50:30.502Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-03-31T16:50:30.502Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-03-31T16:50:30.502Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-03-31T16:50:30.502Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-03-31T16:50:30.502Z] [FA-VALIDATE] OK: last_sprint: 21 coincide con datos ✓
+[2026-03-31T16:50:30.503Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-03-31T16:50:30.503Z] [FA-VALIDATE] PASS — 70 funcionalidades, 166 reglas | sprint 21 | FEAT-019
+[2026-03-31T16:57:33.285463+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 63 func | 130+ RN
+[2026-03-31T17:01:00.800Z] [GATE-G-3] [APPROVED] Tech Lead | Sprint 21 FEAT-019 | Proceeding to Step 4 Developer
+[2026-03-31T19:55:32.761Z] [STEP-4] [developer] COMPLETED > privacy module (7 domain + 4 services + 2 controllers) | DEBT-036 SCRUM-113 fixed | 20 tests PASS | mvn compile BUILD SUCCESS | Gate G-4 PENDING
+[2026-03-31T20:09:39.586Z] [STEP-5] [code-reviewer] COMPLETED → CR-FEAT-019-sprint21.md | Veredicto: APPROVED (tras re-review) | fixes: RV-F019-01 @PreAuthorize ADMIN, RV-F019-02 SpringContextIT V22, RV-F019-03 environment.ts sync | 0 blocker 0 mayor 0 menor | gate_pending: G-5

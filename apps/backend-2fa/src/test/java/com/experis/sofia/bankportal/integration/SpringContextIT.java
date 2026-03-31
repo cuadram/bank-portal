@@ -120,4 +120,62 @@ class SpringContextIT extends IntegrationTestBase {
                 .as("Tabla export_audit_log debe existir tras V21")
                 .isEqualTo(1L);
     }
+
+    /**
+     * TC-IT-001-G: Verifica tablas creadas por V22 (FEAT-019 Sprint 21).
+     * FIX RV-F019-02: tablas consent_history y gdpr_requests deben existir.
+     * Si falla: V22__profile_gdpr.sql no se aplicó o tiene errores de DDL.
+     */
+    @Test
+    @DisplayName("TC-IT-001-G: V22 aplicada — consent_history y gdpr_requests existen")
+    void schema_v22_gdprTablesExist() {
+        Long count = jdbc.sql("""
+                SELECT COUNT(*) FROM information_schema.tables
+                WHERE table_schema = 'public'
+                AND table_name IN ('consent_history','gdpr_requests')
+                """).query(Long.class).single();
+        assertThat(count)
+                .as("V22: consent_history + gdpr_requests deben existir tras migración")
+                .isEqualTo(2L);
+    }
+
+    /**
+     * TC-IT-001-H: Verifica columnas críticas de consent_history (FEAT-019).
+     * FIX RV-F019-02: columnas del dominio ConsentHistory deben coincidir con el schema.
+     */
+    @Test
+    @DisplayName("TC-IT-001-H: columnas de consent_history coinciden con ConsentHistory.java")
+    void schema_consentHistoryColumns_matchDomain() {
+        Long count = jdbc.sql("""
+                SELECT COUNT(*) FROM information_schema.columns
+                WHERE table_name   = 'consent_history'
+                AND column_name IN (
+                    'id', 'user_id', 'tipo', 'valor_anterior',
+                    'valor_nuevo', 'ip_origen', 'created_at'
+                )
+                """).query(Long.class).single();
+        assertThat(count)
+                .as("7 columnas que ConsentHistory.java referencia")
+                .isEqualTo(7L);
+    }
+
+    /**
+     * TC-IT-001-I: Verifica columnas críticas de gdpr_requests (FEAT-019).
+     * FIX RV-F019-02: SLA 30d (sla_deadline) es obligatorio según RN-F019-34.
+     */
+    @Test
+    @DisplayName("TC-IT-001-I: columnas de gdpr_requests incluyen sla_deadline (RN-F019-34)")
+    void schema_gdprRequestsColumns_includeSlaDeadline() {
+        Long count = jdbc.sql("""
+                SELECT COUNT(*) FROM information_schema.columns
+                WHERE table_name   = 'gdpr_requests'
+                AND column_name IN (
+                    'id', 'user_id', 'tipo', 'estado',
+                    'created_at', 'sla_deadline', 'sla_alert_sent'
+                )
+                """).query(Long.class).single();
+        assertThat(count)
+                .as("7 columnas críticas de gdpr_requests incluyendo SLA")
+                .isEqualTo(7L);
+    }
 }
