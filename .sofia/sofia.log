@@ -215,3 +215,6 @@
 [2026-04-01T05:43:49.573Z] [STEP-8] [doc-agent] COMPLETED → 10 DOCX + 3 XLSX + SPRINT-021-data.json
 [2026-04-01T05:43:49.573Z] [GATE-G8] [pm] APPROVED
 [2026-04-01T05:43:49.573Z] [STEP-8b] [fa-agent] COMPLETED → FA-BankPortal-Banco-Meridian.docx v3.1 | 70 FA, 166 RN S1-S21 | validate-fa-index: OK
+[2026-04-01T05:49:49.093Z] [STEP-9] [workflow-manager] COMPLETED → Jira SCRUM-106..113 Finalizada | Confluence 6946817 | Sprint 21 CERRADO
+[2026-04-01T05:49:49.093Z] [GATE-G9] APPROVED | Sprint 21 FEAT-019 pipeline COMPLETADO
+[2026-04-01T05:49:49.093Z] [SPRINT-CLOSE] Sprint 21 cerrado | v1.21.0 | 24 SP | 497 acum | 88% cov
