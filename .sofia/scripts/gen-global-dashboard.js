@@ -206,8 +206,10 @@ const SPRINT_HIST_ORDERED = [
   {key:'sprint_17',  n:'S17',  sp: (S.sprint_history?.sprint_17?.sp||24), acum:(S.sprint_history?.sprint_17?.acum||401), cov:(S.sprint_history?.sprint_17?.cov||85), tests:(S.sprint_history?.sprint_17?.tests||615)},
   {key:'sprint_18',  n:'S18',  sp: (S.sprint_history?.sprint_18?.sp||24), acum:(S.sprint_history?.sprint_18?.acum||425), cov:(S.sprint_history?.sprint_18?.cov||86), tests:(S.sprint_history?.sprint_18?.tests||677)},
   {key:'sprint_19',  n:'S19',  sp: (S.sprint_history?.sprint_19?.sp||24), acum:(S.sprint_history?.sprint_19?.acum||449), cov:(S.sprint_history?.sprint_19?.cov||87), tests:(S.sprint_history?.sprint_19?.tests||708)},
-  {key:'sprint_20',  n:'S20',  sp: (S.sprint_history?.sprint_20?.sp||24), acum:(S.sprint_history?.sprint_20?.acum||473), cov:(S.sprint_history?.sprint_20?.cov||88), tests:(S.sprint_history?.sprint_20?.tests||124)},
-  {key:'sprint_21',  n:'S21',  sp: (S.sprint_history?.sprint_21?.sp||24), acum:(S.sprint_history?.sprint_21?.acum||497), cov:(S.sprint_history?.sprint_21?.cov||88), tests:(S.sprint_history?.sprint_21?.tests||23)},
+  // I3-FIX: S20 tests = S19-acum + S20-sprint = 708+124 = 832 (acumulado real)
+  {key:'sprint_20',  n:'S20',  sp: (S.sprint_history?.sprint_20?.sp||24), acum:(S.sprint_history?.sprint_20?.acum||473), cov:(S.sprint_history?.sprint_20?.cov||88),
+   tests:((S.sprint_history?.sprint_19?.tests||708) + (S.sprint_history?.sprint_20?.tests||124))},
+  {key:'sprint_21',  n:'S21',  sp: (S.sprint_history?.sprint_21?.sp||24), acum:(S.sprint_history?.sprint_21?.acum||497), cov:(S.sprint_history?.sprint_21?.cov||88), tests:((S.sprint_history?.sprint_19?.tests||708) + (S.sprint_history?.sprint_20?.tests||124) + (S.sprint_history?.sprint_21?.tests||23))},
 ].filter((_,i) => i < completedSprints);
 
 const velLabels = SPRINT_HIST_ORDERED.map(h => h.n);
@@ -610,7 +612,7 @@ ${GP ? `
       <div class="sh" style="margin-top:12px;">Deuda saldada</div>
       <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">Ratio deuda técnica resuelta</div>
       <div class="pbar"><div class="pb-inner" style="width:88%;"></div></div>
-      <div style="font-size:10px;color:var(--green);margin-top:3px;">~88% resuelta históricamente</div>
+      <div style="font-size:10px;color:var(--green);margin-top:3px;">~${Math.round((S.metrics?.coverage||88))}% cobertura actual</div>
     </div>
   </div>
 </div>
