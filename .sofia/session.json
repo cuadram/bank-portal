@@ -100,7 +100,14 @@
       "docs/deliverables/sprint-21-FEAT-019/excel/Decision-Log-Sprint21.xlsx",
       "docs/deliverables/sprint-21-FEAT-019/excel/Quality-Dashboard-Sprint21.xlsx",
       "docs/sprints/SPRINT-021-data.json",
-      "docs/deliverables/sprint-21-FEAT-019/gen-docs-sprint21.js"
+      "docs/deliverables/sprint-21-FEAT-019/gen-docs-sprint21.js",
+      "docs/deliverables/sprint-21-FEAT-019/word/CMMI-Evidence-Sprint21.docx",
+      "docs/deliverables/sprint-21-FEAT-019/word/MEETING-MINUTES-Sprint21.docx",
+      "docs/deliverables/sprint-21-FEAT-019/word/PROJECT-PLAN-v1.21.docx",
+      "docs/deliverables/sprint-21-FEAT-019/word/QUALITY-SUMMARY-Sprint21.docx",
+      "docs/deliverables/sprint-21-FEAT-019/word/RISK-REGISTER-Sprint21.docx",
+      "docs/deliverables/sprint-21-FEAT-019/word/TRACEABILITY-FEAT-019-Sprint21.docx",
+      "docs/deliverables/sprint-21-FEAT-019/word/sprint21-planning-doc.docx"
     ],
     "9": [
       "Jira SCRUM-106..113 todos Finalizada — 8/8",
@@ -376,7 +383,7 @@
     "report": "docs/code-review/CR-FEAT-019-sprint21.md",
     "reviewed_at": "2026-03-31T20:09:39.586Z"
   },
-  "updated_at": "2026-04-01T05:49:49.093Z",
+  "updated_at": "2026-04-01T05:57:48.784Z",
   "resume_next": "Gate G-1 pendiente. Aprobar para continuar con Step 2 Requirements.",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -995,6 +1002,14 @@
       "description": "IntegrationTestBase no declaraba campos testUserId/testAccountId que DashboardJpaAdapterIT usaba, causando error de compilación de tests y bloqueando mvn test.",
       "correction": "REGLA: IntegrationTestBase debe declarar todos los fixtures UUID comunes usados por los tests hijos. Cualquier campo usado en múltiples ITs debe estar en la clase base, no en la hija.",
       "registered_at": "2026-03-31T19:55:32.761Z"
+    },
+    {
+      "id": "LA-021-03",
+      "sprint": 21,
+      "type": "process",
+      "description": "Documentation Agent generó solo 10 DOCX en Sprint 21 vs los 12+ obligatorios. Faltaban: CMMI-Evidence, Meeting-Minutes, Project-Plan, Quality-Summary, Risk-Register, Traceability, planning-doc.",
+      "correction": "REGLA PERMANENTE: Documentation Agent DEBE generar siempre los 17 documentos estándar (10 técnicos + 7 CMMI/Gestión). Los 7 adicionales son BLOQUEANTES para Gate G-8 desde Sprint 22. Actualizar SKILL.md doc-agent y checklist G-8.",
+      "registered_at": "2026-04-01T05:57:48.784Z"
     }
   ],
   "unit_test_verification": {
