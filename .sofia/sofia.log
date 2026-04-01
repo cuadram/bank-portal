@@ -205,3 +205,5 @@
 [2026-03-31T20:09:39.586Z] [STEP-5] [code-reviewer] COMPLETED → CR-FEAT-019-sprint21.md | Veredicto: APPROVED (tras re-review) | fixes: RV-F019-01 @PreAuthorize ADMIN, RV-F019-02 SpringContextIT V22, RV-F019-03 environment.ts sync | 0 blocker 0 mayor 0 menor | gate_pending: G-5
 [2026-03-31T20:12:04.744Z] [GATE-G5] [tech-lead] APPROVED → step 5 Code Review | Sprint 21 FEAT-019 | proceeding to Step 5b Security Agent
 [2026-03-31T20:15:50.715Z] [STEP-5b] [security-agent] COMPLETED → SEC-FEAT-019-sprint21.md | Semáforo: YELLOW | cve_critical=0 cve_high=0 sast=3 blocker=0 | DEBT-040(5.3) DEBT-041(4.8) DEBT-042(2.1) | gate_pending: G-5b
+[2026-03-31T20:16:46.290Z] [GATE-G5b] [security-agent] AUTO-APPROVED → YELLOW semaphore, cve_critical=0 | Sprint 21 FEAT-019 | proceeding to Step 6 QA
+[2026-04-01T05:31:12.640Z] [STEP-6] [qa-tester] COMPLETED → QA-FEAT-019-sprint21.md | 69 TCs: 65 PASS 0 FAIL 4 BLOCKED | Gherkin 16/16 | WCAG 5/5 | INT 9/9 | Veredicto: LISTO PARA RELEASE CON CONDICIONES | gate_pending: G-6
