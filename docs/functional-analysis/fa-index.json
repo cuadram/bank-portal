@@ -1,0 +1,2124 @@
+{
+  "document": "FA-BankPortal-Banco-Meridian.docx",
+  "project": "bank-portal",
+  "client": "Banco Meridian",
+  "generated_by": "FA-Agent — SOFIA v2.3",
+  "last_updated": "2026-03-31",
+  "last_sprint": 21,
+  "total_functionalities": 70,
+  "notes": "S1-S15 RECONSTRUIDO. S16-S21 documentadas con evidencias directas.",
+  "functionalities": [
+    {
+      "id": "FA-001-A",
+      "feat": "FEAT-001",
+      "sprint": "1-2",
+      "version": "v1.2.0",
+      "title": "Registro y Activación del Segundo Factor TOTP",
+      "module": "authentication",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F001-01",
+        "RN-F001-02"
+      ],
+      "regulation": [
+        "PSD2-SCA",
+        "PCI-DSS"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-001-B",
+      "feat": "FEAT-001",
+      "sprint": "1-2",
+      "version": "v1.2.0",
+      "title": "Códigos de Recuperación 2FA",
+      "module": "authentication",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F001-03",
+        "RN-F001-04"
+      ],
+      "regulation": [
+        "PCI-DSS"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-001-C",
+      "feat": "FEAT-001",
+      "sprint": "1-2",
+      "version": "v1.2.0",
+      "title": "Registro de Auditoría Inmutable de Autenticación",
+      "module": "audit",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F001-05",
+        "RN-F001-06"
+      ],
+      "regulation": [
+        "PCI-DSS"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-002-A",
+      "feat": "FEAT-002",
+      "sprint": 3,
+      "version": "v1.3.0",
+      "title": "Consulta de Sesiones Activas",
+      "module": "session",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F002-01",
+        "RN-F002-02"
+      ],
+      "regulation": [
+        "PCI-DSS"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-002-B",
+      "feat": "FEAT-002",
+      "sprint": 3,
+      "version": "v1.3.0",
+      "title": "Cierre Remoto de Sesión",
+      "module": "session",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F002-03",
+        "RN-F002-04"
+      ],
+      "regulation": [
+        "PCI-DSS"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-002-C",
+      "feat": "FEAT-002",
+      "sprint": 3,
+      "version": "v1.3.0",
+      "title": "Invalidación de Sesión por Enlace de Email",
+      "module": "session",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F002-05",
+        "RN-F002-06"
+      ],
+      "regulation": [
+        "PSD2-SCA"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-003-A",
+      "feat": "FEAT-003",
+      "sprint": 4,
+      "version": "v1.4.0",
+      "title": "Registro de Dispositivo de Confianza",
+      "module": "trusteddevice",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F003-01",
+        "RN-F003-02",
+        "RN-F003-03"
+      ],
+      "regulation": [
+        "PSD2-SCA"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-003-B",
+      "feat": "FEAT-003",
+      "sprint": 4,
+      "version": "v1.4.0",
+      "title": "Login sin OTP desde Dispositivo de Confianza",
+      "module": "trusteddevice",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F003-04"
+      ],
+      "regulation": [
+        "PSD2-SCA"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-003-C",
+      "feat": "FEAT-003",
+      "sprint": 4,
+      "version": "v1.4.0",
+      "title": "Revocación de Dispositivos de Confianza",
+      "module": "trusteddevice",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F003-05",
+        "RN-F003-06"
+      ],
+      "regulation": [
+        "PCI-DSS"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-004-A",
+      "feat": "FEAT-004",
+      "sprint": "5+8",
+      "version": "v1.8.0",
+      "title": "Historial de Notificaciones de Seguridad",
+      "module": "notification",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F004-01",
+        "RN-F004-02"
+      ],
+      "regulation": [
+        "PCI-DSS"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-004-B",
+      "feat": "FEAT-004",
+      "sprint": "5+8",
+      "version": "v1.8.0",
+      "title": "Gestión de Notificaciones (Leídas/No Leídas)",
+      "module": "notification",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F004-03",
+        "RN-F004-04"
+      ],
+      "regulation": [
+        "GDPR"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-004-C",
+      "feat": "FEAT-004",
+      "sprint": "5+8",
+      "version": "v1.8.0",
+      "title": "Acciones Directas desde Notificación",
+      "module": "notification",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F004-05"
+      ],
+      "regulation": [
+        "PSD2-SCA"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-004-D",
+      "feat": "FEAT-004",
+      "sprint": "5+8",
+      "version": "v1.8.0",
+      "title": "Preferencias de Notificación por Canal",
+      "module": "notification",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F004-06",
+        "RN-F004-07"
+      ],
+      "regulation": [
+        "GDPR"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-005-A",
+      "feat": "FEAT-005",
+      "sprint": 6,
+      "version": "v1.6.0",
+      "title": "Notificaciones de Seguridad en Tiempo Real (SSE)",
+      "module": "authentication",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F005-01",
+        "RN-F005-02"
+      ],
+      "regulation": [
+        "PSD2-SCA"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-005-B",
+      "feat": "FEAT-005",
+      "sprint": 6,
+      "version": "v1.6.0",
+      "title": "Detección de Login desde Contexto Inusual",
+      "module": "authentication",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F005-03",
+        "RN-F005-04"
+      ],
+      "regulation": [
+        "PSD2-SCA"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-006-A",
+      "feat": "FEAT-006",
+      "sprint": 7,
+      "version": "v1.7.0",
+      "title": "Bloqueo Automático de Cuenta por Intentos Fallidos",
+      "module": "authentication",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F006-01",
+        "RN-F006-02"
+      ],
+      "regulation": [
+        "PCI-DSS"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-006-B",
+      "feat": "FEAT-006",
+      "sprint": 7,
+      "version": "v1.7.0",
+      "title": "Desbloqueo de Cuenta por Email",
+      "module": "authentication",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F006-03",
+        "RN-F006-04"
+      ],
+      "regulation": [
+        "PCI-DSS"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-006-C",
+      "feat": "FEAT-006",
+      "sprint": 7,
+      "version": "v1.7.0",
+      "title": "Autenticación Contextual por Subred IP",
+      "module": "authentication",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F006-05"
+      ],
+      "regulation": [
+        "PSD2"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-007-A",
+      "feat": "FEAT-007",
+      "sprint": 9,
+      "version": "v1.9.0",
+      "title": "Consulta de Cuentas y Saldos",
+      "module": "account",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F007-01",
+        "RN-F007-02"
+      ],
+      "regulation": [
+        "PSD2-AIS"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-007-B",
+      "feat": "FEAT-007",
+      "sprint": 9,
+      "version": "v1.9.0",
+      "title": "Historial de Movimientos",
+      "module": "account",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F007-03",
+        "RN-F007-04"
+      ],
+      "regulation": [
+        "PSD2-AIS"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-007-C",
+      "feat": "FEAT-007",
+      "sprint": 9,
+      "version": "v1.9.0",
+      "title": "Búsqueda por Concepto de Movimiento",
+      "module": "account",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F007-05"
+      ],
+      "regulation": [
+        "PSD2-AIS"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-007-D",
+      "feat": "FEAT-007",
+      "sprint": 9,
+      "version": "v1.9.0",
+      "title": "Categorización Automática de Gastos",
+      "module": "account",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F007-06"
+      ],
+      "regulation": [
+        "GDPR"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-008-A",
+      "feat": "FEAT-008",
+      "sprint": 10,
+      "version": "v1.10.0",
+      "title": "Transferencia Bancaria Inmediata",
+      "module": "transfer",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F008-01",
+        "RN-F008-02",
+        "RN-F008-03"
+      ],
+      "regulation": [
+        "PSD2-SCA",
+        "SEPA"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-008-B",
+      "feat": "FEAT-008",
+      "sprint": 10,
+      "version": "v1.10.0",
+      "title": "Libreta de Beneficiarios",
+      "module": "transfer",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F008-04",
+        "RN-F008-05"
+      ],
+      "regulation": [
+        "PSD2"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-008-C",
+      "feat": "FEAT-008",
+      "sprint": 10,
+      "version": "v1.10.0",
+      "title": "Límites de Transferencia",
+      "module": "transfer",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F008-06",
+        "RN-F008-07"
+      ],
+      "regulation": [
+        "PSD2",
+        "SEPA"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-009-A",
+      "feat": "FEAT-009",
+      "sprint": 11,
+      "version": "v1.11.0",
+      "title": "Consulta de Recibos Pendientes",
+      "module": "bill",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F009-01",
+        "RN-F009-02"
+      ],
+      "regulation": [
+        "PSD2"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-009-B",
+      "feat": "FEAT-009",
+      "sprint": 11,
+      "version": "v1.11.0",
+      "title": "Pago de Recibo Domiciliado",
+      "module": "bill",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F009-03",
+        "RN-F009-04"
+      ],
+      "regulation": [
+        "PSD2-SCA",
+        "SEPA-DD"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-009-C",
+      "feat": "FEAT-009",
+      "sprint": 11,
+      "version": "v1.11.0",
+      "title": "Pago Ad-hoc por Referencia",
+      "module": "bill",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F009-05"
+      ],
+      "regulation": [
+        "PSD2"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-010-A",
+      "feat": "FEAT-010",
+      "sprint": 12,
+      "version": "v1.12.0",
+      "title": "Resumen de Gastos por Categoría",
+      "module": "dashboard",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F010-01",
+        "RN-F010-02"
+      ],
+      "regulation": [
+        "GDPR"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-010-B",
+      "feat": "FEAT-010",
+      "sprint": 12,
+      "version": "v1.12.0",
+      "title": "Evolución Mensual de Gastos e Ingresos",
+      "module": "dashboard",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F010-03"
+      ],
+      "regulation": [
+        "GDPR"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-010-C",
+      "feat": "FEAT-010",
+      "sprint": 12,
+      "version": "v1.12.0",
+      "title": "Alertas de Presupuesto Mensual",
+      "module": "dashboard",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F010-04",
+        "RN-F010-05"
+      ],
+      "regulation": [
+        "GDPR"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-011-A",
+      "feat": "FEAT-011",
+      "sprint": 13,
+      "version": "v1.13.0",
+      "title": "Exportación de Movimientos a PDF",
+      "module": "dashboard",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F011-01",
+        "RN-F011-02"
+      ],
+      "regulation": [
+        "GDPR"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-011-B",
+      "feat": "FEAT-011",
+      "sprint": 13,
+      "version": "v1.13.0",
+      "title": "Exportación de Movimientos a Excel",
+      "module": "dashboard",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F011-03",
+        "RN-F011-04"
+      ],
+      "regulation": [
+        "GDPR"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-011-C",
+      "feat": "FEAT-011",
+      "sprint": 13,
+      "version": "v1.13.0",
+      "title": "Exportación del Informe Analítico de Gastos",
+      "module": "dashboard",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F011-05"
+      ],
+      "regulation": [
+        "GDPR"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-012-A",
+      "feat": "FEAT-012",
+      "sprint": 14,
+      "version": "v1.14.0",
+      "title": "Consulta y Actualización de Datos Personales",
+      "module": "profile",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F012-01",
+        "RN-F012-02"
+      ],
+      "regulation": [
+        "GDPR"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-012-B",
+      "feat": "FEAT-012",
+      "sprint": 14,
+      "version": "v1.14.0",
+      "title": "Cambio de Contraseña con Historial",
+      "module": "profile",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F012-03",
+        "RN-F012-04"
+      ],
+      "regulation": [
+        "PCI-DSS"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-012-C",
+      "feat": "FEAT-012",
+      "sprint": 14,
+      "version": "v1.14.0",
+      "title": "Gestión de Preferencias de Comunicación",
+      "module": "profile",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F012-05",
+        "RN-F012-06"
+      ],
+      "regulation": [
+        "GDPR"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-012-D",
+      "feat": "FEAT-012",
+      "sprint": 14,
+      "version": "v1.14.0",
+      "title": "Revocación de Tokens JWT Activos",
+      "module": "profile",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F012-07"
+      ],
+      "regulation": [
+        "PCI-DSS",
+        "PSD2"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-013-A",
+      "feat": "FEAT-013",
+      "sprint": 15,
+      "version": "v1.15.0",
+      "title": "Inicio del Proceso KYC",
+      "module": "kyc",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F013-01",
+        "RN-F013-02"
+      ],
+      "regulation": [
+        "AML-KYC",
+        "GDPR"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-013-B",
+      "feat": "FEAT-013",
+      "sprint": 15,
+      "version": "v1.15.0",
+      "title": "Carga de Documentos de Identidad",
+      "module": "kyc",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F013-03",
+        "RN-F013-04",
+        "RN-F013-05"
+      ],
+      "regulation": [
+        "AML-KYC",
+        "GDPR"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-013-C",
+      "feat": "FEAT-013",
+      "sprint": 15,
+      "version": "v1.15.0",
+      "title": "Revisión y Resolución KYC",
+      "module": "kyc",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F013-06",
+        "RN-F013-07"
+      ],
+      "regulation": [
+        "AML-KYC"
+      ],
+      "source": "RECONSTRUIDO"
+    },
+    {
+      "id": "FA-014-001",
+      "feat": "FEAT-014",
+      "sprint": 16,
+      "version": "v1.16.0",
+      "title": "Suscripción a Notificaciones Push VAPID",
+      "module": "notifications",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-001",
+        "RN-002",
+        "RN-003"
+      ],
+      "regulation": [],
+      "source": "EVIDENCIA-DIRECTA",
+      "delivered_at": "2026-03-24"
+    },
+    {
+      "id": "FA-014-002",
+      "feat": "FEAT-014",
+      "sprint": 16,
+      "version": "v1.16.0",
+      "title": "Envío de Notificaciones de Movimientos en Tiempo Real",
+      "module": "notifications",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-004",
+        "RN-005"
+      ],
+      "regulation": [
+        "GDPR"
+      ],
+      "source": "EVIDENCIA-DIRECTA",
+      "delivered_at": "2026-03-24"
+    },
+    {
+      "id": "FA-014-003",
+      "feat": "FEAT-014",
+      "sprint": 16,
+      "version": "v1.16.0",
+      "title": "Gestión de Preferencias de Notificación Multicanal",
+      "module": "notifications",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-006"
+      ],
+      "regulation": [
+        "GDPR"
+      ],
+      "source": "EVIDENCIA-DIRECTA",
+      "delivered_at": "2026-03-24"
+    },
+    {
+      "id": "FA-015-A",
+      "feat": "FEAT-015",
+      "sprint": 17,
+      "version": "v1.17.0",
+      "title": "Programación de Transferencia Única (ONCE)",
+      "module": "scheduled",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F015-01",
+        "RN-F015-02"
+      ],
+      "regulation": [
+        "PSD2-SCA",
+        "SEPA"
+      ],
+      "source": "EVIDENCIA-DIRECTA",
+      "delivered_at": "2026-04-22"
+    },
+    {
+      "id": "FA-015-B",
+      "feat": "FEAT-015",
+      "sprint": 17,
+      "version": "v1.17.0",
+      "title": "Transferencias Recurrentes (WEEKLY/BIWEEKLY/MONTHLY)",
+      "module": "scheduled",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F015-03",
+        "RN-F015-04",
+        "RN-F015-05"
+      ],
+      "regulation": [
+        "PSD2",
+        "SEPA"
+      ],
+      "source": "EVIDENCIA-DIRECTA",
+      "delivered_at": "2026-04-22"
+    },
+    {
+      "id": "FA-015-C",
+      "feat": "FEAT-015",
+      "sprint": 17,
+      "version": "v1.17.0",
+      "title": "Consulta y Gestión de Transferencias Programadas",
+      "module": "scheduled",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F015-06",
+        "RN-F015-07"
+      ],
+      "regulation": [
+        "PSD2"
+      ],
+      "source": "EVIDENCIA-DIRECTA",
+      "delivered_at": "2026-04-22"
+    },
+    {
+      "id": "FA-016-007",
+      "feat": "FEAT-016",
+      "sprint": 18,
+      "version": "v1.18.0",
+      "title": "Consulta de Tarjetas del Cliente",
+      "module": "cards",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-012",
+        "RN-013"
+      ],
+      "regulation": [
+        "PCI-DSS"
+      ],
+      "source": "EVIDENCIA-DIRECTA",
+      "delivered_at": "2026-03-25"
+    },
+    {
+      "id": "FA-016-008",
+      "feat": "FEAT-016",
+      "sprint": 18,
+      "version": "v1.18.0",
+      "title": "Bloqueo y Desbloqueo de Tarjeta",
+      "module": "cards",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-014",
+        "RN-015",
+        "RN-016"
+      ],
+      "regulation": [
+        "PCI-DSS"
+      ],
+      "source": "EVIDENCIA-DIRECTA",
+      "delivered_at": "2026-03-25"
+    },
+    {
+      "id": "FA-016-009",
+      "feat": "FEAT-016",
+      "sprint": 18,
+      "version": "v1.18.0",
+      "title": "Cambio de PIN de Tarjeta",
+      "module": "cards",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-017",
+        "RN-018"
+      ],
+      "regulation": [
+        "PCI-DSS"
+      ],
+      "source": "EVIDENCIA-DIRECTA",
+      "delivered_at": "2026-03-25"
+    },
+    {
+      "id": "FA-016-010",
+      "feat": "FEAT-016",
+      "sprint": 18,
+      "version": "v1.18.0",
+      "title": "Gestión de Límites de Tarjeta",
+      "module": "cards",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-019",
+        "RN-020"
+      ],
+      "regulation": [
+        "PCI-DSS",
+        "PSD2"
+      ],
+      "source": "EVIDENCIA-DIRECTA",
+      "delivered_at": "2026-03-25"
+    },
+    {
+      "id": "FA-016-011",
+      "feat": "FEAT-016",
+      "sprint": 18,
+      "version": "v1.18.0",
+      "title": "Notificaciones Push de Operaciones con Tarjeta",
+      "module": "cards",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-021"
+      ],
+      "regulation": [
+        "GDPR"
+      ],
+      "source": "EVIDENCIA-DIRECTA",
+      "delivered_at": "2026-03-25"
+    },
+    {
+      "id": "FA-016-012",
+      "feat": "FEAT-016",
+      "sprint": 18,
+      "version": "v1.18.0",
+      "title": "Historial de Transacciones de Tarjeta",
+      "module": "cards",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-022",
+        "RN-023"
+      ],
+      "regulation": [
+        "PCI-DSS",
+        "GDPR"
+      ],
+      "source": "EVIDENCIA-DIRECTA",
+      "delivered_at": "2026-03-25"
+    },
+    {
+      "id": "FA-017-A",
+      "feat": "FEAT-017",
+      "sprint": "19",
+      "version": "v1.19.0",
+      "title": "Alta de Mandato SEPA Direct Debit",
+      "module": "directdebit",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F017-01",
+        "RN-F017-02",
+        "RN-F017-03"
+      ],
+      "regulation": [
+        "PSD2-Art77",
+        "PSD2-Art80",
+        "SEPA-SDD"
+      ],
+      "source": "SPRINT-19"
+    },
+    {
+      "id": "FA-017-B",
+      "feat": "FEAT-017",
+      "sprint": "19",
+      "version": "v1.19.0",
+      "title": "Consulta y Listado de Mandatos SEPA",
+      "module": "directdebit",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F017-04",
+        "RN-F017-05"
+      ],
+      "regulation": [
+        "PSD2-Art47",
+        "SEPA-SDD"
+      ],
+      "source": "SPRINT-19"
+    },
+    {
+      "id": "FA-017-C",
+      "feat": "FEAT-017",
+      "sprint": "19",
+      "version": "v1.19.0",
+      "title": "Cancelacion de Mandato SEPA",
+      "module": "directdebit",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F017-06",
+        "RN-F017-07"
+      ],
+      "regulation": [
+        "PSD2-Art80",
+        "SEPA-SDD"
+      ],
+      "source": "SPRINT-19"
+    },
+    {
+      "id": "FA-017-D",
+      "feat": "FEAT-017",
+      "sprint": "19",
+      "version": "v1.19.0",
+      "title": "Notificacion Push Domiciliacion Procesada",
+      "module": "notifications",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F017-08",
+        "RN-F017-09"
+      ],
+      "regulation": [
+        "PSD2-Art47"
+      ],
+      "source": "SPRINT-19"
+    },
+    {
+      "id": "FA-017-E",
+      "feat": "FEAT-017",
+      "sprint": "19",
+      "version": "v1.19.0",
+      "title": "Exportacion Extracto Domiciliaciones",
+      "module": "directdebit",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F017-10"
+      ],
+      "regulation": [
+        "PSD2-Art47",
+        "GDPR-Art15"
+      ],
+      "source": "SPRINT-19"
+    },
+    {
+      "id": "FA-018-A",
+      "feat": "FEAT-018",
+      "sprint": "20",
+      "version": "v1.20.0",
+      "title": "Generacion de Extracto PDF de Movimientos",
+      "module": "export",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F018-01",
+        "RN-F018-02",
+        "RN-F018-03",
+        "RN-F018-04"
+      ],
+      "regulation": [
+        "PSD2-Art47",
+        "PCI-DSS",
+        "GDPR-Art15"
+      ],
+      "source": "SPRINT-20"
+    },
+    {
+      "id": "FA-018-B",
+      "feat": "FEAT-018",
+      "sprint": "20",
+      "version": "v1.20.0",
+      "title": "Generacion de Extracto CSV de Movimientos",
+      "module": "export",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F018-05",
+        "RN-F018-06",
+        "RN-F018-07",
+        "RN-F018-08"
+      ],
+      "regulation": [
+        "PSD2-Art47",
+        "GDPR-Art15"
+      ],
+      "source": "SPRINT-20"
+    },
+    {
+      "id": "FA-018-C",
+      "feat": "FEAT-018",
+      "sprint": "20",
+      "version": "v1.20.0",
+      "title": "Filtrado Multicriteria de Movimientos para Exportacion",
+      "module": "export",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F018-09",
+        "RN-F018-10",
+        "RN-F018-11"
+      ],
+      "regulation": [
+        "PSD2-Art47",
+        "GDPR-Art15"
+      ],
+      "source": "SPRINT-20"
+    },
+    {
+      "id": "FA-018-D",
+      "feat": "FEAT-018",
+      "sprint": "20",
+      "version": "v1.20.0",
+      "title": "Audit Log de Exportaciones (GDPR + PCI-DSS)",
+      "module": "audit",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-F018-12",
+        "RN-F018-13",
+        "RN-F018-14",
+        "RN-F018-15"
+      ],
+      "regulation": [
+        "GDPR-Art17",
+        "PCI-DSS-Req10"
+      ],
+      "source": "SPRINT-20"
+    },
+    {
+      "id": "FA-DEBT035-A",
+      "feat": "DEBT-035",
+      "sprint": "20",
+      "version": "v1.20.0",
+      "title": "Notificacion Push RETURNED CoreBanking (R-code SEPA)",
+      "module": "directdebit",
+      "status": "DELIVERED",
+      "business_rules": [
+        "RN-DEBT035-01",
+        "RN-DEBT035-02",
+        "RN-DEBT035-03"
+      ],
+      "regulation": [
+        "SEPA-SDD"
+      ],
+      "source": "SPRINT-20"
+    },
+    {
+      "id": "FA-019-A",
+      "feat": "FEAT-019",
+      "sprint": "21",
+      "version": "v1.21.0",
+      "title": "Consulta de Datos Personales desde Perfil",
+      "module": "profile",
+      "status": "PENDING",
+      "business_rules": [
+        "RN-F019-01",
+        "RN-F019-02",
+        "RN-F019-03",
+        "RN-F019-04"
+      ],
+      "regulation": [
+        "GDPR-Art16"
+      ],
+      "source": "SPRINT-21"
+    },
+    {
+      "id": "FA-019-B",
+      "feat": "FEAT-019",
+      "sprint": "21",
+      "version": "v1.21.0",
+      "title": "Actualizacion de Datos Personales",
+      "module": "profile",
+      "status": "PENDING",
+      "business_rules": [
+        "RN-F019-05",
+        "RN-F019-06",
+        "RN-F019-07",
+        "RN-F019-08",
+        "RN-F019-09"
+      ],
+      "regulation": [
+        "GDPR-Art16",
+        "PSD2-SCA"
+      ],
+      "source": "SPRINT-21"
+    },
+    {
+      "id": "FA-019-C",
+      "feat": "FEAT-019",
+      "sprint": "21",
+      "version": "v1.21.0",
+      "title": "Gestion de Sesiones Activas y Cierre Remoto",
+      "module": "profile",
+      "status": "PENDING",
+      "business_rules": [
+        "RN-F019-10",
+        "RN-F019-11",
+        "RN-F019-12",
+        "RN-F019-13",
+        "RN-F019-14"
+      ],
+      "regulation": [
+        "PSD2-SCA",
+        "PCI-DSS"
+      ],
+      "source": "SPRINT-21"
+    },
+    {
+      "id": "FA-019-D",
+      "feat": "FEAT-019",
+      "sprint": "21",
+      "version": "v1.21.0",
+      "title": "Gestion de Consentimientos GDPR con Historial",
+      "module": "privacy",
+      "status": "PENDING",
+      "business_rules": [
+        "RN-F019-15",
+        "RN-F019-16",
+        "RN-F019-17",
+        "RN-F019-18"
+      ],
+      "regulation": [
+        "GDPR-Art7",
+        "GDPR-Art13"
+      ],
+      "source": "SPRINT-21"
+    },
+    {
+      "id": "FA-019-E",
+      "feat": "FEAT-019",
+      "sprint": "21",
+      "version": "v1.21.0",
+      "title": "Portabilidad de Datos — Descarga JSON Firmado",
+      "module": "privacy",
+      "status": "PENDING",
+      "business_rules": [
+        "RN-F019-19",
+        "RN-F019-20",
+        "RN-F019-21",
+        "RN-F019-22",
+        "RN-F019-23",
+        "RN-F019-24"
+      ],
+      "regulation": [
+        "GDPR-Art15",
+        "GDPR-Art20"
+      ],
+      "source": "SPRINT-21"
+    },
+    {
+      "id": "FA-019-F",
+      "feat": "FEAT-019",
+      "sprint": "21",
+      "version": "v1.21.0",
+      "title": "Derecho al Olvido — Eliminacion de Cuenta",
+      "module": "privacy",
+      "status": "PENDING",
+      "business_rules": [
+        "RN-F019-25",
+        "RN-F019-26",
+        "RN-F019-27",
+        "RN-F019-28",
+        "RN-F019-29",
+        "RN-F019-30",
+        "RN-F019-31",
+        "RN-F019-32"
+      ],
+      "regulation": [
+        "GDPR-Art17"
+      ],
+      "source": "SPRINT-21"
+    },
+    {
+      "id": "FA-019-G",
+      "feat": "FEAT-019",
+      "sprint": "21",
+      "version": "v1.21.0",
+      "title": "Log de Derechos GDPR — Panel Administracion",
+      "module": "admin",
+      "status": "PENDING",
+      "business_rules": [
+        "RN-F019-33",
+        "RN-F019-34",
+        "RN-F019-35",
+        "RN-F019-36",
+        "RN-F019-37"
+      ],
+      "regulation": [
+        "GDPR-Art12"
+      ],
+      "source": "SPRINT-21"
+    }
+  ],
+  "business_rules": [
+    {
+      "id": "RN-F001-01",
+      "module": "authentication",
+      "description": "El secreto TOTP se almacena siempre cifrado (AES-256-CBC); nunca en claro"
+    },
+    {
+      "id": "RN-F001-02",
+      "module": "authentication",
+      "description": "El OTP es válido durante 30 segundos; se admite un margen de ±1 período"
+    },
+    {
+      "id": "RN-F001-03",
+      "module": "authentication",
+      "description": "Los códigos de recuperación se almacenan hasheados con BCrypt (cost=10); nunca en claro"
+    },
+    {
+      "id": "RN-F001-04",
+      "module": "authentication",
+      "description": "Cada código de recuperación solo puede usarse una única vez"
+    },
+    {
+      "id": "RN-F001-05",
+      "module": "audit",
+      "description": "El audit_log es inmutable: no se permiten UPDATE ni DELETE"
+    },
+    {
+      "id": "RN-F001-06",
+      "module": "audit",
+      "description": "Los registros incluyen siempre IP, user-agent, timestamp UTC y resultado (SUCCESS/FAILURE/BLOCKED)"
+    },
+    {
+      "id": "RN-F002-01",
+      "module": "session",
+      "description": "Las direcciones IP se muestran enmascaradas en la consulta de sesiones"
+    },
+    {
+      "id": "RN-F002-02",
+      "module": "session",
+      "description": "El token de sesión nunca se almacena en claro; solo su hash SHA-256"
+    },
+    {
+      "id": "RN-F002-03",
+      "module": "session",
+      "description": "El cierre remoto de sesión es irreversible e inmediato"
+    },
+    {
+      "id": "RN-F002-04",
+      "module": "session",
+      "description": "El cliente puede cerrar todas las sesiones excepto la propia"
+    },
+    {
+      "id": "RN-F002-05",
+      "module": "session",
+      "description": "El enlace de denegación de sesión es de un solo uso con TTL de 1 hora"
+    },
+    {
+      "id": "RN-F002-06",
+      "module": "session",
+      "description": "El timeout de sesión por inactividad es configurable entre 5 y 60 minutos (máx. PCI-DSS)"
+    },
+    {
+      "id": "RN-F003-01",
+      "module": "trusteddevice",
+      "description": "El token de confianza se almacena como cookie HttpOnly; nunca en localStorage"
+    },
+    {
+      "id": "RN-F003-02",
+      "module": "trusteddevice",
+      "description": "El token de confianza expira a los 30 días; se renueva en cada uso"
+    },
+    {
+      "id": "RN-F003-03",
+      "module": "trusteddevice",
+      "description": "Si el dispositivo cambia de red sustancialmente se requiere re-verificación con OTP"
+    },
+    {
+      "id": "RN-F003-04",
+      "module": "trusteddevice",
+      "description": "Un usuario puede tener máximo 5 dispositivos de confianza activos simultáneamente"
+    },
+    {
+      "id": "RN-F003-05",
+      "module": "trusteddevice",
+      "description": "Un dispositivo revocado debe completar OTP en el siguiente login"
+    },
+    {
+      "id": "RN-F003-06",
+      "module": "trusteddevice",
+      "description": "El cliente puede revocar todos sus dispositivos de confianza con una única acción"
+    },
+    {
+      "id": "RN-F004-01",
+      "module": "notification",
+      "description": "Las notificaciones de seguridad se retienen durante 90 días"
+    },
+    {
+      "id": "RN-F004-02",
+      "module": "notification",
+      "description": "Las notificaciones de severidad ALTA (login sospechoso, bloqueo) no pueden desactivarse"
+    },
+    {
+      "id": "RN-F004-03",
+      "module": "notification",
+      "description": "Marcar una notificación como leída NO elimina el registro del audit_log"
+    },
+    {
+      "id": "RN-F004-04",
+      "module": "notification",
+      "description": "El badge de notificaciones no leídas se actualiza en tiempo real"
+    },
+    {
+      "id": "RN-F004-05",
+      "module": "notification",
+      "description": "Las acciones directas desde notificación requieren sesión activa del cliente"
+    },
+    {
+      "id": "RN-F004-06",
+      "module": "notification",
+      "description": "Los eventos ACCOUNT_LOCKED y LOGIN_NEW_CONTEXT_DETECTED no pueden desactivarse"
+    },
+    {
+      "id": "RN-F004-07",
+      "module": "notification",
+      "description": "La configuración de canales es independiente por tipo de evento (email/push/in-app)"
+    },
+    {
+      "id": "RN-F005-01",
+      "module": "authentication",
+      "description": "El canal SSE se cierra automáticamente si la sesión expira"
+    },
+    {
+      "id": "RN-F005-02",
+      "module": "authentication",
+      "description": "El sistema soporta máximo 500 conexiones SSE simultáneas"
+    },
+    {
+      "id": "RN-F005-03",
+      "module": "authentication",
+      "description": "Una subred se considera conocida solo tras ser confirmada explícitamente por el cliente"
+    },
+    {
+      "id": "RN-F005-04",
+      "module": "authentication",
+      "description": "Los logins desde subredes desconocidas siempre generan notificación"
+    },
+    {
+      "id": "RN-F006-01",
+      "module": "authentication",
+      "description": "El contador de intentos fallidos se resetea al hacer login exitoso o al desbloquear"
+    },
+    {
+      "id": "RN-F006-02",
+      "module": "authentication",
+      "description": "La cuenta bloqueada no puede acceder a ningún servicio de BankPortal hasta ser desbloqueada"
+    },
+    {
+      "id": "RN-F006-03",
+      "module": "authentication",
+      "description": "El token de desbloqueo por email es de único uso y expira en 1 hora"
+    },
+    {
+      "id": "RN-F006-04",
+      "module": "authentication",
+      "description": "El desbloqueo por email no requiere que el cliente recuerde su contraseña"
+    },
+    {
+      "id": "RN-F006-05",
+      "module": "authentication",
+      "description": "Las alertas de acceso desde ubicación inusual no pueden desactivarse por preferencias del cliente"
+    },
+    {
+      "id": "RN-F007-01",
+      "module": "account",
+      "description": "El saldo disponible y el saldo retenido se muestran siempre separados"
+    },
+    {
+      "id": "RN-F007-02",
+      "module": "account",
+      "description": "El IBAN se muestra en formato estándar europeo (ES + 22 dígitos)"
+    },
+    {
+      "id": "RN-F007-03",
+      "module": "account",
+      "description": "Los movimientos negativos son cargos; los positivos son abonos"
+    },
+    {
+      "id": "RN-F007-04",
+      "module": "account",
+      "description": "El historial disponible cubre al menos los últimos 13 meses (normativa EU)"
+    },
+    {
+      "id": "RN-F007-05",
+      "module": "account",
+      "description": "La búsqueda por concepto opera sobre los últimos 13 meses de movimientos"
+    },
+    {
+      "id": "RN-F007-06",
+      "module": "account",
+      "description": "La categorización es automática; el cliente puede corregirla manualmente"
+    },
+    {
+      "id": "RN-F008-01",
+      "module": "transfer",
+      "description": "El importe se opera siempre en precisión DECIMAL(15,2); nunca con punto flotante"
+    },
+    {
+      "id": "RN-F008-02",
+      "module": "transfer",
+      "description": "Las transferencias que superan el límite por operación requieren 2FA (SCA)"
+    },
+    {
+      "id": "RN-F008-03",
+      "module": "transfer",
+      "description": "Límite por operación: 2.000€; límite diario: 3.000€; límite mensual: 10.000€ (configurables por el banco)"
+    },
+    {
+      "id": "RN-F008-04",
+      "module": "transfer",
+      "description": "Un cliente no puede tener dos beneficiarios activos con el mismo IBAN"
+    },
+    {
+      "id": "RN-F008-05",
+      "module": "transfer",
+      "description": "La baja de un beneficiario es soft delete; el historial de transferencias se conserva"
+    },
+    {
+      "id": "RN-F008-06",
+      "module": "transfer",
+      "description": "Los límites de transferencia son establecidos por el banco; el cliente no puede modificarlos"
+    },
+    {
+      "id": "RN-F008-07",
+      "module": "transfer",
+      "description": "El acumulado diario se calcula en UTC y se resetea a medianoche"
+    },
+    {
+      "id": "RN-F009-01",
+      "module": "bill",
+      "description": "Los recibos se muestran ordenados por fecha de vencimiento (más próximos primero)"
+    },
+    {
+      "id": "RN-F009-02",
+      "module": "bill",
+      "description": "Un recibo en estado CANCELLED no puede volver a pagarse"
+    },
+    {
+      "id": "RN-F009-03",
+      "module": "bill",
+      "description": "El pago de un recibo requiere saldo disponible suficiente en la cuenta origen"
+    },
+    {
+      "id": "RN-F009-04",
+      "module": "bill",
+      "description": "El cliente puede elegir la cuenta cargo entre sus cuentas activas"
+    },
+    {
+      "id": "RN-F009-05",
+      "module": "bill",
+      "description": "El número de referencia del pago ad-hoc se comunica al emisor para conciliación"
+    },
+    {
+      "id": "RN-F010-01",
+      "module": "dashboard",
+      "description": "Los gastos categorizados se calculan de forma asíncrona con un desfase máximo de 5 minutos"
+    },
+    {
+      "id": "RN-F010-02",
+      "module": "dashboard",
+      "description": "Los movimientos sin categoría aparecen en la categoría 'Otros'"
+    },
+    {
+      "id": "RN-F010-03",
+      "module": "dashboard",
+      "description": "La comparativa mensual cubre los últimos 12 períodos completos"
+    },
+    {
+      "id": "RN-F010-04",
+      "module": "dashboard",
+      "description": "El presupuesto mensual es establecido por el cliente; no tiene valor predeterminado"
+    },
+    {
+      "id": "RN-F010-05",
+      "module": "dashboard",
+      "description": "Solo se genera una alerta de presupuesto por período y umbral (sin repeticiones)"
+    },
+    {
+      "id": "RN-F011-01",
+      "module": "dashboard",
+      "description": "El PDF de extracto incluye siempre los datos del titular y el período exacto"
+    },
+    {
+      "id": "RN-F011-02",
+      "module": "dashboard",
+      "description": "El extracto PDF puede cubrir hasta 13 meses (normativa EU)"
+    },
+    {
+      "id": "RN-F011-03",
+      "module": "dashboard",
+      "description": "El fichero Excel incluye hoja de movimientos detallados y hoja resumen por categoría"
+    },
+    {
+      "id": "RN-F011-04",
+      "module": "dashboard",
+      "description": "Los importes en Excel usan formato numérico (no texto) para permitir cálculos directos"
+    },
+    {
+      "id": "RN-F011-05",
+      "module": "dashboard",
+      "description": "El informe analítico solo exporta períodos completos (no el mes en curso parcial)"
+    },
+    {
+      "id": "RN-F012-01",
+      "module": "profile",
+      "description": "El email del cliente no puede modificarse desde BankPortal; requiere trámite presencial"
+    },
+    {
+      "id": "RN-F012-02",
+      "module": "profile",
+      "description": "El teléfono móvil debe verificarse antes de usarse para 2FA por SMS"
+    },
+    {
+      "id": "RN-F012-03",
+      "module": "profile",
+      "description": "La nueva contraseña no puede coincidir con ninguna de las 3 anteriores"
+    },
+    {
+      "id": "RN-F012-04",
+      "module": "profile",
+      "description": "El cambio de contraseña revoca automáticamente todas las sesiones activas excepto la actual"
+    },
+    {
+      "id": "RN-F012-05",
+      "module": "profile",
+      "description": "Las preferencias de comunicación se aplican a todos los módulos de BankPortal"
+    },
+    {
+      "id": "RN-F012-06",
+      "module": "profile",
+      "description": "Desactivar el canal push no cancela la suscripción VAPID; solo deja de recibir notificaciones"
+    },
+    {
+      "id": "RN-F012-07",
+      "module": "profile",
+      "description": "Los JWTs revocados se verifican en tiempo O(1) mediante Redis blacklist; la BD es audit trail"
+    },
+    {
+      "id": "RN-F013-01",
+      "module": "kyc",
+      "description": "El acceso a transferencias y servicios de pago requiere KYC aprobado"
+    },
+    {
+      "id": "RN-F013-02",
+      "module": "kyc",
+      "description": "El proceso KYC puede interrumpirse y retomarse antes de enviar"
+    },
+    {
+      "id": "RN-F013-03",
+      "module": "kyc",
+      "description": "Los documentos se almacenan cifrados (AES-256); nunca en claro en base de datos (ADR-023)"
+    },
+    {
+      "id": "RN-F013-04",
+      "module": "kyc",
+      "description": "Se verifica el hash SHA-256 del documento al subir para detectar ficheros corruptos"
+    },
+    {
+      "id": "RN-F013-05",
+      "module": "kyc",
+      "description": "Tipos de documento aceptados: DNI, NIE, Pasaporte"
+    },
+    {
+      "id": "RN-F013-06",
+      "module": "kyc",
+      "description": "El rechazo KYC debe incluir siempre un motivo que se comunica al cliente"
+    },
+    {
+      "id": "RN-F013-07",
+      "module": "kyc",
+      "description": "Un KYC aprobado no caduca mientras los documentos de identidad estén vigentes"
+    },
+    {
+      "id": "RN-F015-01",
+      "module": "scheduled",
+      "description": "Una transferencia programada puede cancelarse hasta el día anterior a la ejecución"
+    },
+    {
+      "id": "RN-F015-02",
+      "module": "scheduled",
+      "description": "Sin fondos suficientes en la fecha de ejecución, la transferencia se marca FAILED y se notifica"
+    },
+    {
+      "id": "RN-F015-03",
+      "module": "scheduled",
+      "description": "Una transferencia recurrente puede pausarse temporalmente y reanudarse"
+    },
+    {
+      "id": "RN-F015-04",
+      "module": "scheduled",
+      "description": "La cancelación de una recurrente no afecta a las ejecuciones ya completadas"
+    },
+    {
+      "id": "RN-F015-05",
+      "module": "scheduled",
+      "description": "Las recurrentes mensuales en días inexistentes se ejecutan el último día hábil del mes"
+    },
+    {
+      "id": "RN-F015-06",
+      "module": "scheduled",
+      "description": "No se puede editar el IBAN destino de una recurrente activa; hay que cancelar y crear nueva"
+    },
+    {
+      "id": "RN-F015-07",
+      "module": "scheduled",
+      "description": "El historial de ejecuciones de transferencias programadas es inmutable"
+    },
+    {
+      "id": "RN-001",
+      "module": "notifications",
+      "description": "Solo dispositivos con token VAPID registrado activo reciben notificaciones"
+    },
+    {
+      "id": "RN-002",
+      "module": "notifications",
+      "description": "Un cliente puede registrar hasta 5 dispositivos simultáneamente"
+    },
+    {
+      "id": "RN-003",
+      "module": "notifications",
+      "description": "El registro VAPID expira a los 12 meses sin actividad"
+    },
+    {
+      "id": "RN-004",
+      "module": "notifications",
+      "description": "Las notificaciones de movimientos se envían en tiempo real, máximo 30 segundos tras el evento"
+    },
+    {
+      "id": "RN-005",
+      "module": "notifications",
+      "description": "Los movimientos por importe inferior al umbral configurado no generan notificación por defecto"
+    },
+    {
+      "id": "RN-006",
+      "module": "notifications",
+      "description": "El cliente puede desactivar categorías individualmente; la categoría Seguridad siempre permanece activa"
+    },
+    {
+      "id": "RN-012",
+      "module": "cards",
+      "description": "El cliente solo visualiza tarjetas vinculadas a su identidad verificada en Core Banking"
+    },
+    {
+      "id": "RN-013",
+      "module": "cards",
+      "description": "El número de tarjeta se muestra enmascarado (últimos 4 dígitos visibles)"
+    },
+    {
+      "id": "RN-014",
+      "module": "cards",
+      "description": "El bloqueo de tarjeta es inmediato en todos los canales"
+    },
+    {
+      "id": "RN-015",
+      "module": "cards",
+      "description": "El desbloqueo requiere 2FA si han transcurrido más de 60 minutos desde el bloqueo"
+    },
+    {
+      "id": "RN-016",
+      "module": "cards",
+      "description": "Una tarjeta bloqueada por el banco no puede ser desbloqueada por el cliente desde la app"
+    },
+    {
+      "id": "RN-017",
+      "module": "cards",
+      "description": "El cambio de PIN requiere 2FA obligatorio y no puede coincidir con los últimos 3 PINs usados"
+    },
+    {
+      "id": "RN-018",
+      "module": "cards",
+      "description": "El PIN no se almacena en BankPortal; se transmite cifrado directamente al Core Banking"
+    },
+    {
+      "id": "RN-019",
+      "module": "cards",
+      "description": "Los límites de tarjeta están acotados por los máximos del contrato con el banco"
+    },
+    {
+      "id": "RN-020",
+      "module": "cards",
+      "description": "El cambio de límites tiene efecto en el siguiente día hábil bancario"
+    },
+    {
+      "id": "RN-021",
+      "module": "cards",
+      "description": "Las notificaciones de tarjeta se disparan también para cargos rechazados"
+    },
+    {
+      "id": "RN-022",
+      "module": "cards",
+      "description": "El historial de transacciones cubre los últimos 13 meses (normativa EU)"
+    },
+    {
+      "id": "RN-023",
+      "module": "cards",
+      "description": "Las transacciones en divisa extranjera muestran importe original y tipo de cambio aplicado"
+    },
+    {
+      "id": "RN-F017-01",
+      "module": "directdebit",
+      "description": "La creación de mandato SEPA requiere autenticación fuerte OTP (SCA PSD2 Art.97)"
+    },
+    {
+      "id": "RN-F017-02",
+      "module": "directdebit",
+      "description": "El IBAN del acreedor debe cumplir ISO 13616 y pertenecer a un país SEPA (34 países)"
+    },
+    {
+      "id": "RN-F017-03",
+      "module": "directdebit",
+      "description": "No pueden existir dos mandatos ACTIVE con el mismo acreedor e IBAN para el mismo cliente"
+    },
+    {
+      "id": "RN-F017-04",
+      "module": "directdebit",
+      "description": "El cliente solo puede consultar sus propios mandatos y recibos (aislamiento estricto por usuario)"
+    },
+    {
+      "id": "RN-F017-05",
+      "module": "directdebit",
+      "description": "Los recibos se muestran en orden cronológico descendente, paginados con máximo 50 registros por página"
+    },
+    {
+      "id": "RN-F017-06",
+      "module": "directdebit",
+      "description": "La cancelación de mandato requiere OTP 2FA (operación de alto impacto)"
+    },
+    {
+      "id": "RN-F017-07",
+      "module": "directdebit",
+      "description": "No se puede cancelar si existe recibo PENDING con due_date <= hoy + 2 días hábiles (PSD2 Art.80 D-2)"
+    },
+    {
+      "id": "RN-F017-08",
+      "module": "notifications",
+      "description": "Las notificaciones push de domiciliación son opcionales si el cliente no tiene token de dispositivo registrado"
+    },
+    {
+      "id": "RN-F017-09",
+      "module": "notifications",
+      "description": "El tiempo máximo entre el evento de domiciliación y la notificación push es de 30 segundos"
+    },
+    {
+      "id": "RN-F017-10",
+      "module": "directdebit",
+      "description": "La exportación del extracto de domiciliaciones cubre el historial completo del mandato seleccionado"
+    },
+    {
+      "id": "RN-F018-01",
+      "module": "export",
+      "description": "El rango máximo de historial exportable es 12 meses desde la fecha de solicitud (PSD2 Art.47 §2)"
+    },
+    {
+      "id": "RN-F018-02",
+      "module": "export",
+      "description": "El PAN de tarjeta debe aparecer enmascarado — solo últimos 4 dígitos visibles (PCI-DSS Req.3.4)"
+    },
+    {
+      "id": "RN-F018-03",
+      "module": "export",
+      "description": "El PDF incluye hash SHA-256 del contenido como garantía de integridad y no repudio"
+    },
+    {
+      "id": "RN-F018-04",
+      "module": "export",
+      "description": "Máximo 500 registros por exportación; si se supera, el sistema informa y solicita reducir el rango"
+    },
+    {
+      "id": "RN-F018-05",
+      "module": "export",
+      "description": "El CSV usa UTF-8 BOM para compatibilidad con Excel en español (evita problemas con caracteres acentuados)"
+    },
+    {
+      "id": "RN-F018-06",
+      "module": "export",
+      "description": "El separador de campos CSV es ';' (estándar europeo) y el separador decimal es ','"
+    },
+    {
+      "id": "RN-F018-07",
+      "module": "export",
+      "description": "El PAN no se incluye en ninguna columna del CSV; las tarjetas se referencian por alias o últimos 4 dígitos"
+    },
+    {
+      "id": "RN-F018-08",
+      "module": "export",
+      "description": "La primera fila del CSV contiene los nombres de columna en español"
+    },
+    {
+      "id": "RN-F018-09",
+      "module": "export",
+      "description": "La fecha mínima seleccionable para exportación es 12 meses atrás desde la fecha actual"
+    },
+    {
+      "id": "RN-F018-10",
+      "module": "export",
+      "description": "Si el preview count supera 500 registros el sistema muestra aviso y bloquea la exportación hasta reducir el rango"
+    },
+    {
+      "id": "RN-F018-11",
+      "module": "export",
+      "description": "Los filtros aplicados se registran en el export_audit_log para trazabilidad GDPR"
+    },
+    {
+      "id": "RN-F018-12",
+      "module": "audit",
+      "description": "El audit log de exportaciones es asíncrono — su fallo no interrumpe la exportación (fire-and-forget x3)"
+    },
+    {
+      "id": "RN-F018-13",
+      "module": "audit",
+      "description": "Retención obligatoria del audit log de exportaciones: 7 años (GDPR Art.17 §3.b y PCI-DSS Req.10.7)"
+    },
+    {
+      "id": "RN-F018-14",
+      "module": "audit",
+      "description": "Solo usuarios con rol ADMIN pueden consultar el audit log completo de exportaciones"
+    },
+    {
+      "id": "RN-F018-15",
+      "module": "audit",
+      "description": "El hash SHA-256 del PDF generado se almacena en el audit log para verificación posterior"
+    },
+    {
+      "id": "RN-DEBT035-01",
+      "module": "directdebit",
+      "description": "Al recibir estado RETURNED del CoreBanking el mandato se actualiza con R-code y motivo SEPA"
+    },
+    {
+      "id": "RN-DEBT035-02",
+      "module": "directdebit",
+      "description": "Se envía notificación push al titular con descripción legible del R-code (ej: R01='Fondos insuficientes')"
+    },
+    {
+      "id": "RN-DEBT035-03",
+      "module": "directdebit",
+      "description": "El evento RETURNED queda registrado en el audit trail con timestamp, mandato_id y R-code"
+    },
+    {
+      "id": "RN-F019-01",
+      "module": "profile",
+      "description": "El email es solo lectura — no puede modificarse desde la app (requiere tramite presencial en oficina)"
+    },
+    {
+      "id": "RN-F019-02",
+      "module": "profile",
+      "description": "El telefono se muestra parcialmente enmascarado en la consulta (primeros digitos ocultos)"
+    },
+    {
+      "id": "RN-F019-03",
+      "module": "profile",
+      "description": "Si kycStatus = PENDING, todos los campos del perfil son solo lectura — HTTP 423 si intenta editar"
+    },
+    {
+      "id": "RN-F019-04",
+      "module": "profile",
+      "description": "Tiempo de respuesta GET /api/v1/profile < 1 segundo bajo carga normal"
+    },
+    {
+      "id": "RN-F019-05",
+      "module": "profile",
+      "description": "El cambio de telefono movil requiere verificacion OTP enviado al numero actual — SCA PSD2 Art.97"
+    },
+    {
+      "id": "RN-F019-06",
+      "module": "profile",
+      "description": "El email NO es campo modificable bajo ninguna circunstancia desde la API — campo ignorado en PATCH"
+    },
+    {
+      "id": "RN-F019-07",
+      "module": "profile",
+      "description": "Validacion cruzada con KYC: si kycStatus = PENDING la actualizacion de perfil devuelve HTTP 423 Locked"
+    },
+    {
+      "id": "RN-F019-08",
+      "module": "profile",
+      "description": "Todos los cambios de perfil se registran en audit_log con timestamp, IP y valores anterior/nuevo"
+    },
+    {
+      "id": "RN-F019-09",
+      "module": "profile",
+      "description": "Nombre y apellidos no pueden quedar vacios — longitud minima 2 caracteres"
+    },
+    {
+      "id": "RN-F019-10",
+      "module": "profile",
+      "description": "La sesion actual (isCurrent=true) no puede cerrarse remotamente — HTTP 409 Conflict"
+    },
+    {
+      "id": "RN-F019-11",
+      "module": "profile",
+      "description": "El cierre remoto de sesion invalida el JWT inmediatamente via Redis blacklist usando TokenService (S20)"
+    },
+    {
+      "id": "RN-F019-12",
+      "module": "profile",
+      "description": "La IP de sesion se muestra siempre enmascarada en el listado (hereda RN-F002-01)"
+    },
+    {
+      "id": "RN-F019-13",
+      "module": "profile",
+      "description": "Maximo 5 sesiones simultaneas por usuario (hereda RN-F003-04)"
+    },
+    {
+      "id": "RN-F019-14",
+      "module": "profile",
+      "description": "El cierre remoto de sesion queda registrado en audit_log con sessionId, userId e IP"
+    },
+    {
+      "id": "RN-F019-15",
+      "module": "privacy",
+      "description": "El consentimiento de tipo SECURITY no puede desactivarse — HTTP 422 con mensaje explicativo (hereda RN-F004-06)"
+    },
+    {
+      "id": "RN-F019-16",
+      "module": "privacy",
+      "description": "Cada cambio de consentimiento genera registro inmutable en consent_history: userId, tipo, valor_anterior, valor_nuevo, timestamp, IP_origen"
+    },
+    {
+      "id": "RN-F019-17",
+      "module": "privacy",
+      "description": "Los consentimientos de COMMUNICATIONS se sincronizan con preferencias de notificacion (FEAT-014) transaccionalmente"
+    },
+    {
+      "id": "RN-F019-18",
+      "module": "privacy",
+      "description": "El historial consent_history es solo lectura para el usuario — no se puede modificar ni eliminar"
+    },
+    {
+      "id": "RN-F019-19",
+      "module": "privacy",
+      "description": "Solo puede haber un data-export activo (PENDING o IN_PROGRESS) por usuario simultaneamente — HTTP 409 si se solicita otro"
+    },
+    {
+      "id": "RN-F019-20",
+      "module": "privacy",
+      "description": "La generacion del data-export es asincrona (@Async) — SLA maximo 24 horas desde la solicitud"
+    },
+    {
+      "id": "RN-F019-21",
+      "module": "privacy",
+      "description": "El JSON del data-export lleva firma SHA-256 del contenido para garantia de integridad (hereda patron FEAT-018)"
+    },
+    {
+      "id": "RN-F019-22",
+      "module": "privacy",
+      "description": "Se envia notificacion push al usuario cuando el data-export esta disponible para descarga (reutiliza NotificationService FEAT-014)"
+    },
+    {
+      "id": "RN-F019-23",
+      "module": "privacy",
+      "description": "El enlace de descarga del data-export expira en 48 horas — HTTP 410 Gone pasado ese tiempo"
+    },
+    {
+      "id": "RN-F019-24",
+      "module": "privacy",
+      "description": "La solicitud de data-export queda registrada en gdpr_requests con estado PENDING y sla_deadline = createdAt + 30 dias"
+    },
+    {
+      "id": "RN-F019-25",
+      "module": "privacy",
+      "description": "La solicitud de eliminacion requiere OTP 2FA valido — SCA aplicado por seguridad aunque GDPR no lo exige expresamente"
+    },
+    {
+      "id": "RN-F019-26",
+      "module": "privacy",
+      "description": "El enlace de email de confirmacion de eliminacion es de un solo uso con TTL 24 horas"
+    },
+    {
+      "id": "RN-F019-27",
+      "module": "privacy",
+      "description": "Tras confirmacion email la cuenta queda SUSPENDED inmediatamente — no puede operar en BankPortal"
+    },
+    {
+      "id": "RN-F019-28",
+      "module": "privacy",
+      "description": "Borrado logico: nombre → USUARIO ELIMINADO, apellidos → string vacio, email → hash SHA-256 irreversible, telefono → null, direccion → null"
+    },
+    {
+      "id": "RN-F019-29",
+      "module": "privacy",
+      "description": "Los registros de audit_log y gdpr_requests se conservan integros tras borrado logico — excepcion legal GDPR Art.17§3.b (6 años)"
+    },
+    {
+      "id": "RN-F019-30",
+      "module": "privacy",
+      "description": "Notificacion a CoreBanking via webhook POST /corebankng/api/account-deletion — fire-and-forget: si falla se registra DEBT-040, el proceso no se bloquea"
+    },
+    {
+      "id": "RN-F019-31",
+      "module": "privacy",
+      "description": "SLA GDPR Art.12§3: ejecucion completa del borrado logico en 30 dias desde confirmacion del usuario"
+    },
+    {
+      "id": "RN-F019-32",
+      "module": "privacy",
+      "description": "El usuario recibe email de confirmacion de inicio del borrado y email de confirmacion de borrado completado (dia 30)"
+    },
+    {
+      "id": "RN-F019-33",
+      "module": "admin",
+      "description": "Solo usuarios con rol ADMIN pueden acceder al endpoint GET /api/v1/admin/gdpr-requests"
+    },
+    {
+      "id": "RN-F019-34",
+      "module": "admin",
+      "description": "El SLA de respuesta a solicitudes GDPR es 30 dias desde la solicitud (GDPR Art.12§3)"
+    },
+    {
+      "id": "RN-F019-35",
+      "module": "admin",
+      "description": "Si sla_deadline - NOW() < 5 dias y estado != COMPLETED: alerta push a usuarios ADMIN + sla_alert_sent = true"
+    },
+    {
+      "id": "RN-F019-36",
+      "module": "admin",
+      "description": "Retencion obligatoria del log gdpr_requests: 6 años (GDPR Art.17§3.b + Ley Contabilidad)"
+    },
+    {
+      "id": "RN-F019-37",
+      "module": "admin",
+      "description": "El log gdpr_requests es append-only — no se permiten UPDATE ni DELETE de registros historicos"
+    }
+  ],
+  "modules": [
+    "authentication",
+    "audit",
+    "session",
+    "trusteddevice",
+    "notification",
+    "account",
+    "transfer",
+    "bill",
+    "dashboard",
+    "profile",
+    "kyc",
+    "scheduled",
+    "cards",
+    "notifications"
+  ],
+  "regulations": [
+    "PSD2-SCA",
+    "PSD2-AIS",
+    "PCI-DSS",
+    "GDPR",
+    "SEPA",
+    "SEPA-DD",
+    "AML-KYC"
+  ],
+  "total_business_rules": 166,
+  "last_sprint_consolidated": 21,
+  "last_feat": "FEAT-019",
+  "updated_at": "2026-03-31T16:50:30.503Z"
+}

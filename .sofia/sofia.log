@@ -207,3 +207,11 @@
 [2026-03-31T20:15:50.715Z] [STEP-5b] [security-agent] COMPLETED → SEC-FEAT-019-sprint21.md | Semáforo: YELLOW | cve_critical=0 cve_high=0 sast=3 blocker=0 | DEBT-040(5.3) DEBT-041(4.8) DEBT-042(2.1) | gate_pending: G-5b
 [2026-03-31T20:16:46.290Z] [GATE-G5b] [security-agent] AUTO-APPROVED → YELLOW semaphore, cve_critical=0 | Sprint 21 FEAT-019 | proceeding to Step 6 QA
 [2026-04-01T05:31:12.640Z] [STEP-6] [qa-tester] COMPLETED → QA-FEAT-019-sprint21.md | 69 TCs: 65 PASS 0 FAIL 4 BLOCKED | Gherkin 16/16 | WCAG 5/5 | INT 9/9 | Veredicto: LISTO PARA RELEASE CON CONDICIONES | gate_pending: G-6
+[2026-04-01T05:34:58.606Z] [GATE-G6] [qa-lead+product-owner] APPROVED → Step 6 QA | Sprint 21 FEAT-019 | proceeding to Step 7 DevOps
+[2026-04-01T05:36:48.855Z] [STEP-7] [devops] COMPLETED → RELEASE-NOTES-v1.21.0.md + RUNBOOK-v1.21.0.md | tag: v1.21.0 | flyway: V22 | gate: G-7 auto-approved
+[2026-04-01T05:43:24.803530+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 63 func | 130+ RN
+[2026-04-01T05:43:49.573Z] [STEP-7] [devops] COMPLETED → RELEASE-NOTES-v1.21.0.md + RUNBOOK-v1.21.0.md
+[2026-04-01T05:43:49.573Z] [GATE-G7] [release-manager] APPROVED
+[2026-04-01T05:43:49.573Z] [STEP-8] [doc-agent] COMPLETED → 10 DOCX + 3 XLSX + SPRINT-021-data.json
+[2026-04-01T05:43:49.573Z] [GATE-G8] [pm] APPROVED
+[2026-04-01T05:43:49.573Z] [STEP-8b] [fa-agent] COMPLETED → FA-BankPortal-Banco-Meridian.docx v3.1 | 70 FA, 166 RN S1-S21 | validate-fa-index: OK
