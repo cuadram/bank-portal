@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { environment } from '../../../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 /**
  * LoginComponent — pantalla de login.
- * BUG-VER-002 fix (LA-STG-002, 2026-04-01): versión/sprint leídos de environment.ts
- * — eliminada cadena hardcodeada 'Sprint 13 · v1.13.0'.
+ * BUG-VER-002 fix (LA-STG-002, 2026-04-01): version/sprint leídos de environment.ts.
  * BankPortal · SOFIA Angular Developer
  */
 @Component({
@@ -77,7 +76,6 @@ export class LoginComponent {
   loading  = false;
   error    = '';
 
-  // LA-STG-002: interpolados desde environment.ts — nunca hardcodeados
   readonly version = environment.version;
   readonly sprint  = environment.sprint;
   readonly env     = environment.envLabel;
@@ -91,19 +89,11 @@ export class LoginComponent {
     }
     this.loading = true;
     this.error   = '';
-
     this.http.post<{ accessToken: string }>('/auth/login', {
-      email:    this.username,
-      password: this.password
+      email: this.username, password: this.password
     }).subscribe({
-      next: res => {
-        localStorage.setItem('access_token', res.accessToken);
-        this.router.navigate(['/dashboard']);
-      },
-      error: () => {
-        this.loading = false;
-        this.error   = 'Email o contraseña incorrectos';
-      }
+      next: res => { localStorage.setItem('access_token', res.accessToken); this.router.navigate(['/dashboard']); },
+      error: () => { this.loading = false; this.error = 'Email o contraseña incorrectos'; }
     });
   }
 }
