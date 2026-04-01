@@ -4,8 +4,10 @@ import com.experis.sofia.bankportal.audit.domain.AuditLogService;
 import com.experis.sofia.bankportal.profile.application.dto.*;
 import com.experis.sofia.bankportal.profile.domain.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -26,6 +28,9 @@ public class UpdateProfileUseCase {
 
     @Transactional
     public ProfileResponse execute(UUID userId, UpdateProfileRequest req, String ip) {
+        // RN-F019-01: el email no es modificable mediante PATCH /profile
+        if (req.email() != null)
+            throw new ProfileValidationException("email", "EMAIL_CANNOT_BE_MODIFIED");
         if (req.phone() != null && !PHONE_E164.matcher(req.phone()).matches())
             throw new ProfileValidationException("phone", "INVALID_FORMAT");
         if (req.address() != null && req.address().postalCode() != null
@@ -64,6 +69,8 @@ public class UpdateProfileUseCase {
         return ip.replaceAll("[^:]+$", "***"); // IPv6 simplificado
     }
 
+    /** LA-TEST-003: @ResponseStatus obligatorio en excepciones de dominio. */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public static class ProfileValidationException extends RuntimeException {
         private final String field;
         private final String error;

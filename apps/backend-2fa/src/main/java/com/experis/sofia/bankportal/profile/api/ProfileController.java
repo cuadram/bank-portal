@@ -2,6 +2,8 @@ package com.experis.sofia.bankportal.profile.api;
 
 import com.experis.sofia.bankportal.profile.application.*;
 import com.experis.sofia.bankportal.profile.application.dto.*;
+import com.experis.sofia.bankportal.session.application.dto.SessionResponse;
+import com.experis.sofia.bankportal.session.application.usecase.ListActiveSessionsUseCase;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,10 +31,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class ProfileController {
 
-    private final GetProfileUseCase     getProfile;
-    private final UpdateProfileUseCase  updateProfile;
-    private final ChangePasswordUseCase changePassword;
-    private final ManageSessionsUseCase manageSessions;
+    private final GetProfileUseCase          getProfile;
+    private final UpdateProfileUseCase       updateProfile;
+    private final ChangePasswordUseCase      changePassword;
+    private final ManageSessionsUseCase      manageSessions;
+    private final ListActiveSessionsUseCase  listSessions;
 
     // SAST-002: Bucket4j — rate limiter por userId para cambio de contraseña
     private final Map<UUID, Bucket> passwordBuckets = new ConcurrentHashMap<>();
@@ -72,6 +76,16 @@ public class ProfileController {
 
         changePassword.execute(uid, jti(req), body);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * GET /api/v1/profile/sessions — lista sesiones activas del usuario.
+     * RF-019-03: el usuario puede ver y revocar sesiones abiertas desde el perfil.
+     * Delega en ListActiveSessionsUseCase (FEAT-002 US-101), marcando la sesión actual.
+     */
+    @GetMapping("/sessions")
+    public ResponseEntity<List<SessionResponse>> listSessions(HttpServletRequest req) {
+        return ResponseEntity.ok(listSessions.execute(userId(req), jti(req)));
     }
 
     @DeleteMapping("/sessions/{jtiToRevoke}")
