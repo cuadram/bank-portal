@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "sofia_version": "2.3",
+  "sofia_version": "2.4",
   "status": "completed",
   "project": "bank-portal",
   "client": "Banco Meridian",
@@ -383,7 +383,7 @@
     "report": "docs/code-review/CR-FEAT-019-sprint21.md",
     "reviewed_at": "2026-03-31T20:09:39.586Z"
   },
-  "updated_at": "2026-04-01T05:57:48.784Z",
+  "updated_at": "2026-04-01T09:40:00.000Z",
   "resume_next": "Gate G-1 pendiente. Aprobar para continuar con Step 2 Requirements.",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -1057,6 +1057,21 @@
     "context_fixes": 3,
     "applied_at": "2026-03-27T14:57:17.000Z"
   },
+  "hotfix_stack_startup": {
+    "date": "2026-04-01",
+    "commit": "e744da0",
+    "trigger": "Levantamiento stack local STG — smoke test fallaba 5/17",
+    "fixes": [
+      "F1: PATCH /profile rechaza campo email → 400 (RN-F019-01) — UpdateProfileRequest + UpdateProfileUseCase",
+      "F2: GET /profile/sessions → 200 — endpoint añadido a ProfileController delegando en ListActiveSessionsUseCase",
+      "F3: POST /data-export 2a vez → 409 cooldown 24h (RN-F019-12) — query findRecentByUserIdAndTipo",
+      "F4: GET /data-export/status → 200 incluyendo COMPLETED — query findLatestByUserIdAndTipo",
+      "INFRA: V22__profile_gdpr.sql — ADD CONSTRAINT IF NOT EXISTS → DO $body$ block (PostgreSQL syntax fix)"
+    ],
+    "smoke_test_result": "17/17 PASS",
+    "smoke_test_log": "docs/qa/SMOKE-TEST-v1.21.0-FIXES-20260401.log",
+    "stack_status": "UP — backend:8081 frontend:4201 postgres:5433 redis:6380 mailhog:8025"
+  },
   "smoke_test": {
     "executed_at": "2026-03-27T20:51:05+01:00",
     "result": "PASS",
@@ -1110,7 +1125,8 @@
       "LA-TEST-001",
       "LA-TEST-002",
       "LA-TEST-003",
-      "LA-TEST-004"
+      "LA-TEST-004",
+      "LA-021-02"
     ],
     "angular-developer": [
       "LA-019-05",
@@ -1118,7 +1134,12 @@
       "LA-019-10",
       "LA-019-11",
       "LA-019-12",
-      "LA-019-14"
+      "LA-019-14",
+      "LA-FRONT-001",
+      "LA-FRONT-002",
+      "LA-FRONT-003",
+      "LA-FRONT-004",
+      "LA-FRONT-005"
     ],
     "code-reviewer": [
       "LA-019-06",
@@ -1151,10 +1172,15 @@
       "LA-019-07",
       "LA-019-08",
       "LA-019-13",
-      "LA-021-01"
+      "LA-021-01",
+      "LA-021-02",
+      "LA-021-03"
     ],
     "fa-agent": [
       "LA-021-01"
+    ],
+    "documentation-agent": [
+      "LA-021-03"
     ]
   },
   "ux_ui_agent": {
@@ -1172,13 +1198,15 @@
   "pipeline_steps_total": 15,
   "agents_total": 21,
   "last_package": {
-    "version": "2.3",
-    "path": "dist/sofia-deploy-v2.3.zip",
-    "size_kb": 486.1,
-    "entries": 92,
+    "version": "2.4",
+    "path": "dist/sofia-deploy-v2.4.zip",
+    "size_kb": 544.6,
+    "entries": 157,
     "skills": 21,
-    "packaged_at": "2026-03-30T14:20:12.820Z",
-    "notes": "fa-agent v2.2 + orchestrator v2.2: LA-020-08 CHECK 3b docx verification"
+    "packaged_at": "2026-04-01T06:08:10.192Z",
+    "notes": "LA-021-01/02/03 + LA-FRONT-001..005 consolidadas. 4 skills actualizados (angular-developer v2.0, documentation-agent v2.0, java-developer +LA-021-02, orchestrator v2.3).",
+    "confluence_page": "6914050",
+    "confluence_url": "https://nemtec.atlassian.net/wiki/spaces/SOFIA/pages/6914050"
   },
   "hotfix_s20": {
     "version": "HOTFIX-S20",
