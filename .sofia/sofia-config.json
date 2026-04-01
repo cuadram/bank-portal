@@ -1,11 +1,11 @@
 {
-  "_comment": "SOFIA v2.0 — Configuración del proyecto. Editar con: python3 .sofia/scripts/sofia-wizard.py --update",
-  "sofia_version": "2.3",
+  "_comment": "SOFIA v2.5 — Configuración del proyecto. Editar con: python3 .sofia/scripts/sofia-wizard.py --update",
+  "sofia_version": "2.5",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "project_description": "Portal bancario con microservicios Java + Angular",
   "created_at": "2026-03-18T20:18:57Z",
-  "updated_at": "2026-03-30T18:49:18.664Z",
+  "updated_at": "2026-04-01T12:30:59.100Z",
   "stack": {
     "backend": [
       "java"
@@ -135,7 +135,7 @@
     ]
   },
   "workflow_directives": {
-    "version": "2026-03-26",
+    "version": "2026-04-01",
     "persist_all_artifacts": true,
     "read_disk_on_continue": true,
     "gates_explicit_approval": true,
@@ -145,12 +145,26 @@
     "all_deliverables_mandatory": true,
     "dashboard_on_every_gate": true,
     "gate_hook_script": ".sofia/scripts/gate-dashboard-hook.js",
-    "cmmi_lights_in_dashboard": true
+    "cmmi_lights_in_dashboard": true,
+    "stg_pre_check_script": ".sofia/scripts/stg-pre-check.js",
+    "stg_pre_check_mandatory": true,
+    "version_from_environment": true
   },
   "agents": {
     "total": 21,
     "new_in_v2": [
       "fa-agent"
+    ],
+    "updated_in_v24": [
+      "angular-developer",
+      "documentation-agent",
+      "java-developer",
+      "orchestrator"
+    ],
+    "updated_in_v25": [
+      "orchestrator",
+      "angular-developer",
+      "code-reviewer"
     ]
   },
   "guardrails": {
@@ -220,6 +234,53 @@
       ],
       "G-6": [
         "GR-003"
+      ]
+    },
+    "frontend": {
+      "version": "1.0",
+      "activated": "2026-04-01",
+      "origin": "STG Verification v1.21.0 — BUG-VER-001/002/003",
+      "script": ".sofia/scripts/stg-pre-check.js",
+      "checks": {
+        "GR-007": {
+          "name": "forkJoin + catchError→EMPTY detection",
+          "blocking": true,
+          "gate": "G-4",
+          "la": "LA-STG-001"
+        },
+        "GR-008": {
+          "name": "Hardcoded version/sprint in templates",
+          "blocking": true,
+          "gate": "G-4",
+          "la": "LA-STG-002"
+        },
+        "GR-009": {
+          "name": "Frontend endpoints exist in backend",
+          "blocking": true,
+          "gate": "G-5",
+          "la": "LA-STG-003"
+        }
+      },
+      "mandatory_pre_gate": {
+        "G-4": [
+          "GR-007",
+          "GR-008"
+        ],
+        "G-5": [
+          "GR-007",
+          "GR-008",
+          "GR-009"
+        ],
+        "G-4b": [
+          "GR-007",
+          "GR-008",
+          "GR-009"
+        ]
+      },
+      "required_environment_fields": [
+        "version",
+        "sprint",
+        "envLabel"
       ]
     }
   }

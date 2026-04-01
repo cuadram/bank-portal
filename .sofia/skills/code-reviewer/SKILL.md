@@ -454,3 +454,97 @@ fs.copyFileSync('.sofia/session.json', snapPath);
 
 > Si este skill **no** genera artefactos de fichero (ej: atlassian-agent opera
 > sobre Jira/Confluence), usar las URLs o IDs de los recursos creados/actualizados.
+
+---
+
+## CHECKLIST ADICIONAL — Lecciones LA-TEST-001..004 (2026-03-31)
+
+### LA-TEST-001 — Verificar nombres de atributos JWT
+```bash
+# En G-5, verificar coherencia entre filtro y controlador:
+grep -r "setAttribute(" apps/backend-2fa/src/main/java/ | grep -i "userId\|jwt\|auth"
+grep -r "getAttribute(" apps/backend-2fa/src/main/java/ | grep -i "userId\|jwt\|auth"
+# Los nombres deben coincidir exactamente
+```
+
+### LA-TEST-002 — Verificar filtros type vs category
+En queries SQL de repositorios, confirmar:
+- Filtros de dirección financiera usan: `t.type IN ('CARGO','ABONO')`
+- Filtros de categoría de negocio usan: `t.category = ?`
+- Nunca mezclar ambos dominios
+
+### LA-TEST-003 — Verificar mapeo de excepciones
+Para toda `RuntimeException` custom en el PR:
+```bash
+grep -r "class.*Exception" apps/backend-2fa/src/main/java/ | grep -v "test"
+# Cada una debe aparecer en un @ExceptionHandler o tener @ResponseStatus
+```
+Discrepancia = bloqueante.
+
+### LA-TEST-004 — Verificar tipos temporales en JdbcClient
+En repositorios que usen `JdbcClient.params()` con fechas:
+- `Instant` → debe convertirse con `Timestamp.from()`
+- `LocalDate` → directo, OK
+- `LocalDateTime` → directo, OK
+- `OffsetDateTime` → para TIMESTAMPTZ, OK
+Pasar `Instant` directamente = bloqueante.
+
+---
+
+## CHECKLIST FRONTEND — Lecciones LA-STG-001..003 (2026-04-01) [NUEVO v2.5]
+
+### Verificación obligatoria con stg-pre-check.js en G-5
+
+Cuando el PR incluye cambios Angular, ejecutar ANTES de aprobar el Gate G-5:
+
+```bash
+node .sofia/scripts/stg-pre-check.js
+# EXIT 2 = BLOQUEANTE — no aprobar G-5 hasta EXIT 0 o EXIT 1
+```
+
+### LA-STG-001 — forkJoin + catchError NUNCA retorna EMPTY
+
+En cualquier fichero con `forkJoin`, revisar TODOS los observables participantes:
+- ❌ BLOQUEANTE: `catchError(err => { ...; return EMPTY; })` en observable de forkJoin
+- ✅ CORRECTO: `catchError(err => { ...; return of([]); })` o `of(null)`
+
+Causa: EMPTY completa sin emitir → forkJoin nunca emite → skeleton eterno.
+
+```bash
+# Verificación manual en G-5:
+node -e "
+const fs=require('fs'),path=require('path');
+function walk(d){fs.readdirSync(d).forEach(f=>{const p=path.join(d,f);
+if(fs.statSync(p).isDirectory()&&f!=='node_modules')walk(p);
+else if(f.endsWith('.ts')){const c=fs.readFileSync(p,'utf8');
+if(c.includes('forkJoin')&&c.includes('return EMPTY'))console.log('REVISAR:',p);}});
+}
+walk('apps/frontend-portal/src');
+"
+```
+
+### LA-STG-002 — Versiones/sprints no hardcodeados en templates
+
+Verificar que ningún template (.ts / .html) contiene patrones `Sprint N · vX.Y.Z`:
+- ❌ BLOQUEANTE: `<small>Sprint 13 · v1.13.0</small>`
+- ✅ CORRECTO: `<small>Sprint {{ sprint }} · v{{ version }}</small>`
+
+Verificar que environment.ts y environment.prod.ts tienen los campos obligatorios:
+- `version`: string con versión del sprint actual
+- `sprint`: number con número del sprint actual
+- `envLabel`: string 'STG' | 'PRD' | 'DEV'
+
+### LA-STG-003 — Endpoints frontend verificados en backend
+
+Para cada servicio Angular nuevo o modificado, listar los endpoints consumidos
+y verificar que TODOS tienen implementación en un `@*Mapping` de un Controller Java:
+
+- ❌ BLOQUEANTE: endpoint consumido en forkJoin que devuelve 404 en backend
+- ✅ CORRECTO: endpoint documentado en OpenAPI + implementado en Controller
+
+Verificación cruzada:
+```bash
+# Extraer endpoints del frontend (ejecutar stg-pre-check.js — sección CHECK-3)
+node .sofia/scripts/stg-pre-check.js
+# Revisar la sección "Endpoints consumidos detectados" → todos deben mostrar ✓
+```
