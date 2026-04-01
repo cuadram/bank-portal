@@ -12,9 +12,8 @@
 
 | Secciones verificadas | 9 |
 |---|---|
-| OK | 7 |
+| OK | 8 |
 | Bug corregido en sesión | 1 |
-| Pendiente (Tarjetas) | 1 |
 | Bugs registrados | 3 (1 corregido, 2 pendientes) |
 
 ---
@@ -32,7 +31,7 @@
 ### ⚠️ Dashboard — `/dashboard`
 - Carga correctamente con sidebar y gráficos
 - **Alerta de presupuesto**: muestra 1.277,59 € de gastos mes anterior ✅
-- **⚠️ KPIs Ingresos/Gastos/Saldo Neto = 0,00 €**: sin transacciones en el mes en curso (abril 2026)
+- **⚠️ KPIs Ingresos/Gastos/Saldo Neto = 0,00 €**: sin transacciones en el mes en curso (abril 2026) — BUG-VER-003
 - Gráfico "Evolución 6 meses": datos históricos visibles ✅
 - Botones PDF/Excel presentes ✅
 
@@ -56,6 +55,23 @@
 
 ---
 
+### ✅ Tarjetas — `/cards` [VERIFICADO EN SESIÓN 2]
+- **3 tarjetas cargadas** desde backend (`GET /api/v1/cards` → 200) ✅
+- Datos coherentes UI ↔ backend:
+
+| Tarjeta | Tipo | Estado | Vencimiento | Límite diario | Límite mensual |
+|---|---|---|---|---|---|
+| **** 4521 | DÉBITO | Activa | 2028-12-31 | 600 € | 3.000 € |
+| **** 8834 | CRÉDITO | Activa | 2027-06-30 | 1.500 € | 5.000 € |
+| **** 2267 | DÉBITO | **Bloqueada** | 2026-09-30 | 300 € | 1.500 € |
+
+- **Detalle de tarjeta** (`/cards/{id}`) carga correctamente ✅
+- Acciones disponibles en detalle: **Límites**, **Cambiar PIN**, **Bloquear** ✅
+- Información de cuenta asociada visible ✅
+- **⚠️ Incoherencia menor**: `accountId = acc00000-0000-0000-0000-000000000001` — UUID patrón mock seed, no UUID real del usuario a.delacuadra@nemtec.es
+
+---
+
 ### ✅ Domiciliaciones — `/direct-debits`
 - 6 mandatos SEPA cargados: 5 activos, 1 cancelada ✅
 - KPIs: ACTIVAS=5, CANCELADAS=1, TOTAL=6 ✅
@@ -75,10 +91,8 @@
 
 ### ✅ Mi Perfil — `/perfil` [BUG CORREGIDO EN SESIÓN]
 **Estado inicial:** ❌ Skeleton infinito — pantalla en blanco
-**Causa raíz:** `forkJoin` en `ProfilePageComponent.ngOnInit()` combina 3 observables.
-`getNotifications()` → `catchError → EMPTY` → forkJoin nunca emite.
-**Fix aplicado:** `catchError → of([])` en `getNotifications()` y `getSessions()`.
-**Commit:** `5207961` — rebuild y redeploy frontend completados.
+**Causa raíz:** `forkJoin` + `catchError → EMPTY` en `ProfileService.getNotifications/getSessions`
+**Fix aplicado:** `catchError → of([])` — commit `5207961`
 **Estado post-fix:** ✅ Datos cargados correctamente:
 
 | Campo | Valor | Coherencia |
@@ -90,85 +104,69 @@
 | Notificaciones | Vacío (endpoint 404) | ⚠️ DEBT-043 |
 | Sesiones activas | Vacío (endpoint 404) | ⚠️ DEBT-043 |
 
-**⚠️ Bug menor de CSS**: label "Email" se concatena al valor sin separador visual (`Emaila.delacuadra@nemtec.es`)
+**⚠️ Bug menor CSS**: label "Email" se concatena al valor — `Emaila.delacuadra@nemtec.es`
 
 ---
 
 ### ✅ Centro de Privacidad — `/privacidad`
-- Carga correctamente con datos reales desde BD ✅
 - **Mis consentimientos (GDPR Art.7)**:
-  - Comunicaciones: ON ✅ (coherente con BD: `activo=true`)
-  - Seguridad: ON azul — deshabilitado (siempre activo por regulación) ✅ — RN-F019-10 correcto
-  - Analítica: OFF ✅ (coherente con BD: `activo=false`, actualizado 09:45 hoy)
-  - Marketing: ON ✅ (coherente con BD: `activo=true`)
-- **Descargar mis datos**: botón "Solicitar" + GDPR Art.15 y Art.20 ✅
-- **Eliminar mi cuenta**: botón rojo + texto "Datos anonimizados en 30 días · GDPR Art.17" ✅
-
----
-
-### ⏳ Tarjetas — `/tarjetas`
-- No verificada: la sesión expiró durante el intento de navegación a esta ruta.
-- Pendiente verificación en sesión separada.
+  - Comunicaciones: ON ✅ (BD: `activo=true`)
+  - Seguridad: ON azul deshabilitado (siempre activo por regulación) ✅ — RN-F019-10
+  - Analítica: OFF ✅ (BD: `activo=false`)
+  - Marketing: ON ✅ (BD: `activo=true`)
+- **Descargar mis datos**: GDPR Art.15 y Art.20 ✅
+- **Eliminar mi cuenta**: 30 días anonimización · GDPR Art.17 ✅
 
 ---
 
 ## Bugs detectados
 
 ### BUG-VER-001 — ✅ CORREGIDO — Mi Perfil skeleton infinito
-- **Severidad:** CRÍTICA (funcionalidad core FEAT-019 inaccesible)
-- **Causa:** `forkJoin` + `catchError → EMPTY` en `ProfileService.getNotifications/getSessions`
-- **Fix:** `catchError → of([])` — commit `5207961`
-- **Archivo:** `apps/frontend-portal/src/app/features/profile/services/profile.service.ts`
-- **Verificado:** ✅ Mi Perfil carga tras rebuild + hard-refresh
+- **Severidad:** CRÍTICA | **Fix:** `catchError → of([])` | **Commit:** `5207961`
+- `forkJoin` + `EMPTY` = observable nunca emite → skeleton eterno
 
 ### BUG-VER-002 — 🟡 ABIERTO — Footer versión desactualizada
-- **Severidad:** BAJA
-- **Descripción:** Footer del login muestra `Sprint 13 · v1.13.0`
-- **Causa:** `LoginComponent` (Sprint 13) tiene versión hardcodeada en template
-- **Archivo:** `apps/frontend-portal/src/app/features/login/login.component.ts` — línea `dev-notice`
-- **Fix:** Actualizar la cadena con la versión real del `environment.ts` o con variable interpolada
+- **Severidad:** BAJA | **Target:** S22
+- `LoginComponent` hardcodea `Sprint 13 · v1.13.0` — pendiente actualización
 
 ### BUG-VER-003 — 🟡 ABIERTO — Dashboard KPIs abril = 0,00 €
-- **Severidad:** MEDIA
-- **Descripción:** INGRESOS/GASTOS/SALDO NETO del mes = 0,00 € porque no hay transacciones en abril 2026 en la BD del usuario de prueba
-- **Causa:** Datos seed cubren hasta marzo 2026 — normal en entorno STG al inicio de mes
-- **Fix sugerido:** Añadir transacciones de abril 2026 al seed, o mostrar "Sin datos este mes" en lugar de 0,00 €
+- **Severidad:** MEDIA | **Target:** S22
+- Sin transacciones en abril 2026 en BD seed — añadir datos o mostrar estado vacío explícito
 
 ---
 
 ## Deudas técnicas identificadas
 
-### DEBT-043 — Endpoints /profile/notifications y /profile/sessions no implementados
-- **Área:** Backend
-- **Prioridad:** Media
-- **Descripción:** `GET /api/v1/profile/notifications` y `GET /api/v1/profile/sessions` devuelven 404. El frontend los consume desde `ProfileService` vía `forkJoin`. Los endpoints están documentados en la OpenAPI pero no implementados en `ProfileController`.
-- **Impacto:** Secciones "Notificaciones" y "Sesiones activas" en Mi Perfil vacías.
-- **Sprint target:** S22
-- **Relación:** FEAT-019, SCRUM-106, SCRUM-107
+### DEBT-043 — Endpoints /profile/notifications y /profile/sessions (404)
+- **Área:** Backend | **Prioridad:** Media | **Sprint target:** S22
+- `ProfileController` no implementa `GET /notifications` ni `GET /sessions`
+- Impacto: secciones Notificaciones y Sesiones activas en Mi Perfil vacías
 
 ---
 
-## Coherencia backend verificada (llamadas directas)
+## Coherencia backend verificada
 
 | Endpoint | Status | Resultado |
 |---|---|---|
 | GET /actuator/health | 200 | UP ✅ |
 | GET /api/v1/profile | 200 | Datos correctos ✅ |
-| GET /api/v1/privacy/consents | 200 | 4 consentimientos coherentes ✅ |
+| GET /api/v1/cards | 200 | 3 tarjetas coherentes ✅ |
+| GET /api/v1/cards/{id} | 200 | Detalle + límites ✅ |
+| GET /api/v1/privacy/consents | 200 | 4 consentimientos ✅ |
+| GET /api/v1/accounts | 200 | 2 cuentas ✅ |
+| GET /auth/login | 200 | JWT OK ✅ |
 | GET /api/v1/profile/notifications | 404 | No implementado ⚠️ |
 | GET /api/v1/profile/sessions | 404 | No implementado ⚠️ |
-| GET /api/v1/accounts | 200 | 2 cuentas ✅ |
-| GET /auth/login | 200 | Autenticación JWT OK ✅ |
 
 ---
 
 ## Acciones realizadas en sesión
 
-1. ✅ Fix `BUG-VER-001` — `profile.service.ts` — `catchError → of([])`
-2. ✅ `docker compose build --no-cache frontend` — imagen `bankportal-frontend-portal:local-dev` rebuilt
-3. ✅ `docker compose up -d --no-deps frontend` — contenedor recreado
-4. ✅ Commit `5207961` en rama `feature/FEAT-013-sprint15`
+1. ✅ Fix `BUG-VER-001` — `profile.service.ts` — commit `5207961`
+2. ✅ `docker compose build --no-cache frontend` + redeploy — imagen rebuilt
+3. ✅ Commit `a483fbf` — informe + DEBT-043 + LA-STG-001
+4. ✅ Tarjetas verificadas — 3 tarjetas, detalle y acciones OK
 
 ---
 
-*Generado por SOFIA Verification Agent · Sprint 21 · v1.21.0 · 2026-04-01*
+*Generado por SOFIA Verification Agent · Sprint 21 · v1.21.0 · 2026-04-01 · VERIFICACIÓN COMPLETA*

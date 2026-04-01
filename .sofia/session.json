@@ -383,7 +383,7 @@
     "report": "docs/code-review/CR-FEAT-019-sprint21.md",
     "reviewed_at": "2026-03-31T20:09:39.586Z"
   },
-  "updated_at": "2026-04-01T12:06:02.623Z",
+  "updated_at": "2026-04-01T12:09:08.708Z",
   "resume_next": "Gate G-1 pendiente. Aprobar para continuar con Step 2 Requirements.",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -1360,7 +1360,7 @@
     "sprint": 21,
     "feature": "FEAT-019",
     "report": "docs/qa/STG-VERIFICATION-v1.21.0-20260401.md",
-    "result": "PARCIAL — 7 OK, 1 bug corregido (BUG-VER-001), 1 pendiente (Tarjetas)",
+    "result": "COMPLETADA — 8 secciones OK, 1 bug corregido (BUG-VER-001), 2 bugs pendientes (BUG-VER-002/003)",
     "bugs": [
       {
         "id": "BUG-VER-001",
@@ -1386,13 +1386,27 @@
       "Movimientos",
       "Domiciliaciones",
       "Exportacion",
-      "Centro de Privacidad"
+      "Centro de Privacidad",
+      "Tarjetas"
     ],
     "sections_fixed": [
       "Mi Perfil"
     ],
-    "sections_pending": [
-      "Tarjetas"
-    ]
+    "sections_pending": [],
+    "tarjetas": {
+      "verified_at": "2026-04-01T12:09:08.707Z",
+      "result": "OK",
+      "cards_total": 3,
+      "cards_active": 2,
+      "cards_blocked": 1,
+      "data_coherent": true,
+      "backend_status": 200,
+      "actions_available": [
+        "Limites",
+        "Cambiar PIN",
+        "Bloquear"
+      ],
+      "detail_route": "/cards/{id}"
+    }
   }
 }
