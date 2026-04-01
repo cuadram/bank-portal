@@ -383,7 +383,7 @@
     "report": "docs/code-review/CR-FEAT-019-sprint21.md",
     "reviewed_at": "2026-03-31T20:09:39.586Z"
   },
-  "updated_at": "2026-04-01T12:09:08.708Z",
+  "updated_at": "2026-04-01T12:20:24.786Z",
   "resume_next": "Gate G-1 pendiente. Aprobar para continuar con Step 2 Requirements.",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -1408,5 +1408,16 @@
       ],
       "detail_route": "/cards/{id}"
     }
+  },
+  "stg_pre_check": {
+    "executed_at": "2026-04-01T12:20:24.784Z",
+    "errors": 0,
+    "warnings": 6,
+    "checks": [
+      "LA-STG-001",
+      "LA-STG-002",
+      "LA-STG-003"
+    ],
+    "result": "PASS"
   }
 }
