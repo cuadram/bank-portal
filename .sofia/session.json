@@ -383,7 +383,7 @@
     "report": "docs/code-review/CR-FEAT-019-sprint21.md",
     "reviewed_at": "2026-03-31T20:09:39.586Z"
   },
-  "updated_at": "2026-04-01T10:07:21.449Z",
+  "updated_at": "2026-04-01T12:06:02.623Z",
   "resume_next": "Gate G-1 pendiente. Aprobar para continuar con Step 2 Requirements.",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -1045,6 +1045,14 @@
       "description": "Documentation Agent generó solo 10 DOCX en Sprint 21 vs los 12+ obligatorios. Faltaban: CMMI-Evidence, Meeting-Minutes, Project-Plan, Quality-Summary, Risk-Register, Traceability, planning-doc.",
       "correction": "REGLA PERMANENTE: Documentation Agent DEBE generar siempre los 17 documentos estándar (10 técnicos + 7 CMMI/Gestión). Los 7 adicionales son BLOQUEANTES para Gate G-8 desde Sprint 22. Actualizar SKILL.md doc-agent y checklist G-8.",
       "registered_at": "2026-04-01T05:57:48.784Z"
+    },
+    {
+      "id": "LA-STG-001",
+      "sprint": 21,
+      "type": "frontend",
+      "description": "forkJoin en ProfilePageComponent bloqueado por catchError->EMPTY en endpoints 404. El componente quedaba en skeleton infinito porque EMPTY completa sin emitir y forkJoin requiere que todos los observables emitan.",
+      "correction": "REGLA: catchError en observables usados en forkJoin DEBE retornar of(valorDefecto) nunca EMPTY. EMPTY en forkJoin = deadlock silencioso.",
+      "registered_at": "2026-04-01T12:06:02.622Z"
     }
   ],
   "unit_test_verification": {
@@ -1332,9 +1340,59 @@
       "cvss": "2.1",
       "sprint_target": "S22",
       "desc": "Deletion token sin TTL 24h"
+    },
+    {
+      "id": "DEBT-043",
+      "area": "Backend",
+      "priority": "Media",
+      "desc": "GET /api/v1/profile/notifications y /api/v1/profile/sessions devuelven 404 — no implementados en ProfileController. Secciones Notificaciones y Sesiones activas en Mi Perfil vacías.",
+      "sprint_target": "S22",
+      "detected_at": "2026-04-01",
+      "detected_by": "STG-VERIFICATION"
     }
   ],
   "skills_updated_s21": [
     "fa-agent"
-  ]
+  ],
+  "stg_verification": {
+    "executed_at": "2026-04-01T12:00:00Z",
+    "version": "v1.21.0",
+    "sprint": 21,
+    "feature": "FEAT-019",
+    "report": "docs/qa/STG-VERIFICATION-v1.21.0-20260401.md",
+    "result": "PARCIAL — 7 OK, 1 bug corregido (BUG-VER-001), 1 pendiente (Tarjetas)",
+    "bugs": [
+      {
+        "id": "BUG-VER-001",
+        "status": "FIXED",
+        "commit": "5207961",
+        "desc": "Mi Perfil skeleton infinito — catchError EMPTY en forkJoin"
+      },
+      {
+        "id": "BUG-VER-002",
+        "status": "OPEN",
+        "desc": "Footer version hardcodeada Sprint 13 v1.13.0 en LoginComponent"
+      },
+      {
+        "id": "BUG-VER-003",
+        "status": "OPEN",
+        "desc": "Dashboard KPIs abril = 0.00 EUR sin transacciones mes actual en seed"
+      }
+    ],
+    "sections_ok": [
+      "Login",
+      "Dashboard (parcial)",
+      "Cuentas",
+      "Movimientos",
+      "Domiciliaciones",
+      "Exportacion",
+      "Centro de Privacidad"
+    ],
+    "sections_fixed": [
+      "Mi Perfil"
+    ],
+    "sections_pending": [
+      "Tarjetas"
+    ]
+  }
 }
