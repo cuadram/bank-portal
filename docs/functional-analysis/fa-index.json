@@ -1120,7 +1120,7 @@
       "version": "v1.21.0",
       "title": "Consulta de Datos Personales desde Perfil",
       "module": "profile",
-      "status": "PENDING",
+      "status": "DELIVERED",
       "business_rules": [
         "RN-F019-01",
         "RN-F019-02",
@@ -1139,7 +1139,7 @@
       "version": "v1.21.0",
       "title": "Actualizacion de Datos Personales",
       "module": "profile",
-      "status": "PENDING",
+      "status": "DELIVERED",
       "business_rules": [
         "RN-F019-05",
         "RN-F019-06",
@@ -1160,7 +1160,7 @@
       "version": "v1.21.0",
       "title": "Gestion de Sesiones Activas y Cierre Remoto",
       "module": "profile",
-      "status": "PENDING",
+      "status": "DELIVERED",
       "business_rules": [
         "RN-F019-10",
         "RN-F019-11",
@@ -1181,7 +1181,7 @@
       "version": "v1.21.0",
       "title": "Gestion de Consentimientos GDPR con Historial",
       "module": "privacy",
-      "status": "PENDING",
+      "status": "DELIVERED",
       "business_rules": [
         "RN-F019-15",
         "RN-F019-16",
@@ -1201,7 +1201,7 @@
       "version": "v1.21.0",
       "title": "Portabilidad de Datos — Descarga JSON Firmado",
       "module": "privacy",
-      "status": "PENDING",
+      "status": "DELIVERED",
       "business_rules": [
         "RN-F019-19",
         "RN-F019-20",
@@ -1223,7 +1223,7 @@
       "version": "v1.21.0",
       "title": "Derecho al Olvido — Eliminacion de Cuenta",
       "module": "privacy",
-      "status": "PENDING",
+      "status": "DELIVERED",
       "business_rules": [
         "RN-F019-25",
         "RN-F019-26",
@@ -1246,7 +1246,7 @@
       "version": "v1.21.0",
       "title": "Log de Derechos GDPR — Panel Administracion",
       "module": "admin",
-      "status": "PENDING",
+      "status": "DELIVERED",
       "business_rules": [
         "RN-F019-33",
         "RN-F019-34",
@@ -2120,5 +2120,5 @@
   "total_business_rules": 166,
   "last_sprint_consolidated": 21,
   "last_feat": "FEAT-019",
-  "updated_at": "2026-03-31T16:50:30.503Z"
+  "updated_at": "2026-04-01T09:46:54.736Z"
 }

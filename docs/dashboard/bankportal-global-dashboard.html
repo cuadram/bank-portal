@@ -3,765 +3,773 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BankPortal · Dashboard Global — SOFIA v2.3</title>
+<title>BankPortal · Dashboard Global · SOFIA v2.3</title>
+<meta name="sofia-generated" content="2026-04-01T09:47:59.798Z">
+<meta name="sofia-gate" content="POST-FIX-DATOS">
+<meta name="sofia-step" content="9">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-  :root {
-    --bg:        #0d1117;
-    --bg2:       #161b22;
-    --bg3:       #1c2330;
-    --border:    #30363d;
-    --accent:    #C84A14;
-    --accent2:   #45699E;
-    --accent3:   #5B8878;
-    --gold:      #d4a017;
-    --text:      #e6edf3;
-    --text2:     #8b949e;
-    --green:     #3fb950;
-    --red:       #f85149;
-    --yellow:    #d29922;
-    --purple:    #bc8cff;
-    --radius:    8px;
-    --font:      system-ui,-apple-system,sans-serif;
-    --mono:      'Courier New',monospace;
-  }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  body { background:var(--bg); color:var(--text); font-family:var(--font); font-size:14px; min-height:100vh; }
-
-  /* ── Header ── */
-  .header { background:var(--bg2); border-bottom:1px solid var(--border); padding:16px 24px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
-  .header-logo { display:flex; align-items:center; gap:12px; }
-  .logo-mark { width:36px; height:36px; }
-  .header-title { font-size:17px; font-weight:700; color:var(--text); }
-  .header-sub { font-size:12px; color:var(--text2); margin-top:2px; }
-  .header-badge { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-  .badge { font-size:11px; font-weight:600; padding:3px 9px; border-radius:12px; letter-spacing:.4px; }
-  .badge-orange { background:rgba(200,74,20,.2); color:var(--accent); border:1px solid rgba(200,74,20,.4); }
-  .badge-blue   { background:rgba(69,105,158,.2); color:var(--accent2); border:1px solid rgba(69,105,158,.4); }
-  .badge-green  { background:rgba(63,185,80,.15); color:var(--green); border:1px solid rgba(63,185,80,.35); }
-  .badge-gold   { background:rgba(212,160,23,.15); color:var(--gold); border:1px solid rgba(212,160,23,.35); }
-  .badge-purple { background:rgba(188,140,255,.15); color:var(--purple); border:1px solid rgba(188,140,255,.35); }
-
-  /* ── Tabs ── */
-  .tabs { display:flex; gap:0; border-bottom:1px solid var(--border); padding:0 24px; background:var(--bg2); }
-  .tab { padding:11px 20px; font-size:13px; font-weight:500; cursor:pointer; border-bottom:2px solid transparent; color:var(--text2); transition:all .15s; user-select:none; }
-  .tab:hover { color:var(--text); }
-  .tab.active { color:var(--accent); border-bottom-color:var(--accent); }
-
-  /* ── Content ── */
-  .content { display:none; padding:24px; max-width:1400px; margin:0 auto; }
-  .content.active { display:block; }
-
-  /* ── Grid ── */
-  .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:20px; }
-  .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:20px; }
-  .grid-2 { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:20px; }
-  .grid-auto { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin-bottom:20px; }
-
-  /* ── Cards ── */
-  .card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; }
-  .card-title { font-size:11px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:.8px; margin-bottom:10px; }
-  .card-val { font-size:32px; font-weight:700; color:var(--text); line-height:1; }
-  .card-val-sm { font-size:22px; font-weight:700; color:var(--text); }
-  .card-sub { font-size:12px; color:var(--text2); margin-top:6px; }
-  .card-accent { border-left:3px solid var(--accent); }
-  .card-green  { border-left:3px solid var(--green); }
-  .card-blue   { border-left:3px solid var(--accent2); }
-  .card-gold   { border-left:3px solid var(--gold); }
-  .card-purple { border-left:3px solid var(--purple); }
-
-  /* ── Section titles ── */
-  .section-title { font-size:13px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:.8px; margin:28px 0 14px; display:flex; align-items:center; gap:8px; }
-  .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
-
-  /* ── Bar chart ── */
-  .bar-chart { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-bottom:20px; }
-  .bar-chart-title { font-size:12px; color:var(--text2); margin-bottom:16px; font-weight:600; }
-  .bars { display:flex; align-items:flex-end; gap:6px; height:120px; }
-  .bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
-  .bar { width:100%; border-radius:3px 3px 0 0; transition:opacity .2s; cursor:default; }
-  .bar:hover { opacity:.8; }
-  .bar-label { font-size:10px; color:var(--text2); text-align:center; line-height:1.2; }
-  .bar-val { font-size:10px; color:var(--text); font-family:var(--mono); }
-
-  /* ── Table ── */
-  .tbl { width:100%; border-collapse:collapse; font-size:13px; }
-  .tbl th { text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text2); border-bottom:1px solid var(--border); text-transform:uppercase; letter-spacing:.5px; }
-  .tbl td { padding:9px 12px; border-bottom:1px solid rgba(48,54,61,.5); color:var(--text); vertical-align:middle; }
-  .tbl tr:last-child td { border-bottom:none; }
-  .tbl tr:hover td { background:rgba(255,255,255,.02); }
-
-  /* ── Status pills ── */
-  .pill { display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; letter-spacing:.3px; }
-  .pill-green  { background:rgba(63,185,80,.15); color:var(--green); }
-  .pill-orange { background:rgba(200,74,20,.15); color:var(--accent); }
-  .pill-red    { background:rgba(248,81,73,.15); color:var(--red); }
-  .pill-yellow { background:rgba(210,153,34,.15); color:var(--yellow); }
-  .pill-blue   { background:rgba(69,105,158,.2); color:var(--accent2); }
-  .pill-gray   { background:rgba(139,148,158,.12); color:var(--text2); }
-  .pill-purple { background:rgba(188,140,255,.15); color:var(--purple); }
-
-  /* ── Pipeline ── */
-  .pipeline { display:flex; gap:0; overflow-x:auto; padding-bottom:8px; margin-bottom:20px; }
-  .pipe-step { min-width:90px; text-align:center; position:relative; }
-  .pipe-step::after { content:''; position:absolute; top:20px; right:-12px; width:24px; height:2px; background:var(--border); z-index:0; }
-  .pipe-step:last-child::after { display:none; }
-  .pipe-circle { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; margin:0 auto 6px; border:2px solid var(--border); position:relative; z-index:1; }
-  .pipe-circle.done  { background:rgba(63,185,80,.15); border-color:var(--green); color:var(--green); }
-  .pipe-circle.new   { background:rgba(200,74,20,.15); border-color:var(--accent); color:var(--accent); }
-  .pipe-circle.idle  { background:var(--bg3); border-color:var(--border); color:var(--text2); }
-  .pipe-name { font-size:10px; color:var(--text2); line-height:1.3; padding:0 4px; }
-
-  /* ── Agent grid ── */
-  .agent-card { background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:12px 14px; }
-  .agent-name { font-size:12px; font-weight:600; color:var(--text); margin-bottom:4px; }
-  .agent-role { font-size:10px; color:var(--text2); }
-  .agent-version { font-size:10px; color:var(--text2); font-family:var(--mono); float:right; margin-top:-16px; }
-  .agent-new { display:inline-block; font-size:9px; font-weight:700; color:var(--accent); border:1px solid var(--accent); padding:1px 5px; border-radius:4px; margin-left:6px; vertical-align:middle; }
-
-  /* ── Guardrail ── */
-  .gr-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid rgba(48,54,61,.4); }
-  .gr-row:last-child { border-bottom:none; }
-  .gr-id { font-family:var(--mono); font-size:11px; color:var(--accent); min-width:50px; font-weight:700; }
-  .gr-name { font-size:12px; color:var(--text); flex:1; }
-  .gr-gate { font-size:11px; color:var(--text2); min-width:40px; }
-
-  /* ── Timeline ── */
-  .timeline { position:relative; padding-left:24px; }
-  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background:var(--border); }
-  .tl-item { position:relative; padding:0 0 20px 20px; }
-  .tl-dot { position:absolute; left:-20px; top:3px; width:12px; height:12px; border-radius:50%; border:2px solid var(--border); background:var(--bg); }
-  .tl-dot.done { border-color:var(--green); background:var(--green); }
-  .tl-dot.hotfix { border-color:var(--yellow); background:var(--yellow); }
-  .tl-dot.guard { border-color:var(--purple); background:var(--purple); }
-  .tl-date { font-size:11px; color:var(--text2); font-family:var(--mono); }
-  .tl-title { font-size:13px; font-weight:600; color:var(--text); margin:2px 0; }
-  .tl-desc { font-size:12px; color:var(--text2); }
-
-  /* ── CMMI lights ── */
-  .cmmi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
-  .cmmi-pa { background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:10px 12px; display:flex; align-items:center; gap:10px; }
-  .cmmi-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
-  .cmmi-dot.green { background:var(--green); }
-  .cmmi-pa-name { font-size:12px; color:var(--text); font-weight:600; }
-  .cmmi-pa-desc { font-size:11px; color:var(--text2); }
-
-  /* ── Debt ── */
-  .debt-item { display:flex; align-items:center; gap:12px; padding:9px 12px; background:var(--bg3); border-radius:6px; margin-bottom:6px; border:1px solid var(--border); }
-  .debt-id { font-family:var(--mono); font-size:11px; color:var(--yellow); font-weight:700; min-width:70px; }
-  .debt-desc { font-size:12px; color:var(--text); flex:1; }
-  .debt-sprint { font-size:11px; color:var(--text2); }
-
-  /* ── LA list ── */
-  .la-item { padding:8px 0; border-bottom:1px solid rgba(48,54,61,.4); display:flex; gap:10px; align-items:flex-start; }
-  .la-id { font-family:var(--mono); font-size:11px; color:var(--purple); min-width:75px; font-weight:700; }
-  .la-type { font-size:10px; color:var(--text2); min-width:65px; }
-  .la-desc { font-size:12px; color:var(--text); flex:1; }
-
-  .updated-tag { font-size:11px; color:var(--text2); font-family:var(--mono); text-align:right; padding:16px 0 0; }
-  @media(max-width:900px){.grid-4{grid-template-columns:repeat(2,1fr);}.grid-3{grid-template-columns:1fr;}}
+:root{--bg:#0a0c10;--bg2:#10131a;--bg3:#171b24;--bg4:#1e2330;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);--text:#dde1ec;--muted:#7a8299;--dim:#4a5068;--blue:#4192e8;--blue-d:rgba(65,146,232,0.14);--green:#3ec97d;--green-d:rgba(62,201,125,0.12);--amber:#f0a830;--amber-d:rgba(240,168,48,0.12);--red:#e8605c;--red-d:rgba(232,96,92,0.12);--purple:#a27ae8;--purple-d:rgba(162,122,232,0.12);--teal:#35c4b0;--teal-d:rgba(53,196,176,0.12);--orange:#C84A14;--font:'Sora',sans-serif;--mono:'DM Mono',monospace;--r:10px;--r2:14px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.6;min-height:100vh;}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;}
+.hdr-brand{display:flex;align-items:center;gap:14px;}
+.logo svg{width:38px;height:38px;}
+.brand-title{font-size:17px;font-weight:700;letter-spacing:-.3px;}
+.brand-sub{font-size:10px;color:var(--muted);font-family:var(--mono);letter-spacing:.5px;margin-top:2px;}
+.hdr-badges{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.bdg{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;font-size:10px;font-weight:600;font-family:var(--mono);letter-spacing:.3px;border:1px solid transparent;}
+.bdg-green{background:var(--green-d);color:var(--green);border-color:rgba(62,201,125,.22);}
+.bdg-amber{background:var(--amber-d);color:var(--amber);border-color:rgba(240,168,48,.22);}
+.bdg-blue{background:var(--blue-d);color:var(--blue);border-color:rgba(65,146,232,.22);}
+.bdg-purple{background:var(--purple-d);color:var(--purple);border-color:rgba(162,122,232,.22);}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.gate-banner{margin:16px 28px;padding:12px 18px;border:1px solid;border-radius:var(--r);display:flex;align-items:center;gap:14px;}
+.gate-banner.pending{background:var(--amber-d);border-color:rgba(240,168,48,.28);}
+.gate-banner.ok{background:var(--green-d);border-color:rgba(62,201,125,.28);}
+.gate-banner .gi{font-size:18px;flex-shrink:0;}
+.gate-banner .gt{flex:1;font-size:12px;}
+.gate-banner .gtt{font-weight:600;font-size:13px;margin-bottom:2px;}
+.pending .gtt{color:var(--amber);}.ok .gtt{color:var(--green);}
+.gate-banner .gtd{color:var(--muted);}
+.gate-tag{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:5px;border:1px solid;white-space:nowrap;}
+.pending .gate-tag{color:var(--amber);background:rgba(240,168,48,.1);border-color:rgba(240,168,48,.2);}
+.ok .gate-tag{color:var(--green);background:rgba(62,201,125,.1);border-color:rgba(62,201,125,.2);}
+.gen-stamp{padding:4px 28px;background:var(--bg3);font-size:10px;color:var(--dim);font-family:var(--mono);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;}
+.tabs{display:flex;padding:0 28px;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;}
+.tab{padding:11px 18px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;font-family:var(--mono);}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+.tab:hover:not(.active){color:var(--text);}
+.panel{display:none;padding:22px 28px;}
+.panel.active{display:block;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+.g6{display:grid;grid-template-columns:repeat(6,1fr);gap:11px;margin-bottom:18px;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:18px;}
+.ct{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.9px;margin-bottom:13px;font-family:var(--mono);}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:15px 16px;}
+.kl{font-size:10px;color:var(--muted);font-family:var(--mono);letter-spacing:.3px;text-transform:uppercase;margin-bottom:5px;}
+.kv{font-size:28px;font-weight:700;line-height:1;}
+.ks{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4;}
+.kv-blue{color:var(--blue)}.kv-green{color:var(--green)}.kv-amber{color:var(--amber)}.kv-purple{color:var(--purple)}.kv-teal{color:var(--teal)}.kv-white{color:var(--text)}
+.cw{position:relative;height:220px;}.cw-lg{position:relative;height:280px;}
+.row{display:flex;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;gap:10px;}
+.row:last-child{border-bottom:none;}
+.rl{color:var(--muted);flex:1;}.rv{font-weight:600;font-family:var(--mono);text-align:right;}
+.sr{display:grid;grid-template-columns:48px 1fr 80px 56px 60px 56px 56px;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.sr:last-child{border-bottom:none;}
+.sr-n{font-family:var(--mono);font-size:11px;color:var(--muted);}
+.sr-sp{font-family:var(--mono);font-weight:700;color:var(--blue);text-align:right;}
+.sr-cov{font-family:var(--mono);font-size:11px;text-align:right;}
+.sr-rel{font-family:var(--mono);font-size:10px;color:var(--green);text-align:right;}
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.feat-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;position:relative;overflow:hidden;}
+.feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.fc-done::before{background:var(--green);}.fc-active::before{background:var(--amber);}.fc-future::before{background:var(--dim);}
+.feat-id{font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:4px;}
+.feat-name{font-size:12px;font-weight:600;margin-bottom:6px;line-height:1.3;}
+.feat-meta{display:flex;gap:6px;flex-wrap:wrap;}
+.fm{font-size:9px;font-family:var(--mono);padding:2px 6px;border-radius:3px;}
+.fm-sp{background:var(--blue-d);color:var(--blue);}.fm-ver{background:var(--green-d);color:var(--green);}
+.fm-ver-act{background:var(--amber-d);color:var(--amber);}.fm-ver-fut{background:var(--bg4);color:var(--muted);}
+.fm-tag{background:var(--bg4);color:var(--muted);}
+.rr{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.rr:last-child{border-bottom:none;}
+.rid{font-family:var(--mono);font-size:10px;color:var(--muted);min-width:64px;}
+.rb{flex:1;}.rt{font-size:12px;font-weight:500;margin-bottom:2px;}.rm{font-size:10px;color:var(--muted);}
+.rst{font-size:9px;font-family:var(--mono);padding:2px 7px;border-radius:4px;white-space:nowrap;}
+.rst-open{background:var(--amber-d);color:var(--amber);}
+.rst-closed{background:var(--green-d);color:var(--green);}
+.rst-acc{background:var(--bg4);color:var(--muted);border:1px solid var(--border2);}
+.rst-plan{background:var(--blue-d);color:var(--blue);}
+.pipe{display:flex;align-items:center;justify-content:space-between;padding:10px 0;overflow-x:auto;}
+.ps{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:60px;position:relative;}
+.ps:not(:last-child)::after{content:'';position:absolute;top:14px;left:calc(50% + 16px);width:calc(100% - 32px);height:1px;background:var(--border2);}
+.pc{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:var(--mono);border:2px solid transparent;}
+.pc-done{background:var(--green-d);border-color:var(--green);color:var(--green);}
+.pc-active{background:var(--amber-d);border-color:var(--amber);color:var(--amber);}
+.pc-pend{background:var(--bg3);border-color:var(--border2);color:var(--dim);}
+.pl{font-size:8px;color:var(--muted);text-align:center;font-family:var(--mono);line-height:1.3;}
+.pa-g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.pa{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:11px 14px;display:flex;align-items:flex-start;gap:10px;}
+.pa-light{width:13px;height:13px;border-radius:50%;flex-shrink:0;margin-top:2px;}
+.pa-light-g{background:#3ec97d;box-shadow:0 0 8px rgba(62,201,125,.6);}
+.pa-light-a{background:#f0a830;box-shadow:0 0 8px rgba(240,168,48,.6);}
+.pa-light-r{background:#e8605c;box-shadow:0 0 8px rgba(232,96,92,.6);}
+.pa-body{flex:1;}
+.pac{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--purple);margin-bottom:2px;}
+.pan{font-size:10px;color:var(--muted);}
+.pa-ev{font-size:9px;margin-top:3px;font-family:var(--mono);}
+.deliv-g{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+.dv{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;text-align:center;}
+.dvn{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--blue);margin-bottom:3px;}
+.dvl{font-size:10px;color:var(--muted);}
+.pbar{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-top:6px;}
+.pb-inner{height:100%;border-radius:3px;background:var(--green);}
+.sh{font-size:10px;color:var(--muted);font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.health{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);margin-bottom:7px;}
+.h-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
+.h-g{background:var(--green);box-shadow:0 0 7px rgba(62,201,125,.45);}
+.h-a{background:var(--amber);box-shadow:0 0 7px rgba(240,168,48,.45);}
+.h-label{font-size:11px;font-weight:600;}.h-sub{font-size:10px;color:var(--muted);}
+.gate-log-badge{display:inline-block;background:var(--green-d);color:var(--green);font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:4px;border:1px solid rgba(62,201,125,.2);margin-left:6px;}
+.footer{padding:14px 28px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--muted);font-family:var(--mono);background:var(--bg2);margin-top:24px;}
+@media(max-width:900px){.g6{grid-template-columns:repeat(3,1fr)}.feat-grid{grid-template-columns:repeat(2,1fr)}.g4{grid-template-columns:repeat(2,1fr)}.deliv-g{grid-template-columns:repeat(3,1fr)}.sr{grid-template-columns:40px 1fr 50px 40px}}
 </style>
 </head>
 <body>
 
-<!-- ════════════════════ HEADER ════════════════════ -->
-<div class="header">
-  <div class="header-logo">
-    <svg class="logo-mark" viewBox="0 0 36 36">
-      <polygon points="2,28 14,6 18,14 6,28" fill="#C84A14"/>
-      <rect x="20" y="6" width="14" height="7" rx="3.5" fill="#5B8878"/>
-      <rect x="20" y="23" width="14" height="7" rx="3.5" fill="#45699E"/>
-    </svg>
+<div class="hdr">
+  <div class="hdr-brand">
+    <div class="logo">
+      <svg viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="6,30 19,6 23,14 10,38" fill="#C84A14"/>
+        <rect x="23" y="4" width="11" height="15" rx="5.5" fill="#45699E"/>
+        <rect x="23" y="21" width="11" height="15" rx="5.5" fill="#5B8878"/>
+      </svg>
+    </div>
     <div>
-      <div class="header-title">BankPortal · Dashboard Global</div>
-      <div class="header-sub">Banco Meridian · SOFIA v2.3 · CMMI Nivel 3</div>
+      <div class="brand-title">BankPortal · Banco Meridian</div>
+      <div class="brand-sub">SOFIA v2.0 · Dashboard Global del Proyecto · Generado en cada Gate</div>
     </div>
   </div>
-  <div class="header-badge">
-    <span class="badge badge-orange">S20 CERRADO</span>
-    <span class="badge badge-green">v1.20.0</span>
-    <span class="badge badge-blue">21 Agentes</span>
-    <span class="badge badge-gold">CMMI L3</span>
-    <span class="badge badge-purple">Guardrails v1.0</span>
-    <span class="badge badge-green">473 SP</span>
+  <div class="hdr-badges">
+    <span class="bdg bdg-green"><span class="dot"></span>v1.21.0 PRD</span>
+    <span class="bdg bdg-blue">Sprint 21 · FEAT-019</span>
+    <span class="bdg bdg-green">Pipeline activo</span>
+    <span class="bdg bdg-purple">CMMI L3</span>
   </div>
 </div>
 
-<!-- ════════════════════ TABS ════════════════════ -->
+<div class="gen-stamp">
+  <span>Generado: 2026-04-01 09:47 · Gate: POST-FIX-DATOS · Step: 9 · Sprint 21</span>
+  <span>Fuente: .sofia/session.json · sofia_version: 2.4 · session_updated: 2026-04-01 09:40</span>
+</div>
+
+
+<div class="gate-banner ok">
+  <div class="gi">✅</div>
+  <div class="gt">
+    <div class="gtt">Sprint 21 · FEAT-019 · CERRADO · v1.21.0 en producción</div>
+    <div class="gtd">Steps completados: [1, 2, 2b, 2c, 3, 3b, 4, 5, 5b, 6, 7, 8, 8b, 9] · G-1..G-9 aprobados · Sprint 21 pendiente definición PO</div>
+  </div>
+  <span class="gate-tag">S21 CERRADO ✓</span>
+</div>
+
 <div class="tabs">
-  <div class="tab active" onclick="showTab(0)">Vista General</div>
-  <div class="tab" onclick="showTab(1)">Entregas &amp; Calidad</div>
-  <div class="tab" onclick="showTab(2)">Gobierno &amp; Roadmap</div>
+  <div class="tab active" onclick="T('exec')">Resumen Ejecutivo</div>
+  <div class="tab" onclick="T('history')">Historial Sprints</div>
+  <div class="tab" onclick="T('quality')">Calidad & Tests</div>
+  <div class="tab" onclick="T('roadmap')">Roadmap & Features</div>
+  <div class="tab" onclick="T('gobierno')">Gobierno & CMMI</div>
+  <div class="tab" onclick="T('gates')">Gates & Pipeline</div>
 </div>
 
-<!-- ════════════════════ TAB 0 — VISTA GENERAL ════════════════════ -->
-<div class="content active" id="tab0">
-
-  <!-- KPIs -->
-  <div class="grid-4">
-    <div class="card card-accent">
-      <div class="card-title">SP Acumulados</div>
-      <div class="card-val">473</div>
-      <div class="card-sub">20 sprints · 23.65 SP/sprint avg</div>
-    </div>
-    <div class="card card-green">
-      <div class="card-title">Tests (Acum.)</div>
-      <div class="card-val">524</div>
-      <div class="card-sub">88% cobertura · 0 defectos open</div>
-    </div>
-    <div class="card card-blue">
-      <div class="card-title">Funcionalidades</div>
-      <div class="card-val">63</div>
-      <div class="card-sub">141 reglas de negocio · S1–S20</div>
-    </div>
-    <div class="card card-gold">
-      <div class="card-title">Release actual</div>
-      <div class="card-val-sm">v1.20.0</div>
-      <div class="card-sub">FEAT-018 + HOTFIX-S20 · 30 Mar 2026</div>
-    </div>
+<!-- ═══ TAB 1: EJECUTIVO ═══ -->
+<div id="p-exec" class="panel active">
+  <div class="g6">
+    <div class="kpi"><div class="kl">Sprints completados</div><div class="kv kv-white">21</div><div class="ks">S1–S21 ✓</div></div>
+    <div class="kpi"><div class="kl">Story Points</div><div class="kv kv-blue">497</div><div class="ks">acum · 23.6 SP/sprint</div></div>
+    <div class="kpi"><div class="kl">Features</div><div class="kv kv-teal">21 ✓</div><div class="ks">S1–S21 completados</div></div>
+    <div class="kpi"><div class="kl">Tests</div><div class="kv kv-green">547</div><div class="ks">88% cobertura</div></div>
+    <div class="kpi"><div class="kl">Defectos PRD</div><div class="kv kv-green">0</div><div class="ks">histórico total</div></div>
+    <div class="kpi"><div class="kl">CVEs críticos</div><div class="kv kv-green">0</div><div class="ks">semáforo YELLOW</div></div>
   </div>
-
-  <div class="grid-4">
+  <div class="g2">
     <div class="card">
-      <div class="card-title">Sprints completados</div>
-      <div class="card-val">20</div>
-      <div class="card-sub">Sin interrupciones</div>
+      <div class="ct">Estado de salud del proyecto</div>
+      <div class="health"><div class="h-dot h-g"></div><div><div class="h-label" style="color:var(--green)">Calidad · ÓPTIMO</div><div class="h-sub">0 defectos · 0 CVEs · 88% cobertura · 547 tests</div></div></div>
+      <div class="health"><div class="h-dot h-g"></div><div><div class="h-label" style="color:var(--green)">Delivery · ON TRACK</div><div class="h-sub">21/21 sprints entregados · 100% SP · velocidad estable</div></div></div>
+      <div class="health"><div class="h-dot h-g"></div><div><div class="h-label" style="color:var(--green)">Seguridad · VERDE</div><div class="h-sub">PCI-DSS req.3/8/10 · OWASP clean · 0 bloqueantes</div></div></div>
+      <div class="health"><div class="h-dot h-g"></div><div><div class="h-label" style="color:var(--green)">Sprint 21 · Pipeline activo</div><div class="h-sub">Steps completados: [1, 2, 2b, 2c, 3, 3b, 4, 5, 5b, 6, 7, 8, 8b, 9]</div></div></div>
+      <div class="health"><div class="h-dot h-g"></div><div><div class="h-label" style="color:var(--green)">CMMI L3 · ACTIVO</div><div class="h-sub">9 PAs · 154 evidencias · Sprints S14–S16 auditados</div></div></div>
+      <div class="health"><div class="h-dot h-a"></div><div><div class="h-label" style="color:var(--amber)">Deuda técnica · 4 items</div><div class="h-sub">DEBT-037 · DEBT-040 · DEBT-041 · DEBT-042</div></div></div>
     </div>
     <div class="card">
-      <div class="card-title">Cobertura código</div>
-      <div class="card-val">88%</div>
-      <div class="card-sub">Umbral: 80% · <span style="color:var(--green)">OK</span></div>
-    </div>
-    <div class="card">
-      <div class="card-title">NCs abiertas</div>
-      <div class="card-val" style="color:var(--green)">0</div>
-      <div class="card-sub">Sprint 20 limpio</div>
-    </div>
-    <div class="card">
-      <div class="card-title">Seguridad</div>
-      <div class="card-val" style="color:var(--green)">🟢</div>
-      <div class="card-sub">CVE críticas: 0 · SAST blocker: 0</div>
+      <div class="ct">Índice de madurez del proyecto</div>
+      <div class="cw"><canvas id="radarChart"></canvas></div>
     </div>
   </div>
-
-  <!-- Velocity Chart -->
-  <div class="section-title">Velocidad por Sprint</div>
-  <div class="bar-chart">
-    <div class="bar-chart-title">Story Points por sprint (S1–S20) · Capacidad: 24 SP</div>
-    <div class="bars" id="velocityBars"></div>
-    <div style="margin-top:10px;font-size:11px;color:var(--text2)">
-      Avg: 23.65 SP/sprint · Total acumulado: 473 SP
+  <div class="card" style="margin-bottom:18px;">
+    <div class="ct">Velocidad acumulada — todos los sprints (S1→S21)</div>
+    <div style="position:relative;height:200px;"><canvas id="velAllChart"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="ct">Pipeline Sprint 21 · FEAT-019 · SOFIA v2.3 (15 steps activos)</div>
+    <div class="pipe">
+      <div class="ps"><div class="pc pc-done">1</div><div class="pl">Scrum<br>Master</div></div>
+      <div class="ps"><div class="pc pc-done">2</div><div class="pl">Req.<br>Analyst</div></div>
+      <div class="ps"><div class="pc pc-done">2b</div><div class="pl">FA<br>Agent</div></div>
+      <div class="ps"><div class="pc pc-done">3</div><div class="pl">Archi-<br>tect</div></div>
+      <div class="ps"><div class="pc pc-done">3b</div><div class="pl">Doc<br>Agent</div></div>
+      <div class="ps"><div class="pc pc-done">4</div><div class="pl">Devel-<br>oper</div></div>
+      <div class="ps"><div class="pc pc-done">5</div><div class="pl">Code<br>Review</div></div>
+      <div class="ps"><div class="pc pc-done">5b</div><div class="pl">Security<br>Audit</div></div>
+      <div class="ps"><div class="pc pc-done">6</div><div class="pl">QA<br>Tester</div></div>
+      <div class="ps"><div class="pc pc-done">7</div><div class="pl">Dev<br>Ops</div></div>
+      <div class="ps"><div class="pc pc-done">8</div><div class="pl">Doc<br>Agent</div></div>
+      <div class="ps"><div class="pc pc-done">8b</div><div class="pl">FA<br>Agent</div></div>
+      <div class="ps"><div class="pc pc-done">9</div><div class="pl">Close<br>Sprint</div></div>
+    </div>
+    <div style="margin-top:10px;padding:9px 14px;background:var(--green-d);border-radius:8px;border:1px solid rgba(62,201,125,.2);font-size:11px;color:var(--green);">
+      ✅ <strong>Pipeline activo</strong> · Completados: [1, 2, 2b, 2c, 3, 3b, 4, 5, 5b, 6, 7, 8, 8b, 9] · Pending: [5, 5b, 6, 7, 8, 8b, 9]
     </div>
   </div>
-
-  <!-- Pipeline SOFIA v2.3 -->
-  <div class="section-title">Pipeline SOFIA v2.3 — Sprint 20 Completado</div>
-  <div class="pipeline">
-    <div class="pipe-step"><div class="pipe-circle done">1</div><div class="pipe-name">Scrum<br>Master</div></div>
-    <div class="pipe-step"><div class="pipe-circle done">2</div><div class="pipe-name">Require-<br>ments</div></div>
-    <div class="pipe-step"><div class="pipe-circle done">2b</div><div class="pipe-name">FA<br>Agent</div></div>
-    <div class="pipe-step"><div class="pipe-circle new">2c</div><div class="pipe-name">UX/UI<br>Design</div></div>
-    <div class="pipe-step"><div class="pipe-circle done">3</div><div class="pipe-name">Archi-<br>tect</div></div>
-    <div class="pipe-step"><div class="pipe-circle done">3b</div><div class="pipe-name">Doc<br>Agent</div></div>
-    <div class="pipe-step"><div class="pipe-circle done">4</div><div class="pipe-name">Develo-<br>per</div></div>
-    <div class="pipe-step"><div class="pipe-circle done">G-4b</div><div class="pipe-name">Build<br>Verify</div></div>
-    <div class="pipe-step"><div class="pipe-circle done">5</div><div class="pipe-name">Code<br>Review</div></div>
-    <div class="pipe-step"><div class="pipe-circle done">5b</div><div class="pipe-name">Security<br>Agent</div></div>
-    <div class="pipe-step"><div class="pipe-circle done">6</div><div class="pipe-name">QA<br>Tester</div></div>
-    <div class="pipe-step"><div class="pipe-circle done">7</div><div class="pipe-name">Dev<br>Ops</div></div>
-    <div class="pipe-step"><div class="pipe-circle done">8</div><div class="pipe-name">Doc<br>Agent</div></div>
-    <div class="pipe-step"><div class="pipe-circle done">8b</div><div class="pipe-name">FA<br>Consol.</div></div>
-    <div class="pipe-step"><div class="pipe-circle done">9</div><div class="pipe-name">Workflow<br>Mgr</div></div>
-  </div>
-  <div style="font-size:11px;color:var(--text2);margin-bottom:20px">
-    <span style="color:var(--green)">●</span> Completado &nbsp;
-    <span style="color:var(--accent)">●</span> Nuevo en v2.3 (Step 2c UX/UI · Gate G-4b) &nbsp;
-    15 steps · 21 agentes
-  </div>
-
-  <!-- Agentes SOFIA v2.3 -->
-  <div class="section-title">21 Agentes Especializados — SOFIA v2.3</div>
-  <div class="grid-auto" id="agentsGrid"></div>
-
-  <!-- Guardrails -->
-  <div class="section-title">Guardrails v1.0 — Post RCA HOTFIX-S20</div>
-  <div class="card" style="margin-bottom:20px">
-    <div class="card-title" style="margin-bottom:14px">Sistema de verificación automática pre-gate · 6 checks · commit f8012cf</div>
-    <div id="guardrailsRows"></div>
-  </div>
-
-  <!-- Hotfix S20 -->
-  <div class="section-title">HOTFIX-S20 — Aplicado 30 Mar 2026</div>
-  <div class="card card-gold" style="margin-bottom:20px">
-    <div class="card-title" style="margin-bottom:12px">Corrección post-sprint · commit 07519ea · RCA completo registrado</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
-      <div>✅ Paquete <code style="color:var(--accent2)">com.experis.sofia.bankportal</code> — 16 ficheros corregidos</div>
-      <div>✅ API Transaction real: <code style="color:var(--accent2)">getTransactionDate(), getConcept(), getBalanceAfter()</code></div>
-      <div>✅ <code style="color:var(--accent2)">TransactionExportRepository</code> creado (JdbcClient)</div>
-      <div>✅ <code style="color:var(--accent2)">ExportAuditLogRepository</code> creado</div>
-      <div>✅ PDFBox 3.0.2 + spring-retry añadidos a pom.xml</div>
-      <div>✅ Árbol <code style="color:var(--red)">es/meridian/bankportal</code> eliminado</div>
-      <div>✅ <code style="color:var(--accent2)">CoreBankingReturnedHandler</code> usa APIs reales</div>
-      <div>✅ <code style="color:var(--accent2)">SpringContextIT</code> + <code style="color:var(--accent2)">IntegrationTestBase</code> creados</div>
-    </div>
-    <div style="margin-top:12px;font-size:11px;color:var(--text2)">LA-020-09 · LA-020-10 · LA-020-11 registradas en session.json</div>
-  </div>
-
 </div>
 
-<!-- ════════════════════ TAB 1 — ENTREGAS & CALIDAD ════════════════════ -->
-<div class="content" id="tab1">
-
-  <!-- Sprint history table -->
-  <div class="section-title">Histórico de Entregas — S16–S20</div>
-  <div class="card" style="margin-bottom:20px;overflow-x:auto">
-    <table class="tbl">
-      <thead>
-        <tr>
-          <th>Sprint</th><th>Feature</th><th>Release</th><th>SP</th><th>SP Acum</th>
-          <th>Tests</th><th>Cob.</th><th>NCs</th><th>Estado</th>
-        </tr>
-      </thead>
-      <tbody id="sprintHistoryBody"></tbody>
-    </table>
-  </div>
-
-  <!-- Cobertura chart -->
-  <div class="grid-2">
-    <div class="bar-chart">
-      <div class="bar-chart-title">Cobertura de tests por sprint (%)</div>
-      <div class="bars" id="coverageBars"></div>
+<!-- ═══ TAB 2: HISTORIAL ═══ -->
+<div id="p-history" class="panel">
+  <div class="g2" style="margin-bottom:18px;">
+    <div class="card">
+      <div class="ct">Velocidad por Sprint (SP entregados)</div>
+      <div class="cw-lg"><canvas id="velBarChart"></canvas></div>
     </div>
-    <div class="bar-chart">
-      <div class="bar-chart-title">NCs por sprint</div>
-      <div class="bars" id="ncsBars"></div>
+    <div class="card">
+      <div class="ct">Burnup acumulado del proyecto</div>
+      <div class="cw-lg"><canvas id="burnupChart"></canvas></div>
     </div>
   </div>
-
-  <!-- Sprint 20 detail -->
-  <div class="section-title">Sprint 20 — FEAT-018 Detalle</div>
-  <div class="grid-3">
-    <div class="card card-green">
-      <div class="card-title">Tests Sprint 20</div>
-      <div class="card-val">124</div>
-      <div class="card-sub">124 PASS · 0 FAIL · 88% coverage</div>
+  <div class="card">
+    <div class="ct">Historial completo — 21 sprints completados · Sprint 21 próximo</div>
+    <div style="display:grid;grid-template-columns:48px 1fr 80px 56px 60px 56px 56px;gap:10px;padding:6px 0 8px;border-bottom:1px solid var(--border2);font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.4px;">
+      <span>Sprint</span><span>Feature</span><span>Período</span><span style="text-align:right">SP</span><span style="text-align:right">Acum.</span><span style="text-align:right">Cob.</span><span style="text-align:right">Release</span>
     </div>
-    <div class="card card-blue">
-      <div class="card-title">Code Review</div>
-      <div class="card-val-sm" style="color:var(--green)">APPROVED</div>
-      <div class="card-sub">0 bloqueantes · 4 menores · 3 sugerencias</div>
+    
+    <div class="sr">
+      <span class="sr-n">S1–S2</span>
+      <span>FEAT-001 — Registro y Activación del Segundo Factor TOTP · PSD2-SCA/PCI-DSS</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Mar–Abr 26</span>
+      <span class="sr-sp">40</span>
+      <span class="sr-sp" style="color:var(--muted)">40</span>
+      <span class="sr-cov" style="">—</span>
+      <span class="sr-rel">v1.1–v1.2</span>
     </div>
-    <div class="card card-gold">
-      <div class="card-title">Seguridad</div>
-      <div class="card-val-sm" style="color:var(--green)">GREEN 🟢</div>
-      <div class="card-sub">CVE críticas: 0 · PCI-DSS: OK · GDPR: OK</div>
+    <div class="sr">
+      <span class="sr-n">S3</span>
+      <span>FEAT-002 — Consulta de Sesiones Activas · PCI-DSS/PSD2-SCA</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Abr 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">64</span>
+      <span class="sr-cov" style="">72%</span>
+      <span class="sr-rel">v1.3</span>
+    </div>
+    <div class="sr">
+      <span class="sr-n">S4</span>
+      <span>FEAT-003 — Registro de Dispositivo de Confianza · PSD2-SCA/PCI-DSS</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Abr 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">88</span>
+      <span class="sr-cov" style="">74%</span>
+      <span class="sr-rel">v1.4</span>
+    </div>
+    <div class="sr">
+      <span class="sr-n">S5+S8</span>
+      <span>FEAT-004 — Historial de Notificaciones de Seguridad · PCI-DSS/GDPR</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Abr 26</span>
+      <span class="sr-sp">48</span>
+      <span class="sr-sp" style="color:var(--muted)">112</span>
+      <span class="sr-cov" style="">75%</span>
+      <span class="sr-rel">v1.5+v1.8</span>
+    </div>
+    <div class="sr">
+      <span class="sr-n">S6</span>
+      <span>FEAT-005 — Notificaciones de Seguridad en Tiempo Real (SSE) · PSD2-SCA</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Abr 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">136</span>
+      <span class="sr-cov" style="">76%</span>
+      <span class="sr-rel">v1.6</span>
+    </div>
+    <div class="sr">
+      <span class="sr-n">S7</span>
+      <span>FEAT-006 — Bloqueo Automático de Cuenta por Intentos Fallidos · PCI-DSS/PSD2</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Abr 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">160</span>
+      <span class="sr-cov" style="">77%</span>
+      <span class="sr-rel">v1.7</span>
+    </div>
+    <div class="sr">
+      <span class="sr-n">S9</span>
+      <span>FEAT-007 — Consulta de Cuentas y Saldos · PSD2-AIS/GDPR</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Abr 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">208</span>
+      <span class="sr-cov" style="">78%</span>
+      <span class="sr-rel">v1.9</span>
+    </div>
+    <div class="sr">
+      <span class="sr-n">S10</span>
+      <span>FEAT-008 — Transferencia Bancaria Inmediata · PSD2-SCA/SEPA</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Abr 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">232</span>
+      <span class="sr-cov" style="">79%</span>
+      <span class="sr-rel">v1.10</span>
+    </div>
+    <div class="sr">
+      <span class="sr-n">S11</span>
+      <span>FEAT-009 — Consulta de Recibos Pendientes · PSD2/PSD2-SCA</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Abr 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">256</span>
+      <span class="sr-cov" style="">79%</span>
+      <span class="sr-rel">v1.11</span>
+    </div>
+    <div class="sr">
+      <span class="sr-n">S12</span>
+      <span>FEAT-010 — Resumen de Gastos por Categoría · GDPR</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Abr 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">280</span>
+      <span class="sr-cov" style="">80%</span>
+      <span class="sr-rel">v1.12</span>
+    </div>
+    <div class="sr">
+      <span class="sr-n">S13</span>
+      <span>FEAT-011 — Exportación de Movimientos a PDF · GDPR</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Abr 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">304</span>
+      <span class="sr-cov" style="">80%</span>
+      <span class="sr-rel">v1.13</span>
+    </div>
+    <div class="sr">
+      <span class="sr-n">S14</span>
+      <span>FEAT-012 — Consulta y Actualización de Datos Personales · GDPR/PCI-DSS</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Feb 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">329</span>
+      <span class="sr-cov" style="">82%</span>
+      <span class="sr-rel">v1.14</span>
+    </div>
+    <div class="sr">
+      <span class="sr-n">S15</span>
+      <span>FEAT-013 — Inicio del Proceso KYC · AML-KYC/GDPR</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Feb 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">353</span>
+      <span class="sr-cov" style="">83%</span>
+      <span class="sr-rel">v1.15</span>
+    </div>
+    <div class="sr">
+      <span class="sr-n">S16</span>
+      <span>FEAT-014 — Suscripción a Notificaciones Push VAPID · GDPR</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Mar 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">377</span>
+      <span class="sr-cov" style="">84%</span>
+      <span class="sr-rel">v1.16</span>
+    </div>
+    <div class="sr">
+      <span class="sr-n">S17</span>
+      <span>FEAT-015 — Programación de Transferencia Única (ONCE) · PSD2-SCA/SEPA</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Mar–Abr 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">401</span>
+      <span class="sr-cov" style="color:var(--green)">85%</span>
+      <span class="sr-rel">v1.17</span>
+    </div>
+    <div class="sr">
+      <span class="sr-n">S18</span>
+      <span>FEAT-016 — Consulta de Tarjetas del Cliente · PCI-DSS/PSD2</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Abr–May 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">425</span>
+      <span class="sr-cov" style="color:var(--green)">86%</span>
+      <span class="sr-rel">v1.18</span>
+    </div>
+    
+    <div class="sr">
+      <span class="sr-n" style="color:var(--blue)">S19</span>
+      <span style="font-size:12px;">FEAT-017 — Domiciliaciones y Recibos SEPA Direct Debit</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Mar 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">449</span>
+      <span class="sr-cov" style="color:var(--green)">87%</span>
+      <span class="sr-rel">v1.19.0</span>
+    </div>
+    <div class="sr">
+      <span class="sr-n" style="color:var(--blue)">S20</span>
+      <span style="font-size:12px;">FEAT-018 — Exportación Movimientos PDF/CSV</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Mar 26</span>
+      <span class="sr-sp">24</span>
+      <span class="sr-sp" style="color:var(--muted)">473</span>
+      <span class="sr-cov" style="color:var(--green)">88%</span>
+      <span class="sr-rel">v1.20.0</span>
+    </div>
+    <div class="sr" style="background:rgba(62,201,125,.04);border-radius:6px;padding:9px 8px;">
+      <span class="sr-n" style="color:var(--green)">S21 ✓</span>
+      <span style="font-size:12px;color:var(--green);font-weight:500;">FEAT-019 — Centro de Privacidad GDPR · CERRADO</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);">Abr 26</span>
+      <span class="sr-sp" style="color:var(--green)">24</span>
+      <span class="sr-sp" style="color:var(--green)">497</span>
+      <span class="sr-cov" style="color:var(--green)">88%</span>
+      <span class="sr-rel" style="color:var(--green)">v1.21.0</span>
     </div>
   </div>
-
-  <!-- Funcionalidades por módulo -->
-  <div class="section-title">Funcionalidades por Módulo (63 total)</div>
-  <div class="bar-chart">
-    <div class="bar-chart-title">Distribución de funcionalidades FA-Agent · S1–S20</div>
-    <div class="bars" id="moduleBars"></div>
-  </div>
-
-  <!-- Deuda técnica -->
-  <div class="section-title">Deuda Técnica Abierta</div>
-  <div id="debtItems"></div>
-
-  <!-- Artefactos Sprint 20 -->
-  <div class="section-title">Artefactos Entregables Sprint 20</div>
-  <div class="card" style="margin-bottom:20px;overflow-x:auto">
-    <table class="tbl">
-      <thead><tr><th>Artefacto</th><th>Tipo</th><th>Estado</th></tr></thead>
-      <tbody id="artifactsBody"></tbody>
-    </table>
-  </div>
-
 </div>
 
-<!-- ════════════════════ TAB 2 — GOBIERNO & ROADMAP ════════════════════ -->
-<div class="content" id="tab2">
-
-  <!-- CMMI -->
-  <div class="section-title">CMMI Nivel 3 — Áreas de Proceso</div>
-  <div class="cmmi-grid" id="cmmiGrid"></div>
-
-  <!-- Lecciones aprendidas -->
-  <div class="section-title" style="margin-top:28px">Lecciones Aprendidas — S19 + S20 (24 total)</div>
-  <div class="card" style="margin-bottom:20px;max-height:420px;overflow-y:auto">
-    <div id="laList"></div>
+<!-- ═══ TAB 3: CALIDAD ═══ -->
+<div id="p-quality" class="panel">
+  <div class="g4">
+    <div class="kpi"><div class="kl">Tests último sprint</div><div class="kv kv-green">69/69</div><div class="ks">100% PASS · 0 fallos</div></div>
+    <div class="kpi"><div class="kl">Cobertura actual</div><div class="kv kv-green">88%</div><div class="ks">umbral 80% · +8pp margen</div></div>
+    <div class="kpi"><div class="kl">Tests acumulados</div><div class="kv kv-blue">547</div><div class="ks">S1→S21 automatizados</div></div>
+    <div class="kpi"><div class="kl">Defectos PRD hist.</div><div class="kv kv-green">0</div><div class="ks">21 sprints consecutivos</div></div>
   </div>
-
-  <!-- Timeline del proyecto -->
-  <div class="section-title">Timeline del Proyecto</div>
-  <div class="timeline" id="timeline"></div>
-
-  <!-- Roadmap Sprint 21 -->
-  <div class="section-title" style="margin-top:28px">Sprint 21 — Pendiente de definición PO</div>
-  <div class="grid-2">
+  <div class="g2">
     <div class="card">
-      <div class="card-title">Deuda técnica a incorporar</div>
-      <div style="margin-top:8px">
-        <div class="debt-item"><span class="debt-id">DEBT-036</span><span class="debt-desc">IBAN real en ExportAuditService (AccountRepository)</span><span class="debt-sprint">S21</span></div>
-        <div class="debt-item"><span class="debt-id">DEBT-037</span><span class="debt-desc">Regex PAN Maestro 19 dígitos</span><span class="debt-sprint">S21</span></div>
-        <div class="debt-item"><span class="debt-id">DEBT-038</span><span class="debt-desc">Validación accountId vs userId (CVSS 4.8)</span><span class="debt-sprint">S21 ✅ pre-fix</span></div>
+      <div class="ct">Evolución tests automatizados</div>
+      <div class="cw-lg"><canvas id="testsChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Cobertura de código — tendencia</div>
+      <div class="cw-lg"><canvas id="covTrendChart"></canvas></div>
+    </div>
+  </div>
+  <div class="g3">
+    <div class="card">
+      <div class="ct">QA último sprint completado</div>
+      <div class="row"><span class="rl">Tests ejecutados</span><span class="rv" style="color:var(--green)">65/69 PASS</span></div>
+      <div class="row"><span class="rl">Cobertura application</span><span class="rv" style="color:var(--green)">88%</span></div>
+      <div class="row"><span class="rl">Cobertura funcional</span><span class="rv" style="color:var(--green)">100%</span></div>
+      <div class="row"><span class="rl">Security checks</span><span class="rv" style="color:var(--green)">6/8</span></div>
+      <div class="row"><span class="rl">WCAG 2.1 AA</span><span class="rv" style="color:var(--green)">5/5</span></div>
+      <div class="row"><span class="rl">API contracts</span><span class="rv" style="color:var(--green)">18/18</span></div>
+      <div class="row"><span class="rl">Defectos abiertos</span><span class="rv" style="color:var(--green)">0</span></div>
+      <div class="row"><span class="rl">PCI-DSS scan</span><span class="rv" style="color:var(--green)">CLEAN</span></div>
+    </div>
+    <div class="card">
+      <div class="ct">Seguridad</div>
+      <div class="row"><span class="rl">CVEs críticos/altos</span><span class="rv" style="color:var(--green)">0/0</span></div>
+      <div class="row"><span class="rl">SAST findings</span><span class="rv" style="color:var(--amber)">3 (0 bloq.)</span></div>
+      <div class="row"><span class="rl">Semáforo</span><span class="rv" style="color:var(--green)">YELLOW</span></div>
+      <div class="row"><span class="rl">PCI-DSS req.3/8/10</span><span class="rv" style="color:var(--green)">✓ Validados</span></div>
+      <div class="sh" style="margin-top:12px;">Deuda técnica abierta</div>
+      <div class="rr"><div class="rid">DEBT-037</div><div class="rb"><div class="rt">Regex PAN Maestro 19d</div><div class="rm">CVSS 2.1 · Target: SS22</div></div><span class="rst rst-open">SS22</span></div><div class="rr"><div class="rid">DEBT-040</div><div class="rb"><div class="rt">Race condition DataExportService - unique index gdpr_requests</div><div class="rm">CVSS 5.3 · Target: SS21</div></div><span class="rst rst-open">SS21</span></div><div class="rr"><div class="rid">DEBT-041</div><div class="rb"><div class="rt">OTP 2FA no validado en PrivacyController.requestDeletion</div><div class="rm">CVSS 4.8 · Target: SS21</div></div><span class="rst rst-open">SS21</span></div><div class="rr"><div class="rid">DEBT-042</div><div class="rb"><div class="rt">Deletion token sin TTL 24h</div><div class="rm">CVSS 2.1 · Target: SS22</div></div><span class="rst rst-open">SS22</span></div>
+    </div>
+    <div class="card">
+      <div class="ct">Code Review tendencia</div>
+      <div class="row"><span class="rl">S16</span><span class="rv" style="color:var(--green)">2 menores (0 bloq.)</span></div>
+      <div class="row"><span class="rl">S17</span><span class="rv" style="color:var(--green)">3 (0 bloq.)</span></div>
+      <div class="row"><span class="rl">S18</span><span class="rv" style="color:var(--amber)">5 (0 bloq.)</span></div>
+      <div style="margin-top:10px;padding:9px;background:var(--green-d);border-radius:7px;font-size:11px;color:var(--green);border:1px solid rgba(62,201,125,.2);">✓ 0 NCs bloqueantes últimos 3 sprints</div>
+      <div class="sh" style="margin-top:12px;">Deuda saldada</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">Ratio deuda técnica resuelta</div>
+      <div class="pbar"><div class="pb-inner" style="width:88%;"></div></div>
+      <div style="font-size:10px;color:var(--green);margin-top:3px;">~88% resuelta históricamente</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 4: ROADMAP ═══ -->
+<div id="p-roadmap" class="panel">
+  <div class="g3" style="margin-bottom:14px;">
+    <div class="kpi"><div class="kl">Features completadas</div><div class="kv kv-green">21/21</div><div class="ks">FEAT-001→021 ✓ · Sprint 22 próximo</div></div>
+    <div class="kpi"><div class="kl">Último release</div><div class="kv kv-blue">v1.21.0</div><div class="ks">PRD · Sprint 21 cerrado ✓</div></div>
+    <div class="kpi"><div class="kl">FA-Agent v2.3</div><div class="kv kv-teal">70</div><div class="ks">166 reglas negocio · S1–S21</div></div>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="ct">Roadmap de features — BankPortal</div>
+    <div class="feat-grid">
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-001 · S1–S2</div><div class="feat-name">2FA TOTP · Autenticación Segura</div><div class="feat-meta"><span class="fm fm-sp">40 SP</span><span class="fm fm-ver">v1.1–v1.2</span><span class="fm fm-tag">PCI req.8</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-002 · S3</div><div class="feat-name">Autenticación JWT + Refresh Token</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.3</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-003 · S4</div><div class="feat-name">Cuentas y Saldos</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.4</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-004 · S5</div><div class="feat-name">Movimientos e Historial</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.5</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-005 · S6</div><div class="feat-name">Transferencias SEPA-SCT</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.6</span><span class="fm fm-tag">SEPA-SCT</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-006 · S7</div><div class="feat-name">Beneficiarios y Agenda de Pagos</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.7</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-007 · S8</div><div class="feat-name">Bizum & Pagos Móviles</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.8</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-008 · S9</div><div class="feat-name">Notificaciones y Alertas SSE</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.9</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-009 · S10</div><div class="feat-name">Documentos y Contratos</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.10</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-010 · S11</div><div class="feat-name">Cuentas de Ahorro e Inversión</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.11</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-011 · S12–S13</div><div class="feat-name">Pagos, Recibos & Dashboard Fin.</div><div class="feat-meta"><span class="fm fm-sp">48 SP</span><span class="fm fm-ver">v1.12–v1.13</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-012 · S14</div><div class="feat-name">Perfil y Configuración Usuario</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.14</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-013 · S15</div><div class="feat-name">KYC & Onboarding Digital</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.15</span><span class="fm fm-tag">GDPR</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-014 · S16</div><div class="feat-name">Notificaciones Push VAPID</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.16</span><span class="fm fm-tag">ADR-025</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-015 · S17</div><div class="feat-name">Transferencias Programadas</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.17</span><span class="fm fm-tag">ShedLock</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-016 · S18</div><div class="feat-name">Gestión de Tarjetas · PCI-DSS</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.18</span><span class="fm fm-tag">PCI-DSS</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-017 · S19</div><div class="feat-name">Domiciliaciones y Recibos SEPA DD</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.19.0</span><span class="fm fm-tag">SEPA-SDD · PSD2</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-018 · S20</div><div class="feat-name">Exportación Movimientos PDF/CSV · PSD2 Art.47</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.20.0</span><span class="fm fm-tag">PSD2 · GDPR · PCI-DSS</span></div></div>
+      <div class="feat-card fc-done"><div class="feat-id">FEAT-019 · S21</div><div class="feat-name">Centro de Privacidad GDPR — Perfil, Consentimientos, Portabilidad, Derecho al Olvido</div><div class="feat-meta"><span class="fm fm-sp">24 SP</span><span class="fm fm-ver">v1.21.0</span><span class="fm fm-tag">GDPR · PSD2-SCA</span></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Progreso global</div>
+    <div class="g3" style="margin-bottom:0;gap:20px;">
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;"><span style="color:var(--muted)">Features completadas</span><span style="color:var(--green);font-family:var(--mono)">18/18 completadas</span></div><div class="pbar" style="height:7px;"><div class="pb-inner" style="width:100%;"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;"><span style="color:var(--muted)">Story Points entregados</span><span style="color:var(--blue);font-family:var(--mono)">497 SP acum.</span></div><div class="pbar" style="height:7px;"><div class="pb-inner" style="width:99%;background:var(--blue);"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;"><span style="color:var(--muted)">Cobertura de tests</span><span style="color:var(--green);font-family:var(--mono)">88% actual</span></div><div class="pbar" style="height:7px;"><div class="pb-inner" style="width:88%;"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 5: GOBIERNO ═══ -->
+<div id="p-gobierno" class="panel">
+  <div class="g2">
+    <div class="card">
+      <div class="ct">CMMI Level 3 — Process Areas activas</div>
+      <div class="pa-g" style="margin-bottom:14px;">
+        <div class="pa"><div class="pa-light pa-light-g"></div><div class="pa-body"><div class="pac">PP <span style="font-size:9px;color:var(--green);margin-left:4px;">ACTIVO</span></div><div class="pan">Project Planning</div><div class="pa-ev" style="color:var(--dim)">SPRINT-020-planning.md · sprint-planning-doc.docx</div></div></div><div class="pa"><div class="pa-light pa-light-g"></div><div class="pa-body"><div class="pac">PMC <span style="font-size:9px;color:var(--green);margin-left:4px;">ACTIVO</span></div><div class="pan">Project Monitoring & Control</div><div class="pa-ev" style="color:var(--dim)">SPRINT-020-report.docx · session.json · sofia.log</div></div></div><div class="pa"><div class="pa-light pa-light-g"></div><div class="pa-body"><div class="pac">REQM <span style="font-size:9px;color:var(--green);margin-left:4px;">ACTIVO</span></div><div class="pan">Requirements Management</div><div class="pa-ev" style="color:var(--dim)">SRS-FEAT-018-Sprint20.docx · FA-FEAT-018-sprint20.md</div></div></div><div class="pa"><div class="pa-light pa-light-g"></div><div class="pa-body"><div class="pac">VER <span style="font-size:9px;color:var(--green);margin-left:4px;">ACTIVO</span></div><div class="pan">Verification</div><div class="pa-ev" style="color:var(--dim)">CR-FEAT-018-sprint20.md · TEST-EXECUTION-FEAT-018-sprint20.md</div></div></div><div class="pa"><div class="pa-light pa-light-g"></div><div class="pa-body"><div class="pac">VAL <span style="font-size:9px;color:var(--green);margin-left:4px;">ACTIVO</span></div><div class="pan">Validation</div><div class="pa-ev" style="color:var(--dim)">QA-FEAT-018-Sprint20.docx · smoke-test-v1.20.sh</div></div></div><div class="pa"><div class="pa-light pa-light-g"></div><div class="pa-body"><div class="pac">PPQA <span style="font-size:9px;color:var(--green);margin-left:4px;">ACTIVO</span></div><div class="pan">Process & Product Quality</div><div class="pa-ev" style="color:var(--dim)">QUALITY-SUMMARY-Sprint20.docx · NC-Tracker-Sprint20.xlsx</div></div></div><div class="pa"><div class="pa-light pa-light-g"></div><div class="pa-body"><div class="pac">CM <span style="font-size:9px;color:var(--green);margin-left:4px;">ACTIVO</span></div><div class="pan">Configuration Management</div><div class="pa-ev" style="color:var(--dim)">RELEASE-NOTES-v1.20.0.docx · V21__export_audit_log.sql</div></div></div><div class="pa"><div class="pa-light pa-light-g"></div><div class="pa-body"><div class="pac">RSKM <span style="font-size:9px;color:var(--green);margin-left:4px;">ACTIVO</span></div><div class="pan">Risk Management</div><div class="pa-ev" style="color:var(--dim)">RISK-REGISTER-Sprint20.docx · ADR-030/031</div></div></div><div class="pa"><div class="pa-light pa-light-g"></div><div class="pa-body"><div class="pac">DAR <span style="font-size:9px;color:var(--green);margin-left:4px;">ACTIVO</span></div><div class="pan">Decision Analysis</div><div class="pa-ev" style="color:var(--dim)">Decision-Log-Sprint20.xlsx · 5 ADRs aprobados</div></div></div>
+      </div>
+      <div style="padding:10px;background:var(--purple-d);border-radius:8px;border:1px solid rgba(162,122,232,.2);font-size:11px;color:var(--purple);">✓ CMMI L3 ACTIVO · 9 Process Areas · Semáforo: 9🟢 0🟡 0🔴 · Sprint 20 cerrado · 154+ evidencias generadas</div>
+    </div>
+    <div class="card">
+      <div class="ct">Atlassian — Estado sincronización</div>
+      
+      <div class="rr"><div class="rid" style="color:#4285F4;font-weight:700">JIRA</div><div class="rb"><div class="rt">Sprint 21 — Cerrado</div><div class="rm">2026-04-01</div></div><span class="rst rst-closed">✓</span></div>
+      <div class="rr"><div class="rid" style="color:#4BBAFF;font-weight:700">CONF</div><div class="rb"><div class="rt">Retrospectiva S21 · #6029313</div><div class="rm">Publicada 2026-04-01</div></div><span class="rst rst-closed">✓</span></div>
+      <div class="rr"><div class="rid" style="color:#4BBAFF;font-weight:700">CONF</div><div class="rb"><div class="rt">FA BankPortal v3.0 — 70 func · 166 BR</div><div class="rm">S1–S21 consolidados</div></div><span class="rst rst-closed">✓</span></div>
+      <div class="rr"><div class="rid" style="color:var(--muted)">Última sync</div><div class="rb"><div class="rt">2026-04-01 · LA-018-01 aplicada</div></div><span class="rst rst-closed">OK</span></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="ct">Entregables CMMI generados — proyecto completo</div>
+    <div class="deliv-g" style="margin-bottom:14px;">
+      <div class="dv"><div class="dvn" style="color:var(--blue)">21</div><div class="dvl">Sprint Reports</div></div>
+      <div class="dv"><div class="dvn" style="color:var(--teal)">21</div><div class="dvl">HLD/LLD Docs</div></div>
+      <div class="dv"><div class="dvn" style="color:var(--green)">21</div><div class="dvl">QA Reports</div></div>
+      <div class="dv"><div class="dvn" style="color:var(--purple)">21</div><div class="dvl">DevOps/Runbooks</div></div>
+      <div class="dv"><div class="dvn" style="color:var(--amber)">63</div><div class="dvl">Excel (NC/DL/QD)</div></div>
+      <div class="dv"><div class="dvn" style="color:var(--blue)">154</div><div class="dvl">Evidencias CMMI</div></div>
+      <div class="dv"><div class="dvn" style="color:var(--teal)">17</div><div class="dvl">FA Markdowns</div></div>
+      <div class="dv"><div class="dvn" style="color:var(--green)">1</div><div class="dvl">FA BankPortal.docx</div></div>
+      <div class="dv"><div class="dvn" style="color:var(--purple)">21</div><div class="dvl">Releases PRD</div></div>
+      <div class="dv"><div class="dvn" style="color:var(--amber)">9</div><div class="dvl">ADRs aprobados</div></div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Risk Register — estado actual</div>
+      <div class="sh">Riesgos activos</div>
+      <div class="rr"><div class="rid">R-016-02</div><div class="rb"><div class="rt">Safari iOS &lt;16.4 sin soporte Web Push</div><div class="rm">Externo · Fallback SSE operativo</div></div><span class="rst rst-acc">Aceptado</span></div>
+      <div class="rr"><div class="rid">R-019-01</div><div class="rb"><div class="rt">Regex PAN Maestro 19d</div><div class="rm">CVSS 2.1 · SS22</div></div><span class="rst rst-plan">SS22</span></div><div class="rr"><div class="rid">R-019-02</div><div class="rb"><div class="rt">Race condition DataExportService - unique index gdpr_requests</div><div class="rm">CVSS 5.3 · SS21</div></div><span class="rst rst-plan">SS21</span></div><div class="rr"><div class="rid">R-019-03</div><div class="rb"><div class="rt">OTP 2FA no validado en PrivacyController.requestDeletion</div><div class="rm">CVSS 4.8 · SS21</div></div><span class="rst rst-plan">SS21</span></div><div class="rr"><div class="rid">R-019-04</div><div class="rb"><div class="rt">Deletion token sin TTL 24h</div><div class="rm">CVSS 2.1 · SS22</div></div><span class="rst rst-plan">SS22</span></div>
+      <div class="sh" style="margin-top:10px;">Cerrados últimos 3 sprints</div>
+      <div class="rr"><div class="rid" style="color:var(--green)">R-015-01</div><div class="rb"><div class="rt">Scheduler duplicado multi-instancia</div><div class="rm">ADR-028 ShedLock · S18</div></div><span class="rst rst-closed">✓</span></div>
+      <div class="rr"><div class="rid" style="color:var(--green)">R-018-01</div><div class="rb"><div class="rt">IDOR en /cards/{id}</div><div class="rm">belongsTo() + tests · S18</div></div><span class="rst rst-closed">✓</span></div>
+      <div class="rr"><div class="rid" style="color:var(--green)">R-018-02</div><div class="rb"><div class="rt">PAN en claro en logs</div><div class="rm">maskCardId() + PCI · S18</div></div><span class="rst rst-closed">✓</span></div>
+    </div>
+    <div class="card">
+      <div class="ct">Stack tecnológico</div>
+      <div class="g2" style="gap:12px;margin-bottom:0;">
+        <div>
+          <div class="sh">Backend</div>
+          <div class="row"><span class="rl">Lenguaje</span><span class="rv" style="color:var(--blue)">Java 21</span></div>
+          <div class="row"><span class="rl">Framework</span><span class="rv">Spring Boot 3.x</span></div>
+          <div class="row"><span class="rl">BD</span><span class="rv">PostgreSQL 16</span></div>
+          <div class="row"><span class="rl">Migrations</span><span class="rv">Flyway V1–V18c</span></div>
+          <div class="row"><span class="rl">Frontend</span><span class="rv">Angular 17+</span></div>
+          <div class="row"><span class="rl">CI/CD</span><span class="rv">Jenkins + Docker</span></div>
+        </div>
+        <div>
+          <div class="sh">SOFIA v2.4</div>
+          <div class="row"><span class="rl">Agentes</span><span class="rv" style="color:var(--purple)">21 activos</span></div>
+          <div class="row"><span class="rl">Pipeline</span><span class="rv">13 steps</span></div>
+          <div class="row"><span class="rl">FA-Agent</span><span class="rv" style="color:var(--teal)">v2.3</span></div>
+          <div class="row"><span class="rl">Metodología</span><span class="rv">Scrumban</span></div>
+          <div class="row"><span class="rl">CMMI</span><span class="rv" style="color:var(--purple)">Level 3</span></div>
+          <div class="row"><span class="rl">session ver.</span><span class="rv">2.0</span></div>
+        </div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-title">Guardrails activos en Sprint 21</div>
-      <div style="margin-top:8px;font-size:12px;line-height:2">
-        <div><span style="color:var(--green)">✓</span> GR-001..006 activados en pipeline</div>
-        <div><span style="color:var(--green)">✓</span> SpringContextIT bloqueante para G-4b</div>
-        <div><span style="color:var(--green)">✓</span> mvn compile obligatorio pre-gate</div>
-        <div><span style="color:var(--green)">✓</span> guardrail-pre-gate.js en CI</div>
-        <div><span style="color:var(--green)">✓</span> baseline deuda pre-existente registrada</div>
-      </div>
-    </div>
   </div>
-
-  <!-- Paquete SOFIA -->
-  <div class="section-title">SOFIA v2.3 — Paquete Distribuido</div>
-  <div class="grid-3">
-    <div class="card card-accent">
-      <div class="card-title">Paquete</div>
-      <div class="card-val-sm">dist/sofia-deploy-v2.3.zip</div>
-      <div class="card-sub">486.1 KB · 92 entradas · 21 skills</div>
-    </div>
-    <div class="card card-purple">
-      <div class="card-title">Guardrails</div>
-      <div class="card-val-sm">v1.0 · 6 checks</div>
-      <div class="card-sub">guardrail-pre-gate.js · SpringContextIT · IntegrationTestBase</div>
-    </div>
-    <div class="card card-blue">
-      <div class="card-title">FA-Agent</div>
-      <div class="card-val-sm">v2.2 · 63 func.</div>
-      <div class="card-sub">141 RN · S1–S20 · python-docx</div>
-    </div>
-  </div>
-
-  <div class="updated-tag">Generado: 30 Mar 2026 · SOFIA v2.3 · Datos leídos desde session.json + fa-index.json</div>
 </div>
 
-<!-- ════════════════════ SCRIPTS ════════════════════ -->
+<!-- ═══ TAB 6: GATES & PIPELINE ═══ -->
+<div id="p-gates" class="panel">
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Estado actual del pipeline — Sprint 21</div>
+      <div class="row"><span class="rl">Feature</span><span class="rv" style="color:var(--blue)">FEAT-019</span></div>
+      <div class="row"><span class="rl">Step actual</span><span class="rv" style="color:var(--amber)">Step 9 · workflow-manager</span></div>
+      <div class="row"><span class="rl">Steps completados</span><span class="rv">[1, 2, 2b, 2c, 3, 3b, 4, 5, 5b, 6, 7, 8, 8b, 9]</span></div>
+      <div class="row"><span class="rl">Steps pendientes</span><span class="rv" style="color:var(--muted)">[5, 5b, 6, 7, 8, 8b, 9]</span></div>
+      <div class="row"><span class="rl">Gate pendiente</span><span class="rv" style="color:var(--green);">Ninguno</span></div>
+      <div class="row"><span class="rl">Esperando</span><span class="rv" style="color:var(--muted)">—</span></div>
+      <div class="row"><span class="rl">Sprint goal</span><span class="rv" style="font-size:10px;max-width:200px;text-align:right;line-height:1.3;">Dar al usuario de Banco Meridian control total sobre su identidad digital: consu...</span></div>
+      <div class="row"><span class="rl">Último artefacto</span><span class="rv" style="font-size:10px;color:var(--muted);">RELEASE-NOTES-v1.21.0.md</span></div>
+      <div class="row"><span class="rl">session.json updated</span><span class="rv" style="font-size:10px">2026-04-01 09:40</span></div>
+    </div>
+    <div class="card">
+      <div class="ct">Dashboard · Historial de regeneraciones <span class="gate-log-badge">Entregable</span></div>
+      <div style="margin-bottom:12px;padding:9px;background:var(--blue-d);border-radius:7px;font-size:11px;color:var(--blue);border:1px solid rgba(65,146,232,.2);">
+        📊 Este dashboard se regenera automáticamente en cada aprobación de Gate y al cierre de Sprint (Step 9). Siempre refleja el estado leído desde session.json en el momento de la regeneración.
+      </div>
+      <div class="sh">Última generación</div>
+      <div class="row"><span class="rl">Timestamp</span><span class="rv" style="font-family:var(--mono);font-size:10px">2026-04-01 09:47</span></div>
+      <div class="row"><span class="rl">Trigger</span><span class="rv" style="color:var(--amber)">Gate POST-FIX-DATOS · Step 9</span></div>
+      <div class="row"><span class="rl">Sprint</span><span class="rv">Sprint 21 · FEAT-019</span></div>
+      <div class="row"><span class="rl">Ruta canónica</span><span class="rv" style="font-size:10px;color:var(--muted)">docs/dashboard/bankportal-global-dashboard.html</span></div>
+      <div class="row"><span class="rl">Alias</span><span class="rv" style="font-size:10px;color:var(--muted)">docs/quality/sofia-dashboard.html</span></div>
+      <div class="sh" style="margin-top:12px;">Gates aprobados en Sprint 21</div>
+      
+    <div class="row">
+      <span class="rl"><span style="color:var(--blue);font-family:var(--mono);font-weight:600">GATE-POST-FIX-DATOS</span> · Step 9 · S21 FEAT-019</span>
+      <span class="rv" style="color:var(--green);font-size:10px">2026-04-01 09:47 ✓</span>
+    </div>
+    <div class="row">
+      <span class="rl"><span style="color:var(--blue);font-family:var(--mono);font-weight:600">GATE-G-CLOSE-S21</span> · Step 9 · S21 FEAT-019</span>
+      <span class="rv" style="color:var(--green);font-size:10px">2026-04-01 05:49 ✓</span>
+    </div>
+    <div class="row">
+      <span class="rl"><span style="color:var(--blue);font-family:var(--mono);font-weight:600">GATE-G-9</span> · Step 9 · S21 FEAT-019</span>
+      <span class="rv" style="color:var(--green);font-size:10px">2026-04-01 05:49 ✓</span>
+    </div>
+    <div class="row">
+      <span class="rl"><span style="color:var(--blue);font-family:var(--mono);font-weight:600">GATE-G-8</span> · Step 8 · S21 FEAT-019</span>
+      <span class="rv" style="color:var(--green);font-size:10px">2026-04-01 05:43 ✓</span>
+    </div>
+    <div class="row">
+      <span class="rl"><span style="color:var(--blue);font-family:var(--mono);font-weight:600">GATE-G-7</span> · Step 7 · S21 FEAT-019</span>
+      <span class="rv" style="color:var(--green);font-size:10px">2026-04-01 05:43 ✓</span>
+    </div>
+    <div class="row">
+      <span class="rl"><span style="color:var(--blue);font-family:var(--mono);font-weight:600">GATE-G-7</span> · Step 7 · S21 FEAT-019</span>
+      <span class="rv" style="color:var(--green);font-size:10px">2026-04-01 05:36 ✓</span>
+    </div>
+    <div class="row">
+      <span class="rl"><span style="color:var(--blue);font-family:var(--mono);font-weight:600">GATE-G-6</span> · Step 6 · S21 FEAT-019</span>
+      <span class="rv" style="color:var(--green);font-size:10px">2026-04-01 05:34 ✓</span>
+    </div>
+    <div class="row">
+      <span class="rl"><span style="color:var(--blue);font-family:var(--mono);font-weight:600">GATE-G-5b</span> · Step 5b · S21 FEAT-019</span>
+      <span class="rv" style="color:var(--green);font-size:10px">2026-04-01 05:31 ✓</span>
+    </div>
+    <div class="row">
+      <span class="rl"><span style="color:var(--blue);font-family:var(--mono);font-weight:600">GATE-G-5b</span> · Step 5b · S21 FEAT-019</span>
+      <span class="rv" style="color:var(--green);font-size:10px">2026-03-31 20:16 ✓</span>
+    </div>
+    <div class="row">
+      <span class="rl"><span style="color:var(--blue);font-family:var(--mono);font-weight:600">GATE-G-5</span> · Step 5 · S21 FEAT-019</span>
+      <span class="rv" style="color:var(--green);font-size:10px">2026-03-31 20:12 ✓</span>
+    </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Protocolo de Gates HITL — Matriz Atlassian Sprint 21</div>
+    <div style="display:grid;grid-template-columns:60px 60px 1fr 1fr 1fr;gap:8px;padding:6px 0 8px;border-bottom:1px solid var(--border2);font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;">
+      <span>Gate</span><span>Step</span><span>Aprobador</span><span>Jira</span><span>Confluence</span>
+    </div>
+    
+    <div style="display:grid;grid-template-columns:60px 60px 1fr 1fr 1fr;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;align-items:center;">
+      <span style="font-family:var(--mono);font-weight:600;color:var(--green);">G-1</span>
+      <span style="font-family:var(--mono);color:var(--muted)">Step 1</span>
+      <span style="color:var(--text)">Product Owner</span>
+      <span style="color:var(--muted);font-size:10px">Epic + issues → Por hacer</span>
+      <span style="color:var(--muted);font-size:10px">Página Sprint + index</span>
+    </div>
+    <div style="display:grid;grid-template-columns:60px 60px 1fr 1fr 1fr;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;align-items:center;">
+      <span style="font-family:var(--mono);font-weight:600;color:var(--green);">G-2</span>
+      <span style="font-family:var(--mono);color:var(--muted)">Step 2</span>
+      <span style="color:var(--text)">PO + SM</span>
+      <span style="color:var(--muted);font-size:10px">Issues → En curso</span>
+      <span style="color:var(--muted);font-size:10px">Requisitos + SRS</span>
+    </div>
+    <div style="display:grid;grid-template-columns:60px 60px 1fr 1fr 1fr;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;align-items:center;">
+      <span style="font-family:var(--mono);font-weight:600;color:var(--green);">G-3</span>
+      <span style="font-family:var(--mono);color:var(--muted)">Step 3</span>
+      <span style="color:var(--text)">Tech Lead</span>
+      <span style="color:var(--muted);font-size:10px">Issues arch. → En curso</span>
+      <span style="color:var(--muted);font-size:10px">Arquitectura + HLD/LLD</span>
+    </div>
+    <div style="display:grid;grid-template-columns:60px 60px 1fr 1fr 1fr;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;align-items:center;">
+      <span style="font-family:var(--mono);font-weight:600;color:var(--green);">G-5</span>
+      <span style="font-family:var(--mono);color:var(--muted)">Step 5</span>
+      <span style="color:var(--text)">Tech Lead</span>
+      <span style="color:var(--muted);font-size:10px">NCs en issues</span>
+      <span style="color:var(--muted);font-size:10px">Página Code Review</span>
+    </div>
+    <div style="display:grid;grid-template-columns:60px 60px 1fr 1fr 1fr;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;align-items:center;">
+      <span style="font-family:var(--mono);font-weight:600;color:var(--green);">G-6</span>
+      <span style="font-family:var(--mono);color:var(--muted)">Step 6</span>
+      <span style="color:var(--text)">QA Lead</span>
+      <span style="color:var(--muted);font-size:10px">US → Finalizada</span>
+      <span style="color:var(--muted);font-size:10px">QA resultados</span>
+    </div>
+    <div style="display:grid;grid-template-columns:60px 60px 1fr 1fr 1fr;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;align-items:center;">
+      <span style="font-family:var(--mono);font-weight:600;color:var(--green);">G-7</span>
+      <span style="font-family:var(--mono);color:var(--muted)">Step 7</span>
+      <span style="color:var(--text)">DevOps/RM</span>
+      <span style="color:var(--muted);font-size:10px">Release → Finalizada</span>
+      <span style="color:var(--muted);font-size:10px">Runbook + Release Notes</span>
+    </div>
+    <div style="display:grid;grid-template-columns:60px 60px 1fr 1fr 1fr;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;align-items:center;">
+      <span style="font-family:var(--mono);font-weight:600;color:var(--green);">G-8</span>
+      <span style="font-family:var(--mono);color:var(--muted)">Step 8</span>
+      <span style="color:var(--text)">PM</span>
+      <span style="color:var(--muted);font-size:10px">Deliverables → Finalizada</span>
+      <span style="color:var(--muted);font-size:10px">Documentación + evidencias</span>
+    </div>
+    <div style="display:grid;grid-template-columns:60px 60px 1fr 1fr 1fr;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;align-items:center;">
+      <span style="font-family:var(--mono);font-weight:600;color:var(--green);">G-9</span>
+      <span style="font-family:var(--mono);color:var(--muted)">Step 9</span>
+      <span style="color:var(--text)">PM</span>
+      <span style="color:var(--muted);font-size:10px">Epic → Finalizada + JQL=0</span>
+      <span style="color:var(--muted);font-size:10px">Sprint metrics + cierre</span>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>SOFIA v2.4 · BankPortal — Banco Meridian · Dashboard Global</span>
+  <span>21 sprints · 497 SP · 547 tests · 88% cob · 0 defectos · CMMI L3 · 16 features</span>
+  <span>Experis © 2026 · 2026-04-01</span>
+</div>
+
 <script>
-// ── Tab navigation ──
-function showTab(i){
-  document.querySelectorAll('.content').forEach((c,j)=>c.classList.toggle('active',i===j));
-  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',i===j));
+function T(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  const ids=['exec','history','quality','roadmap','gobierno','gates'];
+  document.querySelectorAll('.tab')[ids.indexOf(id)].classList.add('active');
+  document.getElementById('p-'+id).classList.add('active');
 }
+const C={blue:'#4192e8',green:'#3ec97d',amber:'#f0a830',purple:'#a27ae8',teal:'#35c4b0',muted:'#7a8299',grid:'rgba(255,255,255,0.04)'};
+const ticks={color:C.muted,font:{size:10}};const grid={color:C.grid};
+const sLabels=["S1-S2","S3","S4","S5","S6","S7","S8","S9","S10","S11","S12","S13","S14","S15","S16","S17","S18","S19","S20","S21"];
+const sVel=[40,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24];
+const sAcum=[40,64,88,112,136,160,184,208,232,256,280,304,329,353,377,401,425,449,473,497];
+const sCovLabels=["S7","S8","S9","S10","S11","S12","S13","S14","S15","S16","S17","S18","S19","S20","S21"];
+const sCovData=[77,78,78,79,79,80,80,82,83,84,85,86,87,88,88];
+const sTestsLabels=["S8","S9","S10","S11","S12","S13","S14","S15","S16","S17","S18","S19","S20","S21"];
+const sTestsData=[110,150,190,220,260,310,380,438,553,615,677,708,124,23];
 
-// ── Data ──
-const SPRINTS = [
-  {s:1,  feat:'FEAT-001',sp:22,acum:22,  tests:0,  cov:80,ncs:0,rel:'v1.2.0'},
-  {s:2,  feat:'FEAT-001',sp:24,acum:46,  tests:0,  cov:81,ncs:0,rel:'v1.2.0'},
-  {s:3,  feat:'FEAT-002',sp:24,acum:70,  tests:0,  cov:81,ncs:0,rel:'v1.3.0'},
-  {s:4,  feat:'FEAT-003',sp:24,acum:94,  tests:0,  cov:81,ncs:0,rel:'v1.4.0'},
-  {s:5,  feat:'FEAT-005',sp:24,acum:118, tests:0,  cov:82,ncs:1,rel:'v1.5.0'},
-  {s:6,  feat:'FEAT-005',sp:24,acum:142, tests:0,  cov:82,ncs:0,rel:'v1.6.0'},
-  {s:7,  feat:'FEAT-006',sp:24,acum:166, tests:0,  cov:82,ncs:0,rel:'v1.7.0'},
-  {s:8,  feat:'FEAT-004',sp:24,acum:190, tests:59, cov:83,ncs:0,rel:'v1.8.0'},
-  {s:9,  feat:'FEAT-007',sp:24,acum:214, tests:0,  cov:83,ncs:0,rel:'v1.9.0'},
-  {s:10, feat:'FEAT-008',sp:24,acum:238, tests:0,  cov:83,ncs:1,rel:'v1.10.0'},
-  {s:11, feat:'FEAT-009',sp:24,acum:262, tests:0,  cov:83,ncs:0,rel:'v1.11.0'},
-  {s:12, feat:'FEAT-010',sp:24,acum:286, tests:0,  cov:83,ncs:0,rel:'v1.12.0'},
-  {s:13, feat:'FEAT-011',sp:24,acum:310, tests:0,  cov:84,ncs:0,rel:'v1.13.0'},
-  {s:14, feat:'FEAT-012',sp:24,acum:334, tests:0,  cov:84,ncs:0,rel:'v1.14.0'},
-  {s:15, feat:'FEAT-013',sp:24,acum:358, tests:0,  cov:84,ncs:1,rel:'v1.15.0'},
-  {s:16, feat:'FEAT-014',sp:24,acum:377, tests:553,cov:84,ncs:2,rel:'v1.16.0',date:'2026-03-24'},
-  {s:17, feat:'FEAT-015',sp:24,acum:401, tests:615,cov:85,ncs:3,rel:'v1.17.0',date:'2026-04-22'},
-  {s:18, feat:'FEAT-016',sp:24,acum:425, tests:677,cov:86,ncs:5,rel:'v1.18.0',date:'2026-03-25'},
-  {s:19, feat:'FEAT-017',sp:24,acum:449, tests:708,cov:87,ncs:0,rel:'v1.19.0',date:'2026-03-27'},
-  {s:20, feat:'FEAT-018',sp:24,acum:473, tests:124,cov:88,ncs:0,rel:'v1.20.0',date:'2026-03-30'}
-];
-
-const AGENTS = [
-  {name:'Orchestrator',    role:'Gestión · Pipeline',      ver:'v2.2', cat:'mgmt'},
-  {name:'Scrum Master',    role:'Gestión · Sprint',         ver:'v1.0', cat:'mgmt'},
-  {name:'Requirements',    role:'Gestión · SRS',            ver:'v1.0', cat:'mgmt'},
-  {name:'Workflow Mgr',    role:'Gestión · Atlassian',      ver:'v1.0', cat:'mgmt'},
-  {name:'Architect',       role:'Arquitectura · HLD/LLD',   ver:'v1.0', cat:'arch'},
-  {name:'DB Designer',     role:'Arquitectura · Schema',    ver:'v1.0', cat:'arch'},
-  {name:'API Designer',    role:'Arquitectura · OpenAPI',   ver:'v1.0', cat:'arch'},
-  {name:'Java Developer',  role:'Desarrollo · Backend',     ver:'v1.1+GR', cat:'dev', new:true},
-  {name:'Angular Dev',     role:'Desarrollo · Frontend',    ver:'v1.0', cat:'dev'},
-  {name:'Code Reviewer',   role:'Desarrollo · CR',          ver:'v1.1+GR', cat:'dev', new:true},
-  {name:'QA Tester',       role:'Calidad · Tests',          ver:'v1.0', cat:'qa'},
-  {name:'Security Agent',  role:'Calidad · SAST/CVSS',      ver:'v1.0', cat:'qa'},
-  {name:'Perf. Agent',     role:'Calidad · Performance',    ver:'v1.0', cat:'qa'},
-  {name:'CI/CD Pipeline',  role:'DevOps · Jenkins',         ver:'v1.0', cat:'devops'},
-  {name:'Infrastructure',  role:'DevOps · Docker',          ver:'v1.0', cat:'devops'},
-  {name:'Monitoring',      role:'DevOps · Actuator',        ver:'v1.0', cat:'devops'},
-  {name:'Doc Agent',       role:'Docs · Word/Excel',        ver:'v1.0', cat:'doc'},
-  {name:'Diagrams',        role:'Docs · Diagramas',         ver:'v1.0', cat:'doc'},
-  {name:'Client Deliver.', role:'Docs · Entregables',       ver:'v1.0', cat:'doc'},
-  {name:'FA-Agent',        role:'Análisis Funcional',       ver:'v2.2', cat:'doc', new:true},
-  {name:'UX/UI Designer',  role:'Diseño · Prototipos',      ver:'v2.0', cat:'doc', new:true},
-];
-
-const MODULES = {
-  authentication:10, session:3, trusteddevice:3, notification:4,
-  account:4, transfer:3, bill:3, dashboard:5, profile:4, kyc:3,
-  scheduled:3, cards:6, notifications:3, directdebit:5, export:4, audit:5
-};
-
-const DEBT = [
-  {id:'DEBT-036',desc:'IBAN real en ExportAuditService — inyectar AccountRepository',sprint:'S21',sev:'media'},
-  {id:'DEBT-037',desc:'Regex PAN Maestro 19 dígitos (CVSS 2.1)',sprint:'S21',sev:'baja'},
-  {id:'DEBT-038',desc:'Validación accountId vs userId en ExportService (CVSS 4.8)',sprint:'S21 ✅',sev:'media'},
-];
-
-const CMMI_PAS = [
-  {pa:'PP',  name:'Project Planning',        status:'green'},
-  {pa:'PMC', name:'Project Monitoring',      status:'green'},
-  {pa:'RSKM',name:'Risk Management',         status:'green'},
-  {pa:'VER', name:'Verification',            status:'green'},
-  {pa:'VAL', name:'Validation',              status:'green'},
-  {pa:'CM',  name:'Config. Management',      status:'green'},
-  {pa:'PPQA',name:'Process QA',              status:'green'},
-  {pa:'REQM',name:'Requirements Mgmt',       status:'green'},
-  {pa:'DAR', name:'Decision Analysis',       status:'green'},
-];
-
-const ARTIFACTS = [
-  ['FEAT-018-SRS.docx',          'Word',  'green'],
-  ['FEAT-018-HLD.docx',          'Word',  'green'],
-  ['FEAT-018-LLD-backend.docx',  'Word',  'green'],
-  ['FEAT-018-LLD-frontend.docx', 'Word',  'green'],
-  ['FEAT-018-Test-Plan.docx',    'Word',  'green'],
-  ['FEAT-018-QA-Report.docx',    'Word',  'green'],
-  ['FEAT-018-Code-Review.docx',  'Word',  'green'],
-  ['FEAT-018-Release-Notes.docx','Word',  'green'],
-  ['FEAT-018-Runbook.docx',      'Word',  'green'],
-  ['Sprint-20-Report-PMC.docx',  'Word',  'green'],
-  ['NC-Tracker.xlsx',            'Excel', 'green'],
-  ['Decision-Log.xlsx',          'Excel', 'green'],
-  ['Quality-Dashboard.xlsx',     'Excel', 'green'],
-  ['SpringContextIT.java',       'Test',  'green'],
-  ['IntegrationTestBase.java',   'Test',  'green'],
-  ['guardrail-pre-gate.js',      'Script','green'],
-  ['GUARDRAILS.md',              'Doc',   'green'],
-  ['smoke-test-v1.20.sh',        'DevOps','green'],
-];
-
-const GUARDRAILS = [
-  {id:'GR-001', name:'Paquete raíz Java — leer desde BankPortalApplication.java', gate:'G-4b', la:'LA-020-09'},
-  {id:'GR-001b',name:'Coherencia paquete → ruta en todos los .java de src/main',   gate:'G-4b', la:'LA-020-09'},
-  {id:'GR-002', name:'API Surface Transaction — sin métodos inexistentes',          gate:'G-4b', la:'LA-020-09'},
-  {id:'GR-003', name:'SpringContextIT presente y compilable',                       gate:'G-4b', la:'LA-020-11'},
-  {id:'GR-004', name:'mvn compile EXIT 0 — compilación real pre-gate',              gate:'G-4b', la:'LA-020-11'},
-  {id:'GR-005', name:'CR: paquetes nuevos coinciden con paquete raíz del proyecto', gate:'G-5',  la:'LA-020-10'},
-  {id:'GR-006', name:'CR: métodos usados existen en clase real del dominio',        gate:'G-5',  la:'LA-020-10'},
-];
-
-const LAS = [
-  {id:'LA-019-03',sprint:19,type:'process',  desc:'Gates auto-aprobados — parada explícita individual obligatoria'},
-  {id:'LA-019-04',sprint:19,type:'testing',  desc:'Tests unitarios no detectan conflictos de beans Spring — @SpringBootTest'},
-  {id:'LA-019-05',sprint:19,type:'devops',   desc:'Build Angular sin --configuration=production no activa environment.prod.ts'},
-  {id:'LA-019-06',sprint:19,type:'process',  desc:'DEBT-022 no verificable automáticamente — grep obligatorio en G-5'},
-  {id:'LA-019-07',sprint:19,type:'testing',  desc:'Smoke test desactualizado — artefacto obligatorio G-4'},
-  {id:'LA-019-08',sprint:19,type:'arch',     desc:'@Profile(!production) activa Mock en STG — usar @Profile("mock")'},
-  {id:'LA-019-09',sprint:19,type:'config',   desc:'environment.prod.ts desincronizado — validación automática CI'},
-  {id:'LA-019-10',sprint:19,type:'frontend', desc:'Módulos Angular nuevos no registrados en router'},
-  {id:'LA-019-11',sprint:19,type:'frontend', desc:'Componentes ruta usan @Input — usar ActivatedRoute.paramMap'},
-  {id:'LA-019-12',sprint:19,type:'data',     desc:'UUIDs inválidos en seeds SQL — validar regex'},
-  {id:'LA-019-13',sprint:19,type:'database', desc:'timestamp vs Instant Java — mapa de tipos en LLD'},
-  {id:'LA-019-14',sprint:19,type:'frontend', desc:'OnPush no dispara CD — markForCheck() en observables'},
-  {id:'LA-019-15',sprint:19,type:'backend',  desc:'Named params JdbcClient contaminados — usar parámetros posicionales'},
-  {id:'LA-019-16',sprint:19,type:'process',  desc:'QA no declara repositorio activo — campo MOCK|JPA-REAL obligatorio'},
-  {id:'LA-020-01',sprint:20,type:'process',  desc:'Jira debe actualizarse en cada step sin instrucción explícita'},
-  {id:'LA-020-02',sprint:20,type:'security', desc:'CVSS >= 4.0 debe resolverse en el mismo sprint'},
-  {id:'LA-020-03',sprint:20,type:'arch',     desc:'Audit log con datos derivados — enriquecer en momento de escritura'},
-  {id:'LA-020-04',sprint:20,type:'devops',   desc:'Workflow Jira debe configurarse antes del primer sprint'},
-  {id:'LA-020-05',sprint:20,type:'process',  desc:'Documentation Agent bloqueante para G-9 — sin 13 entregables no se cierra'},
-  {id:'LA-020-06',sprint:20,type:'process',  desc:'planning-doc.docx obligatorio en cada sprint — bloqueante G-8'},
-  {id:'LA-020-07',sprint:20,type:'dashboard',desc:'Dashboard debe regenerarse en cada gate, no solo al cierre de sprint'},
-  {id:'LA-020-08',sprint:20,type:'process',  desc:'gen-fa-document.py debe ejecutarse en Step 8b — bloqueante con verificación real'},
-  {id:'LA-020-09',sprint:20,type:'process',  desc:'Paquete Java inferido de documentación — verificar BankPortalApplication.java antes de escribir'},
-  {id:'LA-020-10',sprint:20,type:'code-review',desc:'CR validó consistencia interna pero no contra codebase real — cross-check obligatorio'},
-  {id:'LA-020-11',sprint:20,type:'testing',  desc:'Sin SpringContextIT ni mvn compile — 446 tests Mockito pasan aunque build falla'},
-];
-
-const TIMELINE = [
-  {dot:'done',  date:'Nov 2025',     title:'SOFIA v1.0 — Sistema base',       desc:'10 habilidades · Primera automatización'},
-  {dot:'done',  date:'Dic 2025',     title:'SOFIA v1.1 — Doc Agent',           desc:'15 habilidades · Generación automática de documentos'},
-  {dot:'done',  date:'Mar 2026',     title:'SOFIA v2.2 — FA-Agent v2.1',       desc:'20 agentes · Dashboard global · Lessons Learned'},
-  {dot:'done',  date:'28 Mar 2026',  title:'SOFIA v2.3 — UX/UI Designer',      desc:'21 agentes · Step 2c · Gate HITL PO+TL'},
-  {dot:'hotfix',date:'30 Mar 2026',  title:'HOTFIX-S20 — Paquete Java',         desc:'16 ficheros corregidos · API Transaction adaptada'},
-  {dot:'guard', date:'30 Mar 2026',  title:'Guardrails v1.0 activados',         desc:'6 checks · SpringContextIT · IntegrationTestBase'},
-  {dot:'done',  date:'S21 — TBD',    title:'Sprint 21 — FEAT-019 (pendiente PO)',desc:'DEBT-036/037/038 · 24 SP objetivo'},
-];
-
-// ── Render velocity bars ──
-(function(){
-  const max = 24, h = 100;
-  const el = document.getElementById('velocityBars');
-  SPRINTS.forEach(s => {
-    const pct = (s.sp/max)*h;
-    const col = s.sp>=24 ? '#3fb950' : s.sp>=20 ? '#d29922' : '#f85149';
-    el.innerHTML += `<div class="bar-wrap">
-      <div class="bar-val">${s.sp}</div>
-      <div class="bar" style="height:${pct}px;background:${col}" title="S${s.s}: ${s.sp} SP"></div>
-      <div class="bar-label">S${s.s}</div>
-    </div>`;
-  });
-})();
-
-// ── Render agents ──
-(function(){
-  const el = document.getElementById('agentsGrid');
-  const catColors = {mgmt:'var(--accent)',arch:'var(--accent2)',dev:'var(--green)',qa:'var(--yellow)',devops:'var(--purple)',doc:'var(--gold)'};
-  AGENTS.forEach(a => {
-    el.innerHTML += `<div class="agent-card" style="border-left:3px solid ${catColors[a.cat]||'var(--border)'}">
-      <div class="agent-name">${a.name}${a.new?'<span class="agent-new">NEW</span>':''}</div>
-      <div class="agent-role">${a.role}</div>
-      <div class="agent-version">${a.ver}</div>
-    </div>`;
-  });
-})();
-
-// ── Render guardrails ──
-(function(){
-  const el = document.getElementById('guardrailsRows');
-  GUARDRAILS.forEach(g => {
-    el.innerHTML += `<div class="gr-row">
-      <span class="gr-id">${g.id}</span>
-      <span class="gr-name">${g.name}</span>
-      <span class="gr-gate"><span class="pill pill-blue">${g.gate}</span></span>
-      <span style="font-size:11px;color:var(--purple);font-family:var(--mono)">${g.la}</span>
-      <span class="pill pill-green">✓ EXIT 0</span>
-    </div>`;
-  });
-})();
-
-// ── Render sprint history ──
-(function(){
-  const el = document.getElementById('sprintHistoryBody');
-  const recent = SPRINTS.filter(s=>s.s>=16);
-  recent.forEach(s => {
-    el.innerHTML += `<tr>
-      <td><strong>S${s.s}</strong></td>
-      <td><span style="color:var(--accent2)">${s.feat}</span></td>
-      <td><span class="pill pill-green">${s.rel}</span></td>
-      <td>${s.sp}</td>
-      <td>${s.acum}</td>
-      <td>${s.tests||'—'}</td>
-      <td>${s.cov}%</td>
-      <td>${s.ncs===0?'<span style="color:var(--green)">0</span>':s.ncs}</td>
-      <td><span class="pill pill-green">✓ Completado</span></td>
-    </tr>`;
-  });
-})();
-
-// ── Coverage bars ──
-(function(){
-  const el = document.getElementById('coverageBars');
-  const recent = SPRINTS.filter(s=>s.s>=16);
-  const max = 100, h = 100;
-  recent.forEach(s => {
-    const pct = (s.cov/max)*h;
-    el.innerHTML += `<div class="bar-wrap">
-      <div class="bar-val">${s.cov}%</div>
-      <div class="bar" style="height:${pct}px;background:var(--accent2)" title="S${s.s}: ${s.cov}%"></div>
-      <div class="bar-label">S${s.s}</div>
-    </div>`;
-  });
-})();
-
-// ── NCs bars ──
-(function(){
-  const el = document.getElementById('ncsBars');
-  const recent = SPRINTS.filter(s=>s.s>=16);
-  const max = 6, h = 100;
-  recent.forEach(s => {
-    const pct = s.ncs===0 ? 4 : (s.ncs/max)*h;
-    const col = s.ncs===0?'var(--green)':s.ncs<=2?'var(--yellow)':'var(--red)';
-    el.innerHTML += `<div class="bar-wrap">
-      <div class="bar-val">${s.ncs}</div>
-      <div class="bar" style="height:${pct}px;background:${col}"></div>
-      <div class="bar-label">S${s.s}</div>
-    </div>`;
-  });
-})();
-
-// ── Module bars ──
-(function(){
-  const el = document.getElementById('moduleBars');
-  const entries = Object.entries(MODULES).sort((a,b)=>b[1]-a[1]);
-  const maxVal = entries[0][1];
-  const h = 100;
-  entries.forEach(([mod,cnt]) => {
-    const pct = (cnt/maxVal)*h;
-    el.innerHTML += `<div class="bar-wrap">
-      <div class="bar-val">${cnt}</div>
-      <div class="bar" style="height:${pct}px;background:var(--accent)"></div>
-      <div class="bar-label" style="font-size:9px">${mod.replace('authentication','auth').substring(0,8)}</div>
-    </div>`;
-  });
-})();
-
-// ── Debt items ──
-(function(){
-  const el = document.getElementById('debtItems');
-  DEBT.forEach(d => {
-    const col = d.sev==='alta'?'var(--red)':d.sev==='media'?'var(--yellow)':'var(--text2)';
-    el.innerHTML += `<div class="debt-item">
-      <span class="debt-id" style="color:${col}">${d.id}</span>
-      <span class="debt-desc">${d.desc}</span>
-      <span class="debt-sprint">${d.sprint}</span>
-    </div>`;
-  });
-})();
-
-// ── Artifacts ──
-(function(){
-  const el = document.getElementById('artifactsBody');
-  ARTIFACTS.forEach(([name,type,status]) => {
-    el.innerHTML += `<tr>
-      <td style="font-family:var(--mono);font-size:12px">${name}</td>
-      <td><span class="pill pill-gray">${type}</span></td>
-      <td><span class="pill pill-green">✓ Generado</span></td>
-    </tr>`;
-  });
-})();
-
-// ── CMMI ──
-(function(){
-  const el = document.getElementById('cmmiGrid');
-  CMMI_PAS.forEach(p => {
-    el.innerHTML += `<div class="cmmi-pa">
-      <div class="cmmi-dot ${p.status}"></div>
-      <div>
-        <div class="cmmi-pa-name">${p.pa}</div>
-        <div class="cmmi-pa-desc">${p.name}</div>
-      </div>
-    </div>`;
-  });
-})();
-
-// ── Lessons Learned ──
-(function(){
-  const el = document.getElementById('laList');
-  LAS.forEach(la => {
-    el.innerHTML += `<div class="la-item">
-      <span class="la-id">${la.id}</span>
-      <span class="la-type">${la.type}</span>
-      <span class="la-desc">${la.desc}</span>
-    </div>`;
-  });
-})();
-
-// ── Timeline ──
-(function(){
-  const el = document.getElementById('timeline');
-  TIMELINE.forEach(t => {
-    el.innerHTML += `<div class="tl-item">
-      <div class="tl-dot ${t.dot}"></div>
-      <div class="tl-date">${t.date}</div>
-      <div class="tl-title">${t.title}</div>
-      <div class="tl-desc">${t.desc}</div>
-    </div>`;
-  });
-})();
+new Chart(document.getElementById('radarChart'),{type:'radar',
+  data:{labels:['Delivery','Calidad','Seguridad','CMMI','Velocidad','Cobertura','0-Defectos'],
+    datasets:[{data:[100,100,97,90,98,88,100],borderColor:C.blue,backgroundColor:'rgba(65,146,232,0.15)',borderWidth:1.5,pointBackgroundColor:C.blue,pointRadius:3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{r:{ticks:{display:false},grid:{color:'rgba(255,255,255,0.07)'},pointLabels:{color:C.muted,font:{size:10}},min:0,max:100}}}
+});
+new Chart(document.getElementById('velAllChart'),{type:'line',
+  data:{labels:sLabels,datasets:[
+    {data:sVel,borderColor:C.blue,backgroundColor:'rgba(65,146,232,0.08)',fill:true,tension:.3,pointRadius:3,pointBackgroundColor:C.blue},
+    {data:Array(18).fill(23.6),borderColor:'rgba(62,201,125,.5)',borderWidth:1.5,borderDash:[4,4],pointRadius:0,fill:false}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{...ticks,font:{size:9}},grid},y:{ticks,grid,min:15,max:28}}}
+});
+new Chart(document.getElementById('velBarChart'),{type:'bar',
+  data:{labels:sLabels,datasets:[{data:sVel,backgroundColor:sVel.map((v,i)=>i<2?'rgba(53,196,176,0.65)':'rgba(65,146,232,0.7)'),borderColor:sVel.map((v,i)=>i<2?C.teal:C.blue),borderWidth:1.2,borderRadius:3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{...ticks,font:{size:9}},grid},y:{ticks,grid,min:0,max:30}}}
+});
+new Chart(document.getElementById('burnupChart'),{type:'line',
+  data:{labels:sLabels,datasets:[{data:sAcum,borderColor:C.green,backgroundColor:'rgba(62,201,125,0.1)',fill:true,tension:.3,pointRadius:2,pointBackgroundColor:C.green}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{...ticks,font:{size:9}},grid},y:{ticks,grid,min:0,max:500}}}
+});
+new Chart(document.getElementById('testsChart'),{type:'bar',
+  data:{labels:sTestsLabels,datasets:[{data:sTestsData,backgroundColor:'rgba(65,146,232,0.65)',borderColor:C.blue,borderWidth:1.2,borderRadius:3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{...ticks,font:{size:9}},grid},y:{ticks,grid,min:0,max:800}}}
+});
+new Chart(document.getElementById('covTrendChart'),{type:'line',
+  data:{labels:sCovLabels,
+    datasets:[
+      {data:sCovData,borderColor:C.green,backgroundColor:'rgba(62,201,125,0.1)',fill:true,tension:.4,pointRadius:3,pointBackgroundColor:C.green},
+      {data:Array(sCovLabels.length).fill(80),borderColor:'rgba(240,168,48,.5)',borderWidth:1.2,borderDash:[4,4],pointRadius:0,fill:false}
+    ]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{...ticks,font:{size:9}},grid},y:{ticks:{...ticks,callback:v=>v+'%'},grid,min:70,max:95}}}
+});
 </script>
 </body>
 </html>

@@ -383,7 +383,7 @@
     "report": "docs/code-review/CR-FEAT-019-sprint21.md",
     "reviewed_at": "2026-03-31T20:09:39.586Z"
   },
-  "updated_at": "2026-04-01T09:40:00.000Z",
+  "updated_at": "2026-04-01T09:47:59.798Z",
   "resume_next": "Gate G-1 pendiente. Aprobar para continuar con Step 2 Requirements.",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -396,11 +396,11 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-03-30T19:00:34.519Z",
-    "last_gate": "DASHBOARD-AGENTS-GUARDRAILS",
+    "last_generated": "2026-04-01T09:47:59.798Z",
+    "last_gate": "POST-FIX-DATOS",
     "last_step": "9",
-    "sprint": 20,
-    "feature": "FEAT-018",
+    "sprint": 21,
+    "feature": "FEAT-019",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
   "gate_history": [
@@ -721,6 +721,13 @@
       "step": "9",
       "approved_by": "product-owner",
       "approved_at": "2026-04-01T05:49:49.093Z",
+      "sprint": 21,
+      "feature": "FEAT-019"
+    },
+    {
+      "gate": "POST-FIX-DATOS",
+      "step": "9",
+      "approved_at": "2026-04-01T09:47:59.798Z",
       "sprint": 21,
       "feature": "FEAT-019"
     }
