@@ -272,7 +272,7 @@
   },
   "metrics": {
     "total_sp": 497,
-    "total_tests": 547,
+    "total_tests": 855,
     "coverage": 88,
     "defects": 0,
     "ncs_last_sprint": 0
@@ -383,7 +383,7 @@
     "report": "docs/code-review/CR-FEAT-019-sprint21.md",
     "reviewed_at": "2026-03-31T20:09:39.586Z"
   },
-  "updated_at": "2026-04-01T09:47:59.798Z",
+  "updated_at": "2026-04-01T10:05:03.801Z",
   "resume_next": "Gate G-1 pendiente. Aprobar para continuar con Step 2 Requirements.",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -396,8 +396,8 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-04-01T09:47:59.798Z",
-    "last_gate": "POST-FIX-DATOS",
+    "last_generated": "2026-04-01T10:05:03.801Z",
+    "last_gate": "COHERENCIA-FIX-2",
     "last_step": "9",
     "sprint": 21,
     "feature": "FEAT-019",
@@ -728,6 +728,27 @@
       "gate": "POST-FIX-DATOS",
       "step": "9",
       "approved_at": "2026-04-01T09:47:59.798Z",
+      "sprint": 21,
+      "feature": "FEAT-019"
+    },
+    {
+      "gate": "COHERENCIA-FIX",
+      "step": "9",
+      "approved_at": "2026-04-01T10:02:23.771Z",
+      "sprint": 21,
+      "feature": "FEAT-019"
+    },
+    {
+      "gate": "COHERENCIA-FIX",
+      "step": "9",
+      "approved_at": "2026-04-01T10:04:40.186Z",
+      "sprint": 21,
+      "feature": "FEAT-019"
+    },
+    {
+      "gate": "COHERENCIA-FIX-2",
+      "step": "9",
+      "approved_at": "2026-04-01T10:05:03.801Z",
       "sprint": 21,
       "feature": "FEAT-019"
     }

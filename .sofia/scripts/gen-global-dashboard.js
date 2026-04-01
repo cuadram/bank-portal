@@ -435,7 +435,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
     </div>
     <div>
       <div class="brand-title">BankPortal · Banco Meridian</div>
-      <div class="brand-sub">SOFIA v2.0 · Dashboard Global del Proyecto · Generado en cada Gate</div>
+      <div class="brand-sub">SOFIA v${S.sofia_version} · Dashboard Global del Proyecto · Generado en cada Gate</div>
     </div>
   </div>
   <div class="hdr-badges">
@@ -516,7 +516,7 @@ ${GP ? `
     <div style="position:relative;height:200px;"><canvas id="velAllChart"></canvas></div>
   </div>
   <div class="card">
-    <div class="ct">Pipeline Sprint ${S.current_sprint} · ${S.current_feature} · SOFIA v2.3 (15 steps activos)</div>
+    <div class="ct">Pipeline Sprint ${S.current_sprint} · ${S.current_feature} · SOFIA v${S.sofia_version} (${S.pipeline_steps_total||15} steps activos)</div>
     <div class="pipe">
       <div class="ps"><div class="pc ${pipeClass('1')}">1</div><div class="pl">Scrum<br>Master</div></div>
       <div class="ps"><div class="pc ${pipeClass('2')}">2</div><div class="pl">Req.<br>Analyst</div></div>
@@ -562,7 +562,7 @@ ${GP ? `
 <!-- ═══ TAB 3: CALIDAD ═══ -->
 <div id="p-quality" class="panel">
   <div class="g4">
-    <div class="kpi"><div class="kl">Tests último sprint</div><div class="kv kv-green">${S.qa?.test_cases_total||101}/${S.qa?.test_cases_total||101}</div><div class="ks">100% PASS · 0 fallos</div></div>
+    <div class="kpi"><div class="kl">Tests último sprint</div><div class="kv kv-green">${S.qa?.test_cases_pass||65}/${S.qa?.test_cases_total||69}</div><div class="ks">${S.qa?.test_cases_blocked||0} bloq · ${S.qa?.test_cases_fail||0} fail</div></div>
     <div class="kpi"><div class="kl">Cobertura actual</div><div class="kv kv-green">${coverage}%</div><div class="ks">umbral 80% · +${coverage-80}pp margen</div></div>
     <div class="kpi"><div class="kl">Tests acumulados</div><div class="kv kv-blue">${totalTests}</div><div class="ks">S1→S${completedSprints} automatizados</div></div>
     <div class="kpi"><div class="kl">Defectos PRD hist.</div><div class="kv kv-green">${defects}</div><div class="ks">${completedSprints} sprints consecutivos</div></div>
@@ -580,29 +580,32 @@ ${GP ? `
   <div class="g3">
     <div class="card">
       <div class="ct">QA último sprint completado</div>
-      <div class="row"><span class="rl">Tests ejecutados</span><span class="rv" style="color:var(--green)">${S.qa?.test_cases_pass||101}/${S.qa?.test_cases_total||101} PASS</span></div>
-      <div class="row"><span class="rl">Cobertura application</span><span class="rv" style="color:var(--green)">${coverage}%</span></div>
+      <div class="row"><span class="rl">Tests ejecutados</span><span class="rv" style="color:var(--green)">${S.qa?.test_cases_pass||65}/${S.qa?.test_cases_total||69} PASS</span></div>
+      <div class="row"><span class="rl">Bloqueados / Fallidos</span><span class="rv" style="color:var(--amber)">${S.qa?.test_cases_blocked||4} bloq · ${S.qa?.test_cases_fail||0} fail</span></div>
+      <div class="row"><span class="rl">Escenarios Gherkin</span><span class="rv" style="color:var(--green)">${S.qa?.gherkin_scenarios_covered||'16/16'}</span></div>
+      <div class="row"><span class="rl">Cobertura unitaria</span><span class="rv" style="color:var(--green)">${S.qa?.unit_coverage_estimated||coverage+'%'}</span></div>
       <div class="row"><span class="rl">Cobertura funcional</span><span class="rv" style="color:var(--green)">${S.qa?.functional_coverage||'100%'}</span></div>
-      <div class="row"><span class="rl">Security checks</span><span class="rv" style="color:var(--green)">${S.qa?.security_checks||'16/16'}</span></div>
-      <div class="row"><span class="rl">WCAG 2.1 AA</span><span class="rv" style="color:var(--green)">${S.qa?.wcag_checks||'8/8'}</span></div>
-      <div class="row"><span class="rl">API contracts</span><span class="rv" style="color:var(--green)">${S.qa?.api_contracts_verified||'18/18'}</span></div>
+      <div class="row"><span class="rl">Integración checks</span><span class="rv" style="color:var(--green)">${S.qa?.integration_checks||'9/9'}</span></div>
+      <div class="row"><span class="rl">Security checks</span><span class="rv" style="color:${S.qa?.security_checks==='6/8'?'var(--amber)':'var(--green)'}">${S.qa?.security_checks||'6/8'}</span></div>
+      <div class="row"><span class="rl">WCAG 2.1 AA</span><span class="rv" style="color:var(--green)">${S.qa?.wcag_checks||'5/5'}</span></div>
+      <div class="row"><span class="rl">Repositorio activo</span><span class="rv" style="color:var(--green)">${S.qa?.repositorio_activo||'JPA-REAL'}</span></div>
       <div class="row"><span class="rl">Defectos abiertos</span><span class="rv" style="color:var(--green)">${S.qa?.defects_open||0}</span></div>
-      <div class="row"><span class="rl">PCI-DSS scan</span><span class="rv" style="color:var(--green)">${S.security?.pci_dss_compliant?'CLEAN':'N/A'}</span></div>
+      <div class="row"><span class="rl">Veredicto QA</span><span class="rv" style="color:var(--amber);font-size:10px">${(S.qa?.verdict||'OK').slice(0,35)}</span></div>
     </div>
     <div class="card">
       <div class="ct">Seguridad</div>
       <div class="row"><span class="rl">CVEs críticos/altos</span><span class="rv" style="color:var(--green)">${S.security?.cve_critical||0}/${S.security?.cve_high||0}</span></div>
       <div class="row"><span class="rl">SAST findings</span><span class="rv" style="color:var(--amber)">${S.security?.sast_findings||2} (${S.security?.sast_blocker||0} bloq.)</span></div>
-      <div class="row"><span class="rl">Semáforo</span><span class="rv" style="color:var(--green)">${S.security?.semaphore||'VERDE'}</span></div>
+      <div class="row"><span class="rl">Semáforo</span><span class="rv" style="color:${S.security?.semaphore==='YELLOW'?'var(--amber)':S.security?.semaphore==='RED'?'var(--red)':'var(--green)'}">${S.security?.semaphore||'GREEN'}</span></div>
       <div class="row"><span class="rl">PCI-DSS req.3/8/10</span><span class="rv" style="color:var(--green)">✓ Validados</span></div>
       <div class="sh" style="margin-top:12px;">Deuda técnica abierta</div>
       ${(S.security?.open_debts||[]).map(d=>`<div class="rr"><div class="rid">${d.id}</div><div class="rb"><div class="rt">${d.desc}</div><div class="rm">CVSS ${d.cvss} · Target: S${d.sprint_target}</div></div><span class="rst rst-open">S${d.sprint_target}</span></div>`).join('')||'<div class="row"><span class="rl" style="color:var(--green)">Sin deuda técnica abierta</span></div>'}
     </div>
     <div class="card">
       <div class="ct">Code Review tendencia</div>
-      <div class="row"><span class="rl">S16</span><span class="rv" style="color:var(--green)">2 menores (0 bloq.)</span></div>
-      <div class="row"><span class="rl">S17</span><span class="rv" style="color:var(--green)">3 (0 bloq.)</span></div>
-      <div class="row"><span class="rl">S18</span><span class="rv" style="color:var(--amber)">${M.ncs_last_sprint||5} (0 bloq.)</span></div>
+      <div class="row"><span class="rl">S19</span><span class="rv" style="color:var(--green)">3 fixes aplicados (0 bloq.)</span></div>
+      <div class="row"><span class="rl">S20</span><span class="rv" style="color:var(--amber)">HOTFIX · 16 ficheros (0 bloq.)</span></div>
+      <div class="row"><span class="rl">S21</span><span class="rv" style="color:var(--green)">${S.code_review?.findings_suggestion||1} sug · ${S.code_review?.findings_minor||0} men · 0 bloq.</span></div>
       <div style="margin-top:10px;padding:9px;background:var(--green-d);border-radius:7px;font-size:11px;color:var(--green);border:1px solid rgba(62,201,125,.2);">✓ 0 NCs bloqueantes últimos 3 sprints</div>
       <div class="sh" style="margin-top:12px;">Deuda saldada</div>
       <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">Ratio deuda técnica resuelta</div>
@@ -660,15 +663,15 @@ ${GP ? `
       <div class="ct">CMMI Level 3 — Process Areas activas</div>
       <div class="pa-g" style="margin-bottom:14px;">
         ${[
-          {pa:'PP',   name:'Project Planning',           ev:'SPRINT-020-planning.md · sprint-planning-doc.docx',                  st:'g'},
-          {pa:'PMC',  name:'Project Monitoring & Control',ev:'SPRINT-020-report.docx · session.json · sofia.log',                  st:'g'},
-          {pa:'REQM', name:'Requirements Management',    ev:'SRS-FEAT-018-Sprint20.docx · FA-FEAT-018-sprint20.md',               st:'g'},
-          {pa:'VER',  name:'Verification',               ev:'CR-FEAT-018-sprint20.md · TEST-EXECUTION-FEAT-018-sprint20.md',      st:'g'},
-          {pa:'VAL',  name:'Validation',                 ev:'QA-FEAT-018-Sprint20.docx · smoke-test-v1.20.sh',                    st:'g'},
-          {pa:'PPQA', name:'Process & Product Quality',  ev:'QUALITY-SUMMARY-Sprint20.docx · NC-Tracker-Sprint20.xlsx',           st:'g'},
-          {pa:'CM',   name:'Configuration Management',   ev:'RELEASE-NOTES-v1.20.0.docx · V21__export_audit_log.sql',            st:'g'},
-          {pa:'RSKM', name:'Risk Management',            ev:'RISK-REGISTER-Sprint20.docx · ADR-030/031',                         st:'g'},
-          {pa:'DAR',  name:'Decision Analysis',          ev:'Decision-Log-Sprint20.xlsx · 5 ADRs aprobados',                     st:'g'},
+          {pa:'PP',   name:'Project Planning',           ev:'SPRINT-021-planning.md · sprint21-planning-doc.docx',                  st:'g'},
+          {pa:'PMC',  name:'Project Monitoring & Control',ev:'Sprint-21-Report-PMC.docx · session.json · sofia.log',                  st:'g'},
+          {pa:'REQM', name:'Requirements Management',    ev:'SRS-FEAT-019-Sprint21.docx · FA-FEAT-019-sprint21.md',               st:'g'},
+          {pa:'VER',  name:'Verification',               ev:'CR-FEAT-019-sprint21.md · TEST-EXECUTION-FEAT-019-sprint21.md',      st:'g'},
+          {pa:'VAL',  name:'Validation',                 ev:'QA-FEAT-019-Sprint21.docx · smoke-test-v1.21.0.sh PASS 17/17',                    st:'g'},
+          {pa:'PPQA', name:'Process & Product Quality',  ev:'QUALITY-SUMMARY-Sprint21.docx · NC-Tracker-Sprint21.xlsx',           st:'g'},
+          {pa:'CM',   name:'Configuration Management',   ev:'RELEASE-NOTES-v1.21.0.docx · V22__profile_gdpr.sql · e744da0',            st:'g'},
+          {pa:'RSKM', name:'Risk Management',            ev:'RISK-REGISTER-Sprint21.docx · DEBT-040/041/042 registrados',                         st:'g'},
+          {pa:'DAR',  name:'Decision Analysis',          ev:'Decision-Log-Sprint21.xlsx · ADR-032/033 aprobados',                     st:'g'},
         ].map(function(x) {
           var lightClass = x.st==='g'?'pa-light-g':x.st==='a'?'pa-light-a':'pa-light-r';
           var stLabel    = x.st==='g'?'ACTIVO':x.st==='a'?'PARCIAL':'RIESGO';
@@ -715,9 +718,9 @@ ${GP ? `
       <div class="rr"><div class="rid">R-016-02</div><div class="rb"><div class="rt">Safari iOS &lt;16.4 sin soporte Web Push</div><div class="rm">Externo · Fallback SSE operativo</div></div><span class="rst rst-acc">Aceptado</span></div>
       ${(S.security?.open_debts||[]).map((d,i)=>`<div class="rr"><div class="rid">R-019-0${i+1}</div><div class="rb"><div class="rt">${d.desc}</div><div class="rm">CVSS ${d.cvss} · S${d.sprint_target}</div></div><span class="rst rst-plan">S${d.sprint_target}</span></div>`).join('')}
       <div class="sh" style="margin-top:10px;">Cerrados últimos 3 sprints</div>
-      <div class="rr"><div class="rid" style="color:var(--green)">R-015-01</div><div class="rb"><div class="rt">Scheduler duplicado multi-instancia</div><div class="rm">ADR-028 ShedLock · S18</div></div><span class="rst rst-closed">✓</span></div>
-      <div class="rr"><div class="rid" style="color:var(--green)">R-018-01</div><div class="rb"><div class="rt">IDOR en /cards/{id}</div><div class="rm">belongsTo() + tests · S18</div></div><span class="rst rst-closed">✓</span></div>
-      <div class="rr"><div class="rid" style="color:var(--green)">R-018-02</div><div class="rb"><div class="rt">PAN en claro en logs</div><div class="rm">maskCardId() + PCI · S18</div></div><span class="rst rst-closed">✓</span></div>
+      <div class="rr"><div class="rid" style="color:var(--green)">R-019-01</div><div class="rb"><div class="rt">Flyway V22 ADD CONSTRAINT IF NOT EXISTS</div><div class="rm">DO body block fix · Stack startup S21</div></div><span class="rst rst-closed">✓</span></div>
+      <div class="rr"><div class="rid" style="color:var(--green)">R-021-01</div><div class="rb"><div class="rt">PATCH /profile acepta email → bypass RN-F019-01</div><div class="rm">Validación en UpdateProfileUseCase · fix F1</div></div><span class="rst rst-closed">✓</span></div>
+      <div class="rr"><div class="rid" style="color:var(--green)">R-021-02</div><div class="rb"><div class="rt">Data export cooldown 24h no aplicado</div><div class="rm">findRecentByUserIdAndTipo · fix F3 · RN-F019-12</div></div><span class="rst rst-closed">✓</span></div>
     </div>
     <div class="card">
       <div class="ct">Stack tecnológico</div>
@@ -734,11 +737,11 @@ ${GP ? `
         <div>
           <div class="sh">SOFIA v${S.sofia_version}</div>
           <div class="row"><span class="rl">Agentes</span><span class="rv" style="color:var(--purple)">${C.agents?.total||20} activos</span></div>
-          <div class="row"><span class="rl">Pipeline</span><span class="rv">13 steps</span></div>
+          <div class="row"><span class="rl">Pipeline</span><span class="rv">${S.pipeline_steps_total||15} steps</span></div>
           <div class="row"><span class="rl">FA-Agent</span><span class="rv" style="color:var(--teal)">v${S.fa_agent?.skill_version||'2.1'}</span></div>
           <div class="row"><span class="rl">Metodología</span><span class="rv">Scrumban</span></div>
           <div class="row"><span class="rl">CMMI</span><span class="rv" style="color:var(--purple)">Level ${S.cmmi?.level||3}</span></div>
-          <div class="row"><span class="rl">session ver.</span><span class="rv">${S.version}</span></div>
+          <div class="row"><span class="rl">SOFIA v.</span><span class="rv" style="color:var(--purple)">${S.sofia_version}</span></div>
         </div>
       </div>
     </div>
@@ -843,7 +846,7 @@ new Chart(document.getElementById('velBarChart'),{type:'bar',
 });
 new Chart(document.getElementById('burnupChart'),{type:'line',
   data:{labels:sLabels,datasets:[{data:sAcum,borderColor:C.green,backgroundColor:'rgba(62,201,125,0.1)',fill:true,tension:.3,pointRadius:2,pointBackgroundColor:C.green}]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{...ticks,font:{size:9}},grid},y:{ticks,grid,min:0,max:500}}}
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{...ticks,font:{size:9}},grid},y:{ticks,grid,min:0,max:560}}}
 });
 new Chart(document.getElementById('testsChart'),{type:'bar',
   data:{labels:sTestsLabels,datasets:[{data:sTestsData,backgroundColor:'rgba(65,146,232,0.65)',borderColor:C.blue,borderWidth:1.2,borderRadius:3}]},
