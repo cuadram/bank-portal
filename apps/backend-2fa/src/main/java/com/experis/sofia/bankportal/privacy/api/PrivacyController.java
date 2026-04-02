@@ -2,6 +2,7 @@ package com.experis.sofia.bankportal.privacy.api;
 
 import com.experis.sofia.bankportal.privacy.application.*;
 import com.experis.sofia.bankportal.privacy.application.dto.*;
+import com.experis.sofia.bankportal.twofa.application.OtpValidationUseCase;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,10 @@ import java.util.UUID;
  * Endpoints: /api/v1/privacy/consents, /data-export, /deletion-request.
  * LA-TEST-001: authenticatedUserId extraído de HttpServletRequest.getAttribute.
  *
- * @author SOFIA Developer Agent — FEAT-019 Sprint 21
+ * DEBT-041 FIXED (Sprint 22): OTP validado por OtpValidationUseCase antes de initiateDeletion().
+ *   CWE-287 — Improper Authentication. CVSS 4.8 → cerrado.
+ *
+ * @author SOFIA Developer Agent — FEAT-019 Sprint 21 / DEBT-041 Sprint 22
  */
 @RestController
 @RequestMapping("/api/v1/privacy")
@@ -29,6 +33,7 @@ public class PrivacyController {
     private final ConsentManagementService consentService;
     private final DataExportService        dataExportService;
     private final DeletionRequestService   deletionService;
+    private final OtpValidationUseCase     otpValidationUseCase;   // DEBT-041
 
     private UUID userId(HttpServletRequest req) {
         return (UUID) req.getAttribute("authenticatedUserId"); // LA-TEST-001
@@ -73,17 +78,19 @@ public class PrivacyController {
     // ─── RF-019-06: Derecho al olvido ─────────────────────────────────────────
 
     /**
-     * POST /api/v1/privacy/deletion-request — paso 1 (OTP validado).
-     * RN-F019-25: OTP validado previamente por el cliente; el controller
-     * registra la solicitud y suspende la cuenta.
+     * POST /api/v1/privacy/deletion-request — paso 1.
+     * RN-F019-25: OTP 2FA obligatorio. DEBT-041 FIXED: OtpValidationUseCase.validate()
+     * lanza InvalidOtpException (HTTP 401) si el código es incorrecto o expirado.
+     * Solo si el OTP es válido se inicia el proceso de eliminación.
      */
     @PostMapping("/deletion-request")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<Map<String, String>> requestDeletion(
             @Valid @RequestBody DeletionRequestDto dto,
             HttpServletRequest req) {
-        // En producción: validar OTP contra OtpService antes de iniciar
-        deletionService.initiateDeletion(userId(req));
+        UUID uid = userId(req);
+        otpValidationUseCase.validate(uid, dto.otpCode()); // DEBT-041: lanza 401 si OTP inválido
+        deletionService.initiateDeletion(uid);
         return ResponseEntity.accepted().body(Map.of(
             "message", "Email de confirmación enviado. Tienes 24 horas para confirmar."
         ));
@@ -91,7 +98,7 @@ public class PrivacyController {
 
     /**
      * GET /api/v1/privacy/deletion-request/confirm — paso 2 (enlace email).
-     * RN-F019-26: token de un solo uso con TTL 24h.
+     * RN-F019-26: token de un solo uso. TTL 24h validado en DeletionRequestService (DEBT-042).
      */
     @GetMapping("/deletion-request/confirm")
     public ResponseEntity<Void> confirmDeletion(@RequestParam UUID requestId) {

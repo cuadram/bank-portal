@@ -212,6 +212,30 @@ if (checkFiles6.length === 0 && sprintOnly) {
   if (authErrors === 0) ok('Sin @AuthenticationPrincipal en controllers nuevos');
 }
 
+
+
+// ── GR-010: Deuda seguridad vencida (LA-022-01) ─────────────────────────────
+if (gate === 'G-9') {
+  console.log('[GR-010] Deuda seguridad vencida | gate G-9 | CVSS >= 4.0 vencidas');
+  try {
+    var s10 = JSON.parse(fs.readFileSync(path.join(REPO, '.sofia/session.json'), 'utf8'));
+    var sprint10 = s10.current_sprint || 0;
+    var debts10 = (s10.open_debts || []).concat((s10.security && s10.security.open_debts) ? s10.security.open_debts : []);
+    var vencidas10 = debts10.filter(function(d) {
+      return parseFloat(d.cvss || 0) >= 4.0 && parseInt((d.sprint_target || 'S99').replace('S',''), 10) <= sprint10;
+    });
+    if (vencidas10.length > 0) {
+      vencidas10.forEach(function(d) {
+        fail('Deuda seguridad vencida: ' + d.id + ' CVSS=' + d.cvss + ' target=' + d.sprint_target, (d.desc || '') + ' -- Cerrar antes de G-9 (LA-022-01)');
+      });
+    } else {
+      ok('GR-010: Sin deudas CVSS >= 4.0 vencidas -- semaforo OK para cierre de sprint');
+    }
+  } catch(e10) {
+    warn('GR-010: Error leyendo session.json: ' + e10.message);
+  }
+}
+
 // ── Resultado ────────────────────────────────────────────────────────────────
 console.log('\n' + '='.repeat(60));
 console.log(`🛡️  RESULT — Gate ${gate} | ✅ ${passed} OK · ❌ ${failed} BLOQUEANTES`);

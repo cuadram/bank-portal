@@ -1,11 +1,11 @@
 {
   "_comment": "SOFIA v2.5 — Configuración del proyecto. Editar con: python3 .sofia/scripts/sofia-wizard.py --update",
-  "sofia_version": "2.5",
+  "sofia_version": "2.6",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "project_description": "Portal bancario con microservicios Java + Angular",
   "created_at": "2026-03-18T20:18:57Z",
-  "updated_at": "2026-04-01T12:30:59.100Z",
+  "updated_at": "2026-04-02T09:46:30.006510+00:00",
   "stack": {
     "backend": [
       "java"
@@ -62,20 +62,25 @@
       "4",
       "5",
       "5b",
+      "5c",
       "6",
       "7",
+      "7b",
       "8",
       "8b",
       "9"
     ],
     "optional_steps": {
       "5b": true,
-      "performance": false
+      "performance": false,
+      "5c": false,
+      "7b": false
     },
     "gates_enabled": true,
     "atlassian_sync": true,
     "auto_dashboard": true,
-    "fa_agent_enabled": true
+    "fa_agent_enabled": true,
+    "pipeline_steps_total": 17
   },
   "quality": {
     "coverage_threshold": 80,
@@ -148,10 +153,14 @@
     "cmmi_lights_in_dashboard": true,
     "stg_pre_check_script": ".sofia/scripts/stg-pre-check.js",
     "stg_pre_check_mandatory": true,
-    "version_from_environment": true
+    "version_from_environment": true,
+    "lessons_learned_mandatory": true,
+    "lessons_learned_regen_on_step9": true,
+    "gr010_anti_debt_vencida": true,
+    "security_semaphore_green_required_for_g9": true
   },
   "agents": {
-    "total": 21,
+    "total": 23,
     "new_in_v2": [
       "fa-agent"
     ],
@@ -165,6 +174,15 @@
       "orchestrator",
       "angular-developer",
       "code-reviewer"
+    ],
+    "formalized_in_v26": [
+      "performance-agent",
+      "jenkins-agent"
+    ],
+    "updated_in_v26": [
+      "orchestrator",
+      "workflow-manager",
+      "guardrails"
     ]
   },
   "guardrails": {

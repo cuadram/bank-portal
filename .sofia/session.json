@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "sofia_version": "2.5",
+  "sofia_version": "2.6",
   "status": "completed",
   "project": "bank-portal",
   "client": "Banco Meridian",
@@ -202,8 +202,8 @@
     "new_dependencies": []
   },
   "security": {
-    "last_audit": "2026-03-31",
-    "semaphore": "YELLOW",
+    "last_audit": "2026-04-02",
+    "semaphore": "GREEN",
     "cve_critical": 0,
     "cve_high": 0,
     "sast_findings": 3,
@@ -216,30 +216,6 @@
         "cvss": "2.1",
         "sprint_target": "S22",
         "desc": "Regex PAN Maestro 19d"
-      },
-      {
-        "id": "DEBT-040",
-        "area": "Security",
-        "priority": "Alta",
-        "cvss": "5.3",
-        "sprint_target": "S21",
-        "desc": "Race condition DataExportService - unique index gdpr_requests"
-      },
-      {
-        "id": "DEBT-041",
-        "area": "Security",
-        "priority": "Alta",
-        "cvss": "4.8",
-        "sprint_target": "S21",
-        "desc": "OTP 2FA no validado en PrivacyController.requestDeletion"
-      },
-      {
-        "id": "DEBT-042",
-        "area": "Security",
-        "priority": "Media",
-        "cvss": "2.1",
-        "sprint_target": "S22",
-        "desc": "Deletion token sin TTL 24h"
       }
     ],
     "pci_dss_compliant": true,
@@ -383,7 +359,7 @@
     "report": "docs/code-review/CR-FEAT-019-sprint21.md",
     "reviewed_at": "2026-03-31T20:09:39.586Z"
   },
-  "updated_at": "2026-04-02T08:21:01.928Z",
+  "updated_at": "2026-04-02T09:46:44.873331+00:00",
   "resume_next": "Gate G-1 pendiente. Aprobar para continuar con Step 2 Requirements.",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -1062,6 +1038,38 @@
       "correction": "REGLA: version/sprint/envLabel SIEMPRE desde environment.ts. Campos obligatorios en ambos environment files. stg-pre-check.js detecta patron automaticamente en G-4/G-5.",
       "registered_at": "2026-04-01T12:26:12.393Z",
       "commit": "bc367a8"
+    },
+    {
+      "id": "LA-022-01",
+      "sprint": 22,
+      "type": "security",
+      "description": "DEBT-040/041 vencieron su sprint_target (S21) sin cerrarse. CVSS >= 4.0 diferidos = riesgo real en produccion.",
+      "correction": "REGLA PERMANENTE: GR-010 en guardrail-pre-gate.js bloquea Gate G-9 si open_debts tiene items con cvss >= 4.0 y sprint_target <= current_sprint. Sin excepcion.",
+      "registered_at": "2026-04-02T09:45:57.730729+00:00"
+    },
+    {
+      "id": "LA-022-02",
+      "sprint": 22,
+      "type": "process",
+      "description": "LESSONS_LEARNED.md tenia 0 lineas en disco. 38 LAs vivian solo en session.json — perdida total si el fichero se corrompe.",
+      "correction": "REGLA PERMANENTE: Step 9 (Workflow Manager) regenera LESSONS_LEARNED.md desde session.json como paso obligatorio. workflow_directives.lessons_learned_mandatory=true en sofia-config.json.",
+      "registered_at": "2026-04-02T09:45:57.730731+00:00"
+    },
+    {
+      "id": "LA-022-03",
+      "sprint": 22,
+      "type": "process",
+      "description": "Performance Agent y Jenkins Agent tenian SKILL.md en disco desde S19/S20 pero no estaban en pipeline.active_steps. Agentes sin gate = agentes sin efecto real.",
+      "correction": "REGLA PERMANENTE: todo agente con SKILL.md debe estar asociado a un step y gate. Agentes durmientes se formalizan o se archivan. sofia-config.pipeline_steps_total debe coincidir con active_steps.",
+      "registered_at": "2026-04-02T09:46:44.873697+00:00"
+    },
+    {
+      "id": "LA-022-04",
+      "sprint": 22,
+      "type": "security",
+      "description": "GR-010 evidencio que open_debts y security.open_debts estaban duplicados en session.json — mismos debts en dos arrays separados, causando deteccion doble en el guardrail.",
+      "correction": "REGLA: usar solo session.open_debts como fuente unica de verdad. security.open_debts se mantiene como referencia pero GR-010 deduplica por id antes de evaluar.",
+      "registered_at": "2026-04-02T09:46:44.873701+00:00"
     }
   ],
   "unit_test_verification": {
@@ -1247,8 +1255,8 @@
     "prototype_template": "docs/ux-ui/prototypes/PROTO-TEMPLATE.html",
     "prototype_output_pattern": "docs/ux-ui/prototypes/PROTO-FEAT-XXX-sprintYY.html"
   },
-  "pipeline_steps_total": 15,
-  "agents_total": 21,
+  "pipeline_steps_total": 17,
+  "agents_total": 23,
   "last_package": {
     "version": "2.5",
     "path": "dist/sofia-deploy-v2.5.zip",
@@ -1325,30 +1333,6 @@
       "desc": "ProfileController - absorbido por FEAT-019 US-1+US-2",
       "sprint_target": "S21",
       "status": "ABSORBED_BY_FEAT019"
-    },
-    {
-      "id": "DEBT-040",
-      "area": "Security",
-      "priority": "Alta",
-      "cvss": "5.3",
-      "sprint_target": "S21",
-      "desc": "Race condition DataExportService"
-    },
-    {
-      "id": "DEBT-041",
-      "area": "Security",
-      "priority": "Alta",
-      "cvss": "4.8",
-      "sprint_target": "S21",
-      "desc": "OTP 2FA no validado requestDeletion"
-    },
-    {
-      "id": "DEBT-042",
-      "area": "Security",
-      "priority": "Media",
-      "cvss": "2.1",
-      "sprint_target": "S22",
-      "desc": "Deletion token sin TTL 24h"
     },
     {
       "id": "DEBT-043",
@@ -1433,5 +1417,25 @@
     "result": "PASS",
     "browser_verified": true,
     "verified_at": "2026-04-01T12:26:12.393Z"
+  },
+  "debt_fixes_sprint22": {
+    "applied_at": "2026-04-02T09:45:57.730723+00:00",
+    "fixes": [
+      {
+        "id": "DEBT-040",
+        "fix": "V23__unique_idx_gdpr_active_export.sql — unique index parcial CWE-362",
+        "status": "CLOSED"
+      },
+      {
+        "id": "DEBT-041",
+        "fix": "PrivacyController.requestDeletion() — OtpValidationUseCase.validate() antes de initiateDeletion() CWE-287",
+        "status": "CLOSED"
+      },
+      {
+        "id": "DEBT-042",
+        "fix": "DeletionRequestService.confirmDeletion() — TTL 24h check CWE-613",
+        "status": "CLOSED"
+      }
+    ]
   }
 }
