@@ -383,7 +383,7 @@
     "report": "docs/code-review/CR-FEAT-019-sprint21.md",
     "reviewed_at": "2026-03-31T20:09:39.586Z"
   },
-  "updated_at": "2026-04-01T12:34:43.396Z",
+  "updated_at": "2026-04-02T08:21:01.928Z",
   "resume_next": "Gate G-1 pendiente. Aprobar para continuar con Step 2 Requirements.",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -1257,7 +1257,8 @@
     "skills": 21,
     "packaged_at": "2026-04-01T12:34:43.396Z",
     "notes": "STG Verification integrada: stg-pre-check.js + GR-007/008/009. angular-developer v2.1, orchestrator v2.4, code-reviewer actualizado. 38 LAs consolidadas. BUG-VER-001/002 FIXED.",
-    "confluence_page": "PENDING"
+    "confluence_page": "7208961",
+    "confluence_url": "https://nemtec.atlassian.net/wiki/spaces/SOFIA/pages/7208961"
   },
   "hotfix_s20": {
     "version": "HOTFIX-S20",
