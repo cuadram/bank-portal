@@ -1,29 +1,16 @@
 {
   "version": "2.0",
   "sofia_version": "2.6",
-  "status": "completed",
+  "status": "in_progress",
   "project": "bank-portal",
   "client": "Banco Meridian",
-  "current_sprint": 21,
-  "current_feature": "FEAT-019",
-  "current_step": "9",
-  "pipeline_step": "9",
-  "pipeline_step_name": "workflow-manager",
+  "current_sprint": 22,
+  "current_feature": "FEAT-020",
+  "current_step": "1",
+  "pipeline_step": "1",
+  "pipeline_step_name": "sprint-planning",
   "completed_steps": [
-    "1",
-    "2",
-    "2b",
-    "2c",
-    "3",
-    "3b",
-    "4",
-    "5",
-    "5b",
-    "6",
-    "7",
-    "8",
-    "8b",
-    "9"
+    "1"
   ],
   "pending_steps": [
     "5",
@@ -34,121 +21,23 @@
     "8b",
     "9"
   ],
-  "last_skill": "workflow-manager",
+  "last_skill": "orchestrator",
   "last_skill_output_path": "docs/releases/RELEASE-NOTES-v1.21.0.md",
   "gate_pending": null,
-  "sprint_goal": "Dar al usuario de Banco Meridian control total sobre su identidad digital: consultar y actualizar perfil, gestionar consentimientos GDPR y ejercer derechos de portabilidad y supresion",
+  "sprint_goal": "Permitir al usuario de Banco Meridian consultar sus préstamos activos, simular nuevas financiaciones y solicitar un préstamo personal de forma digital, con cuadro de amortización y cumplimiento PSD2 / Ley 16/2011 de crédito al consumo.",
   "sprint_capacity_sp": 24,
   "artifacts": {
     "1": [
-      "docs/sprints/SPRINT-021-planning.md",
-      "Confluence page 6520833 (Sprint 21 Planning)",
-      "Jira SCRUM-106..113 (8 issues creados)"
-    ],
-    "2": [
-      "docs/requirements/SRS-FEAT-019-sprint21.md"
-    ],
-    "3": [
-      "docs/architecture/hld/HLD-FEAT-019.md",
-      "docs/architecture/lld/LLD-FEAT-019-backend.md",
-      "docs/architecture/lld/LLD-FEAT-019-frontend.md",
-      "docs/architecture/adr/ADR-032-033-privacy-decisions.md",
-      "docs/architecture/openapi/openapi-privacy-v1.yaml"
-    ],
-    "4": [
-      "apps/backend-2fa/src/main/resources/db/migration/V22__profile_gdpr.sql",
-      "apps/backend-2fa/src/main/java/.../privacy/domain/ (5 ficheros)",
-      "apps/backend-2fa/src/main/java/.../privacy/infrastructure/ (2 repositorios)",
-      "apps/backend-2fa/src/main/java/.../privacy/application/ (4 servicios + 5 DTOs)",
-      "apps/backend-2fa/src/main/java/.../privacy/api/ (PrivacyController, AdminGdprController, Exceptions)",
-      "apps/backend-2fa/src/main/java/.../twofa/infrastructure/AsyncConfig.java",
-      "apps/backend-2fa/src/main/java/.../export/service/ExportAuditService.java (DEBT-036)",
-      "apps/backend-2fa/src/main/java/.../export/service/generator/PdfDocumentGenerator.java (SCRUM-113)",
-      "apps/backend-2fa/src/test/java/.../privacy/ (4 suites — 20 tests PASS)",
-      "apps/frontend-portal/src/app/features/privacy/ (module + 4 components + service)",
-      "apps/frontend-portal/src/app/app-routing.module.ts (/perfil + /privacidad)",
-      "apps/frontend-portal/src/app/shell/shell.component.ts (nav items)",
-      "docs/qa/TEST-EXECUTION-FEAT-019-sprint21.md"
-    ],
-    "5": [
-      "docs/code-review/CR-FEAT-019-sprint21.md",
-      "FIX: apps/backend-2fa/.../privacy/api/AdminGdprController.java (@PreAuthorize + audit log)",
-      "FIX: apps/backend-2fa/.../integration/SpringContextIT.java (TC-IT-001-G/H/I)",
-      "FIX: apps/frontend-portal/src/environments/environment.ts (sync con prod)"
-    ],
-    "6": [
-      "docs/qa/QA-FEAT-019-sprint21.md",
-      "infra/compose/smoke-test-v1.21.0.sh"
-    ],
-    "7": [
-      "docs/releases/RELEASE-NOTES-v1.21.0.md",
-      "docs/runbooks/RUNBOOK-backend-2fa-v1.21.0.md",
-      "infra/compose/smoke-test-v1.21.0.sh"
-    ],
-    "8": [
-      "docs/deliverables/sprint-21-FEAT-019/word/SRS-FEAT-019-Sprint21.docx",
-      "docs/deliverables/sprint-21-FEAT-019/word/HLD-FEAT-019-Sprint21.docx",
-      "docs/deliverables/sprint-21-FEAT-019/word/LLD-FEAT-019-Backend-Sprint21.docx",
-      "docs/deliverables/sprint-21-FEAT-019/word/LLD-FEAT-019-Frontend-Sprint21.docx",
-      "docs/deliverables/sprint-21-FEAT-019/word/QA-Report-FEAT-019-Sprint21.docx",
-      "docs/deliverables/sprint-21-FEAT-019/word/Code-Review-FEAT-019-Sprint21.docx",
-      "docs/deliverables/sprint-21-FEAT-019/word/Security-Report-FEAT-019-Sprint21.docx",
-      "docs/deliverables/sprint-21-FEAT-019/word/Release-Notes-v1.21.0-Sprint21.docx",
-      "docs/deliverables/sprint-21-FEAT-019/word/Runbook-v1.21.0-Sprint21.docx",
-      "docs/deliverables/sprint-21-FEAT-019/word/Sprint-21-Report-PMC.docx",
-      "docs/deliverables/sprint-21-FEAT-019/excel/NC-Tracker-Sprint21.xlsx",
-      "docs/deliverables/sprint-21-FEAT-019/excel/Decision-Log-Sprint21.xlsx",
-      "docs/deliverables/sprint-21-FEAT-019/excel/Quality-Dashboard-Sprint21.xlsx",
-      "docs/sprints/SPRINT-021-data.json",
-      "docs/deliverables/sprint-21-FEAT-019/gen-docs-sprint21.js",
-      "docs/deliverables/sprint-21-FEAT-019/word/CMMI-Evidence-Sprint21.docx",
-      "docs/deliverables/sprint-21-FEAT-019/word/MEETING-MINUTES-Sprint21.docx",
-      "docs/deliverables/sprint-21-FEAT-019/word/PROJECT-PLAN-v1.21.docx",
-      "docs/deliverables/sprint-21-FEAT-019/word/QUALITY-SUMMARY-Sprint21.docx",
-      "docs/deliverables/sprint-21-FEAT-019/word/RISK-REGISTER-Sprint21.docx",
-      "docs/deliverables/sprint-21-FEAT-019/word/TRACEABILITY-FEAT-019-Sprint21.docx",
-      "docs/deliverables/sprint-21-FEAT-019/word/sprint21-planning-doc.docx"
-    ],
-    "9": [
-      "Jira SCRUM-106..113 todos Finalizada — 8/8",
-      "Confluence Sprint 21 Resultados — page ID 6946817",
-      "URL: https://nemtec.atlassian.net/wiki/spaces/SOFIA/pages/6946817"
-    ],
-    "2b": [
-      "docs/functional-analysis/FA-FEAT-019-sprint21.md",
-      "docs/functional-analysis/fa-index.json (70 funcionalidades, S1-S21)"
-    ],
-    "3b": [
-      "Confluence page 6619138 (HLD publicado bajo Arquitectura)"
-    ],
-    "5b": [
-      "docs/security/SEC-FEAT-019-sprint21.md",
-      "docs/backlog/DEBT-040-042-sprint21.md"
-    ],
-    "8b": [
-      "docs/functional-analysis/FA-BankPortal-Banco-Meridian.docx (v3.1 S21)",
-      "docs/functional-analysis/fa-index.json (70 funcionalidades, 166 RN, S1-S21)"
-    ],
-    "2c": [
-      "docs/ux-ui/UX-FEAT-019-sprint21.md",
-      "docs/ux-ui/prototypes/PROTO-FEAT-019-sprint21.html"
+      "docs/sprints/SPRINT-022-planning.md",
+      "Confluence page 7307265 (Sprint 22 Planning)",
+      "Jira SCRUM-114..121 (8 issues creados, Por hacer)"
     ]
   },
   "gates": {
     "G-1": {
-      "approved_by": "product-owner+tech-lead",
-      "approved_at": "2026-03-31T15:57:47.806Z",
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-02T09:56:24.454768+00:00",
       "step": "1"
-    },
-    "HITL-PO-TL": {
-      "approved_by": "product-owner+tech-lead",
-      "approved_at": "2026-03-31T16:07:40.795Z",
-      "step": "2c"
-    },
-    "G-3": {
-      "approved_by": "tech-lead",
-      "approved_at": "2026-03-31T17:01:00.800Z",
-      "step": "3"
     }
   },
   "fa_agent": {
@@ -322,6 +211,13 @@
       "closed_at": "2026-04-01",
       "confluence_page": "6946817",
       "jira_issues": "SCRUM-106..113"
+    },
+    "sprint_22": {
+      "feature": "FEAT-020",
+      "status": "in_progress",
+      "sp": 0,
+      "acum": 497,
+      "rel": "v1.22.0"
     }
   },
   "cmmi": {
@@ -359,15 +255,15 @@
     "report": "docs/code-review/CR-FEAT-019-sprint21.md",
     "reviewed_at": "2026-03-31T20:09:39.586Z"
   },
-  "updated_at": "2026-04-02T09:46:44.873331+00:00",
+  "updated_at": "2026-04-02T10:00:09.817792+00:00",
   "resume_next": "Gate G-1 pendiente. Aprobar para continuar con Step 2 Requirements.",
-  "sprint_closed": true,
+  "sprint_closed": false,
   "gate8_approved_by": "release-manager",
   "gate8_approved_at": "2026-03-25T17:00:00Z",
   "retrospective": "docs/sprints/SPRINT-020-retrospectiva.md",
   "confluence_retro_id": "6029313",
   "atlassian_synced": true,
-  "atlassian_sync_date": "2026-04-01",
+  "atlassian_sync_date": "2026-04-02",
   "sprint_closed_at": "2026-04-01T05:49:49.093Z",
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
@@ -734,6 +630,15 @@
       "approved_at": "2026-04-01T10:07:21.449Z",
       "sprint": 21,
       "feature": "FEAT-019"
+    },
+    {
+      "gate": "G-1",
+      "step": "1",
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-02T09:56:24.454768+00:00",
+      "sprint": 22,
+      "feature": "FEAT-020",
+      "note": "FEAT-020 Gestión de Préstamos Personales aprobado. 24 SP. 19 feature + 5 deuda."
     }
   ],
   "lessons_learned": [
