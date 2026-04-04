@@ -5,10 +5,9 @@ import com.experis.sofia.bankportal.auth.application.LoginContextUseCase;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -84,15 +83,15 @@ public class AccountAndContextController {
      */
     @PostMapping("/api/v1/auth/confirm-context")
     public ResponseEntity<Void> confirmContext(
-            @AuthenticationPrincipal Jwt jwt,
-            @Valid @RequestBody ConfirmContextRequest request) {
+            HttpServletRequest httpReq,
+            @Valid @RequestBody ConfirmContextRequest body) {
 
-        UUID userId       = UUID.fromString(jwt.getSubject());
-        String pendingSub = jwt.getClaimAsString("pendingSubnet");
-        String currentSub = request.currentSubnet();
+        UUID userId       = (UUID) httpReq.getAttribute("authenticatedUserId");
+        String pendingSub = (String) httpReq.getAttribute("pendingSubnet");
+        String currentSub = body.currentSubnet();
 
         try {
-            loginContextUseCase.confirmContext(userId, pendingSub, currentSub, request.confirmToken());
+            loginContextUseCase.confirmContext(userId, pendingSub, currentSub, body.confirmToken());
             return ResponseEntity.noContent().build();
         } catch (LoginContextUseCase.ContextConfirmException e) {
             return ResponseEntity.badRequest().build();

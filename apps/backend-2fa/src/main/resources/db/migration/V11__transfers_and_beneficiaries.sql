@@ -3,7 +3,7 @@
 -- Sprint 10 — 2026-03-20
 
 -- ── Tabla beneficiaries ───────────────────────────────────────────────────────
-CREATE TABLE beneficiaries (
+CREATE TABLE IF NOT EXISTS beneficiaries (
     id           UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id      UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     alias        VARCHAR(64)  NOT NULL,
@@ -18,7 +18,7 @@ CREATE UNIQUE INDEX idx_beneficiaries_user_iban_active
     ON beneficiaries(user_id, iban)
     WHERE deleted_at IS NULL;
 
-CREATE INDEX idx_beneficiaries_user_active
+CREATE INDEX IF NOT EXISTS idx_beneficiaries_user_active
     ON beneficiaries(user_id)
     WHERE deleted_at IS NULL;
 
@@ -28,7 +28,7 @@ COMMENT ON COLUMN beneficiaries.deleted_at
     IS 'Soft delete: NULL = activo. Las transferencias históricas mantienen la referencia.';
 
 -- ── Tabla transfers ───────────────────────────────────────────────────────────
-CREATE TABLE transfers (
+CREATE TABLE IF NOT EXISTS transfers (
     id             UUID           PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id        UUID           NOT NULL REFERENCES users(id),
     source_account UUID           NOT NULL REFERENCES accounts(id),
@@ -44,11 +44,11 @@ CREATE TABLE transfers (
         CHECK (target_account IS NOT NULL OR beneficiary_id IS NOT NULL)
 );
 
-CREATE INDEX idx_transfers_user_created
+CREATE INDEX IF NOT EXISTS idx_transfers_user_created
     ON transfers(user_id, created_at DESC);
-CREATE INDEX idx_transfers_source_account
+CREATE INDEX IF NOT EXISTS idx_transfers_source_account
     ON transfers(source_account, created_at DESC);
-CREATE INDEX idx_transfers_status
+CREATE INDEX IF NOT EXISTS idx_transfers_status
     ON transfers(status)
     WHERE status = 'PENDING';
 
@@ -60,7 +60,7 @@ COMMENT ON COLUMN transfers.target_account
     IS 'NULL para transferencias a beneficiario externo. Mutuamente exclusivo con beneficiary_id.';
 
 -- ── Tabla transfer_limits ─────────────────────────────────────────────────────
-CREATE TABLE transfer_limits (
+CREATE TABLE IF NOT EXISTS transfer_limits (
     user_id               UUID          PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
     per_operation_limit   DECIMAL(15,2) NOT NULL DEFAULT 2000.00,
     daily_limit           DECIMAL(15,2) NOT NULL DEFAULT 3000.00,

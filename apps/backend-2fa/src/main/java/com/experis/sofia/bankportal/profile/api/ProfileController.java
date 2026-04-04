@@ -1,5 +1,7 @@
 package com.experis.sofia.bankportal.profile.api;
 
+import com.experis.sofia.bankportal.notification.application.ManageNotificationsUseCase;
+import com.experis.sofia.bankportal.notification.domain.UserNotification;
 import com.experis.sofia.bankportal.profile.application.*;
 import com.experis.sofia.bankportal.profile.application.dto.*;
 import com.experis.sofia.bankportal.session.application.dto.SessionResponse;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -22,9 +25,10 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * REST API — Gestión de perfil de usuario.
  * FEAT-012-A Sprint 14 — US-1201/1202/1203/1205
+ * DEBT-043 Sprint 22: añadido GET /notifications (RN-F020-19)
  * SAST-002 fix (Sprint 15): rate limiting en POST /profile/password — máx 5/10min por userId.
  *
- * @author SOFIA Developer Agent — Sprint 14/15
+ * @author SOFIA Developer Agent — Sprint 14/15/22
  */
 @RestController
 @RequestMapping("/api/v1/profile")
@@ -36,6 +40,7 @@ public class ProfileController {
     private final ChangePasswordUseCase      changePassword;
     private final ManageSessionsUseCase      manageSessions;
     private final ListActiveSessionsUseCase  listSessions;
+    private final ManageNotificationsUseCase manageNotifications;   // DEBT-043
 
     // SAST-002: Bucket4j — rate limiter por userId para cambio de contraseña
     private final Map<UUID, Bucket> passwordBuckets = new ConcurrentHashMap<>();
@@ -79,9 +84,21 @@ public class ProfileController {
     }
 
     /**
+     * GET /api/v1/profile/notifications — últimas 20 notificaciones del usuario.
+     * DEBT-043 / RN-F020-19: SIEMPRE HTTP 200 + [] si vacío — NUNCA 404.
+     * LA-STG-001: catchError devuelve of([]) en el frontend — compatible.
+     */
+    @GetMapping("/notifications")
+    public ResponseEntity<List<UserNotification>> getNotifications(HttpServletRequest req) {
+        List<UserNotification> notifications = manageNotifications
+                .listNotifications(userId(req), null, 0, 20)
+                .getContent();
+        return ResponseEntity.ok(notifications);
+    }
+
+    /**
      * GET /api/v1/profile/sessions — lista sesiones activas del usuario.
      * RF-019-03: el usuario puede ver y revocar sesiones abiertas desde el perfil.
-     * Delega en ListActiveSessionsUseCase (FEAT-002 US-101), marcando la sesión actual.
      */
     @GetMapping("/sessions")
     public ResponseEntity<List<SessionResponse>> listSessions(HttpServletRequest req) {

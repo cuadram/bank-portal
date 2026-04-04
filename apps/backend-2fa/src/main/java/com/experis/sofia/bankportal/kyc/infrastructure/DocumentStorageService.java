@@ -1,7 +1,7 @@
 package com.experis.sofia.bankportal.kyc.infrastructure;
 
 import com.experis.sofia.bankportal.kyc.domain.DocumentStoragePort;
-import lombok.extern.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

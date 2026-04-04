@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * guardrail-pre-gate.js — SOFIA v2.3 · Guardrails v1.1
+ * guardrail-pre-gate.js — SOFIA v2.6 · Guardrails v1.2
  * Verificación automática antes de aprobar cualquier gate.
  *
  * Uso:
@@ -17,6 +17,10 @@
  * GR-004  mvn compile EXIT 0                                (LA-020-11)
  * GR-005  @Profile("!production") ausente en ficheros nuevos (LA-019-08)
  * GR-006  @AuthenticationPrincipal ausente en ficheros nuevos (DEBT-022)
+ * GR-010  Deuda seguridad CVSS>=4.0 vencida bloqueante G-9   (LA-022-01)
+ * GR-011  Dashboard global actualizado desde último gate      (LA-022-05)
+ * GR-012  Step 3b en completed_steps antes de Gate G-4            (LA-022-07)
+ * GR-013  Artefactos del step existen en disco (LA-CORE-005)
  */
 
 'use strict';
@@ -89,7 +93,7 @@ function sprintFiles() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-console.log(`\n🛡️  SOFIA GUARDRAILS v1.1 — Gate ${gate}${sprintOnly ? ' [--sprint-only]' : ''}`);
+console.log(`\n🛡️  SOFIA GUARDRAILS v1.2 — Gate ${gate}${sprintOnly ? ' [--sprint-only]' : ''}`);
 console.log('='.repeat(60));
 
 // ── GR-001: Paquete raíz ────────────────────────────────────────────────────
@@ -128,15 +132,12 @@ if (fs.existsSync(TX_FILE)) {
   const realMethods = [...txContent.matchAll(/public\s+\w[\w<>[\], ]*\s+(get\w+)\s*\(\s*\)/g)].map(m => m[1]);
   const wrongMethods = ['getValueDate','getDescription','getBalance','getCurrency','getAccountingDate'];
 
-  // Solo revisar ficheros que importan Transaction Y referencian 'tx.' o 'transaction.'
   const srcFiles = javaFiles(BACKEND_SRC);
   let apiErrors = 0;
   for (const f of srcFiles) {
     const content = fs.readFileSync(f, 'utf8');
-    // El fichero debe importar Transaction para que el check sea relevante
     if (!content.includes('import com.experis.sofia.bankportal.account.domain.Transaction')) continue;
     for (const wrong of wrongMethods) {
-      // Buscar solo en contexto de variable Transaction: tx.getX() o transaction.getX()
       const pattern = new RegExp(`(?:tx|transaction|t)\\s*\\.\\s*${wrong}\\s*\\(`, 'g');
       if (pattern.test(content)) {
         fail(`Método inexistente '${wrong}()' en ${path.relative(REPO, f)}`,
@@ -212,27 +213,116 @@ if (checkFiles6.length === 0 && sprintOnly) {
   if (authErrors === 0) ok('Sin @AuthenticationPrincipal en controllers nuevos');
 }
 
-
-
 // ── GR-010: Deuda seguridad vencida (LA-022-01) ─────────────────────────────
 if (gate === 'G-9') {
-  console.log('[GR-010] Deuda seguridad vencida | gate G-9 | CVSS >= 4.0 vencidas');
+  console.log('\n[GR-010] Deuda seguridad vencida | gate G-9 | CVSS >= 4.0 vencidas');
   try {
-    var s10 = JSON.parse(fs.readFileSync(path.join(REPO, '.sofia/session.json'), 'utf8'));
-    var sprint10 = s10.current_sprint || 0;
-    var debts10 = (s10.open_debts || []).concat((s10.security && s10.security.open_debts) ? s10.security.open_debts : []);
-    var vencidas10 = debts10.filter(function(d) {
-      return parseFloat(d.cvss || 0) >= 4.0 && parseInt((d.sprint_target || 'S99').replace('S',''), 10) <= sprint10;
-    });
+    const s10 = JSON.parse(fs.readFileSync(path.join(REPO, '.sofia/session.json'), 'utf8'));
+    const sprint10 = s10.current_sprint || 0;
+    // Deduplicar por id (LA-022-04)
+    const seenIds = new Set();
+    const allDebts = (s10.open_debts || []).concat(
+      (s10.security && s10.security.open_debts) ? s10.security.open_debts : []
+    ).filter(d => { if (seenIds.has(d.id)) return false; seenIds.add(d.id); return true; });
+    const vencidas10 = allDebts.filter(d =>
+      parseFloat(d.cvss || 0) >= 4.0 &&
+      parseInt((d.sprint_target || 'S99').replace('S',''), 10) <= sprint10
+    );
     if (vencidas10.length > 0) {
-      vencidas10.forEach(function(d) {
-        fail('Deuda seguridad vencida: ' + d.id + ' CVSS=' + d.cvss + ' target=' + d.sprint_target, (d.desc || '') + ' -- Cerrar antes de G-9 (LA-022-01)');
-      });
+      vencidas10.forEach(d =>
+        fail('Deuda seguridad vencida: ' + d.id + ' CVSS=' + d.cvss + ' target=' + d.sprint_target,
+             (d.desc || '') + ' — Cerrar antes de G-9 (LA-022-01)')
+      );
     } else {
-      ok('GR-010: Sin deudas CVSS >= 4.0 vencidas -- semaforo OK para cierre de sprint');
+      ok('GR-010: Sin deudas CVSS >= 4.0 vencidas — semáforo OK para cierre de sprint');
     }
   } catch(e10) {
     warn('GR-010: Error leyendo session.json: ' + e10.message);
+  }
+}
+
+// ── GR-011: Dashboard global actualizado (LA-022-05) ─────────────────────────
+console.log('\n[GR-011] Dashboard global — frescura desde último gate');
+try {
+  const sess11 = JSON.parse(fs.readFileSync(path.join(REPO, '.sofia/session.json'), 'utf8'));
+  const dashInfo = sess11.dashboard_global || {};
+  const lastGenerated = dashInfo.last_generated ? new Date(dashInfo.last_generated) : null;
+
+  // Obtener el timestamp del último gate aprobado
+  const gateHistory = sess11.gate_history || [];
+  const currentGates = Object.values(sess11.gates || {});
+  const allTimestamps = [
+    ...gateHistory.map(g => g.approved_at),
+    ...currentGates.map(g => g.approved_at)
+  ].filter(Boolean).map(t => new Date(t));
+  const lastGateTime = allTimestamps.length > 0
+    ? new Date(Math.max(...allTimestamps.map(t => t.getTime())))
+    : null;
+
+  if (!lastGenerated) {
+    fail('GR-011: dashboard_global.last_generated no encontrado en session.json',
+         'Regenerar dashboard antes de aprobar el gate (LA-022-05)');
+  } else if (lastGateTime && lastGenerated < lastGateTime) {
+    const diffMin = Math.round((lastGateTime - lastGenerated) / 60000);
+    fail(`GR-011: Dashboard desactualizado — generado ${diffMin} min antes del último gate`,
+         `Dashboard: ${lastGenerated.toISOString()} | Último gate: ${lastGateTime.toISOString()} — Regenerar (LA-022-05)`);
+  } else {
+    const dashPath = path.join(REPO, dashInfo.path || 'docs/dashboard/bankportal-global-dashboard.html');
+    if (fs.existsSync(dashPath)) {
+      const stat = fs.statSync(dashPath);
+      ok(`GR-011: Dashboard actualizado — ${lastGenerated.toISOString().slice(0,16)} · ${Math.round(stat.size/1024)}KB`);
+    } else {
+      fail('GR-011: Fichero dashboard no existe en disco', dashInfo.path || 'docs/dashboard/bankportal-global-dashboard.html');
+    }
+  }
+} catch (e11) {
+  warn('GR-011: Error verificando dashboard: ' + e11.message);
+}
+
+
+// GR-CORE-003: SOFIA_REPO coherente
+console.log('\n[GR-CORE-003] SOFIA_REPO aislamiento de proyecto');
+try {
+  const sesCore = JSON.parse(fs.readFileSync(path.join(REPO,'.sofia/session.json'),'utf8'));
+  const cfgCore = JSON.parse(fs.readFileSync(path.join(REPO,'.sofia/sofia-config.json'),'utf8'));
+  const sesRepo = sesCore.sofia_repo;
+  const cfgRepo = cfgCore.sofia_repo;
+  const repoReal = fs.realpathSync ? fs.realpathSync(REPO) : REPO;
+  if (sesRepo && cfgRepo && sesRepo === cfgRepo && sesRepo === repoReal) {
+    ok(`GR-CORE-003: SOFIA_REPO coherente — ${repoReal}`);
+  } else {
+    warn(`GR-CORE-003: SOFIA_REPO posiblemente incoherente — verificar CLAUDE.md/session/config`);
+  }
+} catch(eCore) { info('GR-CORE-003: No verificable — '+eCore.message); }
+
+// ── GR-013: Persistencia de artefactos en disco (LA-CORE-005) ──────────────────
+console.log('\n[GR-013] Artefactos del pipeline verificados en disco');
+{
+  const verifyScript = path.join(REPO, '.sofia/scripts/verify-persistence.js');
+  if (fs.existsSync(verifyScript)) {
+    // Determinar steps a verificar segun el gate
+    const GATE_TO_STEP = {
+      'G-1':'1','G-2':'2','G-3':'3','G-4':'4','G-4b':'4','G-5':'5',
+      'G-6':'6','G-7':'7','G-8':'8','G-8b':'8b','G-9':'9'
+    };
+    const stepToVerify = GATE_TO_STEP[gate];
+    try {
+      const nodeCmd = '/opt/homebrew/opt/node@22/bin/node';
+      const cmd = `${nodeCmd} ${verifyScript}${stepToVerify ? ' --step ' + stepToVerify : ' --all'}`;
+      const result = run(cmd);
+      if (result !== null && (result.includes('Persistencia verificada') || result.includes('OK'))) {
+        ok('GR-013: Artefactos verificados en disco — persistencia OK');
+      } else {
+        fail('GR-013: Artefactos declarados NO existen en disco — PIPELINE BLOQUEADO',
+             'Ejecutar: node .sofia/scripts/verify-persistence.js --step ' + (stepToVerify||'all') + ' --fix');
+      }
+    } catch(e13) {
+      // Si verify-persistence retorna exit 1 (missing artifacts)
+      fail('GR-013: Verificacion de persistencia FALLÓ — artefactos no encontrados en disco',
+           'Ejecutar: node .sofia/scripts/verify-persistence.js --fix para ver que falta');
+    }
+  } else {
+    warn('GR-013: verify-persistence.js no encontrado — instalar desde SOFIA-CORE');
   }
 }
 

@@ -20,8 +20,13 @@ import java.util.List;
  * Generador de extractos PDF — Apache PDFBox 3.x.
  * ADR-030: PDFBox (Apache 2.0) sobre iText (AGPL).
  * PCI-DSS Req.3.4: PAN enmascarado — solo últimos 4 dígitos.
- * HOTFIX-S20: paquete corregido + API Transaction real:
- *   getTransactionDate() (Instant), getConcept(), getAmount(), getBalanceAfter().
+ * SCRUM-113 / MB-020-03 (Sprint 21): corrección paginación multi-página.
+ *   Bug anterior: cs2 del bloque try-with-resources se cerraba inmediatamente;
+ *   las filas siguientes se seguían escribiendo en cs (primera página).
+ *   Corrección: mantener referencia a PDPageContentStream activo como variable
+ *   mutable; cerrarlo explícitamente al saltar de página y abrir uno nuevo.
+ *
+ * @author SOFIA Developer Agent — FEAT-019 Sprint 21 (SCRUM-113)
  */
 @Slf4j
 @Component
@@ -29,102 +34,67 @@ public class PdfDocumentGenerator implements DocumentGenerator {
 
     private static final DateTimeFormatter DATE_FMT =
             DateTimeFormatter.ofPattern("dd/MM/yyyy").withZone(ZoneId.of("Europe/Madrid"));
+    private static final DateTimeFormatter DT_FMT =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private static final float MARGIN      = 50f;
     private static final float PAGE_WIDTH  = PDRectangle.A4.getWidth();
     private static final float PAGE_HEIGHT = PDRectangle.A4.getHeight();
+    private static final float ROW_HEIGHT  = 12f;
+    private static final float MIN_Y       = MARGIN + 40f;
 
     @Override
     public byte[] generate(List<Transaction> transactions, ExportMetadata metadata) {
+
         try (PDDocument doc = new PDDocument();
              ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
-            PDPage page = new PDPage(PDRectangle.A4);
-            doc.addPage(page);
+            // SCRUM-113: cs es variable mutable — se cierra y reabre al cambiar de página
+            PDPageContentStream cs = openNewPage(doc, metadata);
+            float y = firstPageStartY();
 
-            try (PDPageContentStream cs = new PDPageContentStream(doc, page)) {
-                float y = PAGE_HEIGHT - MARGIN;
+            // ── Cabecera de tabla ────────────────────────────────────────────
+            cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 9);
+            drawTableRow(cs, y, "Fecha", "Concepto", "Importe", "Saldo");
+            y -= ROW_HEIGHT;
+            drawHRule(cs, y + 2);
+            y -= 4;
 
-                // ── Cabecera ────────────────────────────────────────────────
-                cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 18);
-                cs.beginText();
-                cs.newLineAtOffset(MARGIN, y);
-                cs.showText("BANCO MERIDIAN");
-                cs.endText();
-                y -= 22;
+            // ── Filas de transacciones ────────────────────────────────────────
+            cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 8);
 
-                cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 10);
-                cs.beginText();
-                cs.newLineAtOffset(MARGIN, y);
-                cs.showText("Extracto de Movimientos — " + metadata.getIban());
-                cs.endText();
-                y -= 14;
-
-                cs.beginText();
-                cs.newLineAtOffset(MARGIN, y);
-                cs.showText("Titular: " + metadata.getHolderName());
-                cs.endText();
-                y -= 14;
-
-                cs.beginText();
-                cs.newLineAtOffset(MARGIN, y);
-                cs.showText("Periodo: " + metadata.getFechaDesde().format(
-                        DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                        + " — " + metadata.getFechaHasta().format(
-                        DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                cs.endText();
-                y -= 20;
-
-                // Línea separadora
-                cs.moveTo(MARGIN, y);
-                cs.lineTo(PAGE_WIDTH - MARGIN, y);
-                cs.stroke();
-                y -= 16;
-
-                // ── Cabecera tabla ───────────────────────────────────────────
-                cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 9);
-                drawTableRow(cs, y, "Fecha", "Concepto", "Importe", "Saldo");
-                y -= 14;
-                cs.moveTo(MARGIN, y + 2);
-                cs.lineTo(PAGE_WIDTH - MARGIN, y + 2);
-                cs.stroke();
-                y -= 4;
-
-                // ── Filas ────────────────────────────────────────────────────
-                cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 8);
-                for (Transaction tx : transactions) {
-                    if (y < MARGIN + 40) {
-                        // Nueva página
-                        PDPage newPage = new PDPage(PDRectangle.A4);
-                        doc.addPage(newPage);
-                        try (PDPageContentStream cs2 = new PDPageContentStream(doc, newPage)) {
-                            cs2.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 8);
-                        }
-                        y = PAGE_HEIGHT - MARGIN;
-                    }
-
-                    // API real: getTransactionDate() (Instant), getConcept(), getBalanceAfter()
-                    String fecha   = DATE_FMT.format(tx.getTransactionDate());
-                    String concept = maskPan(tx.getConcept());
-                    String importe = String.format("%.2f EUR", tx.getAmount());
-                    String saldo   = String.format("%.2f EUR", tx.getBalanceAfter());
-
-                    drawTableRow(cs, y, fecha, concept, importe, saldo);
-                    y -= 12;
+            for (Transaction tx : transactions) {
+                // SCRUM-113: salto de página correcto — cerrar cs actual, abrir nuevo
+                if (y < MIN_Y) {
+                    writePageFooter(cs, metadata);
+                    cs.close();                          // ← cerrar página anterior
+                    cs = openNewPage(doc, metadata);     // ← abrir nueva página
+                    cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 9);
+                    y = PAGE_HEIGHT - MARGIN;
+                    drawTableRow(cs, y, "Fecha", "Concepto", "Importe", "Saldo");
+                    y -= ROW_HEIGHT;
+                    drawHRule(cs, y + 2);
+                    y -= 4;
+                    cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 8);
                 }
 
-                // ── Pie ──────────────────────────────────────────────────────
-                cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE), 7);
-                cs.beginText();
-                cs.newLineAtOffset(MARGIN, MARGIN + 20);
-                cs.showText("Generado: " + java.time.LocalDateTime.now(ZoneId.of("Europe/Madrid"))
-                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + " (Europe/Madrid)");
-                cs.endText();
+                String fecha   = DATE_FMT.format(tx.getTransactionDate());
+                String concept = maskPan(tx.getConcept());
+                String importe = String.format("%.2f EUR", tx.getAmount());
+                String saldo   = String.format("%.2f EUR", tx.getBalanceAfter());
+
+                drawTableRow(cs, y, fecha, concept, importe, saldo);
+                y -= ROW_HEIGHT;
             }
+
+            // Pie de la última página
+            writePageFooter(cs, metadata);
+            cs.close(); // ← cerrar siempre la última página
 
             doc.save(baos);
             byte[] pdfBytes = baos.toByteArray();
-            log.debug("PDF generado: {} bytes, {} registros", pdfBytes.length, transactions.size());
+            log.debug("PDF generado: {} bytes, {} registros, {} páginas",
+                    pdfBytes.length, transactions.size(), doc.getNumberOfPages());
             return pdfBytes;
 
         } catch (IOException e) {
@@ -133,8 +103,71 @@ public class PdfDocumentGenerator implements DocumentGenerator {
         }
     }
 
-    @Override public String getContentType()  { return "application/pdf"; }
-    @Override public String getFileExtension() { return "pdf"; }
+    /** Abre una nueva página en el documento y escribe la cabecera corporativa. */
+    private PDPageContentStream openNewPage(PDDocument doc, ExportMetadata metadata)
+            throws IOException {
+        PDPage page = new PDPage(PDRectangle.A4);
+        doc.addPage(page);
+        PDPageContentStream cs = new PDPageContentStream(doc, page);
+
+        float y = PAGE_HEIGHT - MARGIN;
+
+        cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 18);
+        cs.beginText();
+        cs.newLineAtOffset(MARGIN, y);
+        cs.showText("BANCO MERIDIAN");
+        cs.endText();
+        y -= 22;
+
+        cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 10);
+        cs.beginText();
+        cs.newLineAtOffset(MARGIN, y);
+        cs.showText("Extracto de Movimientos — " + metadata.getIban());
+        cs.endText();
+        y -= 14;
+
+        cs.beginText();
+        cs.newLineAtOffset(MARGIN, y);
+        cs.showText("Titular: " + metadata.getHolderName());
+        cs.endText();
+        y -= 14;
+
+        cs.beginText();
+        cs.newLineAtOffset(MARGIN, y);
+        cs.showText("Periodo: "
+                + metadata.getFechaDesde().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                + " — "
+                + metadata.getFechaHasta().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        cs.endText();
+        y -= 20;
+
+        drawHRule(cs, y);
+        return cs;
+    }
+
+    private float firstPageStartY() {
+        // Cabecera ocupa ~80pt
+        return PAGE_HEIGHT - MARGIN - 80f;
+    }
+
+    private void writePageFooter(PDPageContentStream cs, ExportMetadata metadata)
+            throws IOException {
+        cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE), 7);
+        cs.beginText();
+        cs.newLineAtOffset(MARGIN, MARGIN + 20);
+        cs.showText("Generado: "
+                + java.time.LocalDateTime.now(ZoneId.of("Europe/Madrid")).format(DT_FMT)
+                + " (Europe/Madrid) | Documento oficial Banco Meridian");
+        cs.endText();
+        // Nota: el hash SHA-256 del PDF completo se calcula en ExportService
+        // tras la generación y se registra en el audit log (RN-F018-03/15)
+    }
+
+    private void drawHRule(PDPageContentStream cs, float y) throws IOException {
+        cs.moveTo(MARGIN, y);
+        cs.lineTo(PAGE_WIDTH - MARGIN, y);
+        cs.stroke();
+    }
 
     private void drawTableRow(PDPageContentStream cs, float y,
                               String fecha, String concepto, String importe, String saldo)
@@ -161,4 +194,7 @@ public class PdfDocumentGenerator implements DocumentGenerator {
         if (s == null) return "";
         return s.length() > max ? s.substring(0, max - 1) + ">" : s;
     }
+
+    @Override public String getContentType()   { return "application/pdf"; }
+    @Override public String getFileExtension() { return "pdf"; }
 }

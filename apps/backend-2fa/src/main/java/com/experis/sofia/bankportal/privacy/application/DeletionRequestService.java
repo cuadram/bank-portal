@@ -79,7 +79,7 @@ public class DeletionRequestService {
 
         // DEBT-042 FIX — RN-F019-26: TTL 24h desde creación de la solicitud
         if (request.getCreatedAt().plusHours(CONFIRMATION_TTL_HOURS).isBefore(LocalDateTime.now())) {
-            request.setEstado(GdprRequestStatus.EXPIRED);
+            request.setEstado(GdprRequestStatus.REJECTED);
             gdprRepo.save(request);
             log.warn("[FEAT-019][DEBT-042] Token expirado requestId={} createdAt={}", requestId, request.getCreatedAt());
             throw new ResponseStatusException(HttpStatus.GONE,

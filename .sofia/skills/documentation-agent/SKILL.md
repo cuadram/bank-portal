@@ -1,8 +1,18 @@
 ---
 name: documentation-agent
-sofia_version: "1.9"
-updated: "2026-03-24"
-changelog: "v1.9 — Sprint data JSON para Dashboard Global, validado en BankPortal (154 docs S2-S16)"
+sofia_version: "2.6"
+version: "2.1"
+updated: "2026-04-02"
+changelog: |
+  v2.1 (2026-04-02) — LA-022-08: REGLA PERMANENTE binarios reales.
+    Doc Agent DEBE generar .docx con librería docx (npm) y .xlsx con ExcelJS.
+    NUNCA reportar .md como equivalente a .docx/.xlsx.
+    Verificación obligatoria: listar directorio con extensiones antes de reportar entrega.
+    Generador gen-docs-sprintNN.js como artefacto persistido — reproducible y auditable.
+  v2.0 (2026-04-01) — LA-021-03: 17 documentos obligatorios (10 técnicos + 7 CMMI/Gestión).
+    Los 7 documentos CMMI son BLOQUEANTES para Gate G-8 desde Sprint 22.
+    Checklist G-8 actualizado con verificación de los 17 archivos.
+  v1.9 (2026-03-24) — Sprint data JSON para Dashboard Global, validado en BankPortal (154 docs S2-S16)
 ---
 
 # Documentation Agent — SOFIA Software Factory v1.9
@@ -137,15 +147,49 @@ el Dashboard Global. Sin este archivo, el sprint no aparecerá en las gráficas.
 
 ---
 
+## ⚠️ REGLA LA-021-03 — 17 documentos estándar OBLIGATORIOS (v2.0)
+
+### Los 17 documentos del Delivery Package completo
+
+**10 documentos técnicos de pipeline:**
+| # | Archivo | Fuente |
+|---|---|---|
+| 1 | `SRS-[FEAT]-Sprint[N].docx` | docs/requirements/ |
+| 2 | `HLD-[FEAT]-Sprint[N].docx` | docs/architecture/hld/ |
+| 3 | `LLD-[FEAT]-Backend-Sprint[N].docx` | docs/architecture/lld/ |
+| 4 | `LLD-[FEAT]-Frontend-Sprint[N].docx` | docs/architecture/lld/ |
+| 5 | `QA-Report-[FEAT]-Sprint[N].docx` | docs/qa/ |
+| 6 | `Code-Review-[FEAT]-Sprint[N].docx` | docs/code-review/ |
+| 7 | `Security-Report-[FEAT]-Sprint[N].docx` | docs/security/ |
+| 8 | `Release-Notes-v[X.Y.Z]-Sprint[N].docx` | docs/releases/ |
+| 9 | `Runbook-v[X.Y.Z]-Sprint[N].docx` | docs/runbooks/ |
+| 10 | `Sprint-[N]-Report-PMC.docx` | docs/sprints/ |
+
+**7 documentos CMMI/Gestión — BLOQUEANTES para Gate G-8 desde Sprint 22:**
+| # | Archivo | Área CMMI |
+|---|---|---|
+| 11 | `CMMI-Evidence-Sprint[N].docx` | PP, PMC, REQM, RSKM, VER, VAL, CM, PPQA, DAR |
+| 12 | `MEETING-MINUTES-Sprint[N].docx` | PMC (Planning, Review, Retrospectiva) |
+| 13 | `PROJECT-PLAN-v[X.Y].docx` | PP (hitos, S[N+1] planif., métricas acum.) |
+| 14 | `QUALITY-SUMMARY-Sprint[N].docx` | PPQA (semáforos, trending S[N-2..N]) |
+| 15 | `RISK-REGISTER-Sprint[N].docx` | RSKM (matriz RSK-NNN, plan acción) |
+| 16 | `TRACEABILITY-[FEAT]-Sprint[N].docx` | REQM (RTM RF→US→Módulo→Test→Regulación) |
+| 17 | `sprint[N]-planning-doc.docx` | PP (DoD, backlog, capacidad) — LA-020-06 |
+
+---
+
 ## Validación pre-entrega (gate PM)
 
 ```
-☑ Los 10 archivos .docx existen y tienen > 0 KB
+☑ Los 10 archivos .docx técnicos existen y tienen > 0 KB
+☑ Los 7 archivos .docx CMMI/Gestión existen y tienen > 0 KB  ← BLOQUEANTE desde S22
 ☑ Los 3 archivos .xlsx existen y tienen > 0 KB
 ☑ docs/sprints/SPRINT-[N]-data.json generado y válido
 ☑ Todos los documentos tienen portada, header y footer Experis
 ☑ Imágenes de diagramas no rotas (> 10 KB)
 ```
+
+> **Si falta cualquiera de los 7 CMMI → Gate G-8 NO APROBADO → completar antes de avanzar a Step 8b**
 
 ---
 
@@ -158,6 +202,31 @@ BankPortal · Banco Meridian:
 
 ---
 
+
+---
+
+## ⚠️ REGLA LA-022-08 — Binarios REALES obligatorios (v2.1)
+
+**PROBLEMA detectado Sprint 22:** Documentation Agent generó ficheros  y los declaró 
+como documentos Word/Excel reales. El directorio  contenía  en lugar de .
+
+### Regla permanente
+
+
+
+### Verificación obligatoria pre-reporte
+
+
+
+### Generador como artefacto
+
+Siempre crear  siguiendo el patrón de :
+-  para XLSX
+-  para DOCX
+- Función  con branding Experis
+- Función  — siempre los 3 argumentos
+- Ejecutar con  y verificar output
+
 ## Persistence Protocol
 
 ```
@@ -167,3 +236,14 @@ BankPortal · Banco Meridian:
    .sofia/session.json (completed_steps)      [ACTUALIZADO]
    .sofia/sofia.log                           [ENTRADA AÑADIDA]
 ```
+
+### LA-022-07 — Step 3b OBLIGATORIO post G-3
+
+El Documentation Agent ejecuta Step 3b inmediatamente despues de Gate G-3 (sin esperar al Developer):
+1. Publicar HLD en Confluence (verificar status=current)
+2. Ejecutar validate-fa-index.js PASS 8/8
+3. Añadir "3b" a session.completed_steps
+4. Registrar en sofia.log
+
+Si el Developer llega al Step 4 y "3b" no esta en completed_steps → GR-012 BLOQUEA G-4.
+

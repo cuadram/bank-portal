@@ -19,6 +19,7 @@ import java.util.UUID;
  * REST controller para exportación de movimientos.
  * FEAT-018 Sprint 20. PSD2 Art.47, GDPR Art.15.
  * HOTFIX-S20: paquete corregido; extrae userId de HttpServletRequest (no @AuthenticationPrincipal Jwt).
+ * BUG-FIX-001: atributo corregido "userId" → "authenticatedUserId" (alineado con JwtAuthenticationFilter).
  */
 @RestController
 @RequestMapping("/api/v1/accounts/{accountId}/exports")
@@ -90,10 +91,11 @@ public class ExportController {
 
     /**
      * Extrae el userId del atributo del request establecido por JwtAuthenticationFilter.
+     * BUG-FIX-001: el filtro usa "authenticatedUserId", no "userId".
      * Evita @AuthenticationPrincipal Jwt que causa HTTP 403 (DEBT-022).
      */
     private String extractUserId(HttpServletRequest req) {
-        Object uid = req.getAttribute("userId");
+        Object uid = req.getAttribute("authenticatedUserId");
         return uid != null ? uid.toString() : "unknown";
     }
 }

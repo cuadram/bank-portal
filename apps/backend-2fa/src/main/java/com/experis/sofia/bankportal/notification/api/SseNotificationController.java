@@ -6,12 +6,11 @@ import com.experis.sofia.bankportal.notification.application.UnreadCountService;
 import com.experis.sofia.bankportal.notification.application.NotificationActionService;
 import com.experis.sofia.bankportal.notification.application.NotificationActionService.NotificationActionException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -67,11 +66,11 @@ public class SseNotificationController {
      */
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream(
-            @AuthenticationPrincipal Jwt jwt,
+            HttpServletRequest request,
             @RequestHeader(value = "Last-Event-ID", required = false) String lastEventId,
             HttpServletResponse response) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
 
         // ADR-010: señalar a todos los proxies intermedios que no hagan buffering
         response.setHeader("X-Accel-Buffering", "no");
@@ -104,10 +103,10 @@ public class SseNotificationController {
      */
     @PostMapping("/{id}/revoke-session")
     public ResponseEntity<Void> revokeSessionFromNotification(
-            @AuthenticationPrincipal Jwt jwt,
+            HttpServletRequest request,
             @PathVariable("id") UUID notificationId) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         try {
             actionService.revokeSessionFromNotification(userId, notificationId);
             return ResponseEntity.noContent().build();

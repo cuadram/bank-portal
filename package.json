@@ -1,5 +1,11 @@
 {
   "devDependencies": {
     "docx": "^9.6.1"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "bcryptjs": "^3.0.3",
+    "exceljs": "^4.4.0",
+    "pptxgenjs": "^4.0.1"
   }
 }

@@ -1,0 +1,9 @@
+{
+  "snapshot_at": "2026-03-25T15:00:00Z",
+  "step": "6",
+  "step_name": "qa-tester",
+  "gate": "7",
+  "gate_status": "approved",
+  "gate_by": "qa-lead+product-owner",
+  "note": "Snapshot post-Gate-7 antes de pausa. Próximo: Step 7 DevOps"
+}

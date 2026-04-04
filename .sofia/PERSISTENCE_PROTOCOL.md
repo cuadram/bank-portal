@@ -191,3 +191,35 @@ como contexto para los steps restantes.
 - Los snapshots son inmutables una vez creados
 - Si .sofia/ no existe al arrancar, crearlo con session.json vacío
 - El timestamp siempre en ISO 8601 UTC: `new Date().toISOString()`
+
+---
+
+## Lecciones Aprendidas incorporadas al protocolo
+
+Registro completo en `.sofia/LESSONS_LEARNED.md`.
+
+### REGLA LA-DASH-001 — fa-index.json como única fuente de verdad del dashboard
+
+> El script `gen-global-dashboard.js` NUNCA usa arrays hardcodeados de features.
+> SIEMPRE lee `docs/functional-analysis/fa-index.json` para construir el historial.
+> Si `total_functionalities != functionalities.length` → auto-corregir + WARNING en log.
+
+**Checklist en cada regeneración de dashboard:**
+```
+[ ] fa-index.json existe en docs/functional-analysis/
+[ ] fa-index.total_functionalities == functionalities.length (o auto-corregido)
+[ ] FULL_HISTORY construido desde fa-index.functionalities (no hardcodeado)
+[ ] dashboard generado y persistido en docs/dashboard/ Y docs/quality/
+```
+
+### REGLA LA-FA-001 — FA-Agent: total_functionalities siempre calculado
+
+> El FA-Agent al escribir fa-index.json DEBE calcular `total_functionalities`
+> como `functionalities.length` de forma dinámica. Nunca asignar un valor
+> literal. Esto evita desincronización entre el metadato y el array real.
+
+### REGLA LA-SESS-001 — Dashboard Global en cada gate (no solo Step 9)
+
+> Un gate no está aprobado hasta que Jira/Confluence estén sincronizados
+> Y el Dashboard Global esté regenerado en disco.
+> Ver: workflow-manager SKILL.md § Paso 7b.

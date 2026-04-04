@@ -6,10 +6,9 @@ import com.experis.sofia.bankportal.cards.infrastructure.web.dto.CardDetailDto;
 import com.experis.sofia.bankportal.cards.infrastructure.web.dto.CardSummaryDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -33,8 +32,8 @@ public class CardController {
 
     /** GET /api/v1/cards */
     @GetMapping
-    public ResponseEntity<List<CardSummaryDto>> listCards(@AuthenticationPrincipal Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+    public ResponseEntity<List<CardSummaryDto>> listCards(HttpServletRequest request) {
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         List<CardSummaryDto> result = getCardsUseCase.execute(userId)
             .stream().map(CardSummaryDto::from).collect(Collectors.toList());
         return ResponseEntity.ok(result);
@@ -43,8 +42,8 @@ public class CardController {
     /** GET /api/v1/cards/{cardId} */
     @GetMapping("/{cardId}")
     public ResponseEntity<CardDetailDto> getCard(@PathVariable UUID cardId,
-                                                 @AuthenticationPrincipal Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+                                                 HttpServletRequest request) {
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         return ResponseEntity.ok(CardDetailDto.from(getCardDetailUseCase.execute(cardId, userId)));
     }
 
@@ -52,8 +51,8 @@ public class CardController {
     @PostMapping("/{cardId}/block")
     public ResponseEntity<CardStatusResponse> blockCard(@PathVariable UUID cardId,
                                                         @RequestBody @Valid OtpRequest req,
-                                                        @AuthenticationPrincipal Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+                                                        HttpServletRequest request) {
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         blockCardUseCase.execute(cardId, userId, req.otpCode());
         return ResponseEntity.ok(new CardStatusResponse("BLOCKED"));
     }
@@ -62,8 +61,8 @@ public class CardController {
     @PostMapping("/{cardId}/unblock")
     public ResponseEntity<CardStatusResponse> unblockCard(@PathVariable UUID cardId,
                                                           @RequestBody @Valid OtpRequest req,
-                                                          @AuthenticationPrincipal Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+                                                          HttpServletRequest request) {
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         unblockCardUseCase.execute(cardId, userId, req.otpCode());
         return ResponseEntity.ok(new CardStatusResponse("ACTIVE"));
     }
@@ -72,8 +71,8 @@ public class CardController {
     @PutMapping("/{cardId}/limits")
     public ResponseEntity<CardLimitsResponse> updateLimits(@PathVariable UUID cardId,
                                                            @RequestBody @Valid UpdateLimitsRequest req,
-                                                           @AuthenticationPrincipal Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+                                                           HttpServletRequest request) {
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         updateCardLimitsUseCase.execute(cardId, userId, req.dailyLimit(), req.monthlyLimit(), req.otpCode());
         return ResponseEntity.ok(new CardLimitsResponse(req.dailyLimit(), req.monthlyLimit()));
     }
@@ -82,8 +81,8 @@ public class CardController {
     @PostMapping("/{cardId}/pin")
     public ResponseEntity<Void> changePin(@PathVariable UUID cardId,
                                           @RequestBody @Valid ChangePinRequest req,
-                                          @AuthenticationPrincipal Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+                                          HttpServletRequest request) {
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         changePinUseCase.execute(cardId, userId, req.newPin(), req.otpCode());
         return ResponseEntity.ok().build();
     }

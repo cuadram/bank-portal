@@ -1,11 +1,10 @@
 package com.experis.sofia.bankportal.audit.api;
 
 import com.experis.sofia.bankportal.audit.application.SecurityConfigHistoryUseCase;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,12 +47,12 @@ public class SecurityConfigHistoryController {
      */
     @GetMapping("/api/v1/security/config-history")
     public ResponseEntity<ConfigHistoryResponse> getConfigHistory(
-            @AuthenticationPrincipal Jwt jwt,
+            HttpServletRequest request,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             Instant since,
             @RequestParam(required = false) String eventType) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
 
         List<SecurityConfigHistoryUseCase.ConfigHistoryEntry> entries =
                 configHistoryUseCase.getHistory(userId, since);

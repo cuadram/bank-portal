@@ -1,8 +1,8 @@
 package com.experis.sofia.bankportal.cards.application;
 
 import com.experis.sofia.bankportal.cards.domain.*;
-import com.experis.sofia.bankportal.audit.AuditLogService;
-import com.experis.sofia.bankportal.notification.application.WebPushService;
+import com.experis.sofia.bankportal.audit.domain.AuditLogService;
+import com.experis.sofia.bankportal.notification.infrastructure.WebPushService;
 import com.experis.sofia.bankportal.notification.domain.NotificationEventType;
 import com.experis.sofia.bankportal.twofa.application.OtpValidationUseCase;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class UnblockCardUseCase {
         card.unblock();
         cardRepository.save(card);
 
-        auditLog.log("CARD_UNBLOCKED", userId.toString(), CardMaskingUtil.maskId(cardId));
-        pushService.sendAsync(userId, NotificationEventType.CARD_UNBLOCKED);
+        auditLog.log("CARD_UNBLOCKED", userId, CardMaskingUtil.maskId(cardId));
+        pushService.sendToUser(userId, "Tarjeta desbloqueada", "Su tarjeta ha sido desbloqueada", java.util.Map.of());
     }
 }

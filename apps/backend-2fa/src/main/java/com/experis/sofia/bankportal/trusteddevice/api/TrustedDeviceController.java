@@ -2,10 +2,9 @@ package com.experis.sofia.bankportal.trusteddevice.api;
 
 import com.experis.sofia.bankportal.trusteddevice.application.ManageTrustedDevicesUseCase;
 import com.experis.sofia.bankportal.trusteddevice.domain.TrustedDevice;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -34,9 +33,9 @@ public class TrustedDeviceController {
     /** US-202 — Lista dispositivos de confianza activos. */
     @GetMapping
     public ResponseEntity<List<TrustedDeviceResponse>> listTrustedDevices(
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest request) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         List<TrustedDeviceResponse> response = manageDevices.listActive(userId)
                 .stream().map(TrustedDeviceResponse::from).toList();
         return ResponseEntity.ok(response);
@@ -46,17 +45,17 @@ public class TrustedDeviceController {
     @DeleteMapping("/{deviceId}")
     public ResponseEntity<Void> revokeOne(
             @PathVariable UUID deviceId,
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest request) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         manageDevices.revokeOne(deviceId, userId);
         return ResponseEntity.noContent().build();
     }
 
     /** US-202 — Revoca todos los dispositivos de confianza del usuario. */
     @DeleteMapping
-    public ResponseEntity<Void> revokeAll(@AuthenticationPrincipal Jwt jwt) {
-        UUID userId = UUID.fromString(jwt.getSubject());
+    public ResponseEntity<Void> revokeAll(HttpServletRequest request) {
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         manageDevices.revokeAll(userId);
         return ResponseEntity.noContent().build();
     }

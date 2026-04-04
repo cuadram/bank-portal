@@ -1,6 +1,6 @@
 ---
 name: atlassian-agent
-sofia_version: "1.9"
+sofia_version: "2.6"
 updated: "2026-03-24"
 changelog: "v1.9 — Protocolo de inicio reforzado, anti-patterns documentados, auto-sync, spaceId numérico obligatorio"
 ---

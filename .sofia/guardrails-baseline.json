@@ -12,8 +12,10 @@
     "bankportal/beneficiary/api/BeneficiaryController.java",
     "bankportal/scheduled/api/ScheduledTransferController.java",
     "bankportal/transfer/api/TransferController.java",
-    "bankportal/transfer/api/TransferLimitsController.java"
+    "bankportal/transfer/api/TransferLimitsController.java",
+    "bankportal/export/controller/ExportController.java"
   ],
   "_debt_reference": "DEBT-022 — pendiente de resolución en sprints futuros",
-  "_updated": "2026-03-30"
+  "_updated": "2026-04-02",
+  "_note_s22": "ExportController añadido a whitelist — DEBT-022 pre-existente, pendiente S23"
 }

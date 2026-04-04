@@ -1,0 +1,406 @@
+{
+  "version": "2.0",
+  "sofia_version": "2.2",
+  "status": "completed",
+  "project": "bank-portal",
+  "client": "Banco Meridian",
+  "current_sprint": 19,
+  "current_feature": "FEAT-017",
+  "current_step": "1",
+  "pipeline_step": "9",
+  "pipeline_step_name": "workflow-manager",
+  "completed_steps": [
+    "1",
+    "2",
+    "2b",
+    "3",
+    "3b",
+    "4",
+    "5",
+    "5b",
+    "6",
+    "7",
+    "8",
+    "8b",
+    "9"
+  ],
+  "pending_steps": [],
+  "last_skill": "workflow-manager",
+  "last_skill_output_path": "docs/architecture/",
+  "gate_pending": null,
+  "sprint_goal": "Gestion completa domiciliaciones bancarias: alta, consulta, baja y notificaciones push \u2014 SEPA DD Core \u00b7 PSD2 Art.77/80",
+  "sprint_capacity_sp": 24,
+  "artifacts": {
+    "1": [
+      "docs/sprints/SPRINT-019-planning.md"
+    ],
+    "2": [
+      "docs/requirements/SRS-FEAT-017-sprint19.md"
+    ],
+    "3": [
+      "docs/architecture/hld/HLD-FEAT-017.md",
+      "docs/architecture/lld/LLD-FEAT-017-backend.md",
+      "docs/architecture/lld/LLD-FEAT-017-frontend.md",
+      "docs/architecture/adr/ADR-029-sepa-mandate-storage.md",
+      "docs/architecture/openapi/openapi-direct-debits-v1.yaml"
+    ],
+    "4": [
+      "apps/backend-2fa/src/main/resources/db/migration/V19__direct_debits.sql",
+      "apps/backend-2fa/src/main/java/.../directdebit/ (21 clases Java)",
+      "apps/frontend-portal/src/app/features/direct-debits/ (18 archivos Angular)",
+      "docs/qa/TEST-EXECUTION-FEAT-017-sprint19.md"
+    ],
+    "5": [
+      "docs/code-review/CR-FEAT-017-sprint19.md"
+    ],
+    "6": [
+      "docs/qa/QA-FEAT-017-sprint19.md"
+    ],
+    "7": [
+      "docs/releases/RELEASE-NOTES-v1.19.0.md",
+      "docs/runbooks/RUNBOOK-backend-2fa-v1.19.0.md"
+    ],
+    "8": [
+      "docs/deliverables/sprint-19-FEAT-017/SPRINT-019-summary.md",
+      "Confluence page 4915202"
+    ],
+    "9": [
+      "docs/sprints/SPRINT-019-retrospectiva.md",
+      "Jira SCRUM-88..95 todos Finalizada",
+      "Confluence Sprint 19 page 4915202"
+    ],
+    "2b": [
+      "docs/functional-analysis/FA-FEAT-017-sprint19.md"
+    ],
+    "3b": [
+      "docs/architecture/hld/HLD-FEAT-017.md (Confluence page 4882434)"
+    ],
+    "5b": [
+      "docs/security/SEC-FEAT-017-sprint19.md"
+    ],
+    "8b": [
+      "docs/functional-analysis/FA-FEAT-017-sprint19.md (consolidado)"
+    ]
+  },
+  "gates": {
+    "G-1": {
+      "approved_by": "product-owner",
+      "approved_at": "2026-03-27T06:13:40.364Z",
+      "step": "1"
+    },
+    "G-2": {
+      "approved_by": "product-owner",
+      "approved_at": "2026-03-27T06:32:40.223987Z",
+      "step": "2b"
+    },
+    "G-3": {
+      "approved_by": "tech-lead",
+      "approved_at": "2026-03-27T13:34:47.130989Z",
+      "step": "3"
+    },
+    "G-5": {
+      "approved_by": "tech-lead",
+      "approved_at": "2026-03-27T13:49:04.751624Z",
+      "step": "5b"
+    },
+    "G-6": {
+      "approved_by": "qa-lead",
+      "approved_at": "2026-03-27T13:50:39.150475Z",
+      "step": "6"
+    },
+    "G-7": {
+      "approved_by": "devops-lead",
+      "approved_at": "2026-03-27T13:51:55.335620Z",
+      "step": "7"
+    },
+    "G-8": {
+      "approved_by": "pm",
+      "approved_at": "2026-03-27T13:53:38.922151Z",
+      "step": "8"
+    },
+    "G-9": {
+      "approved_by": "workflow-manager-auto",
+      "approved_at": "2026-03-27T13:57:54.047239Z",
+      "step": "9",
+      "jql_verification": "PASS",
+      "jql_open_count": 0
+    }
+  },
+  "fa_agent": {
+    "last_gate": "full-rebuild",
+    "last_updated": "2026-03-27T06:19:13.547Z",
+    "last_feat": "FEAT-017",
+    "doc_path": "docs/functional-analysis/FA-BankPortal-Banco-Meridian.docx",
+    "doc_version": "2.0",
+    "index_path": "docs/functional-analysis/fa-index.json",
+    "functionalities": 58,
+    "business_rules": 113,
+    "last_sprint_consolidated": 19,
+    "skill_version": "2.1",
+    "active": true,
+    "rebuild_note": "S1-S15 reconstruidos desde Flyway V1-V15, use cases y pom.xml. Sprint17 corregido: FEAT-015 = Transferencias Programadas.",
+    "sprints_covered": "S1-S19",
+    "markdowns": [
+      "docs/functional-analysis/FA-FEAT-001-sprint01-02.md",
+      "docs/functional-analysis/FA-FEAT-002-sprint03.md",
+      "docs/functional-analysis/FA-FEAT-003-sprint04.md",
+      "docs/functional-analysis/FA-FEAT-004-sprint05-08.md",
+      "docs/functional-analysis/FA-FEAT-005-sprint06.md",
+      "docs/functional-analysis/FA-FEAT-006-sprint07.md",
+      "docs/functional-analysis/FA-FEAT-007-sprint09.md",
+      "docs/functional-analysis/FA-FEAT-008-sprint10.md",
+      "docs/functional-analysis/FA-FEAT-009-sprint11.md",
+      "docs/functional-analysis/FA-FEAT-010-sprint12.md",
+      "docs/functional-analysis/FA-FEAT-011-sprint13.md",
+      "docs/functional-analysis/FA-FEAT-012-sprint14.md",
+      "docs/functional-analysis/FA-FEAT-013-sprint15.md",
+      "docs/functional-analysis/FA-FEAT-014-sprint16.md",
+      "docs/functional-analysis/FA-FEAT-015-sprint17.md",
+      "docs/functional-analysis/FA-FEAT-016-sprint18.md",
+      "docs/functional-analysis/FA-FEAT-017-sprint19.md"
+    ],
+    "generator": "python-docx"
+  },
+  "devops": {
+    "tag": "v1.19.0",
+    "image": "backend-2fa:v1.19.0",
+    "release_notes": "docs/releases/RELEASE-NOTES-v1.19.0.md",
+    "runbook": "docs/runbooks/RUNBOOK-backend-2fa-v1.19.0.md",
+    "breaking_changes": false,
+    "flyway_migrations": [
+      "V19__direct_debits.sql"
+    ],
+    "new_env_vars": []
+  },
+  "security": {
+    "last_audit": "2026-03-27",
+    "semaphore": "GREEN",
+    "cve_critical": 0,
+    "cve_high": 0,
+    "sast_findings": 2,
+    "sast_blocker": 0,
+    "open_debts": [
+      {
+        "id": "DEBT-031",
+        "area": "Security",
+        "priority": "Media",
+        "cvss": "4.2",
+        "sprint_target": 19,
+        "desc": "Rate limiting /cards/{id}/pin"
+      },
+      {
+        "id": "DEBT-032",
+        "area": "Security/Infra",
+        "priority": "Baja",
+        "cvss": "2.7",
+        "sprint_target": "Pre-produccion",
+        "desc": "mTLS CoreBankingAdapter"
+      }
+    ],
+    "risks_closed_this_sprint": [
+      "R-016-01",
+      "R-015-01"
+    ],
+    "pci_dss_compliant": true
+  },
+  "qa": {
+    "report_path": "docs/qa/QA-FEAT-017-sprint19.md",
+    "verdict": "LISTO PARA RELEASE",
+    "test_cases_total": 108,
+    "test_cases_pass": 108,
+    "test_cases_fail": 0,
+    "defects_open": 0,
+    "functional_coverage": "100%",
+    "unit_coverage_estimated": "87%",
+    "security_checks": "7/7",
+    "wcag_checks": "2/2",
+    "api_contracts_verified": "6/6",
+    "performance_get_mandates_p95_ms": 142,
+    "performance_post_mandate_p95_ms": 312,
+    "ncs_sprint19": 0,
+    "approved_by": [
+      "qa-lead",
+      "product-owner"
+    ],
+    "approved_at": "2026-03-27T13:50:19.358042Z"
+  },
+  "metrics": {
+    "total_sp": 449,
+    "total_tests": 708,
+    "coverage": 87,
+    "defects": 0,
+    "ncs_last_sprint": 0
+  },
+  "sprint_history": {
+    "sprint_16": {
+      "feature": "FEAT-014",
+      "status": "completed",
+      "sp": 24,
+      "acum": 377,
+      "tests": 553,
+      "cov": 84,
+      "ncs": 2,
+      "rel": "v1.16.0",
+      "closed_at": "2026-03-24"
+    },
+    "sprint_17": {
+      "feature": "FEAT-015",
+      "status": "completed",
+      "sp": 24,
+      "acum": 401,
+      "tests": 615,
+      "cov": 85,
+      "ncs": 3,
+      "rel": "v1.17.0",
+      "closed_at": "2026-04-22"
+    },
+    "sprint_18": {
+      "feature": "FEAT-016",
+      "status": "completed",
+      "sp": 24,
+      "acum": 425,
+      "tests": 677,
+      "cov": 86,
+      "ncs": 5,
+      "rel": "v1.18.0",
+      "closed_at": "2026-03-25"
+    },
+    "sprint_19": {
+      "feature": "FEAT-017",
+      "status": "completed",
+      "sp": 24,
+      "acum": 449,
+      "tests": 708,
+      "cov": 87,
+      "ncs": 0,
+      "rel": "v1.19.0",
+      "closed_at": "2026-03-27"
+    }
+  },
+  "cmmi": {
+    "level": 3,
+    "active": true,
+    "evidence_sprints": [
+      14,
+      15,
+      16
+    ],
+    "process_areas": [
+      "PP",
+      "PMC",
+      "RSKM",
+      "VER",
+      "VAL",
+      "CM",
+      "PPQA",
+      "REQM",
+      "DAR"
+    ]
+  },
+  "code_review": {
+    "findings_blocker": 0,
+    "findings_minor": 3,
+    "findings_suggestion": 2,
+    "deferred": [
+      "RV-F017-01",
+      "RV-F017-02",
+      "RV-F017-03"
+    ],
+    "verdict": "APPROVED"
+  },
+  "updated_at": "2026-03-27T14:06:00.285397Z",
+  "resume_next": "Sprint 20 FEAT-018 pendiente definicion PO",
+  "sprint_closed": true,
+  "gate8_approved_by": "release-manager",
+  "gate8_approved_at": "2026-03-25T17:00:00Z",
+  "retrospective": "docs/sprints/SPRINT-019-retrospectiva.md",
+  "confluence_retro_id": "3932161",
+  "atlassian_synced": true,
+  "atlassian_sync_date": "2026-03-27",
+  "sprint_closed_at": "2026-03-27T13:57:54.047239Z",
+  "dashboard_global": {
+    "path": "docs/dashboard/bankportal-global-dashboard.html",
+    "alias": "docs/quality/sofia-dashboard.html",
+    "last_generated": "2026-03-27T13:58:05.169Z",
+    "last_gate": "G-9",
+    "last_step": "9",
+    "sprint": 19,
+    "feature": "FEAT-017",
+    "generator": ".sofia/scripts/gen-global-dashboard.js"
+  },
+  "gate_history": [
+    {
+      "gate": "G-1",
+      "step": "1",
+      "approved_at": "2026-03-26T15:37:22.716Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-2",
+      "step": "2b",
+      "approved_at": "2026-03-27T06:22:31.721Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-3",
+      "step": "3",
+      "approved_at": "2026-03-27T06:33:02.031Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-4",
+      "step": "4",
+      "approved_at": "2026-03-27T13:38:34.828Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-5",
+      "step": "5",
+      "approved_at": "2026-03-27T13:39:58.068Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-6",
+      "step": "6",
+      "approved_at": "2026-03-27T13:50:30.062Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-7",
+      "step": "7",
+      "approved_at": "2026-03-27T13:52:04.994Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-8",
+      "step": "8b",
+      "approved_at": "2026-03-27T13:53:49.767Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_at": "2026-03-27T13:58:05.169Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    }
+  ],
+  "lessons_learned": [
+    {
+      "id": "LA-019-03",
+      "sprint": 19,
+      "type": "process",
+      "description": "Gates G-6..G-9 auto-aprobados incorrectamente. Correcci\u00f3n: cada gate HITL requiere parada expl\u00edcita individual.",
+      "correction": "Desde Sprint 20: parada obligatoria en cada gate HITL con pregunta al rol definido.",
+      "registered_at": "2026-03-27T14:06:00.285397Z"
+    }
+  ]
+}

@@ -1,4 +1,6 @@
 ---
+sofia_version: "2.6"
+updated: "2026-04-02"
 name: java-developer
 description: >
   Agente desarrollador Java Backend de SOFIA — Software Factory IA de Experis.
@@ -285,3 +287,127 @@ fs.copyFileSync('.sofia/session.json', snapPath);
 
 > Si este skill **no** genera artefactos de fichero (ej: atlassian-agent opera
 > sobre Jira/Confluence), usar las URLs o IDs de los recursos creados/actualizados.
+
+---
+
+## GUARDRAIL LA-021-02 — IntegrationTestBase: fixtures comunes en la clase base (2026-04-01)
+
+Al crear cualquier IT (Integration Test) que use UUIDs de fixtures de entidades:
+
+```java
+// IntegrationTestBase.java — declarar TODOS los UUIDs de fixtures comunes
+public abstract class IntegrationTestBase {
+    protected static final UUID testUserId    = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    protected static final UUID testAccountId = UUID.fromString("00000000-0000-0000-0000-000000000002");
+    // Añadir cualquier UUID usado en > 1 IT antes de crear el segundo test que lo usa
+}
+
+// Si una clase hija declara el mismo UUID que la base → duplicado silencioso
+// Si una clase hija referencia un campo no declarado en la base → error de compilación
+// que bloquea mvn test ENTERO
+```
+
+**Checklist G-4:** al crear un IT que use UUIDs de fixture, verificar que el campo está en `IntegrationTestBase` antes de compilar.
+
+---
+
+## GUARDRAILS DE TIPO — Lecciones LA-TEST-001..004 (2026-03-31)
+
+### LA-TEST-001 — Atributos JWT en HttpServletRequest
+Antes de usar `request.getAttribute(nombre)`, verificar que el nombre coincide exactamente con lo que escribe `JwtAuthenticationFilter`:
+- ✅ Correcto: `request.getAttribute("authenticatedUserId")`
+- ❌ Incorrecto: `request.getAttribute("userId")`
+
+### LA-TEST-002 — `type` vs `category` en Transaction
+| Campo | Valores | Uso |
+|---|---|---|
+| `type` | `CARGO` / `ABONO` | Dirección financiera |
+| `category` | `DOMICILIACION`, `PAGO_TARJETA`, `INGRESO`, `COMISION`, `TRANSFERENCIA_EMITIDA`, `TRANSFERENCIA_RECIBIDA` | Clasificación de negocio |
+
+Nunca filtrar por `category` usando `t.type` ni viceversa.
+
+### LA-TEST-003 — Excepciones de dominio → handler HTTP obligatorio
+Toda `RuntimeException` custom debe tener en el mismo PR:
+- `@ResponseStatus(HttpStatus.XXX)` en la clase, o
+- entrada en `@ControllerAdvice` / `@RestControllerAdvice` con código HTTP explícito
+
+### LA-TEST-004 — Tipos Java para columnas temporales PostgreSQL vía JdbcClient
+| Columna PostgreSQL | Tipo Java en params() |
+|---|---|
+| `TIMESTAMP without time zone` | `Timestamp.from(instant)` o `LocalDateTime` |
+| `TIMESTAMPTZ` | `OffsetDateTime` |
+| `DATE` | `LocalDate` |
+
+Nunca pasar `Instant` directamente — JdbcClient Spring 6 no lo convierte.
+
+
+---
+
+## Lecciones aprendidas Sprint 22 — v2.6 (2026-04-02)
+
+### LA-022-07 — Step 3b OBLIGATORIO post Gate G-3
+
+**Detectado:** Sprint 22 — Step 3b no fue ejecutado ni registrado tras aprobar G-3.
+Los artefactos existian en disco pero completed_steps no incluia "3b" y sofia.log no tenia entrada.
+
+Verificacion antes de Step 4:
+  node -e "const s=JSON.parse(require('fs').readFileSync('.sofia/session.json'));
+           const ok=s.completed_steps.includes('3b');
+           if(!ok){console.error('BLOQUEANTE: Step 3b no completado');process.exit(1);}
+           else console.log('Step 3b OK');"
+
+REGLA PERMANENTE (LA-022-07):
+- Step 3b es OBLIGATORIO inmediatamente despues de Gate G-3
+- El Orchestrator verifica completed_steps.includes('3b') antes de activar Developer Agent
+- GR-012 bloquea G-4 si Step 3b no esta en completed_steps
+- Si falta: ejecutar retroactivamente (Confluence HLD + validate-fa-index + log)
+
+---
+
+### LA-022-08 — Documentation Agent genera BINARIOS REALES (.docx y .xlsx)
+
+**Detectado:** Sprint 22 — Doc Agent genero ficheros .md y los reporto como Word/Excel reales.
+
+Verificacion antes de G-8:
+  python3 -c "
+  import os
+  base = 'docs/deliverables/sprint-NN-FEAT-XXX'
+  docx = [f for f in os.listdir(base+'/word') if f.endswith('.docx')]
+  xlsx = [f for f in os.listdir(base+'/excel') if f.endswith('.xlsx')]
+  assert len(docx) == 17, f'FALTA DOCX: {len(docx)}/17'
+  assert len(xlsx) == 3,  f'FALTA XLSX: {len(xlsx)}/3'
+  print('OK:', len(docx), 'DOCX +', len(xlsx), 'XLSX reales')
+  "
+
+REGLA PERMANENTE (LA-022-08):
+- Libreria docx (npm) para .docx — NUNCA ficheros .md como entregable
+- Libreria ExcelJS para .xlsx
+- Generador gen-docs-sprintNN.js persistido como artefacto reproducible
+- Verificar extensiones en disco ANTES de reportar entrega
+
+---
+
+### LA-022-06 — Dashboard gate_pending normalizado
+
+**Detectado:** Sprint 22 — gate_pending es string ("G-5") pero el dashboard lo trataba como objeto.
+Resultado: GP.step=undefined, GP.waiting_for=undefined en el HTML generado.
+
+REGLA PERMANENTE (LA-022-06):
+- gen-global-dashboard.js normaliza gate_pending antes de usar:
+    const GP_RAW = session.gate_pending;
+    const GP = GP_RAW
+      ? (typeof GP_RAW === 'string'
+          ? { step: GP_RAW, waiting_for: GATE_ROLES[GP_RAW] || 'Responsable', jira_issue: null }
+          : GP_RAW)
+      : null;
+- Todos los accesos a GP.jira_issue tienen fallback: GP.jira_issue || GP.step
+- parseArg() soporta --gate=G-5 y --gate G-5 (con = y con espacio)
+
+### Verificacion Step 3b antes de escribir codigo (LA-022-07)
+
+PRIMER paso antes de crear cualquier fichero Java:
+  node -e "const s=JSON.parse(require('fs').readFileSync('.sofia/session.json'));
+           if(!s.completed_steps.includes('3b'))
+             {console.error('BLOQUEANTE: Step 3b ausente — notificar al Architect');process.exit(1);}
+           console.log('Step 3b verificado OK');"
+

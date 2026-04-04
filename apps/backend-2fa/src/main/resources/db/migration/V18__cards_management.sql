@@ -1,7 +1,7 @@
 -- V18 — Gestión de Tarjetas (FEAT-016 Sprint 18)
 -- CMMI: CM SP 1.1 · CM SP 1.2
 
-CREATE TABLE cards (
+CREATE TABLE IF NOT EXISTS cards (
     id                UUID         NOT NULL DEFAULT gen_random_uuid(),
     account_id        UUID         NOT NULL,
     user_id           UUID         NOT NULL,
@@ -23,9 +23,9 @@ CREATE TABLE cards (
     CONSTRAINT fk_cards_user    FOREIGN KEY (user_id)    REFERENCES users(id)
 );
 
-CREATE INDEX idx_cards_user_id    ON cards(user_id);
-CREATE INDEX idx_cards_account_id ON cards(account_id);
-CREATE INDEX idx_cards_status     ON cards(status);
+CREATE INDEX IF NOT EXISTS idx_cards_user_id    ON cards(user_id);
+CREATE INDEX IF NOT EXISTS idx_cards_account_id ON cards(account_id);
+CREATE INDEX IF NOT EXISTS idx_cards_status     ON cards(status);
 
 -- SeedData: 2 tarjetas por usuario de prueba
 INSERT INTO cards (account_id, user_id, pan_masked, card_type, status,

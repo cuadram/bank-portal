@@ -1,7 +1,7 @@
 package com.experis.sofia.bankportal.cards.application;
 
 import com.experis.sofia.bankportal.cards.domain.*;
-import com.experis.sofia.bankportal.audit.AuditLogService;
+import com.experis.sofia.bankportal.audit.domain.AuditLogService;
 import com.experis.sofia.bankportal.twofa.application.OtpValidationUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,6 +47,6 @@ public class ChangePinUseCase {
         coreBankingPort.changePin(cardId, pinHash);
 
         // RV-F016-03: maskId centralizado
-        auditLog.log("CARD_PIN_CHANGED", userId.toString(), CardMaskingUtil.maskId(cardId));
+        auditLog.log("CARD_PIN_CHANGED", userId, CardMaskingUtil.maskId(cardId));
     }
 }

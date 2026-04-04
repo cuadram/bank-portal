@@ -4,7 +4,7 @@ import com.experis.sofia.bankportal.audit.domain.AuditLogService;
 import com.experis.sofia.bankportal.kyc.domain.*;
 import com.experis.sofia.bankportal.kyc.domain.DocumentStoragePort;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

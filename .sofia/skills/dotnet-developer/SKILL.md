@@ -1,4 +1,6 @@
 ---
+sofia_version: "2.6"
+# updated: 2026-04-02 — version bump SOFIA v2.6
 name: dotnet-developer
 description: >
   Agente desarrollador .Net Backend de SOFIA — Software Factory IA de Experis.

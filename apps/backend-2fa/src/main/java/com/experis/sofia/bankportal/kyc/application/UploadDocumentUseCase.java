@@ -5,7 +5,7 @@ import com.experis.sofia.bankportal.kyc.application.dto.DocumentUploadResponse;
 import com.experis.sofia.bankportal.kyc.domain.*;
 import com.experis.sofia.bankportal.kyc.domain.DocumentStoragePort;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

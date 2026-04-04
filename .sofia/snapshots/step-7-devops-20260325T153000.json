@@ -1,0 +1,17 @@
+{
+  "snapshot_at": "2026-03-25T15:30:00Z",
+  "step": "7",
+  "step_name": "devops",
+  "gate_pending": "8",
+  "gate_8_status": "pending",
+  "gate_8_by": "release-manager",
+  "completed_steps": ["1","2","3","3b","4","5","5b","6","7"],
+  "pending_steps": ["8","9"],
+  "artifacts_step_7": [
+    "apps/backend-2fa/Jenkinsfile",
+    "apps/backend-2fa/Dockerfile",
+    "docs/releases/RELEASE-NOTES-v1.18.0.md",
+    "docs/runbooks/RUNBOOK-backend-2fa-v1.18.0.md"
+  ],
+  "note": "Snapshot post-Step-7 DevOps. Persistencia recuperada tras fallo MCP. Proximo: GATE-8 release-manager -> Step 8 Doc Agent -> Step 9 WM -> Cierre Sprint 18"
+}

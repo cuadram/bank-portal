@@ -4,10 +4,9 @@ import com.experis.sofia.bankportal.session.application.dto.SessionResponse;
 import com.experis.sofia.bankportal.session.application.dto.UpdateTimeoutRequest;
 import com.experis.sofia.bankportal.session.application.usecase.*;
 import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,10 +42,10 @@ public class SessionController {
      */
     @GetMapping
     public ResponseEntity<List<SessionResponse>> listActiveSessions(
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest request) {
 
-        UUID   userId     = UUID.fromString(jwt.getSubject());
-        String currentJti = jwt.getId();
+        UUID   userId     = (UUID) request.getAttribute("authenticatedUserId");
+        String currentJti = (String) request.getAttribute("authenticatedJti");
         return ResponseEntity.ok(listSessions.execute(userId, currentJti));
     }
 
@@ -58,10 +57,10 @@ public class SessionController {
     public ResponseEntity<Void> revokeOne(
             @PathVariable UUID sessionId,
             @RequestHeader("X-OTP-Code") String otpCode,
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest request) {
 
-        UUID   userId     = UUID.fromString(jwt.getSubject());
-        String currentJti = jwt.getId();
+        UUID   userId     = (UUID) request.getAttribute("authenticatedUserId");
+        String currentJti = (String) request.getAttribute("authenticatedJti");
         revokeSession.execute(sessionId, userId, currentJti, otpCode);
         return ResponseEntity.noContent().build();
     }
@@ -73,10 +72,10 @@ public class SessionController {
     @DeleteMapping
     public ResponseEntity<Void> revokeAllOthers(
             @RequestHeader("X-OTP-Code") String otpCode,
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest request) {
 
-        UUID   userId     = UUID.fromString(jwt.getSubject());
-        String currentJti = jwt.getId();
+        UUID   userId     = (UUID) request.getAttribute("authenticatedUserId");
+        String currentJti = (String) request.getAttribute("authenticatedJti");
         revokeAll.execute(userId, currentJti, otpCode);
         return ResponseEntity.noContent().build();
     }
@@ -86,11 +85,11 @@ public class SessionController {
      */
     @PutMapping("/timeout")
     public ResponseEntity<UpdateTimeoutResponse> updateTimeout(
-            @Valid @RequestBody UpdateTimeoutRequest request,
-            @AuthenticationPrincipal Jwt jwt) {
+            @Valid @RequestBody UpdateTimeoutRequest body,
+            HttpServletRequest httpRequest) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
-        int  saved  = updateTimeout.execute(userId, request);
+        UUID userId = (UUID) httpRequest.getAttribute("authenticatedUserId");
+        int  saved  = updateTimeout.execute(userId, body);
         return ResponseEntity.ok(new UpdateTimeoutResponse(saved));
     }
 

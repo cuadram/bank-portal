@@ -107,8 +107,24 @@
     "paper": "A4"
   },
   "dashboard": {
-    "output": "docs/quality/sofia-dashboard.html",
-    "auto_open": false
+    "generator": ".sofia/scripts/gen-global-dashboard.js",
+    "output": "docs/dashboard/bankportal-global-dashboard.html",
+    "gate_pending_normalize": true,
+    "gate_roles": {
+      "G-1": "Product Owner",
+      "G-2": "Product Owner",
+      "HITL-PO-TL": "Product Owner + Tech Lead",
+      "G-3": "Tech Lead",
+      "G-4": "Tech Lead",
+      "G-5": "Tech Lead",
+      "G-5b": "Security Agent",
+      "G-6": "QA Lead + Product Owner",
+      "G-7": "Release Manager",
+      "G-8": "Project Manager",
+      "G-9": "Workflow Manager"
+    },
+    "parsearg_supports_equals": true,
+    "jira_issue_fallback": "GP.step"
   },
   "fa_agent": {
     "enabled": true,
@@ -140,7 +156,7 @@
     ]
   },
   "workflow_directives": {
-    "version": "2026-04-01",
+    "version": "2026-04-02",
     "persist_all_artifacts": true,
     "read_disk_on_continue": true,
     "gates_explicit_approval": true,
@@ -157,7 +173,12 @@
     "lessons_learned_mandatory": true,
     "lessons_learned_regen_on_step9": true,
     "gr010_anti_debt_vencida": true,
-    "security_semaphore_green_required_for_g9": true
+    "security_semaphore_green_required_for_g9": true,
+    "step_3b_mandatory_post_g3": true,
+    "doc_agent_binaries_required": true,
+    "doc_agent_verify_extensions": true,
+    "gate_pending_normalize_to_object": true,
+    "gen_lessons_learned_script": ".sofia/scripts/gen-lessons-learned.py"
   },
   "agents": {
     "total": 23,
@@ -182,11 +203,12 @@
     "updated_in_v26": [
       "orchestrator",
       "workflow-manager",
+      "documentation-agent",
       "guardrails"
     ]
   },
   "guardrails": {
-    "version": "1.0",
+    "version": "1.3",
     "activated": "2026-03-30",
     "origin": "RCA HOTFIX-S20 — LA-020-09/10/11",
     "script": ".sofia/scripts/guardrail-pre-gate.js",
@@ -228,6 +250,24 @@
         "blocking": true,
         "gate": "G-5",
         "la": "LA-020-10"
+      },
+      "GR-010": {
+        "name": "Deuda CVSS>=4.0 vencida — bloquea G-9",
+        "blocking": true,
+        "gate": "G-9",
+        "la": "LA-022-01"
+      },
+      "GR-011": {
+        "name": "Dashboard freshness — regenerar en cada gate",
+        "blocking": true,
+        "gate": "ALL",
+        "la": "LA-022-05"
+      },
+      "GR-012": {
+        "name": "Step 3b en completed_steps antes de G-4",
+        "blocking": true,
+        "gate": "G-4",
+        "la": "LA-022-07"
       }
     },
     "root_package": "com.experis.sofia.bankportal",
@@ -252,6 +292,15 @@
       ],
       "G-6": [
         "GR-003"
+      ],
+      "G-4": [
+        "GR-012"
+      ],
+      "G-9": [
+        "GR-010"
+      ],
+      "ALL": [
+        "GR-011"
       ]
     },
     "frontend": {
@@ -300,6 +349,21 @@
         "sprint",
         "envLabel"
       ]
-    }
+    },
+    "updated": "2026-04-02"
+  },
+  "documentation_agent": {
+    "version": "2.1",
+    "la_022_08": true,
+    "required_docx": 17,
+    "required_xlsx": 3,
+    "generator_pattern": "gen-docs-sprint{N}.js",
+    "libraries": {
+      "docx": "npm docx",
+      "xlsx": "ExcelJS"
+    },
+    "verify_extensions_before_report": true,
+    "cover_page_required": true,
+    "branding": "EXPERIS | ManpowerGroup"
   }
 }

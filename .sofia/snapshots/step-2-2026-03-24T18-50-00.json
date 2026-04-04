@@ -1,0 +1,10 @@
+{
+  "snapshot_step": "2",
+  "snapshot_at": "2026-03-24T18:50:00Z",
+  "status": "gate_pending",
+  "gate_pending": "gate-step2-product-owner",
+  "artifacts": {
+    "1": ["docs/sprints/SPRINT-017-planning.md","docs/backlog/FEAT-015.md","docs/sprints/risk-register-bankportal.md"],
+    "2": ["docs/requirements/SRS-FEAT-015.md"]
+  }
+}

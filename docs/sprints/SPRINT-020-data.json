@@ -1,0 +1,30 @@
+{
+  "sprint": 20,
+  "sp": 24,
+  "acum": 473,
+  "feat": "FEAT-018",
+  "titulo": "Exportacion de Movimientos (PDF/CSV) + Deuda DEBT-032..035",
+  "rel": "v1.20.0",
+  "tests": 524,
+  "cov": 88,
+  "ncs": 0,
+  "defects": 0,
+  "date_closed": "2026-03-30",
+  "debt_resolved": [
+    "DEBT-032",
+    "DEBT-033",
+    "DEBT-034",
+    "DEBT-035",
+    "DEBT-038"
+  ],
+  "debt_pending": [
+    "DEBT-036",
+    "DEBT-037"
+  ],
+  "regulation": [
+    "PSD2-Art47",
+    "GDPR-Art15",
+    "PCI-DSS-Req34",
+    "SEPA-SDD"
+  ]
+}

@@ -9,12 +9,14 @@ spring:
     password: ${DB_PASSWORD:bankportal_stg_2026}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: false
   flyway:
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0
+  cache:
+    type: none
   data:
     redis:
       url: ${REDIS_URL:redis://:redis_stg_2026@redis:6379}
@@ -68,5 +70,15 @@ management:
 logging:
   level:
     root: INFO
-    com.experis.sofia.bankportal: INFO
+    org.springframework.security: TRACE
+    com.experis.sofia.bankportal: DEBUG
     org.flywaydb: INFO
+
+bank:
+  core:
+    base-url: http://localhost:9999
+    api-key: stub-key-stg
+
+kyc:
+  storage-path: /tmp/kyc-documents
+  encryption-key: dGhpcnR5LXR3by1ieXRlLWtleS1mb3ItYWVzLTI1NiE=

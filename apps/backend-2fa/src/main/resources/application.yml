@@ -1,7 +1,3 @@
-# BankPortal — Backend 2FA + Session Management + Trusted Devices | Banco Meridian
-# FEAT-001 + FEAT-002 + FEAT-003 | Sprint 4
-# SOFIA Software Factory — Experis
-
 spring:
   application:
     name: bankportal-backend-2fa
@@ -69,7 +65,6 @@ session:
     hmac-key: ${SESSION_DENY_LINK_HMAC_KEY}
     ttl-hours: ${SESSION_DENY_LINK_TTL_HOURS:24}
 
-# Trusted Devices — FEAT-003 (ADR-008)
 trusted-device:
   hmac-key: ${TRUSTED_DEVICE_HMAC_KEY}
   ttl-days: ${TRUSTED_DEVICE_TTL_DAYS:30}
@@ -88,6 +83,18 @@ kyc:
     max-file-mb: ${KYC_STORAGE_MAX_FILE_MB:10}
   grace-period-days: ${KYC_GRACE_PERIOD_DAYS:90}
   auto-validation-enabled: ${KYC_AUTO_VALIDATION_ENABLED:true}
+
+# ── FEAT-014: Notificaciones Push & In-App ─────────────────────────────────
+notifications:
+  push:
+    vapid-public-key: ${VAPID_PUBLIC_KEY:}
+    vapid-private-key: ${VAPID_PRIVATE_KEY:}
+    vapid-subject: ${VAPID_SUBJECT:mailto:no-reply@bancomeridian.es}
+    ttl-seconds: ${VAPID_TTL_SECONDS:86400}
+  sse:
+    replay-ttl-seconds: ${SSE_REPLAY_TTL_SECONDS:300}
+  alert:
+    transaction-amount-threshold: ${NOTIFICATION_THRESHOLD_ALERT:1000}
 
 scheduling:
   enabled: ${SCHEDULING_ENABLED:true}

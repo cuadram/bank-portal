@@ -17,7 +17,7 @@ import { RecoveryCodesResponse, RecoveryCodesStatus } from '../models/recovery-c
 export class TwoFactorService {
 
   private readonly http = inject(HttpClient);
-  private readonly base = `${environment.apiBaseUrl}/2fa`;
+  private readonly base = `${environment.apiUrl}/2fa`;
 
   // ─── US-001: Enrolamiento ───────────────────────────────────────────
 

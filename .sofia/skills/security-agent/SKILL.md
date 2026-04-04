@@ -1,6 +1,6 @@
 ---
 name: security-agent
-sofia_version: "1.9"
+sofia_version: "2.6"
 updated: "2026-03-24"
 changelog: "v1.9 — CVSS tracking mejorado, patrones RS256/HMAC, DEBT blocker patterns, Step 5b formalizado en pipeline"
 ---

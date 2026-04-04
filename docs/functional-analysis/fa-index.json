@@ -4,8 +4,8 @@
   "client": "Banco Meridian",
   "generated_by": "FA-Agent — SOFIA v2.3",
   "last_updated": "2026-03-31",
-  "last_sprint": 21,
-  "total_functionalities": 70,
+  "last_sprint": 22,
+  "total_functionalities": 78,
   "notes": "S1-S15 RECONSTRUIDO. S16-S21 documentadas con evidencias directas.",
   "functionalities": [
     {
@@ -1258,6 +1258,142 @@
         "GDPR-Art12"
       ],
       "source": "SPRINT-21"
+    },
+    {
+      "id": "FA-020-A",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "version": "v1.22.0",
+      "title": "Consulta de Préstamos Activos",
+      "module": "loans",
+      "status": "PLANNED",
+      "business_rules": [
+        "RN-F020-01",
+        "RN-F020-02",
+        "RN-F020-03"
+      ],
+      "regulation": "Ley 16/2011, Directiva 2008/48/CE",
+      "source": "SCRUM-115"
+    },
+    {
+      "id": "FA-020-B",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "version": "v1.22.0",
+      "title": "Simulador de Préstamo Personal",
+      "module": "loans",
+      "status": "PLANNED",
+      "business_rules": [
+        "RN-F020-04",
+        "RN-F020-05",
+        "RN-F020-06",
+        "RN-F020-07",
+        "RN-F020-08"
+      ],
+      "regulation": "Directiva 2008/48/CE, Ley 16/2011",
+      "source": "SCRUM-116"
+    },
+    {
+      "id": "FA-020-C",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "version": "v1.22.0",
+      "title": "Solicitud de Préstamo con Pre-scoring y 2FA",
+      "module": "loans",
+      "status": "PLANNED",
+      "business_rules": [
+        "RN-F020-09",
+        "RN-F020-10",
+        "RN-F020-11",
+        "RN-F020-12",
+        "RN-F020-13",
+        "RN-F020-14"
+      ],
+      "regulation": "PSD2, Ley 16/2011, GDPR",
+      "source": "SCRUM-117"
+    },
+    {
+      "id": "FA-020-D",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "version": "v1.22.0",
+      "title": "Cuadro de Amortización",
+      "module": "loans",
+      "status": "PLANNED",
+      "business_rules": [
+        "RN-F020-17",
+        "RN-F020-08",
+        "RN-F020-18"
+      ],
+      "regulation": "Directiva 2008/48/CE, Ley 16/2011",
+      "source": "SCRUM-118"
+    },
+    {
+      "id": "FA-020-E",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "version": "v1.22.0",
+      "title": "Cancelación de Solicitud de Préstamo",
+      "module": "loans",
+      "status": "PLANNED",
+      "business_rules": [
+        "RN-F020-15",
+        "RN-F020-16"
+      ],
+      "regulation": "Ley 16/2011",
+      "source": "SCRUM-118"
+    },
+    {
+      "id": "FA-020-F",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "version": "v1.22.0",
+      "title": "Frontend Angular — Módulo Préstamos",
+      "module": "frontend/loans",
+      "status": "PLANNED",
+      "business_rules": [
+        "RN-F020-01",
+        "RN-F020-02",
+        "RN-F020-03",
+        "RN-F020-04",
+        "RN-F020-05",
+        "RN-F020-06",
+        "RN-F020-07",
+        "RN-F020-08",
+        "RN-F020-09"
+      ],
+      "regulation": "LA-FRONT-001, LA-STG-001, LA-STG-002",
+      "source": "SCRUM-119"
+    },
+    {
+      "id": "FA-DEBT043-A",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "version": "v1.22.0",
+      "title": "Endpoints Notificaciones y Sesiones en Perfil",
+      "module": "profile",
+      "status": "PLANNED",
+      "business_rules": [
+        "RN-F020-19",
+        "RN-F020-20"
+      ],
+      "regulation": "DEBT-043",
+      "source": "SCRUM-120"
+    },
+    {
+      "id": "FA-DEBT036-A",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "version": "v1.22.0",
+      "title": "IBAN en Audit Log y Validación PAN Maestro",
+      "module": "export/cards",
+      "status": "PLANNED",
+      "business_rules": [
+        "RN-F020-21",
+        "RN-F020-22"
+      ],
+      "regulation": "DEBT-036, DEBT-037, CVSS 2.1",
+      "source": "SCRUM-121"
     }
   ],
   "business_rules": [
@@ -2090,6 +2226,138 @@
       "id": "RN-F019-37",
       "module": "admin",
       "description": "El log gdpr_requests es append-only — no se permiten UPDATE ni DELETE de registros historicos"
+    },
+    {
+      "id": "RN-F020-01",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Listado devuelve solo préstamos del usuario autenticado — nunca de otros usuarios"
+    },
+    {
+      "id": "RN-F020-02",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Estados válidos de préstamo: ACTIVE, PENDING, APPROVED, REJECTED, PAID_OFF, CANCELLED"
+    },
+    {
+      "id": "RN-F020-03",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Detalle incluye: capital original, saldo pendiente, TAE, cuota mensual, cuotas pagadas/pendientes"
+    },
+    {
+      "id": "RN-F020-04",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Simulación es stateless — no persiste ningún dato en base de datos"
+    },
+    {
+      "id": "RN-F020-05",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Importe válido para simulación y solicitud: 1.000 – 60.000 EUR"
+    },
+    {
+      "id": "RN-F020-06",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Plazo válido para simulación y solicitud: 12 – 84 meses"
+    },
+    {
+      "id": "RN-F020-07",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "TAE calculada según fórmula Directiva 2008/48/CE (crédito al consumo europeo)"
+    },
+    {
+      "id": "RN-F020-08",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Cálculo cuota: método francés, BigDecimal escala 10, RoundingMode.HALF_EVEN (ADR-034)"
+    },
+    {
+      "id": "RN-F020-09",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Solicitud de préstamo requiere validación OTP 2FA previa (patrón LA-DEBT-041)"
+    },
+    {
+      "id": "RN-F020-10",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Pre-scoring mock: hash(userId) % 1000 → score > 600 = PENDING; ≤ 600 = REJECTED (RSK-022-01)"
+    },
+    {
+      "id": "RN-F020-11",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Solicitud duplicada con estado PENDING activo → HTTP 409 Conflict"
+    },
+    {
+      "id": "RN-F020-12",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Campos obligatorios en solicitud: importe, plazo, finalidad"
+    },
+    {
+      "id": "RN-F020-13",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Finalidades válidas: CONSUMO, VEHICULO, REFORMA, OTROS"
+    },
+    {
+      "id": "RN-F020-14",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Audit log obligatorio para toda solicitud de préstamo (creación, cambio estado, cancelación)"
+    },
+    {
+      "id": "RN-F020-15",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "No se puede cancelar solicitud en estado APPROVED o PAID_OFF — HTTP 422"
+    },
+    {
+      "id": "RN-F020-16",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Solo el propietario (mismo userId) puede cancelar su propia solicitud — HTTP 403 si otro"
+    },
+    {
+      "id": "RN-F020-17",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Cuadro de amortización generado dinámicamente desde parámetros del préstamo — no persistido"
+    },
+    {
+      "id": "RN-F020-18",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Cumplimiento Ley 16/2011: información precontractual obligatoria en simulación y solicitud"
+    },
+    {
+      "id": "RN-F020-19",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "GET /api/v1/profile/notifications → HTTP 200 con [] si sin datos — nunca 404 (DEBT-043)"
+    },
+    {
+      "id": "RN-F020-20",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "GET /api/v1/profile/sessions → HTTP 200 con [] si sin datos — nunca 404 (DEBT-043)"
+    },
+    {
+      "id": "RN-F020-21",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "ExportAuditService debe registrar IBAN real resuelto desde AccountRepository (DEBT-036, LA-020-03)"
+    },
+    {
+      "id": "RN-F020-22",
+      "feat": "FEAT-020",
+      "sprint": "22",
+      "description": "Regex PAN Maestro acepta 12–19 dígitos — CVSS 2.1 corregido (DEBT-037)"
     }
   ],
   "modules": [
@@ -2117,8 +2385,8 @@
     "SEPA-DD",
     "AML-KYC"
   ],
-  "total_business_rules": 166,
+  "total_business_rules": 188,
   "last_sprint_consolidated": 21,
   "last_feat": "FEAT-019",
-  "updated_at": "2026-04-01T09:46:54.736Z"
+  "updated_at": "2026-04-02T19:40:31.098Z"
 }

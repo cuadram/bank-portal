@@ -1,7 +1,7 @@
 # LESSONS LEARNED — BankPortal / SOFIA
 
 > Generado automáticamente desde .sofia/session.json
-> SOFIA v2.6 · Sprint 21 · 43 lecciones
+> SOFIA v2.6 · Sprint 22 · 44 lecciones
 > Última actualización: 2026-04-02
 
 ---
@@ -11,7 +11,7 @@
 - **Sprint 19** (14): LA-019-03, LA-019-04, LA-019-05, LA-019-06, LA-019-07, LA-019-08, LA-019-09, LA-019-10, LA-019-11, LA-019-12, LA-019-13, LA-019-14, LA-019-15, LA-019-16
 - **Sprint 20** (15): LA-020-01, LA-020-02, LA-020-03, LA-020-04, LA-020-05, LA-020-06, LA-020-07, LA-020-08, LA-020-09, LA-020-10, LA-020-11, LA-TEST-001, LA-TEST-002, LA-TEST-003, LA-TEST-004
 - **Sprint 21** (10): LA-FRONT-001, LA-FRONT-002, LA-FRONT-003, LA-FRONT-004, LA-FRONT-005, LA-021-01, LA-021-02, LA-021-03, LA-STG-001, LA-STG-002
-- **Sprint 22** (4): LA-022-01, LA-022-02, LA-022-03, LA-022-04
+- **Sprint 22** (5): LA-022-01, LA-022-02, LA-022-03, LA-022-04, LA-022-05
 
 ## Índice por Tipo
 
@@ -19,7 +19,7 @@
 - **backend** (5): LA-019-15, LA-TEST-001, LA-TEST-002, LA-TEST-003, LA-TEST-004
 - **code-review** (1): LA-020-10
 - **config** (1): LA-019-09
-- **dashboard** (1): LA-020-07
+- **dashboard** (2): LA-020-07, LA-022-05
 - **data** (1): LA-019-12
 - **database** (1): LA-019-13
 - **devops** (2): LA-019-05, LA-020-04
@@ -428,3 +428,12 @@ _Registrado: 2026-04-02T09:46:44.873701+00:00_
 
 ---
 
+### LA-022-05 · dashboard
+
+**Descripción:** Dashboard global no regenerado en los gates G-1, G-2 y HITL-PO-TL de Sprint 22 (2026-04-02). El fichero en disco seguía mostrando Sprint 21 / FEAT-019 mientras el pipeline ya estaba en Sprint 22 Step 3. Violación de LA-020-07 y del protocolo dashboard_on_every_gate.
+
+**Corrección:** REGLA PERMANENTE: GR-011 añadido a guardrail-pre-gate.js — verifica que dashboard_global.last_generated >= último gate aprobado. Si el dashboard está desactualizado, el guardrail falla con BLOQUEANTE antes de que pueda aprobarse cualquier gate. Sin dashboard actualizado = gate bloqueado.
+
+_Registrado: 2026-04-02T11:30:00.000Z_
+
+---

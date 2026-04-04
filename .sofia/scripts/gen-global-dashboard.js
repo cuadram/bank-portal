@@ -26,8 +26,16 @@ const OUT_ALT  = path.join(OUT_QUALITY, 'sofia-dashboard.html');
 
 // ── Args ──────────────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
-const gateArg  = args[args.indexOf('--gate')  + 1] || 'unknown';
-const stepArg  = args[args.indexOf('--step')  + 1] || '?';
+// Soporta --gate=G-5 y --gate G-5
+function parseArg(name) {
+  const eqForm = args.find(a => a.startsWith('--' + name + '='));
+  if (eqForm) return eqForm.split('=')[1];
+  const idx = args.indexOf('--' + name);
+  if (idx !== -1) return args[idx + 1];
+  return null;
+}
+const gateArg  = parseArg('gate') || 'unknown';
+const stepArg  = parseArg('step') || '?';
 
 // ── Load state ────────────────────────────────────────────────────────────────
 if (!fs.existsSync(SESSION)) { console.error('ERROR: session.json not found'); process.exit(1); }
@@ -167,10 +175,16 @@ const curSprint = {
   active: true
 };
 
-// Gate pending info
-const GP = S.gate_pending;
+// Gate pending info — normalizar string o objeto
+const GATE_ROLES = {'G-1':'Product Owner','G-2':'Product Owner','HITL-PO-TL':'Product Owner + Tech Lead','G-3':'Tech Lead','G-4':'Tech Lead','G-5':'Tech Lead','G-5b':'Security Agent','G-6':'QA Lead + Product Owner','G-7':'Release Manager','G-8':'Project Manager','G-9':'Workflow Manager'};
+const GP_RAW = S.gate_pending;
+const GP = GP_RAW
+  ? (typeof GP_RAW === 'string'
+      ? { step: GP_RAW, waiting_for: GATE_ROLES[GP_RAW] || 'Responsable', jira_issue: null }
+      : GP_RAW)
+  : null;
 const gateLabel = GP ? `GATE-${GP.step} · Pendiente ${GP.waiting_for}` : 'Pipeline activo';
-const gateJira  = GP ? GP.jira_issue : '—';
+const gateJira  = GP ? (GP.jira_issue || GP.step) : '—';
 
 // Metrics
 const M = S.metrics || {};
@@ -460,7 +474,7 @@ ${GP ? `
     <div class="gtt">GATE-${GP.step} — Sprint ${S.current_sprint} · Pendiente aprobación ${GP.waiting_for}</div>
     <div class="gtd">${S.current_feature} · ${S.sprint_goal||''} · Pipeline bloqueado en Step ${S.current_step}</div>
   </div>
-  <span class="gate-tag">${GP.jira_issue}</span>
+  <span class="gate-tag">${GP.jira_issue||"⏳ "+GP.step}</span>
 </div>` : S.sprint_closed ? `
 <div class="gate-banner ok">
   <div class="gi">✅</div>
@@ -504,7 +518,7 @@ ${GP ? `
       <div class="health"><div class="h-dot h-g"></div><div><div class="h-label" style="color:var(--green)">Calidad · ÓPTIMO</div><div class="h-sub">${defects} defectos · 0 CVEs · ${coverage}% cobertura · ${totalTests} tests</div></div></div>
       <div class="health"><div class="h-dot h-g"></div><div><div class="h-label" style="color:var(--green)">Delivery · ON TRACK</div><div class="h-sub">${completedSprints}/${completedSprints} sprints entregados · 100% SP · velocidad estable</div></div></div>
       <div class="health"><div class="h-dot h-g"></div><div><div class="h-label" style="color:var(--green)">Seguridad · VERDE</div><div class="h-sub">PCI-DSS req.3/8/10 · OWASP clean · 0 bloqueantes</div></div></div>
-      ${GP ? `<div class="health"><div class="h-dot h-a"></div><div><div class="h-label" style="color:var(--amber)">Sprint ${S.current_sprint} · ${gateLabel}</div><div class="h-sub">Gate pendiente · ${GP.jira_issue}</div></div></div>` : `<div class="health"><div class="h-dot h-g"></div><div><div class="h-label" style="color:var(--green)">Sprint ${S.current_sprint} · Pipeline activo</div><div class="h-sub">Steps completados: [${completedSteps.join(', ')||'—'}]</div></div></div>`}
+      ${GP ? `<div class="health"><div class="h-dot h-a"></div><div><div class="h-label" style="color:var(--amber)">Sprint ${S.current_sprint} · ${gateLabel}</div><div class="h-sub">Gate pendiente · ${GP.jira_issue || GP.step}</div></div></div>` : `<div class="health"><div class="h-dot h-g"></div><div><div class="h-label" style="color:var(--green)">Sprint ${S.current_sprint} · Pipeline activo</div><div class="h-sub">Steps completados: [${completedSteps.join(', ')||'—'}]</div></div></div>`}
       <div class="health"><div class="h-dot h-g"></div><div><div class="h-label" style="color:var(--green)">CMMI L3 · ACTIVO</div><div class="h-sub">9 PAs · 154 evidencias · Sprints S14–S16 auditados</div></div></div>
       <div class="health"><div class="h-dot h-a"></div><div><div class="h-label" style="color:var(--amber)">Deuda técnica · ${(S.security?.open_debts||[]).length} items</div><div class="h-sub">${(S.security?.open_debts||[]).map(d=>d.id).join(' · ')||'Sin deuda abierta'}</div></div></div>
     </div>
@@ -535,7 +549,7 @@ ${GP ? `
       <div class="ps"><div class="pc ${pipeClass('9')}">9</div><div class="pl">Close<br>Sprint</div></div>
     </div>
     <div style="margin-top:10px;padding:9px 14px;background:${GP?'var(--amber-d)':'var(--green-d)'};border-radius:8px;border:1px solid ${GP?'rgba(240,168,48,.2)':'rgba(62,201,125,.2)'};font-size:11px;color:${GP?'var(--amber)':'var(--green)'};">
-      ${GP ? `⏳ <strong>Step ${S.current_step} activo</strong> · Completados: [${completedSteps.join(', ')||'—'}] · <strong>GATE-${GP.step} bloqueante</strong> — ${GP.jira_issue}` : `✅ <strong>Pipeline activo</strong> · Completados: [${completedSteps.join(', ')||'—'}] · Pending: [${pendingSteps.join(', ')}]`}
+      ${GP ? `⏳ <strong>Step ${S.current_step} activo</strong> · Completados: [${completedSteps.join(', ')||'—'}] · <strong>GATE-${GP.step} bloqueante</strong> — ${GP.jira_issue||GP.step}` : `✅ <strong>Pipeline activo</strong> · Completados: [${completedSteps.join(', ')||'—'}] · Pending: [${pendingSteps.join(', ')}]`}
     </div>
   </div>
 </div>
@@ -691,7 +705,7 @@ ${GP ? `
     </div>
     <div class="card">
       <div class="ct">Atlassian — Estado sincronización</div>
-      ${GP ? `<div class="rr"><div class="rid" style="color:#4285F4;font-weight:700">JIRA</div><div class="rb"><div class="rt">${GP.jira_issue} — Sprint ${S.current_sprint} Gate-${GP.step}</div><div class="rm">Pendiente aprobación ${GP.waiting_for}</div></div><span class="rst rst-open">⏳ GATE-${GP.step}</span></div>` : ''}
+      ${GP ? `<div class="rr"><div class="rid" style="color:#4285F4;font-weight:700">JIRA</div><div class="rb"><div class="rt">${GP.jira_issue||"Gate "+GP.step} — Sprint ${S.current_sprint} Gate-${GP.step}</div><div class="rm">Pendiente aprobación ${GP.waiting_for}</div></div><span class="rst rst-open">⏳ GATE-${GP.step}</span></div>` : ''}
       <div class="rr"><div class="rid" style="color:#4285F4;font-weight:700">JIRA</div><div class="rb"><div class="rt">Sprint ${completedSprints} — Cerrado</div><div class="rm">${S.sprint_history?.[`sprint_${completedSprints}`]?.closed_at||'—'}</div></div><span class="rst rst-closed">✓</span></div>
       <div class="rr"><div class="rid" style="color:#4BBAFF;font-weight:700">CONF</div><div class="rb"><div class="rt">Retrospectiva S${completedSprints} · #${S.confluence_retro_id||'—'}</div><div class="rm">Publicada ${S.sprint_closed_at?.slice(0,10)||'—'}</div></div><span class="rst ${S.atlassian_synced?'rst-closed':'rst-open'}">${S.atlassian_synced?'✓':'⏳'}</span></div>
       <div class="rr"><div class="rid" style="color:#4BBAFF;font-weight:700">CONF</div><div class="rb"><div class="rt">FA BankPortal v${S.fa_agent?.doc_version||'2.0'} — ${S.fa_agent?.functionalities||52} func · ${S.fa_agent?.business_rules||86} BR</div><div class="rm">S1–S${S.fa_agent?.last_sprint_consolidated||18} consolidados</div></div><span class="rst rst-closed">✓</span></div>
@@ -759,7 +773,7 @@ ${GP ? `
       <div class="row"><span class="rl">Step actual</span><span class="rv" style="color:var(--amber)">Step ${S.current_step} · ${S.pipeline_step_name}</span></div>
       <div class="row"><span class="rl">Steps completados</span><span class="rv">[${completedSteps.join(', ')||'—'}]</span></div>
       <div class="row"><span class="rl">Steps pendientes</span><span class="rv" style="color:var(--muted)">[${pendingSteps.join(', ')}]</span></div>
-      <div class="row"><span class="rl">Gate pendiente</span><span class="rv" style="color:${GP?'var(--amber)':'var(--green)'};">${GP?`GATE-${GP.step} · ${GP.jira_issue}`:'Ninguno'}</span></div>
+      <div class="row"><span class="rl">Gate pendiente</span><span class="rv" style="color:${GP?'var(--amber)':'var(--green)'};">${GP?`GATE-${GP.step} · ${GP.waiting_for}`:'Ninguno'}</span></div>
       <div class="row"><span class="rl">Esperando</span><span class="rv" style="color:var(--muted)">${GP?.waiting_for||'—'}</span></div>
       <div class="row"><span class="rl">Sprint goal</span><span class="rv" style="font-size:10px;max-width:200px;text-align:right;line-height:1.3;">${(S.sprint_goal||'—').slice(0,80)}...</span></div>
       <div class="row"><span class="rl">Último artefacto</span><span class="rv" style="font-size:10px;color:var(--muted);">${(S.last_skill_output_path||'—').split('/').pop()}</span></div>

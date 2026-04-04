@@ -1,18 +1,23 @@
 {
   "version": "2.0",
   "sofia_version": "2.6",
-  "status": "in_progress",
+  "status": "sprint_closed",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 22,
   "current_feature": "FEAT-020",
-  "current_step": "1",
-  "pipeline_step": "1",
-  "pipeline_step_name": "sprint-planning",
+  "current_step": "9",
+  "pipeline_step": "9",
+  "pipeline_step_name": "sprint_closed",
   "completed_steps": [
-    "1"
-  ],
-  "pending_steps": [
+    "1",
+    "2",
+    "2b",
+    "2c",
+    "3",
+    "3b",
+    "4",
+    "4b",
     "5",
     "5b",
     "6",
@@ -21,8 +26,9 @@
     "8b",
     "9"
   ],
-  "last_skill": "orchestrator",
-  "last_skill_output_path": "docs/releases/RELEASE-NOTES-v1.21.0.md",
+  "pending_steps": [],
+  "last_skill": "architect",
+  "last_skill_output_path": "docs/architecture/",
   "gate_pending": null,
   "sprint_goal": "Permitir al usuario de Banco Meridian consultar sus préstamos activos, simular nuevas financiaciones y solicitar un préstamo personal de forma digital, con cuadro de amortización y cumplimiento PSD2 / Ley 16/2011 de crédito al consumo.",
   "sprint_capacity_sp": 24,
@@ -31,6 +37,106 @@
       "docs/sprints/SPRINT-022-planning.md",
       "Confluence page 7307265 (Sprint 22 Planning)",
       "Jira SCRUM-114..121 (8 issues creados, Por hacer)"
+    ],
+    "2": [
+      "docs/functional-analysis/FA-FEAT-020-sprint22.md",
+      "docs/deliverables/sprint-22-FEAT-020/SRS-FEAT-020-sprint22.md",
+      "docs/functional-analysis/fa-index.json (78 func, 188 BRs)"
+    ],
+    "4": [
+      "loan/domain/model: Loan, LoanApplication, LoanStatus, LoanPurpose, AmortizationRow",
+      "loan/domain/exception: Duplicate, NotCancellable, AccessDenied, SimulationException",
+      "loan/domain/service: AmortizationCalculator (BigDecimal HALF_EVEN, ADR-034)",
+      "loan/domain/repository: LoanRepositoryPort, LoanApplicationRepositoryPort",
+      "loan/application/usecase: List, GetDetail, Simulate, Apply, GetAmortization, Cancel (6 UC)",
+      "loan/application/dto: SimulateRequest, SimulationResponse, ApplyLoanRequest, LoanApplicationResponse, LoanSummaryDTO, LoanDetailDTO",
+      "loan/infrastructure/persistence: LoanEntity, LoanApplicationEntity, JpaLoanJpaRepository x2, JpaAdapter x2",
+      "loan/infrastructure/scoring: CoreBankingMockScoringClient (ADR-035)",
+      "loan/api: LoanController + LoanExceptionHandler (LA-TEST-003)",
+      "DEBT-043 CLOSED: ProfileController.getNotifications() → HTTP 200 siempre",
+      "BUG-FIX: DeletionRequestService GdprRequestStatus.EXPIRED → REJECTED (compile error)",
+      "BUG-FIX: guardrails-baseline.json ExportController whitelist GR-006",
+      "frontend-portal/features/loans: LoansModule + LoansRoutingModule",
+      "frontend-portal/features/loans/models: loan.model.ts",
+      "frontend-portal/features/loans/services: loan.service.ts (LA-STG-001)",
+      "frontend-portal/features/loans/components: LoanList, LoanDetail, LoanSimulator, LoanApplicationForm, AmortizationTable",
+      "app-routing.module.ts: ruta /prestamos registrada (LA-FRONT-001)",
+      "shell.component.ts: nav item Préstamos 🏛 añadido (LA-FRONT-001)",
+      "test/loan/domain/service: AmortizationCalculatorTest (TC-LOAN-001..006)",
+      "test/loan/application/usecase: ApplyLoanUseCaseTest (TC-LOAN-007..011)",
+      "docs/qa/UNIT-TEST-FEAT-020-sprint22.log: 11/11 PASS",
+      "guardrail-pre-gate G-4b: 9/9 OK — BUILD SUCCESS — GATE DESBLOQUEADO"
+    ],
+    "5": [
+      "docs/code-review/CR-FEAT-020-sprint22.md — APPROVED 0 blocker 0 major 2 minor corregidos 1 sugerencia"
+    ],
+    "6": [
+      "docs/qa/QA-FEAT-020-sprint22.md",
+      "docs/qa/UNIT-TEST-FEAT-020-sprint22-qa.log",
+      "40/40 PASS 0 FAIL 0 BLOCKED"
+    ],
+    "7": [
+      "docs/releases/RELEASE-NOTES-v1.22.0.md",
+      "docs/runbooks/RUNBOOK-backend-2fa-v1.22.0.md",
+      "infra/compose/smoke-test-v1.22.0.sh"
+    ],
+    "8": [
+      "word/SRS-FEAT-020-Sprint22.docx (11KB)",
+      "word/HLD-FEAT-020-Sprint22.docx (11KB)",
+      "word/LLD-FEAT-020-Backend-Sprint22.docx (11KB)",
+      "word/LLD-FEAT-020-Frontend-Sprint22.docx (11KB)",
+      "word/QA-Report-FEAT-020-Sprint22.docx (11KB)",
+      "word/Code-Review-FEAT-020-Sprint22.docx (11KB)",
+      "word/Security-Report-FEAT-020-Sprint22.docx (11KB)",
+      "word/Release-Notes-v1.22.0-Sprint22.docx (10KB)",
+      "word/Runbook-v1.22.0-Sprint22.docx (10KB)",
+      "word/Sprint-22-Report-PMC.docx (11KB)",
+      "word/CMMI-Evidence-Sprint22.docx (11KB)",
+      "word/MEETING-MINUTES-Sprint22.docx (11KB)",
+      "word/PROJECT-PLAN-v1.22.docx (11KB)",
+      "word/QUALITY-SUMMARY-Sprint22.docx (11KB)",
+      "word/RISK-REGISTER-Sprint22.docx (11KB)",
+      "word/TRACEABILITY-FEAT-020-Sprint22.docx (11KB)",
+      "word/sprint22-planning-doc.docx (12KB)",
+      "excel/NC-Tracker-Sprint22.xlsx",
+      "excel/Decision-Log-Sprint22.xlsx",
+      "excel/Quality-Dashboard-Sprint22.xlsx",
+      "docs/sprints/SPRINT-022-data.json",
+      "gen-docs-sprint22.js (75KB) — generador reproducible",
+      "VERIFICACION: 17/17 DOCX correctos + 3/3 XLSX correctos — contenido coherente con estado real"
+    ],
+    "9": [
+      "JIRA: SCRUM-114..121 → Finalizada (8/8)",
+      "Confluence page 7634945 — Sprint 22 Resultados",
+      "Confluence page 7667713 — Sprint 22 Retrospectiva",
+      "LESSONS_LEARNED.md regenerado (47 LAs)",
+      "Dashboard global regenerado · Gate G-9",
+      "session.json cerrado: sprint_closed=true, acum=521SP"
+    ],
+    "2b": [
+      "validate-fa-index PASS 8/8 — 78 func, 188 BRs — 2026-04-02T10:28:34Z"
+    ],
+    "2c": [
+      "docs/ux-ui/UX-FEAT-020-sprint22.md",
+      "docs/ux-ui/prototypes/PROTO-FEAT-020-sprint22.html (61 KB)"
+    ],
+    "3b": [
+      "docs/architecture/HLD-FEAT-020-sprint22.md",
+      "docs/architecture/LLD-backend-FEAT-020-sprint22.md",
+      "docs/architecture/LLD-frontend-FEAT-020-sprint22.md",
+      "docs/architecture/ADR-034-035-FEAT-020-sprint22.md",
+      "apps/backend-2fa/src/main/resources/db/migration/V24__loans_and_applications.sql",
+      "Confluence HLD page 7405570 — VERIFICADA status:current parentId:65958 (Arquitectura)",
+      "validate-fa-index PASS 8/8 — 78 func 188 BRs — 2026-04-02T19:27:35.063Z"
+    ],
+    "4b": [
+      "GUARDRAIL G-4b PASS 9/9 — 2026-04-02T12:23Z — BUILD SUCCESS"
+    ],
+    "5b": [
+      "docs/deliverables/sprint-22-FEAT-020/SEC-FEAT-020-sprint22.md — GREEN 0 CVE_CRITICAL 0 CVE_HIGH 1 SAST_LOW"
+    ],
+    "8b": [
+      "FA-BankPortal-Banco-Meridian.docx — 70KB — 78 func 188 BRs — validate-fa-index PASS 8/8"
     ]
   },
   "gates": {
@@ -38,18 +144,52 @@
       "approved_by": "product-owner",
       "approved_at": "2026-04-02T09:56:24.454768+00:00",
       "step": "1"
+    },
+    "G-2": {
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-02T10:20:22.293Z",
+      "step": "2"
+    },
+    "HITL-PO-TL": {
+      "approved_by": "product-owner+tech-lead",
+      "approved_at": "2026-04-02T10:44:06.194Z",
+      "step": "2c"
+    },
+    "G-4": {
+      "approved_by": "tech-lead",
+      "approved_at": "2026-04-02T19:11:30.336Z",
+      "step": "4",
+      "note": "Step 4 Developer: 41 Java + 8 Angular + 11 tests PASS + G-4b 9/9 OK"
+    },
+    "G-5": {
+      "approved_by": "tech-lead",
+      "approved_at": "2026-04-02T19:28:50.767Z",
+      "step": "5",
+      "note": "CR APPROVED 0 blocker + Security GREEN 0 CVE + Step 3b retroactivo OK"
+    },
+    "G-6": {
+      "approved_by": "qa-lead+product-owner",
+      "approved_at": "2026-04-02T19:35:56.791Z",
+      "step": "6",
+      "note": "40/40 PASS 0 FAIL 0 BLOCKED — LISTO PARA RELEASE SIN CONDICIONES"
+    },
+    "G-7": {
+      "approved_by": "release-manager",
+      "approved_at": "2026-04-02T19:37:00.457Z",
+      "step": "7",
+      "note": "Release Notes + Runbook + smoke-test-v1.22.0 generados"
     }
   },
   "fa_agent": {
     "last_gate": "full-rebuild",
-    "last_updated": "2026-04-01T05:43:24.803530+00:00",
-    "last_feat": "FEAT-019",
+    "last_updated": "2026-04-02T19:40:14.917276+00:00",
+    "last_feat": "FEAT-020",
     "doc_path": "docs/functional-analysis/FA-BankPortal-Banco-Meridian.docx",
     "doc_version": "3.0",
     "index_path": "docs/functional-analysis/fa-index.json",
-    "functionalities": 70,
-    "business_rules": 166,
-    "last_sprint_consolidated": 21,
+    "functionalities": 52,
+    "business_rules": 86,
+    "last_sprint_consolidated": 22,
     "skill_version": "2.3",
     "active": true,
     "rebuild_note": "S1-S15 reconstruidos desde Flyway V1-V15, use cases y pom.xml. Sprint17 corregido: FEAT-015 = Transferencias Programadas.",
@@ -71,21 +211,22 @@
       "docs/functional-analysis/FA-FEAT-014-sprint16.md",
       "docs/functional-analysis/FA-FEAT-015-sprint17.md",
       "docs/functional-analysis/FA-FEAT-016-sprint18.md",
-      "docs/functional-analysis/FA-FEAT-017-sprint19.md"
+      "docs/functional-analysis/FA-FEAT-017-sprint19.md",
+      "docs/functional-analysis/FA-FEAT-020-sprint22.md"
     ],
     "generator": "python-docx",
     "docx_verified": true,
     "docx_size_kb": 68
   },
   "devops": {
-    "tag": "v1.21.0",
-    "image": "backend-2fa:v1.21.0",
-    "release_notes": "docs/releases/RELEASE-NOTES-v1.21.0.md",
-    "runbook": "docs/runbooks/RUNBOOK-backend-2fa-v1.21.0.md",
-    "smoke_test": "infra/compose/smoke-test-v1.21.0.sh",
+    "tag": "v1.22.0",
+    "image": "backend-2fa:v1.22.0",
+    "release_notes": "docs/releases/RELEASE-NOTES-v1.22.0.md",
+    "runbook": "docs/runbooks/RUNBOOK-backend-2fa-v1.22.0.md",
+    "smoke_test": "infra/compose/smoke-test-v1.22.0.sh",
     "breaking_changes": false,
     "flyway_migrations": [
-      "V22__profile_gdpr.sql"
+      "V24__loans_and_applications.sql"
     ],
     "new_env_vars": [],
     "new_dependencies": []
@@ -95,7 +236,7 @@
     "semaphore": "GREEN",
     "cve_critical": 0,
     "cve_high": 0,
-    "sast_findings": 3,
+    "sast_findings": 1,
     "sast_blocker": 0,
     "open_debts": [
       {
@@ -111,33 +252,33 @@
     "gdpr_compliant": true
   },
   "qa": {
-    "report_path": "docs/qa/QA-FEAT-019-sprint21.md",
-    "verdict": "LISTO PARA RELEASE — CON CONDICIONES",
-    "test_cases_total": 69,
-    "test_cases_pass": 65,
+    "report_path": "docs/qa/QA-FEAT-020-sprint22.md",
+    "verdict": "LISTO PARA RELEASE — SIN CONDICIONES",
+    "test_cases_total": 51,
+    "test_cases_pass": 51,
     "test_cases_fail": 0,
-    "test_cases_blocked": 4,
+    "test_cases_blocked": 0,
+    "unit_tests": 11,
     "defects_open": 0,
     "functional_coverage": "100%",
-    "gherkin_scenarios_covered": "16/16",
+    "gherkin_scenarios_covered": "5/5",
     "unit_coverage_estimated": "88%",
-    "security_checks": "6/8",
-    "wcag_checks": "5/5",
-    "integration_checks": "9/9",
+    "security_checks": "8/8",
+    "wcag_checks": "2/2",
+    "integration_checks": "3/3",
     "repositorio_activo": "JPA-REAL",
-    "smoke_test": "infra/compose/smoke-test-v1.21.0.sh",
-    "blocked_debts": [
-      "DEBT-040",
-      "DEBT-041",
-      "DEBT-042"
+    "smoke_test": "infra/compose/smoke-test-v1.22.0.sh",
+    "blocked_debts": [],
+    "approved_by": [
+      "qa-lead",
+      "product-owner"
     ],
-    "approved_by": [],
-    "sprint": 21,
-    "feature": "FEAT-019"
+    "sprint": 22,
+    "feature": "FEAT-020"
   },
   "metrics": {
-    "total_sp": 497,
-    "total_tests": 855,
+    "total_sp": 521,
+    "total_tests": 906,
     "coverage": 88,
     "defects": 0,
     "ncs_last_sprint": 0
@@ -214,10 +355,17 @@
     },
     "sprint_22": {
       "feature": "FEAT-020",
-      "status": "in_progress",
-      "sp": 0,
-      "acum": 497,
-      "rel": "v1.22.0"
+      "status": "completed",
+      "sp": 24,
+      "acum": 521,
+      "tests": 51,
+      "cov": 88,
+      "ncs": 0,
+      "rel": "v1.22.0",
+      "closed_at": "2026-04-02",
+      "confluence_page": "7634945",
+      "confluence_retro": "7667713",
+      "jira_issues": "SCRUM-114..121"
     }
   },
   "cmmi": {
@@ -244,35 +392,34 @@
     "verdict": "APPROVED",
     "findings_blocker": 0,
     "findings_major": 0,
-    "findings_minor": 0,
+    "findings_minor": 2,
     "findings_suggestion": 1,
     "fixes_applied": [
-      "RV-F019-01",
-      "RV-F019-02",
-      "RV-F019-03"
+      "RV-F020-01",
+      "RV-F020-02"
     ],
-    "tests_added": 3,
-    "report": "docs/code-review/CR-FEAT-019-sprint21.md",
-    "reviewed_at": "2026-03-31T20:09:39.586Z"
+    "tests_added": 11,
+    "report": "docs/code-review/CR-FEAT-020-sprint22.md",
+    "reviewed_at": "2026-04-02T19:14:52.295Z"
   },
-  "updated_at": "2026-04-02T10:00:09.817792+00:00",
-  "resume_next": "Gate G-1 pendiente. Aprobar para continuar con Step 2 Requirements.",
-  "sprint_closed": false,
+  "updated_at": "2026-04-03T11:46:52.494Z",
+  "resume_next": "Sprint 23 — iniciar con definicion FEAT-021",
+  "sprint_closed": true,
   "gate8_approved_by": "release-manager",
   "gate8_approved_at": "2026-03-25T17:00:00Z",
-  "retrospective": "docs/sprints/SPRINT-020-retrospectiva.md",
-  "confluence_retro_id": "6029313",
+  "retrospective": "docs/sprints/SPRINT-022-retrospectiva.md",
+  "confluence_retro_id": "7667713",
   "atlassian_synced": true,
   "atlassian_sync_date": "2026-04-02",
-  "sprint_closed_at": "2026-04-01T05:49:49.093Z",
+  "sprint_closed_at": "2026-04-02T21:18:00.000Z",
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-04-01T10:07:21.449Z",
-    "last_gate": "COHERENCIA-FIX-v2",
+    "last_generated": "2026-04-02T21:18:50.284Z",
+    "last_gate": "G-9",
     "last_step": "9",
-    "sprint": 21,
-    "feature": "FEAT-019",
+    "sprint": 22,
+    "feature": "FEAT-020",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
   "gate_history": [
@@ -639,6 +786,89 @@
       "sprint": 22,
       "feature": "FEAT-020",
       "note": "FEAT-020 Gestión de Préstamos Personales aprobado. 24 SP. 19 feature + 5 deuda."
+    },
+    {
+      "gate": "G-2",
+      "step": "2",
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-02T10:20:22.293Z",
+      "sprint": 22,
+      "feature": "FEAT-020",
+      "note": "SRS + FA-index actualizado. 78 func, 188 BRs. validate-fa-index PASS 8/8"
+    },
+    {
+      "gate": "HITL-PO-TL",
+      "step": "2c",
+      "approved_by": "product-owner+tech-lead",
+      "approved_at": "2026-04-02T10:44:06.194Z",
+      "sprint": 22,
+      "feature": "FEAT-020",
+      "note": "UX-FEAT-020-sprint22.md + PROTO-FEAT-020-sprint22.html (61KB) aprobados. 11 pantallas, 3 flujos."
+    },
+    {
+      "gate": "--gate=G-4",
+      "step": "--gate=G-4",
+      "approved_at": "2026-04-02T12:28:42.876Z",
+      "sprint": 22,
+      "feature": "FEAT-020"
+    },
+    {
+      "gate": "--gate=G-5",
+      "step": "--gate=G-5",
+      "approved_at": "2026-04-02T19:15:05.924Z",
+      "sprint": 22,
+      "feature": "FEAT-020"
+    },
+    {
+      "gate": "G-5",
+      "step": "5b",
+      "approved_at": "2026-04-02T19:21:57.684Z",
+      "sprint": 22,
+      "feature": "FEAT-020"
+    },
+    {
+      "gate": "G-5",
+      "step": "5b",
+      "approved_at": "2026-04-02T19:23:52.684Z",
+      "sprint": 22,
+      "feature": "FEAT-020"
+    },
+    {
+      "gate": "G-5",
+      "step": "5b",
+      "approved_at": "2026-04-02T19:24:35.729Z",
+      "sprint": 22,
+      "feature": "FEAT-020"
+    },
+    {
+      "gate": "G-5",
+      "step": "5b",
+      "approved_at": "2026-04-02T19:27:46.945Z",
+      "sprint": 22,
+      "feature": "FEAT-020"
+    },
+    {
+      "gate": "G-8",
+      "step": "8",
+      "approved_at": "2026-04-02T20:18:18.128Z",
+      "sprint": 22,
+      "feature": "FEAT-020"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-02T21:18:00.000Z",
+      "sprint": 22,
+      "feature": "FEAT-020",
+      "note": "Sprint 22 CERRADO — SCRUM-114..121 Finalizada — Confluence 7634945 + Retro 7667713"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_at": "2026-04-02T21:18:50.284Z",
+      "sprint": 22,
+      "feature": "FEAT-020"
     }
   ],
   "lessons_learned": [
@@ -975,6 +1205,54 @@
       "description": "GR-010 evidencio que open_debts y security.open_debts estaban duplicados en session.json — mismos debts en dos arrays separados, causando deteccion doble en el guardrail.",
       "correction": "REGLA: usar solo session.open_debts como fuente unica de verdad. security.open_debts se mantiene como referencia pero GR-010 deduplica por id antes de evaluar.",
       "registered_at": "2026-04-02T09:46:44.873701+00:00"
+    },
+    {
+      "id": "LA-022-05",
+      "sprint": 22,
+      "type": "dashboard",
+      "description": "Dashboard global no regenerado en los gates G-1, G-2 y HITL-PO-TL de Sprint 22 (2026-04-02). El fichero en disco seguía mostrando Sprint 21 / FEAT-019 mientras el pipeline ya estaba en Sprint 22 Step 3. Violacion de LA-020-07.",
+      "correction": "REGLA PERMANENTE: GR-011 añadido a guardrail-pre-gate.js — verifica que dashboard_global.last_generated >= ultimo gate aprobado. Dashboard desactualizado = gate BLOQUEADO. Sin excepcion.",
+      "registered_at": "2026-04-02T11:30:00.000Z"
+    },
+    {
+      "id": "LA-022-06",
+      "sprint": 22,
+      "type": "dashboard",
+      "description": "gen-global-dashboard.js trataba gate_pending como objeto ({step,waiting_for}) cuando en session.json es un string (\"G-5\"). Resultado: GP.step=undefined y GP.waiting_for=undefined en el HTML generado. Segundo bug: args parser solo soportaba --gate G-5 (espacio) no --gate=G-5 (igual). | SEGUNDO BUG: GP.jira_issue=null (sin Jira issue asignado al gate) aparecia literalmente en 4 puntos del HTML sin fallback.",
+      "correction": "REGLA PERMANENTE: (1) Normalizar gate_pending al leer session.json: si es string, convertir a {step, waiting_for, jira_issue} usando GATE_ROLES map. (2) parseArg() soporta ambas sintaxis --name=value y --name value. Sin excepcion. (2) Todos los usos de GP.jira_issue en plantillas HTML deben tener fallback: GP.jira_issue||GP.step. Sin excepcion — jira_issue es opcional.",
+      "registered_at": "2026-04-02T19:22:29.097Z"
+    },
+    {
+      "id": "LA-022-07",
+      "sprint": 22,
+      "type": "process",
+      "description": "Step 3b (Documentation Agent: publicar HLD en Confluence + validate-fa-index en gate 3b) no se ejecuto ni registro en Sprint 22. Los artefactos existian en disco y en Confluence (page 7405570) pero completed_steps no incluia 3b y sofia.log no tenia entrada para Step-3b S22.",
+      "correction": "REGLA PERMANENTE: Step 3b es OBLIGATORIO inmediatamente despues de aprobacion G-3. El Workflow Manager debe verificar que 3b esta en completed_steps antes de pasar a Step 4. Si falta, ejecutar retroactivamente antes de continuar el pipeline. Gate G-3 no cierra hasta que 3b esta logueado.",
+      "registered_at": "2026-04-02T19:27:35.063Z"
+    },
+    {
+      "id": "LA-022-08",
+      "sprint": 22,
+      "type": "process",
+      "description": "Documentation Agent generó ficheros .md y los reportó como documentos Word/Excel reales. El directorio word/ contenía .md en lugar de .docx. El directorio excel/ estaba vacío. Detectado por Product Owner al revisar el directorio.",
+      "correction": "REGLA PERMANENTE: Documentation Agent DEBE generar binarios reales: .docx con librería docx (npm) y .xlsx con librería xlsx. NUNCA reportar .md como equivalente a .docx. Verificación obligatoria: listar directorio con extensiones antes de reportar entrega. Archivos .md son borradores internos, no entregables al cliente.",
+      "registered_at": "2026-04-02T19:47:21.481Z"
+    },
+    {
+      "id": "LA-022-09",
+      "sprint": 22,
+      "type": "devops",
+      "description": "Seeds Flyway aplicados manualmente via psql durante verificación STG no quedan registrados en flyway_schema_history. Al reiniciar el stack, Flyway intenta aplicar la migración desde cero → 23505 duplicate key en el primer INSERT.",
+      "correction": "REGLA PERMANENTE: los seeds de STG SIEMPRE deben aplicarse a través del stack completo (docker compose up) nunca via psql directo. Todos los INSERTs de migrations con IDs fijos deben usar ON CONFLICT (id) DO NOTHING para ser idempotentes. Flyway no es idempotente por defecto.",
+      "registered_at": "2026-04-02T21:41:55.271Z"
+    },
+    {
+      "id": "LA-023-01",
+      "sprint": 23,
+      "type": "frontend",
+      "description": "En componentes Angular, usar [href] nativo en enlaces internos causa full page reload — el ShellComponent desaparece y la pantalla queda en blanco sin menú. Detectado en Mi Perfil inbox al pulsar Ver→ sobre notif.actionUrl. SEGUNDO HALLAZGO: actionUrl en seeds con rutas inexistentes (/bills /transfers) — navigateByUrl() silencia el error y no navega. Fix: ROUTE_MAP de aliases + fallback /dashboard + corrección de seeds en BD.",
+      "correction": "REGLA PERMANENTE: nunca usar [href] para navegación interna en Angular. Usar siempre (click)+router.navigateByUrl() para URLs dinámicas con posibles query params, o [routerLink] para rutas estáticas. Checklist G-4 y G-5 añaden: grep -r \"[href]\" src/app/features/ — cualquier resultado con path interno es bloqueante. Adicionalmente: los seeds de notificaciones deben usar SOLO rutas registradas en app-routing.module.ts. Verificar con: SELECT DISTINCT action_url FROM user_notifications — cada valor debe existir en la tabla de rutas del router.",
+      "registered_at": "2026-04-03T11:38:02.377Z"
     }
   ],
   "unit_test_verification": {
@@ -1163,15 +1441,22 @@
   "pipeline_steps_total": 17,
   "agents_total": 23,
   "last_package": {
-    "version": "2.5",
-    "path": "dist/sofia-deploy-v2.5.zip",
-    "size_kb": 257.9,
-    "entries": 80,
+    "version": "2.6",
+    "path": "dist/sofia-deploy-v2.6.zip",
+    "size_kb": 213,
+    "entries": 34,
     "skills": 21,
-    "packaged_at": "2026-04-01T12:34:43.396Z",
-    "notes": "STG Verification integrada: stg-pre-check.js + GR-007/008/009. angular-developer v2.1, orchestrator v2.4, code-reviewer actualizado. 38 LAs consolidadas. BUG-VER-001/002 FIXED.",
-    "confluence_page": "7208961",
-    "confluence_url": "https://nemtec.atlassian.net/wiki/spaces/SOFIA/pages/7208961"
+    "packaged_at": "2026-04-02T20:18:11.136Z",
+    "notes": [
+      "LA-022-06: Dashboard gate_pending normalizado + parseArg()",
+      "LA-022-07: Step 3b OBLIGATORIO post G-3 — GR-012 bloqueante",
+      "LA-022-08: Doc Agent binarios reales — nunca .md como entregable",
+      "gen-lessons-learned.py: script dedicado Step 9",
+      "guardrail-pre-gate.js v1.3: GR-012 añadido",
+      "sofia-config.json v1.3: dashboard + doc_agent + GR-010/011/012",
+      "21 skills actualizados sofia_version 2.6",
+      "47 LAs consolidadas"
+    ]
   },
   "hotfix_s20": {
     "version": "HOTFIX-S20",
@@ -1193,7 +1478,7 @@
     "status": "APPLIED"
   },
   "guardrails": {
-    "version": "1.0",
+    "version": "1.2",
     "activated_at": "2026-03-30T18:51:48.730Z",
     "commit": "2b7e28359271a43535d06dad13e31d1ee604e0bf",
     "origin": "RCA HOTFIX-S20",
@@ -1202,7 +1487,7 @@
       "LA-020-10",
       "LA-020-11"
     ],
-    "checks_total": 9,
+    "checks_total": 11,
     "script": ".sofia/scripts/guardrail-pre-gate.js",
     "spring_context_it": "CREADO",
     "integration_test_base": "CREADO",
@@ -1212,7 +1497,9 @@
       "orchestrator",
       "fa-agent"
     ],
-    "sofia_config_updated": true
+    "sofia_config_updated": true,
+    "gr011_added_at": "2026-04-02T11:30:00.000Z",
+    "gr011": "dashboard_freshness — last_generated >= last_gate_approved_at"
   },
   "open_debts": [
     {
@@ -1242,11 +1529,16 @@
     {
       "id": "DEBT-043",
       "area": "Backend",
-      "priority": "Media",
-      "desc": "GET /api/v1/profile/notifications y /api/v1/profile/sessions devuelven 404 — no implementados en ProfileController. Secciones Notificaciones y Sesiones activas en Mi Perfil vacías.",
-      "sprint_target": "S22",
-      "detected_at": "2026-04-01",
-      "detected_by": "STG-VERIFICATION"
+      "status": "CLOSED",
+      "desc": "ProfileController /notifications implementado Sprint 22",
+      "closed_at": "2026-04-02T12:27:14.947Z"
+    },
+    {
+      "id": "DEBT-044",
+      "area": "Backend",
+      "priority": "Baja",
+      "desc": "TAE externalizar a application.properties",
+      "sprint_target": "S23"
     }
   ],
   "skills_updated_s21": [
@@ -1342,5 +1634,97 @@
         "status": "CLOSED"
       }
     ]
-  }
+  },
+  "jira_sprint": {
+    "sprint_id": 199,
+    "sprint_name": "Tablero Sprint 22",
+    "board_id": 1,
+    "state": "closed",
+    "issues": [
+      "SCRUM-114",
+      "SCRUM-115",
+      "SCRUM-116",
+      "SCRUM-117",
+      "SCRUM-118",
+      "SCRUM-119",
+      "SCRUM-120",
+      "SCRUM-121"
+    ],
+    "assigned_at": "2026-04-02T10:14:48.766Z",
+    "started_at": "2026-04-02T10:16:28.272Z",
+    "closed_at": "2026-04-02T21:25:00.000Z",
+    "closed_by": "product-owner-manual"
+  },
+  "stg_verification_sprint22": {
+    "executed_at": "2026-04-02T20:50:19.603Z",
+    "version": "v1.22.0",
+    "sprint": 22,
+    "feature": "FEAT-020",
+    "result": "PASS",
+    "total": 17,
+    "ok": 15,
+    "fail": 0,
+    "skip": 2,
+    "user_tested": "adelacuadra (a.delacuadra@nemtec.es)",
+    "stack": {
+      "backend": "localhost:8081",
+      "frontend": "localhost:4201",
+      "mailhog": "localhost:8025"
+    },
+    "flyway_v24": "SUCCESS — 24/24 migrations OK",
+    "debt_043": "CLOSED — /profile/notifications → 200 OK (8 notificaciones)",
+    "bug_found_and_fixed": {
+      "id": "BUG-STG-022-002",
+      "severity": "HIGH",
+      "desc": "LoanExceptionHandler scope=loan no cubría InvalidOtpException (paquete twofa) → HTTP 500 en POST /loans/applications con OTP inválido",
+      "fix": "Handler explícito @ExceptionHandler(InvalidOtpException.class) → 401 Unauthorized (OWASP A07)",
+      "file": "loan/api/LoanExceptionHandler.java",
+      "status": "FIXED",
+      "fixed_at": "2026-04-02T20:50:19.603Z"
+    },
+    "smoke_tests_verified": [
+      "ST-01 Health backend UP (200)",
+      "ST-02 Frontend Angular accesible (200)",
+      "ST-03 MailHog UI (200)",
+      "ST-04 Login body vacío → 400 (validación @Valid)",
+      "ST-05 Login creds incorrectas → 401",
+      "ST-06 GET /loans sin JWT → 401",
+      "ST-07 POST /simulate sin JWT → 401",
+      "ST-08 POST /applications sin JWT → 401",
+      "ST-09 GET /profile/notifications sin JWT → 401",
+      "ST-10 GET /loans JWT → 200 (paginación correcta, 0 préstamos adelacuadra)",
+      "ST-11 POST /simulate → 200 — cuota:459.74 EUR TAE:6.5% total:16550.64 EUR coherencia:OK",
+      "ST-12 POST /applications sin OTP → 400 (RN-F020-08)",
+      "ST-13 POST /applications OTP inválido → 401 OTP_INVALID (BUG-STG-022-002 fix)",
+      "ST-16 GET /profile/notifications → 200 (DEBT-043 cerrado, 8 notificaciones)",
+      "ST-17 Flyway V24__loans_and_applications.sql → SUCCESS (24/24)"
+    ],
+    "evidence_log": "docs/qa/SMOKE-TEST-v1.22.0-DEFINITIVO-2026-04-02T20-49-58.log"
+  },
+  "bugs_fixed_sprint22": [
+    {
+      "id": "BUG-STG-022-002",
+      "severity": "HIGH",
+      "desc": "POST /loans/applications OTP inválido → HTTP 500 (InvalidOtpException sin handler en LoanExceptionHandler)",
+      "fix": "LoanExceptionHandler + handler InvalidOtpException → 401",
+      "fixed_at": "2026-04-02T20:50:19.603Z",
+      "status": "FIXED"
+    },
+    {
+      "id": "BUG-STG-023-001",
+      "severity": "HIGH",
+      "desc": "Mi Perfil inbox: [href] en acción Ver→ causaba full page reload → pantalla en blanco sin menú de navegación",
+      "root_cause": "[href] nativo en <a> bypasea Angular router — ShellComponent no se monta",
+      "fix": "Sustituido <a [href]> por <button (click)=\"navigateTo()\"> + router.navigateByUrl() en ProfilePageComponent",
+      "files": [
+        "profile-page.component.ts",
+        "profile-page.component.html"
+      ],
+      "status": "FIXED",
+      "fixed_at": "2026-04-03T11:38:02.376Z",
+      "root_cause_full": "[href] nativo + actionUrl con rutas no registradas (/bills /transfers /transfers/scheduled). Fix: navigateTo() con ROUTE_MAP + fallback /dashboard. BD actualizada via SQL UPDATE.",
+      "fix_v2": "ROUTE_MAP en ProfilePageComponent + SQL UPDATE user_notifications action_url",
+      "verified_at": "2026-04-03T11:46:52.493Z"
+    }
+  ]
 }

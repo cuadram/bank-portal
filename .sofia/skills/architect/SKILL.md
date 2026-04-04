@@ -1,4 +1,6 @@
 ---
+sofia_version: "2.6"
+updated: "2026-04-02"
 name: architect
 description: >
   Agente de arquitectura de software de SOFIA — Software Factory IA de Experis.
@@ -516,3 +518,76 @@ fs.copyFileSync('.sofia/session.json', snapPath);
 
 > Si este skill **no** genera artefactos de fichero (ej: atlassian-agent opera
 > sobre Jira/Confluence), usar las URLs o IDs de los recursos creados/actualizados.
+
+
+---
+
+## Lecciones aprendidas Sprint 22 — v2.6 (2026-04-02)
+
+### LA-022-07 — Step 3b OBLIGATORIO post Gate G-3
+
+**Detectado:** Sprint 22 — Step 3b no fue ejecutado ni registrado tras aprobar G-3.
+Los artefactos existian en disco pero completed_steps no incluia "3b" y sofia.log no tenia entrada.
+
+Verificacion antes de Step 4:
+  node -e "const s=JSON.parse(require('fs').readFileSync('.sofia/session.json'));
+           const ok=s.completed_steps.includes('3b');
+           if(!ok){console.error('BLOQUEANTE: Step 3b no completado');process.exit(1);}
+           else console.log('Step 3b OK');"
+
+REGLA PERMANENTE (LA-022-07):
+- Step 3b es OBLIGATORIO inmediatamente despues de Gate G-3
+- El Orchestrator verifica completed_steps.includes('3b') antes de activar Developer Agent
+- GR-012 bloquea G-4 si Step 3b no esta en completed_steps
+- Si falta: ejecutar retroactivamente (Confluence HLD + validate-fa-index + log)
+
+---
+
+### LA-022-08 — Documentation Agent genera BINARIOS REALES (.docx y .xlsx)
+
+**Detectado:** Sprint 22 — Doc Agent genero ficheros .md y los reporto como Word/Excel reales.
+
+Verificacion antes de G-8:
+  python3 -c "
+  import os
+  base = 'docs/deliverables/sprint-NN-FEAT-XXX'
+  docx = [f for f in os.listdir(base+'/word') if f.endswith('.docx')]
+  xlsx = [f for f in os.listdir(base+'/excel') if f.endswith('.xlsx')]
+  assert len(docx) == 17, f'FALTA DOCX: {len(docx)}/17'
+  assert len(xlsx) == 3,  f'FALTA XLSX: {len(xlsx)}/3'
+  print('OK:', len(docx), 'DOCX +', len(xlsx), 'XLSX reales')
+  "
+
+REGLA PERMANENTE (LA-022-08):
+- Libreria docx (npm) para .docx — NUNCA ficheros .md como entregable
+- Libreria ExcelJS para .xlsx
+- Generador gen-docs-sprintNN.js persistido como artefacto reproducible
+- Verificar extensiones en disco ANTES de reportar entrega
+
+---
+
+### LA-022-06 — Dashboard gate_pending normalizado
+
+**Detectado:** Sprint 22 — gate_pending es string ("G-5") pero el dashboard lo trataba como objeto.
+Resultado: GP.step=undefined, GP.waiting_for=undefined en el HTML generado.
+
+REGLA PERMANENTE (LA-022-06):
+- gen-global-dashboard.js normaliza gate_pending antes de usar:
+    const GP_RAW = session.gate_pending;
+    const GP = GP_RAW
+      ? (typeof GP_RAW === 'string'
+          ? { step: GP_RAW, waiting_for: GATE_ROLES[GP_RAW] || 'Responsable', jira_issue: null }
+          : GP_RAW)
+      : null;
+- Todos los accesos a GP.jira_issue tienen fallback: GP.jira_issue || GP.step
+- parseArg() soporta --gate=G-5 y --gate G-5 (con = y con espacio)
+
+### Checklist Step 3b — Architect es responsable de completarlo post G-3
+
+Inmediatamente despues de que el Tech Lead apruebe G-3:
+1. Verificar que HLD esta publicado en Confluence (page status=current)
+2. Ejecutar: node .sofia/scripts/validate-fa-index.js (PASS 8/8 obligatorio)
+3. Añadir "3b" a session.completed_steps
+4. Registrar en sofia.log: [STEP-3b] [architect] COMPLETED — Confluence OK + validate-fa-index PASS
+5. NO pasar el control al Developer hasta completar estos 4 pasos
+

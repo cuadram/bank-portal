@@ -1,4 +1,6 @@
 ---
+sofia_version: "2.6"
+# updated: 2026-04-02 — version bump SOFIA v2.6
 name: react-developer
 description: >
   Agente desarrollador React Frontend de SOFIA — Software Factory IA de Experis.

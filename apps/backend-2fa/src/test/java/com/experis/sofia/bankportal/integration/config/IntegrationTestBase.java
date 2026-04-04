@@ -64,4 +64,8 @@ public abstract class IntegrationTestBase {
 
     @Autowired
     protected JdbcClient jdbc;
+
+    // Fixtures comunes para tests de integración (DEBT — DashboardJpaAdapterIT)
+    protected final java.util.UUID testUserId    = java.util.UUID.fromString("00000000-0000-0000-0000-000000000001");
+    protected final java.util.UUID testAccountId = java.util.UUID.fromString("00000000-0000-0000-0000-000000000002");
 }

@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
 export interface AccountSummary {
-  id: string;
+  accountId: string;
+  id?: string;
   alias: string;
   ibanMasked: string;
   type: 'CORRIENTE' | 'AHORRO' | 'NOMINA';
@@ -50,7 +51,7 @@ export interface TransactionFilter {
  */
 @Injectable({ providedIn: 'root' })
 export class AccountService {
-  private readonly base = `${environment.apiUrl}/api/v1/accounts`;
+  private readonly base = `/api/v1/accounts`;
 
   constructor(private http: HttpClient) {}
 

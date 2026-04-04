@@ -10,7 +10,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm;
 -- ─────────────────────────────────────────────────────────────────────────────
 -- accounts — cuentas bancarias del usuario
 -- ─────────────────────────────────────────────────────────────────────────────
-CREATE TABLE accounts (
+CREATE TABLE IF NOT EXISTS accounts (
     id          UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id     UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     alias       VARCHAR(100) NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE accounts (
     created_at  TIMESTAMP    NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_accounts_user_id ON accounts(user_id);
+CREATE INDEX IF NOT EXISTS idx_accounts_user_id ON accounts(user_id);
 
 COMMENT ON TABLE accounts IS
     'Cuentas bancarias del usuario. Sprint 9: datos mock via Flyway. '
@@ -31,7 +31,7 @@ COMMENT ON TABLE accounts IS
 -- ─────────────────────────────────────────────────────────────────────────────
 -- account_balances — saldos separados para actualización frecuente sin lock
 -- ─────────────────────────────────────────────────────────────────────────────
-CREATE TABLE account_balances (
+CREATE TABLE IF NOT EXISTS account_balances (
     account_id        UUID          PRIMARY KEY REFERENCES accounts(id) ON DELETE CASCADE,
     available_balance DECIMAL(15,2) NOT NULL DEFAULT 0.00,
     retained_balance  DECIMAL(15,2) NOT NULL DEFAULT 0.00,
@@ -44,7 +44,7 @@ COMMENT ON TABLE account_balances IS
 -- ─────────────────────────────────────────────────────────────────────────────
 -- transactions — movimientos bancarios (US-702/703/704/705)
 -- ─────────────────────────────────────────────────────────────────────────────
-CREATE TABLE transactions (
+CREATE TABLE IF NOT EXISTS transactions (
     id               UUID          PRIMARY KEY DEFAULT gen_random_uuid(),
     account_id       UUID          NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
     transaction_date TIMESTAMP     NOT NULL,
@@ -61,15 +61,15 @@ COMMENT ON TABLE transactions IS
     'Categoría asignada lazy por TransactionCategorizationService (US-705).';
 
 -- Índice principal: historial paginado por cuenta ordenado por fecha (US-702)
-CREATE INDEX idx_transactions_account_date
+CREATE INDEX IF NOT EXISTS idx_transactions_account_date
     ON transactions(account_id, transaction_date DESC);
 
 -- Índice full-text GIN para búsqueda por concepto (US-703)
-CREATE INDEX idx_transactions_concept_gin
+CREATE INDEX IF NOT EXISTS idx_transactions_concept_gin
     ON transactions USING gin(concept gin_trgm_ops);
 
 -- Índice parcial para filtro por tipo (US-702)
-CREATE INDEX idx_transactions_account_type
+CREATE INDEX IF NOT EXISTS idx_transactions_account_type
     ON transactions(account_id, type, transaction_date DESC);
 
 -- ─────────────────────────────────────────────────────────────────────────────

@@ -1,8 +1,8 @@
 package com.experis.sofia.bankportal.cards.application;
 
 import com.experis.sofia.bankportal.cards.domain.*;
-import com.experis.sofia.bankportal.audit.AuditLogService;
-import com.experis.sofia.bankportal.notification.application.WebPushService;
+import com.experis.sofia.bankportal.audit.domain.AuditLogService;
+import com.experis.sofia.bankportal.notification.infrastructure.WebPushService;
 import com.experis.sofia.bankportal.notification.domain.NotificationEventType;
 import com.experis.sofia.bankportal.twofa.application.OtpValidationUseCase;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +31,11 @@ public class UpdateCardLimitsUseCase {
         if (!card.belongsTo(userId))
             throw new CardAccessDeniedException("IDOR: card " + cardId + " does not belong to user " + userId);
 
-        BigDecimal prevDaily = card.getDailyLimit();
-        BigDecimal prevMonthly = card.getMonthlyLimit();
-
         card.updateLimits(daily, monthly);
         cardRepository.save(card);
 
-        auditLog.log("CARD_LIMITS_UPDATED", userId.toString(),
-            CardMaskingUtil.maskId(cardId) + " prev=" + prevDaily + "/" + prevMonthly
-            + " new=" + daily + "/" + monthly);
-        pushService.sendAsync(userId, NotificationEventType.CARD_LIMITS_UPDATED);
+        auditLog.log("CARD_LIMITS_UPDATED", userId,
+            CardMaskingUtil.maskId(cardId) + " new=" + daily + "/" + monthly);
+        pushService.sendToUser(userId, "Límites actualizados", "Sus límites de tarjeta han sido actualizados", java.util.Map.of());
     }
 }

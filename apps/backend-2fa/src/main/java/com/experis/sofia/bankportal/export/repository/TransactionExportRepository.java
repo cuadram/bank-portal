@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
-import java.time.Instant;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -18,6 +18,10 @@ import java.util.UUID;
  * FEAT-018 Sprint 20. ADR-031: síncrono <= 500 registros.
  * LA-019-15: parámetros posicionales (?) — sin concatenación de named params en text blocks.
  * HOTFIX-S20: creado en paquete correcto; adapta Transaction real del dominio account.
+ * BUG-FIX-002: filtro tipoMovimiento usa t.category (no t.type).
+ * BUG-FIX-004: Instant → java.sql.Timestamp para columna TIMESTAMP (sin timezone) en PostgreSQL.
+ *   JdbcClient no convierte Instant automáticamente para columnas TIMESTAMP without time zone.
+ *   Solución: Timestamp.from(instant) que JDBC mapea correctamente a TIMESTAMP.
  */
 @Slf4j
 @Repository
@@ -41,6 +45,8 @@ public class TransactionExportRepository {
     /**
      * Recupera movimientos para exportación aplicando filtros opcionales.
      * Ordena por transaction_date DESC. Limita a maxResults+1 para detectar exceso.
+     * BUG-FIX-002: filtro tipoMovimiento contra t.category (negocio), no t.type (CARGO/ABONO).
+     * BUG-FIX-004: fechas pasadas como Timestamp.from(Instant) — compatible con TIMESTAMP pg.
      */
     public List<Transaction> findByAccountIdAndFilters(
             UUID accountId, LocalDate fechaDesde, LocalDate fechaHasta,
@@ -52,14 +58,16 @@ public class TransactionExportRepository {
 
         if (fechaDesde != null) {
             where.append(" AND t.transaction_date >= ?");
-            args.add(fechaDesde.atStartOfDay().toInstant(ZoneOffset.UTC));
+            // BUG-FIX-004: Timestamp.from() en lugar de Instant directo
+            args.add(Timestamp.from(fechaDesde.atStartOfDay().toInstant(ZoneOffset.UTC)));
         }
         if (fechaHasta != null) {
             where.append(" AND t.transaction_date < ?");
-            args.add(fechaHasta.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC));
+            args.add(Timestamp.from(fechaHasta.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC)));
         }
+        // BUG-FIX-002: era t.type = ? → ahora t.category = ?
         if (tipoMovimiento != null && !"TODOS".equals(tipoMovimiento)) {
-            where.append(" AND t.type = ?");
+            where.append(" AND t.category = ?");
             args.add(tipoMovimiento);
         }
 
@@ -96,14 +104,16 @@ public class TransactionExportRepository {
 
         if (fechaDesde != null) {
             where.append(" AND t.transaction_date >= ?");
-            args.add(fechaDesde.atStartOfDay().toInstant(ZoneOffset.UTC));
+            // BUG-FIX-004: Timestamp.from() en lugar de Instant directo
+            args.add(Timestamp.from(fechaDesde.atStartOfDay().toInstant(ZoneOffset.UTC)));
         }
         if (fechaHasta != null) {
             where.append(" AND t.transaction_date < ?");
-            args.add(fechaHasta.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC));
+            args.add(Timestamp.from(fechaHasta.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC)));
         }
+        // BUG-FIX-002: era t.type = ? → ahora t.category = ?
         if (tipoMovimiento != null && !"TODOS".equals(tipoMovimiento)) {
-            where.append(" AND t.type = ?");
+            where.append(" AND t.category = ?");
             args.add(tipoMovimiento);
         }
 

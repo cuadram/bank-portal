@@ -1,6 +1,6 @@
 # ──────────────────────────────────────────────────────────────────────────────
 # Dockerfile — bankportal-backend-2fa
-# Sprint 9 · v1.9.0 · FEAT-007
+# Sprint 18 · v1.18.0 · FEAT-016 Gestión de Tarjetas
 # Multi-stage: build (Maven 3.9 / Java 21) → runtime (JRE 21 Alpine)
 # ──────────────────────────────────────────────────────────────────────────────
 
@@ -15,20 +15,22 @@ RUN mvn dependency:go-offline -q
 
 # Copiar código fuente y construir
 COPY src ./src
-RUN mvn package -DskipTests -q
+RUN mvn package -Dmaven.test.skip=true -q
 
 # ── STAGE 2: RUNTIME ──────────────────────────────────────────────────────────
 FROM eclipse-temurin:21-jre-alpine AS runtime
 
 # Metadatos de imagen
 LABEL maintainer="SOFIA DevOps Agent — Experis"
-LABEL version="1.9.0"
+LABEL version="1.18.0"
 LABEL project="BankPortal"
-LABEL feature="FEAT-007"
+LABEL feature="FEAT-016"
+LABEL sprint="18"
+LABEL pci_dss="req3-req8-req10"
 
 WORKDIR /app
 
-# Usuario no-root — seguridad OWASP
+# Usuario no-root — seguridad OWASP / PCI-DSS
 RUN addgroup -S meridian && adduser -S meridian -G meridian
 USER meridian
 
@@ -37,6 +39,7 @@ COPY --from=builder --chown=meridian:meridian \
      /build/target/bankportal-backend-2fa-*.jar app.jar
 
 # Variables de entorno (valores por defecto no sensibles)
+# Secrets inyectados en runtime por Kubernetes SecretRef / docker .env
 ENV SERVER_PORT=8080
 ENV SPRING_PROFILES_ACTIVE=production
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75 -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom"
