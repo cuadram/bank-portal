@@ -1,0 +1,101 @@
+{
+  "sofia_core_version": "2.6.10",
+  "extracted_from": "BankPortal / Banco Meridian",
+  "extracted_at": "2026-04-03T00:00:00Z",
+  "last_updated": "2026-04-04T11:26:29.989519Z",
+  "baseline_sprint": 22,
+  "baseline_release": "v1.22.0",
+  "skills_total": 21,
+  "scripts_total": 15,
+  "lessons_learned_total": 54,
+  "guardrails_total": 14,
+  "pipeline_steps": 17,
+  "agents_total": 23,
+  "cmmi_level": 3,
+  "methodology": "Scrumban",
+  "guardrails_core": [
+    "GR-CORE-001: MCP config merge -- nunca sobreescribir claude_desktop_config.json",
+    "GR-CORE-002: realpath en paths MCP -- nunca aliases macOS",
+    "GR-CORE-003: SOFIA_REPO verificado en INIT y antes de cada escritura",
+    "GR-013: Artefactos del step verificados en disco antes de avanzar (LA-CORE-005)"
+  ],
+  "orchestrator_version": "2.6.1",
+  "wizard_version": "2.6.4",
+  "skills": [
+    "orchestrator",
+    "scrum-master",
+    "requirements-analyst",
+    "fa-agent",
+    "ux-ui-designer",
+    "architect",
+    "developer-core",
+    "java-developer",
+    "angular-developer",
+    "nodejs-developer",
+    "react-developer",
+    "dotnet-developer",
+    "code-reviewer",
+    "qa-tester",
+    "security-agent",
+    "performance-agent",
+    "devops",
+    "jenkins-agent",
+    "documentation-agent",
+    "workflow-manager",
+    "atlassian-agent"
+  ],
+  "scripts": [
+    "guardrail-pre-gate.js",
+    "verify-persistence.js",
+    "validate-fa-index.js",
+    "gen-global-dashboard.js",
+    "gen-fa-document.py",
+    "gen-fa-document.js",
+    "stg-pre-check.js",
+    "gate-dashboard-hook.js",
+    "sofia-wizard.py",
+    "sofia-projects.py",
+    "sofia-contribute.py",
+    "gen-lessons-learned.py",
+    "setup-sofia-mac.sh",
+    "install-deps.sh",
+    "audit-persistence.sh"
+  ],
+  "mcp_servers": [
+    "filesystem",
+    "git",
+    "sofia-shell",
+    "atlassian"
+  ],
+  "contributions_pending": 0,
+  "projects_registered": [
+    "bank-portal",
+    "experis-tracker"
+  ],
+  "changelog_v267": [
+    "Generadores y skills genericos: sin hardcoding BankPortal",
+    "gen-fa-document.py v2.6: PROJECT_ROOT dinamico desde __file__",
+    "gen-lessons-learned.py v2.6: proyecto/cliente desde session.json",
+    "gate-dashboard-hook.js v2.6: FA doc name dinamico",
+    "guardrail-pre-gate.js v2.6: stack-aware Java/Spring, .NET, Angular/React",
+    "fa-agent SKILL v2.4: FA-{proyecto}-{cliente}.docx sin hardcoding",
+    "workflow-manager SKILL v1.13: cloudId/project_key desde sofia-config.json",
+    "gen-global-dashboard.js v2.6: 6 secciones identicas BankPortal S22"
+  ],
+  "changelog_v268": [
+    "GR-013: verify-persistence.js BLOQUEANTE en cada step (LA-CORE-005)",
+    "verify-persistence.js: nuevo script standalone, exit 0/1/2",
+    "guardrail-pre-gate.js: GR-013 integrado, llama verify-persistence.js",
+    "Orchestrator SKILL v2.6.1: CHECK 3 reemplazado por GR-013 real en disco",
+    "LA-CORE-005: persistencia verificada en disco antes de avanzar",
+    "MANIFEST.json: guardrails_total=14, scripts_total=15, LAs=52"
+  ],
+  "changelog_v2610": [
+    "LA-FA-INCR: gen-fa-document.py v2.5 generico incremental desde fa-index.json",
+    "Portada + TOC + 8 secciones + versionado automatico (doc_version)",
+    "FA-Agent SKILL v2.5: documento unico incremental por proyecto",
+    "LA-CORE-006 registrada en LESSONS_LEARNED_CORE.md",
+    "FA-experis-tracker-Experis.docx v1.1 generado (46.7KB)",
+    "Consolidacion completa CORE v2.6.10"
+  ]
+}

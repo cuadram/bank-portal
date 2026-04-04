@@ -1,10 +1,14 @@
 ---
 name: fa-agent
 sofia_version: "2.6"
-version: "2.4"
+version: "2.5"
 created: "2026-03-26"
 updated: "2026-04-04"
 changelog: |
+  v2.5 (2026-04-04) — Documento FA unico incremental versionado (LA-FA-INCR).
+    gen-fa-document.py 100% dinamico desde fa-index.json: portada, TOC, 8 secciones,
+    versionado automatico (doc_version en fa-index.json), historial acumulativo.
+    Patron aplicado a todos los proyectos SOFIA. Eliminados drafts por sprint.
   v2.4 (2026-04-04) — Generico: FA-{proyecto}-{cliente}.docx — sin hardcoding.
     gen-fa-document.py lee proyecto/cliente desde sofia-config.json.
   v2.3 (2026-03-31) — LA-021-01: integridad completa de fa-index.json.
@@ -172,7 +176,7 @@ Especialidad en el segmento de **grandes empresas, banca corporativa e instituci
 
 ---
 
-## Generador de documentos (v2.0)
+## Generador de documentos (v2.5) — INCREMENTAL
 
 **Herramienta:** `python-docx` (produce docx 100% compatibles con Microsoft Word)
 
@@ -187,6 +191,39 @@ pip3 install python-docx --break-system-packages
 ```bash
 python3 .sofia/scripts/gen-fa-document.py
 ```
+
+### Arquitectura del documento FA (REGLA LA-FA-INCR — PERMANENTE)
+
+El documento `FA-{proyecto}-{cliente}.docx` es **único, incremental y versionado**:
+
+- **Un solo documento** por proyecto — nunca documentos por sprint o por feature
+- **Versionado automático**: `doc_version` en `fa-index.json` se incrementa en cada ejecución
+  - v1.0 → creación inicial (Gate 8b Sprint 1)
+  - v1.1 → segunda ejecución (Gate 8b Sprint 1, segunda vez)
+  - v2.0 → inicio Sprint 2 (convenio: major = sprint, minor = iteraciones dentro del sprint)
+- **Estructura fija** con 8 secciones más portada e índice:
+  ```
+  PORTADA (proyecto, cliente, versión, fecha, métricas)
+  ÍNDICE (generado automáticamente desde secciones)
+  1. Resumen Ejecutivo     — KPIs, estado por sprint, leyenda evidencias
+  2. Contexto de Negocio   — descripción, actores, stack, regulaciones
+  3. Arquitectura Funcional — módulos, mapa de dependencias
+  4. Catálogo FA           — por sprint, con RNs expandidas (CRECE sprint a sprint)
+  5. Reglas de Negocio     — consolidadas por módulo (CRECE sprint a sprint)
+  6. Glosario              — acumulativo (NUNCA eliminar términos)
+  7. Matriz de Cobertura   — trazabilidad FA→sprint→estado→evidencia
+  8. Historial de Cambios  — changelog versionado del documento
+  ```
+- **Fuente de datos exclusiva**: `fa-index.json` — el script no usa datos hardcodeados
+- **Header/Footer**: `FA-{proyecto}-{cliente} · v{doc_version}` en header, SOFIA/fecha en footer
+- **Historial**: `fa-index.doc_history[]` registra cada versión con sprint, fecha y descripción
+
+### Impacto en el pipeline
+
+- Los drafts markdown `FA-[FEAT]-sprint[N]-draft.md` siguen generándose en Gates 2b/3b
+  como artefactos de trabajo intermedios.
+- El `.docx` se regenera **únicamente en Gate 8b** a partir del `fa-index.json` completo.
+- El `.docx` refleja el estado consolidado de TODOS los sprints hasta el momento.
 
 ---
 
@@ -267,29 +304,41 @@ python3 .sofia/scripts/gen-fa-document.py
 
 ---
 
-## Estructura del documento Word
+## Estructura del documento Word (v2.5)
 
 ```
-ANÁLISIS FUNCIONAL — [PROYECTO]
+FA-{proyecto}-{cliente}.docx  ← DOCUMENTO ÚNICO INCREMENTAL
+│
+├── PORTADA
+│   └── Metadatos: proyecto, cliente, versión, fecha, funcionalidades, RNs
+│
+├── ÍNDICE (automático)
+│   └── Entradas por sección y subsección, incluye sub-entradas por sprint
+│
 ├── 1. Resumen Ejecutivo
-│   ├── 1.1 Propósito del documento
-│   ├── 1.2 Leyenda de evidencias
-│   └── 1.3 Estado consolidado (tabla por sprint)
+│   ├── 1.1 Estado por sprint (tabla acumulativa)
+│   └── 1.2 Leyenda de evidencias
 ├── 2. Contexto de Negocio
-│   ├── 2.1 Descripción del negocio
-│   ├── 2.2 Segmento bancario (Retail / Minorista / Mayorista)
-│   ├── 2.3 Actores del sistema
-│   └── 2.4 Marco regulatorio aplicable
+│   ├── 2.1 Descripción del proyecto
+│   ├── 2.2 Actores del sistema
+│   ├── 2.3 Marco tecnológico (desde sofia-config.json)
+│   └── 2.4 Marco regulatorio (desde fa-index.regulations)
 ├── 3. Arquitectura Funcional
-│   └── 3.1 Módulos del sistema
-├── 4. Catálogo de Funcionalidades
-│   └── 4.N  Sprint N — Feature — Versión — Fecha
-│       ├── FA-XXX-A — Funcionalidad A
-│       └── FA-XXX-B — Funcionalidad B
-├── 5. Reglas de Negocio Consolidadas (por módulo)
-├── 6. Glosario del Dominio Bancario (acumulativo)
-├── 7. Matriz de Cobertura Funcional
-└── 8. Historial de Cambios
+│   ├── 3.1 Módulos del sistema (derivado de fa-index.functionalities[].module)
+│   └── 3.2 Mapa de dependencias
+├── 4. Catálogo de Funcionalidades  ← CRECE SPRINT A SPRINT
+│   ├── 4.1  Sprint 1 — FEAT-001
+│   ├── 4.2  Sprint 2 — FEAT-002
+│   └── 4.N  Sprint N — FEAT-XXX
+│       └── FA-XXX — Nombre · Estado · Reglas de negocio
+├── 5. Reglas de Negocio Consolidadas (por módulo) ← CRECE SPRINT A SPRINT
+├── 6. Glosario del Dominio (acumulativo) ← NUNCA REDUCIR
+├── 7. Matriz de Cobertura Funcional (trazabilidad completa)
+└── 8. Historial de Cambios del Documento ← VERSIONADO
+    └── v1.0 | S1/FEAT-001 | Creación inicial
+        v1.1 | S1/FEAT-001 | Segunda iteración
+        v2.0 | S2/FEAT-002 | Sprint 2 incorporado
+        ...
 ```
 
 ---
@@ -359,43 +408,86 @@ ANÁLISIS FUNCIONAL — [PROYECTO]
 
 ---
 
+
+### REGLA LA-FA-INCR (Lección Aprendida 2026-04-04) ← PERMANENTE
+
+> **El documento FA es ÚNICO e INCREMENTAL** — nunca hay un documento por sprint ni por feature.
+>
+> Reglas concretas:
+> 1. Existe UN SOLO `.docx` por proyecto: `FA-{proyecto}-{cliente}.docx`
+> 2. El script `gen-fa-document.py` genera el documento completo SIEMPRE desde `fa-index.json`
+>    — no desde el documento anterior (regeneración limpia en cada ejecución)
+> 3. El campo `doc_version` en `fa-index.json` se incrementa automáticamente en cada ejecución
+> 4. El campo `doc_history[]` en `fa-index.json` registra cada versión con fecha y descripción
+> 5. La sección 4 (Catálogo) crece automáticamente con cada sprint al añadir funcionalidades
+> 6. La sección 5 (RN) crece automáticamente con cada sprint al añadir business_rules
+> 7. La sección 6 (Glosario) es acumulativa — nunca eliminar términos
+> 8. El glosario, actores y regulaciones del proyecto se enriquecen en `fa-index.json`:
+>    ```json
+>    {
+>      "actors": [{"rol": "...", "desc": "...", "acceso": "..."}],
+>      "regulations": [{"id": "...", "desc": "..."}],
+>      "glossary": [{"term": "...", "def": "..."}],
+>      "description": "Descripción del proyecto en lenguaje de negocio"
+>    }
+>    ```
+> 9. Verificación obligatoria post-ejecución (BLOQUEANTE):
+>    ```bash
+>    python3 -c "
+>    import os, time
+>    p='docs/functional-analysis/FA-{proyecto}-{cliente}.docx'
+>    assert os.path.exists(p), f'ERROR: {p} no existe'
+>    assert os.path.getsize(p) > 10240, f'ERROR: {p} demasiado pequeño'
+>    assert time.time() - os.path.getmtime(p) < 120, f'ERROR: {p} no actualizado'
+>    print(f'OK: {p} | {os.path.getsize(p)/1024:.1f}KB')
+>    "
+>    ```
+
 ## Artefactos que produce
 
-| Artefacto | Ruta | Cuándo |
-|---|---|---|
-| FA borrador | `docs/functional-analysis/FA-[FEAT]-sprint[N]-draft.md` | Gate 2b |
-| FA enriquecido | `docs/functional-analysis/FA-[FEAT]-sprint[N]-draft.md` (update) | Gate 3b |
-| FA consolidado | `docs/functional-analysis/FA-[FEAT]-sprint[N].md` | Gate 8b |
-| **FA Word vivo** | `docs/functional-analysis/FA-[Proyecto]-[Cliente].docx` | Gate 8b |
-| Índice JSON | `docs/functional-analysis/fa-index.json` | Gate 8b |
+| Artefacto | Ruta | Cuándo | Acumulativo |
+|---|---|---|---|
+| FA borrador | `docs/functional-analysis/FA-[FEAT]-sprint[N]-draft.md` | Gate 2b | No (por feature) |
+| FA enriquecido | `docs/functional-analysis/FA-[FEAT]-sprint[N]-draft.md` | Gate 3b | No (actualización) |
+| FA sprint consolidado | `docs/functional-analysis/FA-[FEAT]-sprint[N].md` | Gate 8b | No (por sprint) |
+| **FA Word único** | `docs/functional-analysis/FA-{proyecto}-{cliente}.docx` | Gate 8b | **SÍ — todos los sprints** |
+| Índice JSON | `docs/functional-analysis/fa-index.json` | Gate 8b | **SÍ — acumulativo** |
+
+> **REGLA LA-FA-INCR**: El `.docx` es el único entregable oficial para el cliente.
+> Los markdowns son artefactos de trabajo interno. El documento Word crece sprint a sprint
+> y su versión se incrementa automáticamente en cada ejecución del script.
 
 ---
 
-## Persistence Protocol — SOFIA v2.2
+## Persistence Protocol — SOFIA v2.5
 
 > ⚠️ El bloque ✅ PERSISTENCE CONFIRMED del Gate 8b DEBE incluir el resultado
-> real de la verificación del .docx. Sin `docx_verified: true` y `docx_size_kb > 0`
-> el bloque es INVÁLIDO y el Orchestrator debe rechazarlo.
+> real de la verificación del .docx y la nueva versión del documento.
+> Sin `docx_verified: true`, `docx_size_kb > 0` y `doc_version` el bloque es INVÁLIDO.
 
 ```
 ---
 ✅ PERSISTENCE CONFIRMED — FA_AGENT GATE-[2b|3b|8b]
 - Gate: [2b — Borrador | 3b — Enriquecido | 8b — Consolidado]
-- Dominio bancario: [Retail | Minorista | Mayorista | Mixto]
+- Dominio: [dominio del proyecto]
 - FA Markdown: docs/functional-analysis/FA-[FEAT]-sprint[N][.md|-draft.md]
 - Índice JSON: docs/functional-analysis/fa-index.json
   · total_functionalities: [N] (verificado == len(functionalities)) ✅
   · total_business_rules: [N] (verificado == len(business_rules)) ✅
+  · doc_version: [X.Y] (incrementado automáticamente) ✅
   · validate-fa-index.js: EXIT 0 ✅ (BLOQUEANTE)
 - session.json: fa_agent.last_gate = "[2b|3b|8b]", updated
 - sofia.log: entry written [TIMESTAMP]
 
 [SOLO GATE 8b — campos obligatorios adicionales]
 - Script ejecutado: python3 .sofia/scripts/gen-fa-document.py → EXIT 0 ✅
-- Documento Word: docs/functional-analysis/FA-[Proyecto]-[Cliente].docx
+- Documento Word: docs/functional-analysis/FA-{proyecto}-{cliente}.docx
+  · doc_version: [X.Y]         ← versión del documento (en fa-index.doc_version)
   · docx_verified: true
-  · docx_size_kb: [X.X KB]  ← debe ser > 10 KB
-  · mtime_reciente: true     ← modificado en los últimos 120 segundos
+  · docx_size_kb: [X.X KB]    ← debe ser > 10 KB
+  · mtime_reciente: true       ← modificado en los últimos 120 segundos
+  · historial_actualizado: true ← fa-index.doc_history tiene entrada nueva
 - fa_agent.docx_verified: true (en session.json)
+- fa_agent.doc_version: [X.Y] (en session.json)
 ---
 ```
