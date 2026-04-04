@@ -286,3 +286,23 @@ _Registrado: 2026-04-04T07:24:03.864855Z · Fuente: experis-tracker Sprint 1 pos
 _Registrado: 2026-04-04T11:26:29.989519Z · Fuente: experis-tracker Sprint 1 post-mortem · LA-FA-INCR_
 
 ---
+
+---
+### LA-CORE-007 · ux · (2026-04-04 — FA document TOC clickable)
+**Descripcion:** El indice del documento FA era una lista de parrafos con estilo pero sin hipervinculos internos Word reales. Al hacer click no navegaba a la seccion correspondiente — era puramente decorativo.
+
+**Causa raiz:** `toc_line()` generaba parrafos con formato visual de indice pero sin los elementos XML de Word necesarios para la navegacion interna: `w:hyperlink` con `w:anchor`, ni `w:bookmarkStart`/`w:bookmarkEnd` en los headings de destino.
+
+**Correccion:** REGLA PERMANENTE (LA-TOC-CLICK): el indice de cualquier documento FA generado por SOFIA DEBE usar hipervinculos internos Word nativos:
+- Cada heading de seccion tiene un bookmark (`w:bookmarkStart` + `w:bookmarkEnd`) con `bookmark_id` unico y secuencial (via `_next_bid()`).
+- Cada entrada del indice usa `w:hyperlink` con `w:anchor` que apunta exactamente al `bookmark_id` del heading de destino.
+- El `rStyle=Hyperlink` garantiza compatibilidad con Word y LibreOffice Writer.
+- Uso: `Ctrl+Clic` en modo edicion Word, clic directo en modo lectura y en LibreOffice.
+- Los anchors del TOC DEBEN coincidir exactamente con los `bookmark_id` de los headings:
+  `sec1`, `sec2`, `sec2_1`, `sec2_2`, `sec2_3`, `sec3`, `sec3_1`, `sec3_2`,
+  `sec4`, `sprint_{sprint}` (dinamico por sprint), `sec5`, `sec6`, `sec7`, `sec8`.
+- Implementado en `add_toc_hyperlink()` y `_add_bookmark()` de `gen-fa-document.py`.
+
+_Registrado: 2026-04-04T11:53:48.561186Z · Fuente: experis-tracker FA doc review · LA-TOC-CLICK_
+
+---

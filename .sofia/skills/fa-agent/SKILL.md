@@ -1,10 +1,14 @@
 ---
 name: fa-agent
 sofia_version: "2.6"
-version: "2.5"
+version: "2.6"
 created: "2026-03-26"
 updated: "2026-04-04"
 changelog: |
+  v2.6 (2026-04-04) — Indice clickable TOC con hipervinculos internos Word (LA-TOC-CLICK).
+    add_toc_hyperlink(): w:hyperlink + w:anchor apunta al bookmark del heading.
+    _next_bid(): IDs de bookmark unicos y secuenciales. rStyle=Hyperlink.
+    Ctrl+Clic modo edicion Word / Clic directo modo lectura y LibreOffice.
   v2.5 (2026-04-04) — Documento FA unico incremental versionado (LA-FA-INCR).
     gen-fa-document.py 100% dinamico desde fa-index.json: portada, TOC, 8 secciones,
     versionado automatico (doc_version en fa-index.json), historial acumulativo.
@@ -408,6 +412,32 @@ FA-{proyecto}-{cliente}.docx  ← DOCUMENTO ÚNICO INCREMENTAL
 
 ---
 
+
+
+### REGLA LA-TOC-CLICK (Lección Aprendida 2026-04-04) ← PERMANENTE
+
+> **El índice del documento FA DEBE usar hipervínculos internos Word nativos.**
+> Un índice visual sin navegación no es un índice — es decoración.
+>
+> Implementación obligatoria en `gen-fa-document.py`:
+> 1. `_add_bookmark(paragraph, bookmark_id)` — inserta `w:bookmarkStart`/`w:bookmarkEnd`
+>    en cada heading de sección con un ID único y secuencial (`_next_bid()`)
+> 2. `add_toc_hyperlink(doc, number, title, anchor, level)` — crea cada entrada
+>    del índice como `w:hyperlink` con `w:anchor=bookmark_id`
+> 3. `rStyle=Hyperlink` — aplica el estilo de hipervínculo reconocido por Word y LibreOffice
+> 4. Anchors del TOC deben coincidir EXACTAMENTE con los `bookmark_id` de los headings:
+>    ```
+>    TOC anchor    ←→    heading bookmark_id
+>    'sec1'        ←→    heading1('1. RESUMEN EJECUTIVO', bookmark_id='sec1')
+>    'sprint_1'    ←→    heading2('4.1 Sprint 1 — ...', bookmark_id='sprint_1')
+>    'sec8'        ←→    heading1('8. HISTORIAL...', bookmark_id='sec8')
+>    ```
+> 5. Uso en el documento:
+>    - Microsoft Word: `Ctrl+Clic` en modo edición · Clic directo en modo lectura
+>    - LibreOffice Writer: Clic directo siempre
+>
+> Verificación: abrir el .docx y hacer clic en una entrada del índice.
+> Si no navega → el anchor no coincide con el bookmark_id del heading.
 
 ### REGLA LA-FA-INCR (Lección Aprendida 2026-04-04) ← PERMANENTE
 

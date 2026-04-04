@@ -1,8 +1,8 @@
 {
-  "sofia_core_version": "2.6.10",
+  "sofia_core_version": "2.6.11",
   "extracted_from": "BankPortal / Banco Meridian",
   "extracted_at": "2026-04-03T00:00:00Z",
-  "last_updated": "2026-04-04T11:26:29.989519Z",
+  "last_updated": "2026-04-04T11:53:48.561186Z",
   "baseline_sprint": 22,
   "baseline_release": "v1.22.0",
   "skills_total": 21,
@@ -97,5 +97,15 @@
     "LA-CORE-006 registrada en LESSONS_LEARNED_CORE.md",
     "FA-experis-tracker-Experis.docx v1.1 generado (46.7KB)",
     "Consolidacion completa CORE v2.6.10"
+  ],
+  "changelog_v2611": [
+    "gen-fa-document.py v2.6: indice clickable TOC con w:hyperlink+w:anchor",
+    "add_toc_hyperlink(): hipervinculos internos Word nativos por seccion",
+    "_next_bid(): IDs de bookmark unicos y secuenciales",
+    "rStyle=Hyperlink: compatibilidad Word y LibreOffice",
+    "Nota de uso en documento: Ctrl+Clic / Clic directo",
+    "LA-CORE-007 registrada",
+    "fa-agent SKILL v2.6: TOC clickable documentado",
+    "Distribuido a BP y ET: 37743B cada uno"
   ]
 }
