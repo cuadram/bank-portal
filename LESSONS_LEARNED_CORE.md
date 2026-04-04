@@ -306,3 +306,26 @@ _Registrado: 2026-04-04T11:26:29.989519Z · Fuente: experis-tracker Sprint 1 pos
 _Registrado: 2026-04-04T11:53:48.561186Z · Fuente: experis-tracker FA doc review · LA-TOC-CLICK_
 
 ---
+
+---
+### LA-CORE-008 · onboarding · (2026-04-04 — sofia-wizard.py v2.6.11)
+**Descripcion:** El wizard de SOFIA no garantizaba que el FA-Agent quedase correctamente configurado durante el onboarding de proyectos nuevos. En experis-tracker Sprint 1 el FA-Agent generó markdowns por sprint (FA-FEAT-001-sprint1.md) en lugar del documento único incremental (FA-experis-tracker-Experis.docx). La causa raíz fue que el wizard no inicializaba fa-index.json ni verificaba que gen-fa-document.py tuviese las capacidades correctas (TOC clickable via LA-TOC-CLICK).
+
+**Correccion:** REGLA PERMANENTE en sofia-wizard.py v2.6.11:
+1. Bloque scripts CRITICOS con verificacion explicita de marcadores y tamaño minimo:
+   gen-fa-document.py (must: add_toc_hyperlink, w:anchor, _next_bid, >=30KB),
+   validate-fa-index.js, verify-persistence.js, guardrail-pre-gate.js.
+   Si gen-fa-document.py no existe en SOFIA-CORE/scripts/ → EXIT 1 (BLOQUEANTE).
+   Si existe pero sin marcadores TOC → WARN visible con instruccion de actualizar.
+2. Nuevo bloque FA-Agent init: si fa_agent_enabled, crea fa-index.json inicial
+   con estructura correcta (project, client, doc_version=0.0, toc_clickable=True,
+   functionalities=[], business_rules=[], doc_history=[]). El primer Gate 8b
+   producirá FA-{proyecto}-{cliente}.docx v1.0 sin intervención manual.
+3. CLAUDE.md generado incluye sección 'FA-Agent -- Análisis Funcional' con
+   la regla LA-FA-INCR + LA-TOC-CLICK y la ruta exacta del script.
+4. config.fa_agent.skill_version='2.6', toc_clickable=True, pattern='LA-FA-INCR+LA-TOC-CLICK'.
+5. Verificacion final FA-Agent: script + fa-index.json ambos en disco → print ✓.
+
+_Registrado: 2026-04-04T16:12:59.575769Z · Fuente: experis-tracker Sprint 1 post-mortem · LA-CORE-008_
+
+---

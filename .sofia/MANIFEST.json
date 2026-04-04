@@ -1,13 +1,13 @@
 {
-  "sofia_core_version": "2.6.11",
+  "sofia_core_version": "2.6.12",
   "extracted_from": "BankPortal / Banco Meridian",
   "extracted_at": "2026-04-03T00:00:00Z",
-  "last_updated": "2026-04-04T11:53:48.561186Z",
+  "last_updated": "2026-04-04T16:12:59.575769Z",
   "baseline_sprint": 22,
   "baseline_release": "v1.22.0",
   "skills_total": 21,
   "scripts_total": 15,
-  "lessons_learned_total": 54,
+  "lessons_learned_total": 56,
   "guardrails_total": 14,
   "pipeline_steps": 17,
   "agents_total": 23,
@@ -107,5 +107,14 @@
     "LA-CORE-007 registrada",
     "fa-agent SKILL v2.6: TOC clickable documentado",
     "Distribuido a BP y ET: 37743B cada uno"
+  ],
+  "changelog_v2612": [
+    "sofia-wizard.py v2.6.11: LA-CORE-008 -- FA-Agent setup completo en onboarding",
+    "Verificacion critica de scripts: gen-fa-document.py markers + min_size",
+    "Bloque FA-Agent init: fa-index.json vacio inicializado si fa_agent_enabled",
+    "CLAUDE.md generado incluye seccion FA-Agent con LA-FA-INCR+LA-TOC-CLICK",
+    "config.fa_agent.skill_version=2.6, toc_clickable=True",
+    "sofia.log registra LA-CORE-003+004+008 y FA-Agent=ready",
+    "La combinacion LA-FA-INCR+LA-TOC-CLICK+LA-CORE-008 cierra el ciclo completo FA"
   ]
 }
