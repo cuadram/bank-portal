@@ -1,6 +1,6 @@
 # LESSONS LEARNED CORE — SOFIA Framework
 # Conocimiento acumulado de todos los proyectos. Fuente canonica del framework.
-# Generado: 2026-04-04 | SOFIA v2.6 | 52 LAs
+# Generado: 2026-04-05 | SOFIA v2.6 | 55 LAs
 
 > SOFIA v2.6 · Sprint 22 · 47 lecciones BankPortal + 5 LAs CORE
 > Última actualización: 2026-04-04
@@ -16,7 +16,7 @@
 
 ## Índice SOFIA-CORE
 
-- **CORE** (3): LA-CORE-001, LA-CORE-002, LA-CORE-003
+- **CORE** (11): LA-CORE-001, LA-CORE-002, LA-CORE-003, LA-CORE-004, LA-CORE-005, LA-CORE-006, LA-CORE-007, LA-CORE-008, LA-CORE-009, LA-CORE-010, LA-CORE-011
 
 ---
 
@@ -327,5 +327,85 @@ _Registrado: 2026-04-04T11:53:48.561186Z · Fuente: experis-tracker FA doc revie
 5. Verificacion final FA-Agent: script + fa-index.json ambos en disco → print ✓.
 
 _Registrado: 2026-04-04T16:12:59.575769Z · Fuente: experis-tracker Sprint 1 post-mortem · LA-CORE-008_
+
+---
+
+### LA-CORE-009 · ux · (2026-04-05 — Prototipo incremental)
+**Descripcion:** En experis-tracker Sprint 3 Step 2c, el UX/UI Agent generó el prototipo del sprint nuevo (PROTO-FEAT-003-sprint3.html) **desde cero** en lugar de extender el prototipo aprobado del sprint anterior. El fichero nuevo perdió completamente el menú de navegación (Dashboard, Mis Imputaciones, Bandeja Manager, Notificaciones, Catálogo Proyectos), el login funcional, la lógica de roles, las funcionalidades de Sprint 1 y 2 ya verificadas y aprobadas, el design system consolidado y los datos demo.
+
+**Causa raíz:** El UX/UI Agent SKILL no especificaba explícitamente que el prototipo es un documento VIVO acumulativo. El agente interpretó "genera el prototipo de Sprint 3" como "crea un fichero nuevo", análogo al anti-patrón del FA por sprints (LA-CORE-006) pero aplicado al prototipo HTML.
+
+**Correccion:** REGLA PERMANENTE — PROTOTIPO INCREMENTAL:
+1. El prototipo HTML es un documento VIVO acumulativo, exactamente igual que `FA-{proyecto}-{cliente}.docx`.
+2. Step 2c SIEMPRE lee el prototipo del sprint anterior (`PROTO-FEAT-XXX-sprintNN-1.html`) completo antes de hacer cualquier cambio.
+3. Solo añade o modifica mediante patches quirúrgicos (`edit_file`) los elementos del sprint actual (nuevas pantallas, extensiones, correcciones de rol).
+4. El fichero resultante es `PROTO-FEAT-XXX-sprintNN.html` con el baseline completo + cambios del sprint.
+5. NUNCA reescribir el fichero completo sin confirmación explícita del usuario ("reescribe desde cero" o "descarta el prototipo anterior").
+6. El UX/UI Agent SKILL.md debe incluir este patrón como primer punto de la sección "Artefactos".
+
+**Aplicación en UX/UI Agent SKILL:** Añadir sección `## Patrón incremental` con checklist de 5 pasos: leer baseline, identificar cambios del sprint, aplicar patches, verificar que el baseline previo sigue funcionando, presentar el diff al usuario.
+
+_Registrado: 2026-04-05T00:00:00.000Z · Fuente: experis-tracker Sprint 3 Step 2c · LA-ET-001-08_
+
+---
+
+### LA-CORE-010 · process · (2026-04-05 — Patch First ante correcciones)
+**Descripcion:** En experis-tracker Sprint 3, cuando el usuario señaló errores en el prototipo (funcionalidades faltantes, botones ausentes, roles incorrectos), el UX/UI Agent respondió reescribiendo el fichero HTML completo varias veces. Cada reescritura introducía nuevos errores y/o eliminaba funcionalidades que habían sido añadidas en rondas anteriores de la misma sesión, generando un bucle de correcciones que degradaba la calidad en lugar de mejorarla. El mismo patrón es aplicable a cualquier artefacto de texto del pipeline: DOCX, HTML, JSON, markdown, scripts.
+
+**Causa raíz:** El Orchestrator y los agents-skills no establecían una jerarquía de intervención ante correcciones. El camino de menor resistencia (reescribir) era igual de accesible que el correcto (patch).
+
+**Correccion:** REGLA PERMANENTE — PATCH FIRST (aplica a todos los agentes SOFIA):
+1. **Ante cualquier corrección sobre un artefacto existente**: leer el fichero actual → identificar el bloque exacto que debe cambiar → aplicar `edit_file` con el mínimo cambio necesario.
+2. **El test de decisión** antes de tocar un fichero: ¿puedo resolver esto cambiando menos de 20 líneas? Si sí → `edit_file`. Si no → preguntar al usuario antes de reescribir.
+3. **Reescritura total** solo si: (a) el usuario lo solicita explícitamente, (b) el fichero está estructuralmente corrupto e irreparable con patches, o (c) el cambio afecta > 60% del contenido.
+4. **Si se va a reescribir**: anunciar al usuario qué se va a hacer y por qué antes de ejecutar.
+5. Esta regla se añade al Orchestrator SKILL.md como "Regla de oro 12: Patch First" y a cada agent-skill con capacidad de escritura en disco.
+
+_Registrado: 2026-04-05T00:00:00.000Z · Fuente: experis-tracker Sprint 3 Step 2c · LA-ET-001-09_
+
+---
+
+### LA-CORE-011 · ux · (2026-04-05 — Verificar matriz de roles antes de construir navegación)
+**Descripcion:** En experis-tracker Sprint 3, el prototipo mostraba el enlace "Proyectos" en el menú principal visible para todos los roles (Consultor, Manager, Admin), cuando según el SRS solo el Admin puede gestionar proyectos. La pantalla de aterrizaje del Admin también era incorrecta (Centros de trabajo en lugar de Empleados). Los errores no se detectaron hasta que el usuario los señaló manualmente, obligando a correcciones post-generación.
+
+**Causa raíz:** Step 2c construyó la navegación copiando el patrón del sprint anterior sin extraer la matriz de permisos del SRS del sprint actual. El SRS contenía explícitamente la tabla de roles/funcionalidades (Admin, Manager, Consultor) pero el agente no la consultó antes de definir el menú.
+
+**Correccion:** REGLA PERMANENTE — VERIFICAR MATRIZ DE ROLES:
+1. Step 2c, **antes de escribir cualquier línea de navegación o HTML**, extrae del SRS del sprint la tabla de roles/permisos por funcionalidad.
+2. Construye una matriz explícita `{ rol: [pantallas_visibles] }` y la documenta en el `UX-FEAT-XXX-sprintNN.md` antes de implementarla en el HTML.
+3. Cada ítem del menú tiene un atributo de rol documentado. Items ocultos por rol se validan uno a uno:
+   - **Consultor**: Dashboard, Mis Imputaciones, Nueva Imputación, Notificaciones.
+   - **Manager**: Bandeja de Validación, Dashboard (lectura equipo), Notificaciones.
+   - **Admin**: solo pantallas de gestión vía dropdown (sin acceso a imputaciones propias).
+4. La pantalla de aterrizaje por rol se especifica en el UX markdown antes de codificarla.
+5. Esta verificación se añade al UX/UI Agent SKILL.md como paso obligatorio previo al diseño de navegación.
+
+_Registrado: 2026-04-05T00:00:00.000Z · Fuente: experis-tracker Sprint 3 Step 2c · LA-ET-001-10_
+
+---
+
+---
+### LA-CORE-009 · infrastructure · (2026-04-05 — sofia-shell MCP v2.0)
+**Descripcion:** `mcp-shell-server.js` tenia `PROJECT_ROOT` hardcodeado a `/Users/cuadram/proyectos/bank-portal`. Al trabajar en experis-tracker u otro proyecto registrado, todos los comandos se ejecutaban en bank-portal. El error era silencioso: el servidor aceptaba el comando, lo ejecutaba en el lugar incorrecto y devolvía resultados del proyecto equivocado.
+
+**Causa raiz:** El servidor MCP se arranca UNA sola vez en Claude Desktop para toda la sesion. No puede saber que proyecto esta activo a nivel de configuracion estatica. El `PROJECT_ROOT` era una constante fija, no un valor dinamico por llamada.
+
+**Correccion:** REGLA PERMANENTE en `mcp-shell-server.js` v2.0 (LA-CORE-009):
+- `resolveDefaultRoot()`: resuelve en runtime (por llamada) el proyecto activo.
+  Prioridad: (1) env `SOFIA_REPO` del proceso → (2) proyecto `active` en `~/.sofia/projects.json` → (3) home dir.
+- `resolveAndValidateCwd(cwdArg, defaultRoot)`: acepta rutas absolutas o relativas.
+  Rutas absolutas validadas contra TODOS los proyectos registrados en el registro.
+  Rutas relativas resueltas contra `defaultRoot`. Aislamiento garantizado por `ownerRoot`.
+- `readRegistry()`: lee `~/.sofia/projects.json` en CADA llamada (no en startup).
+  Esto permite que el registro cambie sin reiniciar Claude Desktop.
+- Claude debe pasar el SOFIA_REPO del proyecto como `cwd` absoluto:
+  `cwd: "/Users/cuadram/.../experis-tracker"` en lugar de rutas relativas.
+- El `CLAUDE.md` de cada proyecto contiene `SOFIA_REPO=<ruta>`. Claude lo lee en INIT
+  y lo usa como `cwd` en todas las llamadas a `sofia-shell:run_command`.
+- El wizard genera `~/.sofia/projects.json` automaticamente en cada onboarding.
+- Configuracion en `claude_desktop_config.json`: una sola entrada `sofia-shell`,
+  opcional `env.SOFIA_REPO` para forzar un proyecto por defecto.
+
+_Registrado: 2026-04-05T08:25:57.793797Z · Fuente: session multi-proyecto BankPortal+ExperisTracker · LA-CORE-009_
 
 ---
