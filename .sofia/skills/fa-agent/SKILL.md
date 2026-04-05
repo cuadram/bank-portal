@@ -1,10 +1,14 @@
 ---
 name: fa-agent
 sofia_version: "2.6"
-version: "2.6"
+version: "2.7"
 created: "2026-03-26"
-updated: "2026-04-04"
+updated: "2026-04-05"
 changelog: |
+  v2.7 (2026-04-05) — Gate 8b: validate-fa-completeness.py obligatorio post-docx.
+    Informe NC generado en docs/quality/NC-FA-Sprint{N}-{fecha}.md.
+    EXIT 1 si hay NCs bloqueantes — PO debe decidir antes de aprobar Gate 8b.
+    15 checks contra historia del proyecto: actores, sprints, RN, totales, etc.
   v2.6 (2026-04-04) — Indice clickable TOC con hipervinculos internos Word (LA-TOC-CLICK).
     add_toc_hyperlink(): w:hyperlink + w:anchor apunta al bookmark del heading.
     _next_bid(): IDs de bookmark unicos y secuenciales. rStyle=Hyperlink.
@@ -473,6 +477,89 @@ FA-{proyecto}-{cliente}.docx  ← DOCUMENTO ÚNICO INCREMENTAL
 >    "
 >    ```
 
+
+## Gate 8b — Validación de Completitud FA (OBLIGATORIA)
+
+Inmediatamente después de generar el `.docx`, el FA-Agent ejecuta `validate-fa-completeness.py`.
+Esta validación es **SIEMPRE obligatoria** — nunca omitir aunque el documento se haya generado correctamente.
+
+### Protocolo Gate 8b completo
+
+```
+PASO 1 — validate-fa-index.js (checks de integridad del índice)
+  node .sofia/scripts/validate-fa-index.js
+  EXIT != 0 → PIPELINE BLOQUEADO (corregir antes de continuar)
+
+PASO 2 — Marcar FA del sprint como DELIVERED
+  FA-013..016 status: PLANNED → DELIVERED (en fa-index.json)
+
+PASO 3 — Generar documento Word
+  python3 .sofia/scripts/gen-fa-document.py
+  Verificar: exists + size > 10KB + mtime < 120s
+
+PASO 4 — validate-fa-completeness.py (validación contra historia)
+  python3 .sofia/scripts/validate-fa-completeness.py
+  Genera: docs/quality/NC-FA-Sprint{N}-{fecha}.md
+  EXIT 0 → sin NCs bloqueantes → Gate 8b puede aprobarse
+  EXIT 1 → hay NCs bloqueantes → PRESENTAR INFORME AL PO y esperar decisión
+```
+
+### Checks del informe NC (15 en total)
+
+| Check | Severidad | Descripción |
+|---|---|---|
+| NC-FA-01 | 🔴 Bloqueante | Sprints cerrados sin funcionalidades en FA |
+| NC-FA-02 | 🔴 Bloqueante | Funcionalidades PLANNED en sprints ya cerrados |
+| NC-FA-03 | 🔴/🟡 | Actores del sistema ausentes o incompletos |
+| NC-FA-04 | 🟡 Mayor | Funcionalidades sin reglas de negocio |
+| NC-FA-05 | 🔴 Bloqueante | Totales desincronizados (total != len) |
+| NC-FA-06 | 🟡 Mayor | Sprint en sprint_history sin feature en FA |
+| NC-FA-07 | 🔵 Menor | Descripción del proyecto genérica |
+| NC-FA-08 | 🔵 Menor | Glosario vacío o < 5 términos |
+| NC-FA-09 | 🟡 Mayor | Regulaciones referenciadas en RN pero no declaradas |
+| NC-FA-10 | 🟡 Mayor | User Stories del sprint sin FA asociada |
+| NC-FA-11 | 🔵 Menor | FA sin campo source (trazabilidad) |
+| NC-FA-12 | 🔵 Menor | doc_history vacío con sprints cerrados |
+| NC-FA-13 | 🔴 Bloqueante | Business rules con IDs duplicados |
+| NC-FA-14 | 🔴 Bloqueante | FA del sprint actual no marcadas DELIVERED |
+| NC-FA-15 | 🟡 Mayor | Sprint 2+ sin funcionalidades propias |
+
+### Flujo de decisión PO
+
+```
+validate-fa-completeness.py
+        │
+        ├─ EXIT 0 (sin bloqueantes)
+        │         └─ Gate 8b aprobado → continuar a Step 9
+        │
+        └─ EXIT 1 (hay bloqueantes)
+                  └─ Presentar informe NC-FA-SprintN-fecha.md al PO
+                            │
+                            ├─ PO: "Corregir ahora"
+                            │         └─ FA-Agent corrige → re-ejecutar paso 3+4
+                            │
+                            ├─ PO: "Registrar como deuda FA-{N+1}"
+                            │         └─ Registrar en session.open_debts → Gate 8b OK
+                            │
+                            └─ PO: "Aceptar riesgo"
+                                      └─ Documentar decisión → Gate 8b OK
+```
+
+### Persistence Protocol adicional (Gate 8b)
+
+El bloque ✅ DEBE incluir los resultados de la validación NC:
+
+```
+- validate-fa-completeness.py: EXIT [0|1]
+  · NCs bloqueantes: [N]
+  · NCs mayores:     [N]
+  · NCs menores:     [N]
+  · Informe:         docs/quality/NC-FA-Sprint{N}-{fecha}.md
+  · Decisión PO:     [CONFORME | DEUDA-FA-{N+1} | ACEPTADO]
+- fa_agent.nc_verdict: [CONFORME | NO_CONFORME]
+- fa_agent.nc_report: docs/quality/NC-FA-Sprint{N}-{fecha}.md
+```
+
 ## Artefactos que produce
 
 | Artefacto | Ruta | Cuándo | Acumulativo |
@@ -482,6 +569,7 @@ FA-{proyecto}-{cliente}.docx  ← DOCUMENTO ÚNICO INCREMENTAL
 | FA sprint consolidado | `docs/functional-analysis/FA-[FEAT]-sprint[N].md` | Gate 8b | No (por sprint) |
 | **FA Word único** | `docs/functional-analysis/FA-{proyecto}-{cliente}.docx` | Gate 8b | **SÍ — todos los sprints** |
 | Índice JSON | `docs/functional-analysis/fa-index.json` | Gate 8b | **SÍ — acumulativo** |
+| **Informe NC** | `docs/quality/NC-FA-Sprint{N}-{fecha}.md` | Gate 8b | No (por sprint) |
 
 > **REGLA LA-FA-INCR**: El `.docx` es el único entregable oficial para el cliente.
 > Los markdowns son artefactos de trabajo interno. El documento Word crece sprint a sprint
@@ -519,5 +607,9 @@ FA-{proyecto}-{cliente}.docx  ← DOCUMENTO ÚNICO INCREMENTAL
   · historial_actualizado: true ← fa-index.doc_history tiene entrada nueva
 - fa_agent.docx_verified: true (en session.json)
 - fa_agent.doc_version: [X.Y] (en session.json)
+- validate-fa-completeness.py: EXIT [0|1]
+  · nc_verdict: [CONFORME|NO_CONFORME] (en session.json)
+  · nc_report: docs/quality/NC-FA-Sprint{N}-{fecha}.md
+  · Decisión PO registrada si EXIT 1
 ---
 ```

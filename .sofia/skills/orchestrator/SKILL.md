@@ -313,17 +313,35 @@ fa_agent.last_gate = "3b"
 ```
 Actua como FA-Agent — Gate 8b.
 Lee: .sofia/skills/fa-agent/SKILL.md
-Pasos OBLIGATORIOS:
-  1. FA-[FEAT-XXX]-sprint[N].md (DELIVERED)
-  2. Actualiza fa-index.json → total_functionalities == len(functionalities)
-  3. Verifica gen-fa-document.py cubre la feature
-  4. sofia-shell: python3 .sofia/scripts/gen-fa-document.py
-  5. CHECK 3b — verifica .docx
-  6. Elimina FA-draft
-  7. session.json: docx_verified=true, docx_size_kb=[X]
+Pasos OBLIGATORIOS (en orden estricto):
 
-Bloque ✅ DEBE incluir: docx_verified: true + docx_size_kb > 0
+  1. validate-fa-index.js — BLOQUEANTE
+     node .sofia/scripts/validate-fa-index.js
+     EXIT != 0 → corregir antes de continuar
+
+  2. Marcar FA del sprint como DELIVERED en fa-index.json
+
+  3. gen-fa-document.py — genera .docx
+     python3 .sofia/scripts/gen-fa-document.py
+     Verificar: exists + size > 10KB + mtime < 120s
+
+  4. validate-fa-completeness.py — SIEMPRE OBLIGATORIO
+     python3 .sofia/scripts/validate-fa-completeness.py
+     Genera: docs/quality/NC-FA-Sprint{N}-{fecha}.md
+     EXIT 0 → sin bloqueantes → Gate 8b puede aprobarse
+     EXIT 1 → PRESENTAR INFORME NC AL PO y esperar decision
+
+  5. session.json: docx_verified=true, docx_size_kb=[X],
+     nc_verdict=[CONFORME|NO_CONFORME], nc_report=path
+
+Bloque ✅ DEBE incluir:
+  docx_verified: true + docx_size_kb > 0
+  nc_verdict: CONFORME|NO_CONFORME
+  Informe NC: docs/quality/NC-FA-Sprint{N}-{fecha}.md
+  Decision PO (si EXIT 1)
+
 Gate AUTO — ejecutar tras aprobacion Gate 8.
+NUNCA omitir validate-fa-completeness.py aunque el .docx sea correcto.
 ```
 
 ---
@@ -347,7 +365,7 @@ node .sofia/scripts/gen-global-dashboard.js --gate G-[N] --step [N]
 5. Nunca aprobar gates por cuenta propia
 6. Siempre actualizar session.json antes y despues de cada delegacion
 7. Si cve_critical > 0 en Step 5b → pipeline BLOQUEADO
-8. **FA-Agent SIEMPRE en gates 2b, 3b, 8b. Gate 8b: docx_verified: true obligatorio.**
+8. **FA-Agent SIEMPRE en gates 2b, 3b, 8b. Gate 8b: docx_verified + validate-fa-completeness.py OBLIGATORIO.**
 9. El documento FA Word es acumulativo — nunca regenerar desde cero
 10. Cada aprobacion de Gate → verificar sync Jira + Confluence
 11. **Cada aprobacion de Gate → regenerar Dashboard Global (GR-011)**

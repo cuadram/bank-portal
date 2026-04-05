@@ -1,15 +1,15 @@
 {
-  "sofia_core_version": "2.6.14",
+  "sofia_core_version": "2.6.17",
   "extracted_from": "BankPortal / Banco Meridian",
   "extracted_at": "2026-04-03T00:00:00Z",
-  "last_updated": "2026-04-05T08:31:27.565899Z",
+  "last_updated": "2026-04-05T15:47:51.946234Z",
   "baseline_sprint": 22,
   "baseline_release": "v1.22.0",
   "skills_total": 21,
-  "scripts_total": 15,
-  "lessons_learned_total": 60,
-  "lessons_learned_core": 11,
-  "guardrails_total": 15,
+  "scripts_total": 18,
+  "lessons_learned_total": 62,
+  "lessons_learned_core": 14,
+  "guardrails_total": 16,
   "pipeline_steps": 17,
   "agents_total": 23,
   "cmmi_level": 3,
@@ -18,12 +18,18 @@
     "GR-CORE-001: MCP config merge -- nunca sobreescribir claude_desktop_config.json",
     "GR-CORE-002: realpath en paths MCP -- nunca aliases macOS",
     "GR-CORE-003: SOFIA_REPO verificado en INIT y antes de cada escritura",
-    "GR-013: Artefactos del step verificados en disco antes de avanzar (LA-CORE-005)",
+    "GR-010: CVSS>=4.0 vencido bloquea G-9",
+    "GR-011: dashboard_global regenerado en cada gate (LA-022-05)",
+    "GR-012: step 3b OBLIGATORIO post G-3 -- bloqueante para G-4",
+    "GR-013: verify-persistence.js BLOQUEANTE en cada step (LA-CORE-005)",
     "GR-014: Prototipo incremental -- nunca reescribir sin confirmacion (LA-CORE-009)",
-    "GR-015: Patch First -- edit_file ante correcciones, reescritura total solo si usuario lo pide (LA-CORE-010)"
+    "GR-015: Patch First -- edit_file ante correcciones, reescritura total solo si usuario lo pide (LA-CORE-010)",
+    "GR-016: Application handlers NO importan Infrastructure -- Clean Architecture obligatoria (LA-CORE-013)"
   ],
   "orchestrator_version": "2.6.1",
-  "wizard_version": "2.6.4",
+  "wizard_version": "2.6.11",
+  "mcp_shell_version": "2.0",
+  "mcp_shell_sdk_location": "SOFIA-CORE/node_modules",
   "skills": [
     "orchestrator",
     "scrum-master",
@@ -62,7 +68,11 @@
     "gen-lessons-learned.py",
     "setup-sofia-mac.sh",
     "install-deps.sh",
-    "audit-persistence.sh"
+    "audit-persistence.sh",
+    "mcp-shell-server.js",
+    "setup-shell-mcp.js",
+    "install-mcp-sdk.js",
+    "validate-fa-completeness.py"
   ],
   "mcp_servers": [
     "filesystem",
@@ -70,61 +80,46 @@
     "sofia-shell",
     "atlassian"
   ],
-  "contributions_pending": 0,
+  "la_core_index": {
+    "LA-CORE-001": "process — MCP config merge sin sobreescribir claude_desktop_config.json",
+    "LA-CORE-002": "devops — realpath() en paths MCP, nunca aliases macOS",
+    "LA-CORE-003": "process — SOFIA_REPO en CLAUDE.md + GR-CORE-003",
+    "LA-CORE-004": "process — repo-template estructura canónica docs/ en onboarding",
+    "LA-CORE-005": "process — verify-persistence.js BLOQUEANTE, GR-013",
+    "LA-CORE-006": "process — FA documento único incremental, LA-FA-INCR",
+    "LA-CORE-007": "ux — TOC clickable con w:hyperlink+w:anchor, LA-TOC-CLICK",
+    "LA-CORE-008": "onboarding — wizard v2.6.11 verifica scripts críticos + inicializa FA-Agent",
+    "LA-CORE-009": "ux — Prototipo incremental, GR-014",
+    "LA-CORE-010": "process — Patch First ante correcciones, GR-015",
+    "LA-CORE-011": "ux — Verificar matriz de roles antes de construir navegación",
+    "LA-CORE-012": "infrastructure — sofia-shell PROJECT_ROOT dinámico por llamada (v2.0)",
+    "LA-CORE-013": "architecture — Application handlers NO importan Infrastructure, GR-016",
+    "LA-CORE-014": "infrastructure — MCP SDK en SOFIA-CORE, no en proyectos cliente (setup-shell-mcp.js)"
+  },
+  "changelog_v2616": [
+    "LA-CORE-014: MCP SDK en SOFIA-CORE/node_modules — proyectos cliente independientes",
+    "package.json creado en SOFIA-CORE con @modelcontextprotocol/sdk ^1.27.1",
+    "setup-shell-mcp.js reescrito: instala SDK en SOFIA-CORE, actualiza config.json",
+    "install-mcp-sdk.js: helper para instalación inicial",
+    "scripts_total: 17 (añadidos mcp-shell-server.js, setup-shell-mcp.js, install-mcp-sdk.js)",
+    "lessons_learned_core: 14 | lessons_learned_total: 62"
+  ],
+  "changelog_v2615": [
+    "LA-CORE-013: Application handlers sin dependencias de Infrastructure (GR-016)",
+    "LA-CORE-012: renumeracion de LA-CORE-009-duplicado (sofia-shell v2.0)",
+    "GR-016: nuevo guardrail Clean Architecture en handlers de Application"
+  ],
   "projects_registered": [
     "bank-portal",
     "experis-tracker"
   ],
-  "changelog_v267": [
-    "Generadores y skills genericos: sin hardcoding BankPortal",
-    "gen-fa-document.py v2.6: PROJECT_ROOT dinamico desde __file__",
-    "gen-lessons-learned.py v2.6: proyecto/cliente desde session.json",
-    "gate-dashboard-hook.js v2.6: FA doc name dinamico",
-    "guardrail-pre-gate.js v2.6: stack-aware Java/Spring, .NET, Angular/React",
-    "fa-agent SKILL v2.4: FA-{proyecto}-{cliente}.docx sin hardcoding",
-    "workflow-manager SKILL v1.13: cloudId/project_key desde sofia-config.json",
-    "gen-global-dashboard.js v2.6: 6 secciones identicas BankPortal S22"
-  ],
-  "changelog_v268": [
-    "GR-013: verify-persistence.js BLOQUEANTE en cada step (LA-CORE-005)",
-    "verify-persistence.js: nuevo script standalone, exit 0/1/2",
-    "guardrail-pre-gate.js: GR-013 integrado, llama verify-persistence.js",
-    "Orchestrator SKILL v2.6.1: CHECK 3 reemplazado por GR-013 real en disco",
-    "LA-CORE-005: persistencia verificada en disco antes de avanzar",
-    "MANIFEST.json: guardrails_total=14, scripts_total=15, LAs=52"
-  ],
-  "changelog_v2610": [
-    "LA-FA-INCR: gen-fa-document.py v2.5 generico incremental desde fa-index.json",
-    "Portada + TOC + 8 secciones + versionado automatico (doc_version)",
-    "FA-Agent SKILL v2.5: documento unico incremental por proyecto",
-    "LA-CORE-006 registrada en LESSONS_LEARNED_CORE.md",
-    "FA-experis-tracker-Experis.docx v1.1 generado (46.7KB)",
-    "Consolidacion completa CORE v2.6.10"
-  ],
-  "changelog_v2611": [
-    "gen-fa-document.py v2.6: indice clickable TOC con w:hyperlink+w:anchor",
-    "add_toc_hyperlink(): hipervinculos internos Word nativos por seccion",
-    "_next_bid(): IDs de bookmark unicos y secuenciales",
-    "rStyle=Hyperlink: compatibilidad Word y LibreOffice",
-    "Nota de uso en documento: Ctrl+Clic / Clic directo",
-    "LA-CORE-007 registrada",
-    "fa-agent SKILL v2.6: TOC clickable documentado",
-    "Distribuido a BP y ET: 37743B cada uno"
-  ],
-  "changelog_v2613": [
-    "mcp-shell-server.js v2.0: PROJECT_ROOT dinamico por llamada",
-    "resolveDefaultRoot(): SOFIA_REPO env → active en registry → home",
-    "resolveAndValidateCwd(): rutas absolutas multi-proyecto + aislamiento",
-    "readRegistry(): lee ~/.sofia/projects.json en cada llamada",
-    "CLAUDE.md debe pasar SOFIA_REPO como cwd absoluto en run_command",
-    "LA-CORE-009 registrada"
-  ],
-  "changelog_v2614": [
-    "GR-014: sofia-shell verify-before-use — regla permanente LA-CORE-009/010",
-    "orchestrator SKILL v2.7: Regla 23 + PROTOCOLO sofia-shell completo",
-    "workflow-manager SKILL: check GR-014 en INIT",
-    "sofia-wizard.py: GR-014 en CLAUDE.md generado para proyectos nuevos",
-    "guardrail-pre-gate.js: GR-014 referenciado en CORE y ET",
-    "Comando de verificacion canonico documentado en todos los artefactos"
+  "contributions_pending": 0,
+  "changelog_v2617": [
+    "validate-fa-completeness.py: 15 checks contra historia del proyecto",
+    "fa-agent SKILL v2.7: Gate 8b paso 4 OBLIGATORIO post-docx",
+    "orchestrator SKILL: Step 8b actualizado con 5 pasos + NC report",
+    "Informe NC: docs/quality/NC-FA-Sprint{N}-{fecha}.md con decision PO",
+    "EXIT 0: sin bloqueantes / EXIT 1: bloqueantes → esperar decision PO",
+    "Flujo: corregir ahora | deuda FA-{N+1} | aceptar riesgo"
   ]
 }
