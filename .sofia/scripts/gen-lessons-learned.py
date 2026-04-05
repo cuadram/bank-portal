@@ -2,10 +2,17 @@
 """
 gen-lessons-learned.py — SOFIA v2.6 (GENERICO)
 Regenera LESSONS_LEARNED.md desde session.json (LA-022-02).
-Lee proyecto y cliente desde session.json -- sin datos hardcodeados.
-Ejecutar en Step 9 (Workflow Manager) obligatoriamente.
+
+REGLA DE PERSISTENCIA DE LAs (LA-LL-RULE):
+  - session.json.lessons_learned[]  → fuente viva durante el pipeline
+  - LESSONS_LEARNED.md              → generado SIEMPRE desde session.json (este script)
+  - LESSONS_LEARNED_CORE.md         → copia READ-ONLY de SOFIA-CORE (nunca editar en proyecto)
+
+Verificaciones incluidas:
+  1. LESSONS_LEARNED_CORE.md == SOFIA-CORE version (warn si desincronizado)
+  2. LESSONS_LEARNED.md nunca tiene LAs que no estén en session.json (detecta edición manual)
 """
-import json, os, sys
+import json, os, sys, re
 from datetime import datetime
 from collections import defaultdict
 from pathlib import Path
@@ -17,23 +24,31 @@ SESSION = ROOT / '.sofia' / 'session.json'
 OUTPUT  = ROOT / 'LESSONS_LEARNED.md'
 LOG     = ROOT / '.sofia' / 'sofia.log'
 
-# Leer proyecto desde session.json o sofia-config.json
+# Ruta a SOFIA-CORE (para verificar sincronía de LESSONS_LEARNED_CORE.md)
+CORE_CANDIDATES = [
+    _SCRIPT_DIR.parent.parent.parent / 'SOFIA-CORE',                     # OneDrive/WIP/SOFIA-CORE
+    Path.home() / 'Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE',
+    Path.home() / 'OneDrive/WIP/SOFIA-CORE',
+]
+
+def _find_core():
+    for p in CORE_CANDIDATES:
+        if p.exists():
+            return p
+    return None
+
 def _read_project():
     cfg_path = ROOT / '.sofia' / 'sofia-config.json'
     ses_path = ROOT / '.sofia' / 'session.json'
     project, client = 'Proyecto', 'Cliente'
-    if cfg_path.exists():
-        try:
-            cfg = json.loads(cfg_path.read_text())
-            project = cfg.get('project', project)
-            client  = cfg.get('client',  client)
-        except Exception: pass
-    elif ses_path.exists():
-        try:
-            ses = json.loads(ses_path.read_text())
-            project = ses.get('project', project)
-            client  = ses.get('client',  client)
-        except Exception: pass
+    for fpath in [cfg_path, ses_path]:
+        if fpath.exists():
+            try:
+                d = json.loads(fpath.read_text())
+                project = d.get('project', project)
+                client  = d.get('client',  client)
+                break
+            except Exception: pass
     return project, client
 
 PROJECT_NAME, CLIENT_NAME = _read_project()
@@ -42,10 +57,10 @@ TYPE_EMOJI = {
     'process': '🔄', 'testing': '🧪', 'backend': '☕', 'frontend': '🅰️',
     'architecture': '🏗️', 'security': '🔒', 'dashboard': '📊', 'devops': '🚀',
     'database': '🗄️', 'config': '⚙️', 'data': '📦', 'code-review': '👁️',
-    'documentation': '📄',
+    'documentation': '📄', 'technical': '⚙️', 'infrastructure': '🖥️',
+    'ux': '🎨', 'onboarding': '🚀',
 }
 
-# Reglas permanentes genericas — no especificas de BankPortal/Java/Angular
 PERMANENT_RULES_GENERIC = [
     ('LA-018-01', 'SIEMPRE leer session.json desde disco antes de actuar en continuacion de sesion'),
     ('LA-020-01', 'Jira transiciona en cada gate del pipeline sin instruccion explicita'),
@@ -68,24 +83,93 @@ PERMANENT_RULES_GENERIC = [
     ('LA-CORE-004', 'Estructura canonica de directorios copiada desde repo-template al crear proyecto'),
 ]
 
+
+def verify_core_sync():
+    """
+    Verifica que LESSONS_LEARNED_CORE.md del proyecto es la misma version que SOFIA-CORE.
+    Imprime WARN si están desincronizados. No bloquea — es informativo.
+    """
+    core_dir = _find_core()
+    if not core_dir:
+        print('WARN: SOFIA-CORE no encontrado — no se puede verificar sincronía de LESSONS_LEARNED_CORE.md')
+        return
+
+    core_ll   = core_dir / 'LESSONS_LEARNED_CORE.md'
+    local_ll  = ROOT / 'LESSONS_LEARNED_CORE.md'
+
+    if not core_ll.exists():
+        print(f'WARN: {core_ll} no existe en SOFIA-CORE')
+        return
+    if not local_ll.exists():
+        print(f'WARN: LESSONS_LEARNED_CORE.md no existe en el proyecto — copiando desde CORE')
+        import shutil
+        shutil.copy2(str(core_ll), str(local_ll))
+        print(f'OK LESSONS_LEARNED_CORE.md copiado desde CORE ({os.path.getsize(str(local_ll))}B)')
+        return
+
+    sz_core  = os.path.getsize(str(core_ll))
+    sz_local = os.path.getsize(str(local_ll))
+    if sz_core != sz_local:
+        print(f'WARN: LESSONS_LEARNED_CORE.md desincronizado — CORE={sz_core}B local={sz_local}B')
+        print(f'      Actualizando desde SOFIA-CORE...')
+        import shutil
+        shutil.copy2(str(core_ll), str(local_ll))
+        print(f'OK LESSONS_LEARNED_CORE.md sincronizado ({sz_core}B)')
+    else:
+        print(f'OK LESSONS_LEARNED_CORE.md sincronizado con SOFIA-CORE ({sz_core}B)')
+
+
+def verify_no_manual_edits(las):
+    """
+    Verifica que LESSONS_LEARNED.md no tenga LAs que no estén en session.json.
+    Si las tiene → la MD fue editada manualmente (violación de la regla).
+    Imprime WARN con los IDs afectados.
+    """
+    if not OUTPUT.exists():
+        return  # Primera generación, no hay nada que verificar
+
+    existing = OUTPUT.read_text()
+    ids_in_md      = set(re.findall(r'### (LA-[\w-]+)', existing))
+    ids_in_session = {la.get('id', '') for la in las}
+
+    only_in_md = ids_in_md - ids_in_session - {'LA-018-01'}  # excluir permanentes genéricas
+    # Filtrar IDs de reglas permanentes
+    permanent_ids = {la_id for la_id, _ in PERMANENT_RULES_GENERIC}
+    only_in_md -= permanent_ids
+
+    if only_in_md:
+        print(f'WARN: LAs en LESSONS_LEARNED.md que NO están en session.json (edición manual):')
+        for la_id in sorted(only_in_md):
+            print(f'      → {la_id}')
+        print(f'      Acción requerida: migrar estas LAs a session.json.lessons_learned[]')
+        print(f'      El .md será regenerado desde session.json (las LAs manuales se perderán)')
+
+
 def main():
     if not SESSION.exists():
         print(f'ERROR: {SESSION} no encontrado')
         sys.exit(1)
 
-    s = json.loads(SESSION.read_text())
+    s   = json.loads(SESSION.read_text())
     las = s.get('lessons_learned', [])
     now = datetime.utcnow().strftime('%Y-%m-%d')
-    sprint = s.get('current_sprint', 1)
 
+    # ── Verificaciones ────────────────────────────────────────────────────────
+    print('Verificando consistencia de LAs...')
+    verify_core_sync()
+    verify_no_manual_edits(las)
+
+    # ── Generar LESSONS_LEARNED.md ────────────────────────────────────────────
     lines = [
         f'# LESSONS LEARNED — {PROJECT_NAME} · SOFIA v{s.get("sofia_version","2.6")}',
         f'**Proyecto:** {PROJECT_NAME} · {CLIENT_NAME}',
         f'**Actualizado:** {now} | **Total:** {len(las)} lecciones',
         f'**Versión SOFIA:** {s.get("sofia_version","2.6")}',
         '',
-        '> **Fuente canónica:** `.sofia/session.json` (campo `lessons_learned`)',
-        '> **Regenerar:** ejecutar `.sofia/scripts/gen-lessons-learned.py` en Step 9 (LA-022-02)',
+        '> ⚠️ **ARCHIVO GENERADO AUTOMÁTICAMENTE — NO EDITAR DIRECTAMENTE**',
+        '> **Fuente canónica:** `.sofia/session.json` campo `lessons_learned[]`',
+        '> **Regenerar:** ejecutar `.sofia/scripts/gen-lessons-learned.py` en Step 9',
+        '> **LAs del framework:** ver `LESSONS_LEARNED_CORE.md` (solo lectura, copia de SOFIA-CORE)',
         '',
         '---',
         '',
@@ -99,12 +183,14 @@ def main():
         lines.append(f'## Sprint {sp}')
         lines.append('')
         for la in by_sprint[sp]:
-            emoji = TYPE_EMOJI.get(la['type'], '📌')
-            lines.append(f'### {la["id"]} — {emoji} [{la["type"].upper()}]')
+            emoji = TYPE_EMOJI.get(la.get('type', ''), '📌')
+            lines.append(f'### {la["id"]} — {emoji} [{la.get("type","").upper()}]')
             lines.append(f'**Descripción:** {la["description"]}')
             lines.append(f'**Corrección:** {la["correction"]}')
             if la.get('registered_at'):
                 lines.append(f'**Registrado:** {la["registered_at"][:10]}')
+            if la.get('core_la'):
+                lines.append(f'**Consolidado en SOFIA-CORE:** {la["core_la"]}')
             lines.append('')
 
     lines += [
@@ -115,7 +201,7 @@ def main():
     ]
     by_type = defaultdict(list)
     for la in las:
-        by_type[la['type']].append(la['id'])
+        by_type[la.get('type','process')].append(la['id'])
     for t in sorted(by_type.keys()):
         lines.append(f'- **{t}:** {", ".join(by_type[t])}')
     lines.append('')
@@ -134,10 +220,14 @@ def main():
     content = '\n'.join(lines)
     OUTPUT.write_text(content)
 
-    # Log
-    log_entry = f'[{datetime.utcnow().isoformat()}Z] [gen-lessons-learned] LESSONS_LEARNED.md regenerado — {len(las)} LAs — {PROJECT_NAME}/{CLIENT_NAME}\n'
-    with open(LOG, 'a') as f:
-        f.write(log_entry)
+    # ── Log ───────────────────────────────────────────────────────────────────
+    log_entry = (f'[{datetime.utcnow().isoformat()}Z] [gen-lessons-learned] '
+                 f'LESSONS_LEARNED.md regenerado — {len(las)} LAs — '
+                 f'{PROJECT_NAME}/{CLIENT_NAME}\n')
+    try:
+        with open(LOG, 'a') as f:
+            f.write(log_entry)
+    except Exception: pass
 
     print(f'OK LESSONS_LEARNED.md: {len(las)} LAs | {PROJECT_NAME} · {CLIENT_NAME} | {len(lines)} lineas')
 
