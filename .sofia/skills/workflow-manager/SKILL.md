@@ -6,6 +6,20 @@ updated: "2026-04-04"
 changelog: "v1.13 (2026-04-04) — Generico: lee config desde sofia-config.json. Sin hardcoding de proyecto/cloudId/JQL. | v1.12 (2026-04-02) — LA-022-07: verificar Step 3b en completed_steps pre-Step4. LA-022-02: regenerar LESSONS_LEARNED.md en Step 9. LA-022-08: verificar extensiones doc agent. | v1.11 — Dashboard Global como entregable en cada gate. Paso 7b obligatorio. Persistence Protocol actualizado con {proyecto}-global-dashboard.html."
 ---
 
+## Verificacion sofia-shell al inicio de sesion (GR-014)
+
+Al activarse en cualquier sesion con INIT, ejecutar SIEMPRE:
+
+```
+sofia-shell:run_command(
+  command="python3 -c \"import os,json; print('OK CWD:',os.getcwd()); print('Proyecto:',json.load(open('.sofia/session.json')).get('project'))\"",
+  cwd=SOFIA_REPO  ← ruta absoluta del proyecto activo
+)
+```
+
+Si la salida no muestra el proyecto correcto → alertar al usuario antes de continuar.
+
+
 # Workflow Manager — SOFIA Software Factory v1.11
 
 ## Rol

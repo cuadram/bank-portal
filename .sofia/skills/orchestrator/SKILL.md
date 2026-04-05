@@ -1,9 +1,12 @@
 ---
 name: orchestrator
 sofia_version: "2.6"
-version: "2.6"
-updated: "2026-04-03"
+version: "2.7"
+updated: "2026-04-05"
 changelog: |
+  v2.7 (2026-04-05) — Regla 23: sofia-shell verify-before-use (LA-CORE-009).
+    Verificacion obligatoria de cwd antes de cualquier invocacion sofia-shell.
+    GR-014: sofia-shell apunta al proyecto activo o BLOQUEAR.
   v2.6 (2026-04-03) — GR-CORE-003: aislamiento de proyecto (LA-CORE-003).
     Regla de oro 22: SOFIA_REPO verificado en INIT paso 0 y antes de cada escritura.
     INIT: paso 0 nuevo — extraer y verificar SOFIA_REPO de CLAUDE.md.
@@ -48,6 +51,55 @@ la persistencia del estado en session.json y sofia.log.
 5. Si session.json.status == "idle"        → iniciar nuevo pipeline
 6. Confirmar: "SOFIA v2.6 activo — [project] | SOFIA_REPO=[ruta] verificado"
 ```
+
+
+## PROTOCOLO sofia-shell — Verificacion OBLIGATORIA pre-ejecucion (GR-014)
+
+**REGLA PERMANENTE (LA-CORE-009):** Antes de invocar `sofia-shell:run_command`
+por primera vez en cada sesion, verificar siempre que apunta al proyecto correcto.
+
+### Paso de verificacion (ejecutar SIEMPRE primero)
+
+```
+sofia-shell:run_command(
+  command = "python3 -c \"import os,json; p=os.getcwd(); s=json.load(open('.sofia/session.json')); print('PROYECTO:', s.get('project')); print('CLIENTE:', s.get('client')); print('CWD:', p); print('SOFIA_REPO:', s.get('sofia_repo','NO DEFINIDO'))\"",
+  cwd     = "<SOFIA_REPO del proyecto activo>"   ← pasar SIEMPRE como ruta absoluta
+)
+```
+
+### Resultado esperado
+
+```
+PROYECTO:  bank-portal          ← debe coincidir con el proyecto activo
+CLIENTE:   Banco Meridian
+CWD:       /Users/cuadram/proyectos/bank-portal
+SOFIA_REPO:/Users/cuadram/proyectos/bank-portal
+```
+
+### Criterio de aceptacion (GR-014)
+
+| Condicion | Accion |
+|---|---|
+| `PROYECTO` == proyecto activo en sesion | ✅ Continuar |
+| `CWD` == `SOFIA_REPO` de session.json | ✅ Continuar |
+| Cualquier discrepancia | ❌ **STOP** — No ejecutar nada mas |
+
+### Si hay discrepancia → protocolo de correccion
+
+1. Verificar que `cwd` en la llamada es la ruta absoluta CORRECTA del proyecto
+2. Comprobar `~/.sofia/projects.json`: campo `active` apunta al proyecto correcto
+3. Si sofia-shell sigue respondiendo del proyecto equivocado:
+   - La descripcion del tool dice "BankPortal" → Claude Desktop NO reiniciado
+   - Indicar al usuario: **reiniciar Claude Desktop** para activar v2.0 dinamico
+4. Mientras no se resuelva: usar `Filesystem:*` para lecturas y `Filesystem:write_file`
+   para escrituras — nunca sofia-shell si el cwd no esta verificado
+
+### cwd — regla de uso
+
+- **SIEMPRE pasar cwd como ruta absoluta** igual a `SOFIA_REPO` del proyecto
+- BP:  `cwd="/Users/cuadram/proyectos/bank-portal"`
+- ET:  `cwd="/Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/experis-tracker"`
+- Nunca omitir cwd cuando se trabaja en un proyecto distinto al `SOFIA_REPO` del env
 
 ## Verificacion de aislamiento antes de cada escritura (GR-CORE-003)
 
@@ -321,6 +373,12 @@ objeto {step, waiting_for, jira_issue}. parseArg() soporta --name=value y --name
 ### Regla 21 — LA-022-08: Doc Agent binarios reales
 Documentation Agent genera .docx (python-docx/docx npm) y .xlsx (ExcelJS).
 NUNCA reportar .md como equivalente a .docx. Verificar extensiones antes de reportar.
+
+### Regla 23 — LA-CORE-009: sofia-shell verify-before-use (GR-014)
+**CRITICO:** Antes de la primera llamada a `sofia-shell:run_command` en cada sesion,
+ejecutar el comando de verificacion del PROTOCOLO sofia-shell. El resultado debe
+mostrar el proyecto correcto y CWD == SOFIA_REPO. Si hay discrepancia → STOP.
+Pasar siempre `cwd` como ruta absoluta igual al SOFIA_REPO del proyecto activo.
 
 ### Regla 22 — LA-CORE-003: SOFIA_REPO — aislamiento de proyecto (GR-CORE-003)
 **CRITICO:** El Orchestrator verifica SOFIA_REPO en INIT paso 0 y antes de

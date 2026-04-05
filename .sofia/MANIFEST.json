@@ -1,8 +1,8 @@
 {
-  "sofia_core_version": "2.6.13",
+  "sofia_core_version": "2.6.14",
   "extracted_from": "BankPortal / Banco Meridian",
   "extracted_at": "2026-04-03T00:00:00Z",
-  "last_updated": "2026-04-05T08:25:57.793797Z",
+  "last_updated": "2026-04-05T08:31:27.565899Z",
   "baseline_sprint": 22,
   "baseline_release": "v1.22.0",
   "skills_total": 21,
@@ -118,5 +118,13 @@
     "readRegistry(): lee ~/.sofia/projects.json en cada llamada",
     "CLAUDE.md debe pasar SOFIA_REPO como cwd absoluto en run_command",
     "LA-CORE-009 registrada"
+  ],
+  "changelog_v2614": [
+    "GR-014: sofia-shell verify-before-use — regla permanente LA-CORE-009/010",
+    "orchestrator SKILL v2.7: Regla 23 + PROTOCOLO sofia-shell completo",
+    "workflow-manager SKILL: check GR-014 en INIT",
+    "sofia-wizard.py: GR-014 en CLAUDE.md generado para proyectos nuevos",
+    "guardrail-pre-gate.js: GR-014 referenciado en CORE y ET",
+    "Comando de verificacion canonico documentado en todos los artefactos"
   ]
 }
