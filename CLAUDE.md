@@ -1,199 +1,134 @@
-# SOFIA v2.3 — Software Factory IA · Experis
-
-## REGLA CRÍTICA DE SESIÓN — LA-018-01
-
-Al inicio de CUALQUIER sesión de continuación de pipeline:
-1. Leer `.sofia/session.json` antes de cualquier acción
-2. Si `gate_pending != null` → solicitar aprobación del gate pendiente antes de avanzar
-3. El sprint NO está cerrado hasta que Step 9 aparezca en `completed_steps` con status COMPLETED Y Atlassian esté sincronizado
-4. Nunca asumir que el pipeline se completó basándose solo en artefactos en disco
-
-## REGLA CRÍTICA — DASHBOARD GLOBAL (v2.1)
-
-El Dashboard Global `docs/dashboard/bankportal-global-dashboard.html` es un **entregable oficial del proyecto**.
-
-**Cuándo regenerar — OBLIGATORIO:**
-- En CADA aprobación de Gate (G-1 a G-9), ejecutar inmediatamente después:
-  ```
-  /opt/homebrew/opt/node@22/bin/node .sofia/scripts/gen-global-dashboard.js --gate G-[N] --step [N]
-  ```
-- El script actualiza el HTML + `session.json.dashboard_global` + `sofia.log`
-- Un Gate NO está completamente procesado hasta que el Dashboard Global está actualizado en disco
-- Si el script no está disponible: regenerar manualmente desde Claude Desktop y persistir en disco
-
-**Verificación en cada gate:** `session.json.dashboard_global.last_generated` debe actualizarse.
-
-## Proyecto: BankPortal · Cliente: Banco Meridian
-## Skill Loader v2.3
+# SOFIA v2.6 — Software Factory IA de Experis
+# Proyecto: bank-portal | Cliente: Banco Meridian
+# SOFIA_REPO=/Users/cuadram/proyectos/bank-portal
 
 ---
 
-## Inicialización automática (ejecutar en cada sesión)
+## IDENTIDAD DEL PROYECTO — LEER PRIMERO
+
+**SOFIA_REPO=/Users/cuadram/proyectos/bank-portal**
+
+**REGLA ABSOLUTA GR-CORE-003:** Todo fichero generado o modificado DEBE empezar por SOFIA_REPO.
+Si no → DETENER y pedir confirmación explícita.
+
+---
+
+## INIT — Ejecutar SIEMPRE al abrir este proyecto
 
 ```
-1. Lee: .sofia/skills/orchestrator/SKILL.md
-2. Lee: .sofia/session.json          ← estado del pipeline
-3. Lee: .sofia/sofia-config.json     ← configuración del proyecto
-4. Verifica estado: si current_sprint > 0 y status == "idle" → Sprint [N+1] listo para arrancar
-5. Verifica session.json.dashboard_global.last_generated ← dashboard debe estar actualizado
+PASO 0 — GR-014: verificar que sofia-shell apunta a este proyecto
+  sofia-shell:run_command(
+    command="python3 -c \"import os,json; s=json.load(open('.sofia/session.json')); print('PROYECTO:',s.get('project')); print('CWD:',os.getcwd())\"",
+    cwd="/Users/cuadram/proyectos/bank-portal"
+  )
+  Resultado esperado: PROYECTO: bank-portal | CWD: /Users/cuadram/proyectos/bank-portal
+  Si no coincide → DETENER. No continuar hasta resolver.
+
+PASO 1 — Leer estado desde DISCO (LA-018-01 — NUNCA desde memoria)
+  sofia-shell:run_command(
+    command="python3 -c \"import json; s=json.load(open('.sofia/session.json')); print(json.dumps({k:s[k] for k in ['project','status','current_sprint','current_feature','current_step','completed_steps','pending_steps','gate_pending']}, indent=2))\"",
+    cwd="/Users/cuadram/proyectos/bank-portal"
+  )
+
+PASO 2 — Verificar coherencia SOFIA_REPO
+  session.json.sofia_repo == SOFIA_REPO
+  sofia-config.json.sofia_repo == SOFIA_REPO
+  Si no coinciden → DETENER: 'CONFLICTO SOFIA_REPO'
+
+PASO 3 — Decidir flujo según status en disco
+  status == "in_progress"   → RESUME PROTOCOL (ver abajo)
+  status == "sprint_closed" → Informar estado y esperar solicitud de Sprint N+1
+  status == "idle"          → Esperar solicitud del usuario
 ```
 
----
+## RESUME PROTOCOL — status == in_progress
 
-## Pipeline estándar v2.3 (15 steps)
-
-| Step | Agente               | Skill path                                          | Gate      |
-|------|----------------------|-----------------------------------------------------|-----------|
-| 1    | Scrum Master         | scrum-master/SKILL.md                               | HITL PO   |
-| 2    | Requirements Analyst | requirements-analyst/SKILL.md                       | HITL PO   |
-| **2b** | **FA-Agent**       | **fa-agent/SKILL.md**                               | **AUTO**  |
-| **2c** | **UX/UI Designer** | **ux-ui-designer/SKILL.md**                         | **HITL PO+TL** |
-| 3    | Architect            | architect/SKILL.md                                  | HITL TL   |
-| 3b   | Documentation Agent + FA-Agent | documentation-agent/SKILL.md + fa-agent/SKILL.md | AUTO |
-| 4    | Developer            | java-developer/SKILL.md + developer-core/SKILL.md   | — |
-| 5    | Code Reviewer        | code-reviewer/SKILL.md                              | HITL TL   |
-| 5b   | Security Agent       | security-agent/SKILL.md                             | AUTO*     |
-| 6    | QA Tester            | qa-tester/SKILL.md                                  | HITL QA   |
-| 7    | DevOps               | devops/SKILL.md                                     | HITL DV   |
-| 8    | Documentation Agent  | documentation-agent/SKILL.md                        | HITL PM   |
-| **8b** | **FA-Agent**       | **fa-agent/SKILL.md**                               | **AUTO**  |
-| 9    | Workflow Manager     | workflow-manager/SKILL.md                           | —         |
-
-*AUTO con gate BLOQUEANTE si CVE críticos > 0
-
-**Step 2c — UX/UI Designer:**
-- Inputs: SRS (Step 2) + FA (Step 2b)
-- Outputs: `docs/ux-ui/UX-FEAT-XXX-sprintYY.md` + actualización `UX-DESIGN-SYSTEM.md`
-- Entregables: user flows, wireframes ASCII, inventario componentes, design tokens, WCAG checklist
-- Gate HITL PO+TL: Product Owner valida UX, Tech Lead valida viabilidad técnica
-
----
-
-## Agentes disponibles (21)
-
-### Coordinación
-- Orchestrator:           .sofia/skills/orchestrator/SKILL.md
-
-### Planificación
-- Scrum Master:           .sofia/skills/scrum-master/SKILL.md
-- Requirements Analyst:   .sofia/skills/requirements-analyst/SKILL.md
-
-### Análisis Funcional ← v2.0
-- **FA-Agent:**           **.sofia/skills/fa-agent/SKILL.md**
-
-### Diseño ← NUEVO v2.3
-- **UX/UI Designer:**     **.sofia/skills/ux-ui-designer/SKILL.md**
-
-### Arquitectura
-- Architect:              .sofia/skills/architect/SKILL.md
-
-### Desarrollo (stack + core)
-- Developer Core:         .sofia/skills/developer-core/SKILL.md
-- Java Developer:         .sofia/skills/java-developer/SKILL.md
-- .Net Developer:         .sofia/skills/dotnet-developer/SKILL.md
-- Node.js Developer:      .sofia/skills/nodejs-developer/SKILL.md
-- Angular Developer:      .sofia/skills/angular-developer/SKILL.md
-- React Developer:        .sofia/skills/react-developer/SKILL.md
-
-### Revisión & Calidad
-- Code Reviewer:          .sofia/skills/code-reviewer/SKILL.md
-- QA Tester:              .sofia/skills/qa-tester/SKILL.md
-- Security Agent:         .sofia/skills/security-agent/SKILL.md
-- Performance Agent:      .sofia/skills/performance-agent/SKILL.md
-
-### CI/CD
-- DevOps:                 .sofia/skills/devops/SKILL.md
-- Jenkins Agent:          .sofia/skills/jenkins-agent/SKILL.md
-
-### Documentación & Entrega
-- Documentation Agent:    .sofia/skills/documentation-agent/SKILL.md
-
-### Gobierno & Integración
-- Workflow Manager:       .sofia/skills/workflow-manager/SKILL.md
-- Atlassian Agent:        .sofia/skills/atlassian-agent/SKILL.md
-
----
-
-## Estado actual del proyecto
-
-- Sprint 19 CERRADO · FEAT-017 · v1.19.0 · 449 SP acumulados
-- 708 tests · 87% cobertura · 0 defectos en producción
-- FA-Agent activo · 58 funcionalidades documentadas · 113 reglas de negocio · S1-S19
-- Sprint 20 pendiente definición PO · FEAT-018 por determinar
-- Dashboard Global activo: docs/dashboard/bankportal-global-dashboard.html
-- **UX/UI Designer Agent v1.0 integrado — SOFIA v2.3**
-
----
-
-## ⚠️ Persistence Protocol — OBLIGATORIO
-
-Todo agente que genere artefactos DEBE:
-1. Escribir artefactos a disco antes de cerrar su paso
-2. Confirmar con bloque `✅ PERSISTIDO` listando cada archivo y ruta
-3. El Orchestrator actualiza session.json y añade entrada a sofia.log
-
-**El Orchestrator NO avanza al siguiente step sin bloque de confirmación.**
-
----
-
-## Generación del Análisis Funcional (FA-Agent v2.0)
-
-```bash
-# Dependencia (instalar una vez)
-pip3 install python-docx
-
-# Generar / actualizar el documento Word
-python3 .sofia/scripts/gen-fa-document.py
 ```
-
-Salida: `docs/functional-analysis/FA-[Proyecto]-[Cliente].docx`
-
----
-
-## Dashboard Global — Entregable Consolidado (v2.1)
-
-```bash
-# Regenerar en cada gate (obligatorio)
-/opt/homebrew/opt/node@22/bin/node .sofia/scripts/gen-global-dashboard.js --gate G-[N] --step [N]
-
-# Outputs
-docs/dashboard/bankportal-global-dashboard.html  ← entregable canónico
-docs/quality/sofia-dashboard.html               ← alias
-
-# Verificar generación
-node -e "const s=require('./.sofia/session.json'); console.log(s.dashboard_global)"
+1. Leer session.json desde disco (ya hecho en INIT)
+2. Reportar estado exacto:
+   - Sprint N | Feature FEAT-XXX | Step actual: [X]
+   - Steps completados: [lista]
+   - Steps pendientes: [lista]
+   - Gate pendiente: [gate o null]
+   - FA: doc_version, nc_verdict
+3. Si gate_pending != null → solicitar aprobación antes de avanzar
+4. NO asumir estado desde contexto de sesión anterior — siempre disco
 ```
 
 ---
 
-## Verificación de instalación
+## Stack
 
-```bash
-bash .sofia/scripts/audit-persistence.sh
-# Esperado: 21/21 OK · SOFIA v2.3 — Persistence Protocol: COMPLETO
+- Backend:  Java 21 / Spring Boot 3.3.4
+- Frontend: Angular 17
+- BD:       PostgreSQL 16 / Redis 7
+- Jira:     SCRUM | Confluence: SOFIA (spaceId: 393220)
+- Cloud ID: 8898340d-94ed-45c2-8831-395d407a4e77
+
+## Skills activos
+
+- Backend:  java-developer
+- Frontend: angular-developer
+
+## Pipeline v2.6 — 17 steps — 21 agentes — CMMI L3
+
+```
+1  Scrum Master     G-1 (PO)
+2  Requirements     G-2 (PO)    2b FA-Agent (AUTO)   2c UX/UI (HITL-PO-TL)
+3  Architect        G-3 (TL)    3b FA-Agent+Docs (AUTO)
+4  Developer        G-4b (mvn build + ng build verificados)
+5  Code Reviewer    G-5 (TL)    5b Security (AUTO)
+6  QA Tester        G-6 (QA+PO)
+7  DevOps           G-7 (RM)
+8  Documentation    G-8 (PM) — 17 DOCX + 3 XLSX
+   8b FA-Agent (AUTO) — validate-fa-index + gen-fa-document + validate-fa-completeness
+9  Workflow Manager G-9 — Jira+Confluence+Dashboard+LESSONS_LEARNED
 ```
 
----
+## Uso de sofia-shell
 
-## Notas MCP
+**SIEMPRE pasar cwd absoluto** de este proyecto (o sin cwd — es el proyecto por defecto):
 
-- filesystem MCP: acceso a /Users/cuadram/proyectos/bank-portal
-- git MCP: operaciones git sobre el repositorio
-- filesystem (minúscula) crea un nivel de directorio por llamada — el padre debe existir
-- Node path: /opt/homebrew/opt/node@22/bin/node
-- Python path: /usr/bin/python3
+```
+sofia-shell:run_command(
+  command="<comando>",
+  cwd="/Users/cuadram/proyectos/bank-portal"
+)
+```
 
----
+Comandos permitidos: node, npm, npx, python3, ls, cat, mkdir, cp, mv, rm, find, grep, echo
 
-## Historial de versiones SOFIA en este proyecto
+## Guardrails activos
 
-- **v2.3 (2026-03-28): UX/UI Designer Agent v1.0 — Step 2c, gate HITL PO+TL, Design System BankPortal v1.0, 21 agentes, pipeline 15 steps**
-- **v2.2 (2026-03-27): LA-DASH-001, LA-FA-001, LESSONS_LEARNED.md, PERSISTENCE_PROTOCOL.md v1.7**
-- **v2.1 (2026-03-26): Dashboard Global como entregable consolidado, gen-global-dashboard.js, regeneración en cada Gate (Regla de oro #11)**
-- **v2.0 (2026-03-26): FA-Agent (Analista Funcional), python-docx generator, pipeline 14 steps, Análisis Funcional como entregable de cliente**
-- v1.9.1 (2026-03-26): FA-Agent integrado Gates 2b/3b/8b, Orchestrator actualizado
-- v1.9 (2026-03-24): Security Agent Step 5b, Dashboard Global, CMMI evidence gates
-- v1.8 (2026-03-19): Performance Agent, multi-proyecto (sofia-wizard + sofia-projects)
-- v1.7 (2026-03-17): Documentation Agent Steps 3b+8, gates bloqueantes Jira
-- v1.5 (2026-03-15): Persistence Protocol (session.json + sofia.log)
-- v1.1 (2026-03-12): Documentation Agent inicial (Word + Excel + diagramas)
+- GR-CORE-003: SOFIA_REPO verificado en INIT y antes de cada escritura
+- GR-014: sofia-shell verify-before-use — paso 0 de cada sesión
+- GR-010: CVSS>=4.0 vencido bloquea G-9
+- GR-011: Dashboard regenerado en cada gate (gen-global-dashboard.js)
+- GR-012: Step 3b OBLIGATORIO post G-3
+- GR-013: verify-persistence.js BLOQUEANTE en cada step
+- GR-016: Application handlers NO importan Infrastructure (Clean Architecture)
+
+## Reglas críticas
+
+- Nunca auto-aprobar un gate HITL
+- Leer session.json desde DISCO en cada sesión (LA-018-01) — nunca desde memoria
+- FA-Agent Gate 8b: validate-fa-completeness.py OBLIGATORIO post-docx
+- Doc Agent: 17 DOCX + 3 XLSX REALES (nunca .md como entregable — LA-022-08)
+- Paquete raíz Java: com.experis.sofia.bankportal (nunca es.meridian)
+- forkJoin + catchError: SIEMPRE of([]) nunca EMPTY (LA-STG-001)
+- Angular: route + nav item en mismo step que el módulo (LA-FRONT-001)
+- Flyway seeds con UUIDs: ON CONFLICT (id) DO NOTHING (LA-022-09)
+
+## FA-Agent — Análisis Funcional
+
+```
+Documento único incremental: docs/functional-analysis/FA-BankPortal-Banco-Meridian.docx
+Índice:   docs/functional-analysis/fa-index.json
+Script:   .sofia/scripts/gen-fa-document.py
+Validar:  node .sofia/scripts/validate-fa-index.js
+NC Gate 8b: python3 .sofia/scripts/validate-fa-completeness.py
+```
+
+## SOFIA-CORE
+
+Framework: /Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE
