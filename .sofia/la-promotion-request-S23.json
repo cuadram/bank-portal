@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "sprint": 23,
+  "project": "bank-portal",
+  "client": "Banco Meridian",
+  "generated_at": "2026-04-07T11:51:08.367Z",
+  "po_review_required": true,
+  "po_reviewer": "Angel de la Cuadra (Product Owner)",
+  "status": "COMPLETED",
+  "sofia_core_path": "/Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE",
+  "candidates": [
+    {
+      "id": "LA-023-01",
+      "type": "frontend",
+      "description": "En componentes Angular, usar [href] nativo en enlaces internos causa full page reload — el ShellComponent desaparece y la pantalla queda en blanco sin menú. Detectado en Mi Perfil inbox al pulsar Ver→ sobre notif.actionUrl. SEGUNDO HALLAZGO: actionUrl en seeds con rutas inexistentes (/bills /transfers) — navigateByUrl() silencia el error y no navega. Fix: ROUTE_MAP de aliases + fallback /dashboard + corrección de seeds en BD.",
+      "correction": "REGLA PERMANENTE: nunca usar [href] para navegación interna en Angular. Usar siempre (click)+router.navigateByUrl() para URLs dinámicas con posibles query params, o [routerLink] para rutas estáticas. Checklist G-4 y G-5 añaden: grep -r \"[href]\" src/app/features/ — cualquier resultado con path interno es bloqueante. Adicionalmente: los seeds de notificaciones deben usar SOLO rutas registradas en app-routing.module.ts. Verificar con: SELECT DISTINCT action_url FROM user_notifications — cada valor debe existir en la tabla de rutas del router.",
+      "registered_at": "2026-04-03T11:38:02.377Z",
+      "scope": "project",
+      "impact": "CRITICAL",
+      "score": 8,
+      "matched_criteria": [
+        "REGLA_PERMANENTE",
+        "BLOCKER_GATE",
+        "MULTI_SKILL"
+      ],
+      "promotion_status": "approved",
+      "po_decision": "ACCEPTED",
+      "po_notes": null,
+      "po_decided_at": "2026-04-07T11:58:16.508942Z"
+    }
+  ],
+  "skipped": [
+    {
+      "id": "LA-CORE-018",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-017",
+      "reason": "ya promovida o en MANIFEST"
+    }
+  ],
+  "stats": {
+    "total_las_sprint": 3,
+    "candidates_count": 1,
+    "skipped_count": 2
+  }
+}

@@ -43,6 +43,14 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
     add_header X-XSS-Protection "1; mode=block" always;
 
+    # index.html: nunca cachear — garantiza que el navegador cargue el bundle correcto tras rebuild
+    location = /index.html {
+        add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+        add_header Pragma "no-cache" always;
+        expires 0;
+        try_files $uri =404;
+    }
+
     # SPA routing
     location / {
         try_files $uri $uri/ /index.html;

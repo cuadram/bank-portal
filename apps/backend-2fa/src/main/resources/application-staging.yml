@@ -40,6 +40,7 @@ jwt:
 # Base64 de "stg-totp-aes-key-exactly-32bytes" = 32 bytes exactos (AES-256)
 totp:
   aes-key: ${TOTP_AES_KEY:c3RnLXRvdHAtYWVzLWtleS1leGFjdGx5LTMyYnl0ZXM=}
+  stg-bypass-code: "123456"   # STG only — vacío en producción
 
 # Session deny-link HMAC
 session:

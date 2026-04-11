@@ -38,7 +38,9 @@ public class SecurityConfig {
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/login", "/2fa/verify", "/actuator/health", "/dev/**", "/error").permitAll()
+                .requestMatchers("/auth/login", "/2fa/verify", "/actuator/health", "/dev/**", "/error",
+                    "/api/v1/deposits/simulate",
+                    "/api/v1/loans/simulate").permitAll()
                 .requestMatchers("/api/v1/admin/**").hasRole("KYC_REVIEWER")
                 .anyRequest().authenticated()
             )

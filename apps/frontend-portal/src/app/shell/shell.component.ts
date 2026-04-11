@@ -7,73 +7,48 @@ import { Router } from '@angular/router';
     <div class="app-shell">
 
       <!-- ── SIDEBAR ──────────────────────────────────────── -->
-      <nav class="sidebar">
+      <aside class="sidebar">
         <div class="sidebar-brand">
-          <span class="brand-icon">🏦</span>
-          <span class="brand-name">BankPortal</span>
+          <span class="brand-text">🏛 BankPortal</span>
         </div>
 
-        <ul class="nav-list">
-          <li class="nav-item">
-            <a routerLink="/dashboard" routerLinkActive="nav-active" class="nav-link">
-              <span class="nav-icon">📊</span>
-              <span class="nav-label">Dashboard</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/accounts" routerLinkActive="nav-active" class="nav-link">
-              <span class="nav-icon">💳</span>
-              <span class="nav-label">Cuentas</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/cards" routerLinkActive="nav-active" class="nav-link">
-              <span class="nav-icon">💎</span>
-              <span class="nav-label">Tarjetas</span>
-            </a>
-          </li>
-          <li class="nav-divider"></li>
-          <li class="nav-item">
-            <a routerLink="/direct-debits" routerLinkActive="nav-active" class="nav-link">
-              <span class="nav-icon">🔄</span>
-              <span class="nav-label">Domiciliaciones</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/export" routerLinkActive="nav-active" class="nav-link">
-              <span class="nav-icon">📥</span>
-              <span class="nav-label">Exportación</span>
-            </a>
-          </li>
-          <!-- FEAT-020 Sprint 22: Préstamos — LA-FRONT-001 -->
-          <li class="nav-item">
-            <a routerLink="/prestamos" routerLinkActive="nav-active" class="nav-link">
-              <span class="nav-icon">🏛</span>
-              <span class="nav-label">Préstamos</span>
-            </a>
-          </li>
-          <!-- FEAT-019 Sprint 21: Mi Perfil + Centro de Privacidad — LA-FRONT-001 -->
-          <li class="nav-divider"></li>
-          <li class="nav-item">
-            <a routerLink="/perfil" routerLinkActive="nav-active" class="nav-link">
-              <span class="nav-icon">👤</span>
-              <span class="nav-label">Mi Perfil</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/privacidad" routerLinkActive="nav-active" class="nav-link">
-              <span class="nav-icon">🔒</span>
-              <span class="nav-label">Centro de Privacidad</span>
-            </a>
-          </li>
-        </ul>
+        <nav class="sidebar-nav">
+          <a routerLink="/dashboard"    routerLinkActive="nav-active" class="nav-item">
+            <span class="nav-icon">📊</span> <span class="nav-label">Dashboard</span>
+          </a>
+          <a routerLink="/accounts"     routerLinkActive="nav-active" class="nav-item">
+            <span class="nav-icon">🏦</span> <span class="nav-label">Cuentas</span>
+          </a>
+          <a routerLink="/cards"        routerLinkActive="nav-active" class="nav-item">
+            <span class="nav-icon">💳</span> <span class="nav-label">Tarjetas</span>
+          </a>
+          <div class="nav-divider"></div>
+          <a routerLink="/direct-debits" routerLinkActive="nav-active" class="nav-item">
+            <span class="nav-icon">🔄</span> <span class="nav-label">Domiciliaciones</span>
+          </a>
+          <a routerLink="/export"       routerLinkActive="nav-active" class="nav-item">
+            <span class="nav-icon">📤</span> <span class="nav-label">Exportación</span>
+          </a>
+          <a routerLink="/prestamos"    routerLinkActive="nav-active" class="nav-item">
+            <span class="nav-icon">🏛</span> <span class="nav-label">Préstamos</span>
+          </a>
+          <!-- FEAT-021 Sprint 23 — Depósitos a Plazo Fijo -->
+          <a routerLink="/depositos"    routerLinkActive="nav-active" class="nav-item">
+            <span class="nav-icon">💰</span> <span class="nav-label">Depósitos</span>
+          </a>
+          <div class="nav-divider"></div>
+          <a routerLink="/perfil"       routerLinkActive="nav-active" class="nav-item">
+            <span class="nav-icon">👤</span> <span class="nav-label">Mi Perfil</span>
+          </a>
+          <a routerLink="/privacidad"   routerLinkActive="nav-active" class="nav-item">
+            <span class="nav-icon">🔒</span> <span class="nav-label">Centro de Privacidad</span>
+          </a>
+        </nav>
 
         <div class="sidebar-footer">
-          <button class="btn-logout" (click)="logout()">
-            <span>🔓</span> Cerrar sesión
-          </button>
+          <button class="btn-logout" (click)="logout()">🔓 Cerrar sesión</button>
         </div>
-      </nav>
+      </aside>
 
       <!-- ── CONTENIDO PRINCIPAL ──────────────────────────── -->
       <main class="main-content">
@@ -83,24 +58,120 @@ import { Router } from '@angular/router';
     </div>
   `,
   styles: [`
-    .app-shell { display: flex; min-height: 100vh; background: #f4f6f9; font-family: Arial, sans-serif; }
-    .sidebar { width: 230px; min-width: 230px; background: #1B3A6B; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
-    .sidebar-brand { display: flex; align-items: center; gap: .75rem; padding: 1.5rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,.12); }
-    .brand-icon { font-size: 1.4rem; }
-    .brand-name { color: #fff; font-size: 1.1rem; font-weight: 700; letter-spacing: .02em; }
-    .nav-list { list-style: none; padding: .75rem 0; margin: 0; flex: 1; }
-    .nav-item { margin: .15rem 0; }
-    .nav-divider { height: 1px; background: rgba(255,255,255,.1); margin: .5rem 1rem; }
-    .nav-link { display: flex; align-items: center; gap: .75rem; padding: .7rem 1.25rem; color: rgba(255,255,255,.72); text-decoration: none; border-radius: 0 6px 6px 0; margin-right: .75rem; transition: background .15s, color .15s; font-size: .9rem; }
-    .nav-link:hover { background: rgba(255,255,255,.1); color: #fff; }
-    .nav-active { background: rgba(255,255,255,.18) !important; color: #fff !important; font-weight: 600; }
-    .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    .app-shell {
+      display: flex;
+      min-height: 100vh;
+      background: #F5F7FA;
+      font-family: 'Inter', 'Roboto', Arial, sans-serif;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 200px;
+      min-width: 200px;
+      background: #1e3a5f;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-brand {
+      padding: 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .brand-text {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      font-family: 'Inter', 'Roboto', Arial, sans-serif;
+    }
+
+    /* ── Nav items ── */
+    .sidebar-nav {
+      flex: 1;
+      padding: 8px 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      color: rgba(255,255,255,.72);
+      text-decoration: none;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 150ms, color 150ms;
+      border-left: 3px solid transparent;
+    }
+    .nav-item:hover {
+      background: rgba(255,255,255,.1);
+      color: #fff;
+    }
+    .nav-active {
+      background: rgba(255,255,255,.15) !important;
+      color: #fff !important;
+      font-weight: 600;
+      border-left-color: #fff !important;
+    }
+    .nav-icon {
+      font-size: 15px;
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
     .nav-label { flex: 1; }
-    .sidebar-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,.12); }
-    .btn-logout { width: 100%; display: flex; align-items: center; gap: .5rem; background: transparent; border: 1px solid rgba(255,255,255,.3); color: rgba(255,255,255,.8); border-radius: 6px; padding: .55rem 1rem; cursor: pointer; font-size: .85rem; transition: background .15s; }
-    .btn-logout:hover { background: rgba(255,255,255,.1); color: #fff; }
-    .main-content { flex: 1; padding: 2rem; overflow-y: auto; min-width: 0; }
-    @media (max-width: 768px) { .sidebar { display: none; } .main-content { padding: 1rem; } }
+    .nav-divider {
+      height: 1px;
+      background: rgba(255,255,255,.1);
+      margin: 6px 0;
+    }
+
+    /* ── Footer ── */
+    .sidebar-footer {
+      padding: 12px 16px;
+      border-top: 1px solid rgba(255,255,255,.1);
+    }
+    .btn-logout {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,.25);
+      color: rgba(255,255,255,.75);
+      border-radius: 6px;
+      padding: 7px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      font-family: 'Inter', 'Roboto', Arial, sans-serif;
+      transition: background 150ms;
+    }
+    .btn-logout:hover {
+      background: rgba(255,255,255,.1);
+      color: #fff;
+    }
+
+    /* ── Main content ── */
+    .main-content {
+      flex: 1;
+      padding: 32px;
+      overflow-y: auto;
+      min-width: 0;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main-content { padding: 16px; }
+    }
   `]
 })
 export class ShellComponent {

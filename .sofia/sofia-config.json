@@ -1,11 +1,11 @@
 {
   "_comment": "SOFIA v2.5 — Configuración del proyecto. Editar con: python3 .sofia/scripts/sofia-wizard.py --update",
-  "sofia_version": "2.6",
+  "sofia_version": "2.7",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "project_description": "Portal bancario con microservicios Java + Angular",
   "created_at": "2026-03-18T20:18:57Z",
-  "updated_at": "2026-04-02T09:46:30.006510+00:00",
+  "updated_at": "2026-04-05T19:34:28.899Z",
   "stack": {
     "backend": [
       "java"
@@ -178,7 +178,10 @@
     "doc_agent_binaries_required": true,
     "doc_agent_verify_extensions": true,
     "gate_pending_normalize_to_object": true,
-    "gen_lessons_learned_script": ".sofia/scripts/gen-lessons-learned.py"
+    "gen_lessons_learned_script": ".sofia/scripts/gen-lessons-learned.py",
+    "ma_baseline_mandatory": true,
+    "gen_ma_baseline_script": ".sofia/scripts/gen-ma-baseline.js",
+    "ma_baseline_invoke_at_g9": true
   },
   "agents": {
     "total": 23,
@@ -365,5 +368,27 @@
     "verify_extensions_before_report": true,
     "cover_page_required": true,
     "branding": "EXPERIS | ManpowerGroup"
+  },
+  "ma_baseline": {
+    "enabled": true,
+    "version": "1.0.0",
+    "script": ".sofia/scripts/gen-ma-baseline.js",
+    "output_project": ".sofia/ma-baseline.json",
+    "output_org_local": ".sofia/org-baseline.json",
+    "output_org_external": "ver SOFIA_ORG_PATH env var",
+    "invoke_at_step": "9",
+    "invoke_after": "write_process_metrics_to_session",
+    "invoke_before": "gen-global-dashboard.js",
+    "metrics": [
+      "PM001_velocity_variance_pct",
+      "PM002_defect_injection_rate",
+      "PM003_review_effectiveness_pct",
+      "PM004_test_efficiency_pct",
+      "PM005_cmmi_compliance_pct",
+      "PM006_cycle_time_variance_days"
+    ],
+    "cmmi_pa": "MA",
+    "enables_l4_qpm": true,
+    "sofia_org_path": "/Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE/sofia-org"
   }
 }
