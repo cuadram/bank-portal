@@ -2056,6 +2056,18 @@
       "registered_at": "2026-04-09T17:23:29Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T17:23:29Z"
+    },
+    {
+      "id": "LA-023-04",
+      "type": "governance/git",
+      "scope": "project",
+      "description": "Los tres proyectos gobernados (BankPortal, ExperisTracker, TakeOverSintetico) iniciaron sin un modelo de ramas git definido ni repositorios remotos configurados. BankPortal acumuló 11 ramas feature huérfanas nunca mergeadas a develop ni main; Sprint 23 se ejecutó sobre rama de Sprint 15. ExperisTracker trabajó directamente en main durante 3 sprints sin rama feature. TakeOverSintetico careció de git init durante toda la fase de Takeover Sprint 0. Resultado: main y develop desactualizados en todos los proyectos, trazabilidad remota nula y commits de sprints activos sobre ramas incorrectas.",
+      "correction": "REGLA PERMANENTE: al inicializar cualquier proyecto SOFIA, el primer paso obligatorio es (1) git init, (2) crear estructura main+develop, (3) push a remote. Cada sprint crea rama feature/FEAT-XXX-sprintYY desde develop. Al cerrar sprint: merge --no-ff feature → develop → push. Al crear release: merge --no-ff develop → main + tag vX.Y.0 → push. El branching model debe verificarse en Gate 1 (Setup) como precondición bloqueante.",
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-11T14:19:28.899Z",
+      "registered_at": "2026-04-11T14:19:28.899Z",
+      "sprint": 23,
+      "title": "Branching model SOFIA no aplicado desde inicio — deuda git acumulada y saneada"
     }
   ],
   "unit_test_verification": {
