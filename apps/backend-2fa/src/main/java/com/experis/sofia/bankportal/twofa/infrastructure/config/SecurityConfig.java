@@ -1,10 +1,9 @@
 package com.experis.sofia.bankportal.twofa.infrastructure.config;
 
-import com.experis.sofia.bankportal.profile.infrastructure.RevokedTokenFilter;
 import com.experis.sofia.bankportal.twofa.infrastructure.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,18 +11,14 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * DEBT-022 (Sprint 14): OAuth2ResourceServerAutoConfiguration excluida en
- * BackendTwoFactorApplication — ya no hay conflicto con BearerTokenAuthenticationFilter.
- *
- * FEAT-012-A (Sprint 14): Se añade RevokedTokenFilter después de
- * JwtAuthenticationFilter para verificar jti revocados (US-1205).
- * Se añade /api/v1/profile/** como authenticated().
- *
- * @since 1.0.0
+ * SecurityConfig simplificado para STG — DEBT-022.
+ * RevokedTokenFilter y KycAuthorizationFilter registrados como FilterRegistrationBean
+ * para evitar problemas de orden de inicializacion con @Lazy.
  */
 @Configuration
 @EnableWebSecurity
@@ -31,34 +26,29 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final RevokedTokenFilter      revokedTokenFilter;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
-                          RevokedTokenFilter revokedTokenFilter) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.revokedTokenFilter      = revokedTokenFilter;
     }
 
     @Bean
-    @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/auth/login",
-                    "/2fa/verify",
-                    "/actuator/health",
-                    "/dev/token",
-                    "/dev/hash"
-                ).permitAll()
+                .requestMatchers("/auth/login", "/2fa/verify", "/actuator/health", "/dev/**", "/error").permitAll()
+                .requestMatchers("/api/v1/admin/**").hasRole("KYC_REVIEWER")
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(revokedTokenFilter, JwtAuthenticationFilter.class); // US-1205
-
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint((request, response, authException) ->
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
+            )
+            .formLogin(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable);
         return http.build();
     }
 

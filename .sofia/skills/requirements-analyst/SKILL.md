@@ -1,4 +1,6 @@
 ---
+sofia_version: "2.6"
+# updated: 2026-04-02 — version bump SOFIA v2.6
 name: requirements-analyst
 description: >
   Agente especializado en análisis y documentación de requerimientos de SOFIA —

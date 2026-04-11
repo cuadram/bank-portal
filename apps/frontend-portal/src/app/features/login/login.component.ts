@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 /**
- * LoginComponent — pantalla de login básica.
- * Almacena un token de prueba en localStorage para desarrollo local.
- * BankPortal Sprint 13.
+ * LoginComponent — pantalla de login.
+ * BUG-VER-002 fix (LA-STG-002, 2026-04-01): version/sprint leídos de environment.ts.
+ * BankPortal · SOFIA Angular Developer
  */
 @Component({
   selector: 'app-login',
@@ -32,7 +33,7 @@ import { Router } from '@angular/router';
         <p *ngIf="error" class="error">{{ error }}</p>
 
         <div class="dev-notice">
-          <small>🔧 Entorno STG · Sprint 13 · v1.13.0</small>
+          <small>🔧 Entorno {{ env }} · Sprint {{ sprint }} · v{{ version }}</small>
         </div>
       </div>
     </div>
@@ -72,8 +73,12 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   username = '';
   password = '';
-  loading = false;
-  error = '';
+  loading  = false;
+  error    = '';
+
+  readonly version = environment.version;
+  readonly sprint  = environment.sprint;
+  readonly env     = environment.envLabel;
 
   constructor(private router: Router, private http: HttpClient) {}
 
@@ -83,20 +88,12 @@ export class LoginComponent {
       return;
     }
     this.loading = true;
-    this.error = '';
-
-    this.http.post<{accessToken: string}>('/auth/login', {
-      email: this.username,
-      password: this.password
+    this.error   = '';
+    this.http.post<{ accessToken: string }>('/auth/login', {
+      email: this.username, password: this.password
     }).subscribe({
-      next: res => {
-        localStorage.setItem('access_token', res.accessToken);
-        this.router.navigate(['/dashboard']);
-      },
-      error: () => {
-        this.loading = false;
-        this.error = 'Email o contraseña incorrectos';
-      }
+      next: res => { localStorage.setItem('access_token', res.accessToken); this.router.navigate(['/dashboard']); },
+      error: () => { this.loading = false; this.error = 'Email o contraseña incorrectos'; }
     });
   }
 }

@@ -29,85 +29,50 @@ public class DashboardJpaAdapter implements DashboardRepositoryPort {
 
     @Override
     public BigDecimal sumIncome(UUID userId, String period) {
-        // Transferencias donde el usuario es el DESTINATARIO
-        String sql = """
-            SELECT COALESCE(SUM(amount), 0)
-            FROM transfers
-            WHERE target_account_id IN (
-                SELECT id FROM accounts WHERE user_id = :userId
-            )
-            AND status = 'COMPLETED'
-            AND TO_CHAR(created_at, 'YYYY-MM') = :period
-            """;
-        return jdbc.sql(sql)
-                .param("userId", userId)
-                .param("period", period)
-                .query(BigDecimal.class)
-                .single();
+        return jdbc.sql("""
+            SELECT COALESCE(SUM(t.amount), 0)
+            FROM transactions t JOIN accounts a ON t.account_id = a.id
+            WHERE a.user_id = :userId AND t.type = 'ABONO'
+            AND TO_CHAR(t.transaction_date, 'YYYY-MM') = :period
+            """)
+                .param("userId", userId).param("period", period)
+                .query(BigDecimal.class).single();
     }
-
-    // ── Gastos: transfers salientes + bill_payments ────────────────────────────
 
     @Override
     public BigDecimal sumExpenses(UUID userId, String period) {
-        String sql = """
-            SELECT COALESCE(SUM(amount), 0) FROM (
-                SELECT amount FROM transfers
-                WHERE user_id = :userId AND status = 'COMPLETED'
-                  AND TO_CHAR(created_at, 'YYYY-MM') = :period
-                UNION ALL
-                SELECT amount FROM bill_payments
-                WHERE user_id = :userId AND status = 'COMPLETED'
-                  AND TO_CHAR(paid_at, 'YYYY-MM') = :period
-            ) AS combined
-            """;
-        return jdbc.sql(sql)
-                .param("userId", userId)
-                .param("period", period)
-                .query(BigDecimal.class)
-                .single();
+        return jdbc.sql("""
+            SELECT COALESCE(SUM(t.amount), 0)
+            FROM transactions t JOIN accounts a ON t.account_id = a.id
+            WHERE a.user_id = :userId AND t.type = 'CARGO'
+            AND TO_CHAR(t.transaction_date, 'YYYY-MM') = :period
+            """)
+                .param("userId", userId).param("period", period)
+                .query(BigDecimal.class).single();
     }
 
     @Override
     public int countTransactions(UUID userId, String period) {
-        String sql = """
-            SELECT COUNT(*) FROM (
-                SELECT id FROM transfers
-                WHERE user_id = :userId AND status = 'COMPLETED'
-                  AND TO_CHAR(created_at, 'YYYY-MM') = :period
-                UNION ALL
-                SELECT id FROM bill_payments
-                WHERE user_id = :userId AND status = 'COMPLETED'
-                  AND TO_CHAR(paid_at, 'YYYY-MM') = :period
-            ) AS combined
-            """;
-        return jdbc.sql(sql)
-                .param("userId", userId)
-                .param("period", period)
-                .query(Integer.class)
-                .single();
+        return jdbc.sql("""
+            SELECT COUNT(*) FROM transactions t JOIN accounts a ON t.account_id = a.id
+            WHERE a.user_id = :userId
+            AND TO_CHAR(t.transaction_date, 'YYYY-MM') = :period
+            """)
+                .param("userId", userId).param("period", period)
+                .query(Integer.class).single();
     }
-
-    // ── Raw spendings para categorización ────────────────────────────────────
 
     @Override
     public List<RawSpendingRecord> findRawSpendings(UUID userId, String period) {
-        String sql = """
-            SELECT concept, NULL AS issuer, amount FROM transfers
-            WHERE user_id = :userId AND status = 'COMPLETED'
-              AND TO_CHAR(created_at, 'YYYY-MM') = :period
-            UNION ALL
-            SELECT NULL AS concept, issuer, amount FROM bill_payments
-            WHERE user_id = :userId AND status = 'COMPLETED'
-              AND TO_CHAR(paid_at, 'YYYY-MM') = :period
-            """;
-        return jdbc.sql(sql)
-                .param("userId", userId)
-                .param("period", period)
+        return jdbc.sql("""
+            SELECT t.concept, t.category AS issuer, t.amount
+            FROM transactions t JOIN accounts a ON t.account_id = a.id
+            WHERE a.user_id = :userId AND t.type = 'CARGO'
+            AND TO_CHAR(t.transaction_date, 'YYYY-MM') = :period
+            """)
+                .param("userId", userId).param("period", period)
                 .query((rs, rowNum) -> new RawSpendingRecord(
-                        rs.getString("concept"),
-                        rs.getString("issuer"),
-                        rs.getBigDecimal("amount")))
+                        rs.getString("concept"), rs.getString("issuer"), rs.getBigDecimal("amount")))
                 .list();
     }
 

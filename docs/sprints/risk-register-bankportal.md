@@ -1,24 +1,63 @@
 # Risk Register — BankPortal
+## Última revisión: Sprint 18 Cierre — 2026-03-25
 
 ## Metadata
 - **Proyecto:** BankPortal — Banco Meridian
+- **SM:** SOFIA Scrum Master Agent
 - **Creado:** 2026-03-14
-- **Última revisión:** 2026-03-14
-- **Próxima revisión:** Sprint 1 Review (2026-03-28)
+- **Última revisión:** 2026-03-25 (Sprint 18 Cierre)
+- **Próxima revisión:** Sprint 19 Planning
 
 ---
 
-## Registro de riesgos
+## Registro activo
 
-| ID | Descripción | Categoría | Probabilidad | Impacto | Exposición | Estado | Plan de respuesta | Responsable |
-|---|---|---|---|---|---|---|---|---|
-| R-001 | Desincronización de reloj TOTP entre cliente y servidor provoca fallos de validación OTP | Técnico | M | A | A | Abierto | Implementar tolerancia ±1 período (90s) en el algoritmo de validación; documentar en LLD | Tech Lead |
-| R-002 | Pérdida de dispositivo autenticador sin códigos de recuperación activos bloquea la cuenta del usuario | Negocio | B | A | M | Abierto | Forzar descarga obligatoria de 10 códigos backup durante enrolamiento; UX que bloquee el avance si no se confirma descarga | Developer Frontend |
-| R-003 | Brute-force en endpoint `/2fa/verify` con OTPs generados | Técnico | M | A | A | Abierto | Rate limiting: máx 5 intentos fallidos → bloqueo de 15 min; registro en auditoría; alertas automáticas | Developer Backend |
-| R-004 | PO (Seguridad TI) con disponibilidad limitada (50%) retrasa aprobaciones en gates | Recursos | M | M | M | Abierto | Acordar SLA de 24h para US y 48h para HLD; escalar al PM si se supera; establecer delegado en Banco Meridian | Scrum Master |
-| R-005 | Librería `java-totp` no compatible con versión de Spring Boot del proyecto | Técnico | B | A | M | Abierto | Verificar compatibilidad en Sprint 1 Day 1 antes de desarrollar; tener alternativa (Google Authenticator lib) identificada | Developer Backend |
-| R-006 | Almacenamiento de secretos TOTP sin cifrado correcto expone datos sensibles | Técnico | B | A | A | Abierto | Exigir AES-256 para secretos en BD; incluir en Definition of Done; validar en Code Review como BLOQUEANTE | Code Reviewer |
-| R-007 | Cambios de requisitos de normativa PCI-DSS durante el sprint | Externo | B | A | M | Abierto | Monitorear publicaciones PCI-SSC; cualquier cambio pasa por gate de cambio de alcance mid-sprint | Product Owner |
+| ID | Descripción | Categoría | P | I | Exp | Estado | Plan de respuesta | Responsable | Sprint |
+|---|---|---|---|---|---|---|---|---|---|
+| R-016-02 | Safari iOS <16.4 sin soporte Web Push | Externo | A | M | A | **Aceptado** | Fallback SSE in-app operativo — no bloquea funcionalidad crítica. Documentado en FEAT-014. | PO | — |
+| R-019-01 | Rate limiting insuficiente en /cards/{id}/pin | Técnico | B | M | B | **Planificado** | DEBT-031 — Sprint 19. Añadir @RateLimited(maxAttempts=3, window=PT1H) por userId+cardId. | Tech Lead | S19 |
+| R-019-02 | mTLS ausente en CoreBankingAdapter (mock) | Técnico | B | B | B | **Planificado** | DEBT-032 — Pre-producción. Configurar SSLContext + certificados mutuos antes de go-live. | DevOps | Pre-PRD |
+
+---
+
+## Riesgos cerrados
+
+| ID | Descripción | Cerrado en | Resolución |
+|---|---|---|---|
+| R-001 | Desincronización reloj TOTP cliente/servidor | Sprint 1 | Tolerancia ±1 período implementada |
+| R-002 | Pérdida dispositivo autenticador sin códigos backup | Sprint 2 | Descarga obligatoria 10 códigos backup |
+| R-003 | Brute-force endpoint /2fa/verify | Sprint 3 | Rate limiting 5 intentos → bloqueo 15 min |
+| R-004 | PO disponibilidad limitada retrasa gates | Sprint 4 | SLA 24h/48h acordado con Banco Meridian |
+| R-005 | Incompatibilidad librería java-totp / Spring Boot | Sprint 1 | Verificado día 1 — compatible |
+| R-006 | Secretos TOTP sin cifrado en BD | Sprint 2 | AES-256 implementado — ADR-003 |
+| R-007 | Cambios normativa PCI-DSS mid-sprint | Sprint 8 | Sin cambios relevantes en el período |
+| R-015-01 | Scheduler duplicado multi-instancia en scale-out | Sprint 18 | ADR-028 ShedLock implementado y verificado en CI/CD |
+| R-015-02 | NextExecutionDateCalculator incorrecto meses cortos | Sprint 17 | Tests exhaustivos — 100% branch coverage |
+| R-015-03 | Core bancario lento degrada batch scheduler | Sprint 17 | Circuit breaker activo — 5s timeout verificado |
+| R-016-01 | push_subscriptions.auth en claro en BD | Sprint 18 | DEBT-028 cerrada S17 + V18b elimina columnas plain S18 |
+| R-016-05 | >500 SSE concurrentes sin validar | Sprint 17 | Load test Gatling: 512 conc. — p99 145ms |
+| R-018-01 | IDOR en /cards/{id} — acceso a tarjetas ajenas | Sprint 18 | belongsTo(userId) en todos los use-cases + tests integración |
+| R-018-02 | PAN en claro en logs de aplicación | Sprint 18 | maskCardId() en todos los puntos — PCI scan limpio post-deploy |
+
+---
+
+## Evolución de exposición
+
+| Sprint | Riesgos Altos | Riesgos Medios | Riesgos Bajos | Tendencia |
+|---|---|---|---|---|
+| Sprint 15 | 2 | 2 | 1 | ↓ |
+| Sprint 16 | 3 | 1 | 1 | ↑ (DEBT-028 detectado) |
+| Sprint 17 | 2 | 3 | 1 | → (R-016-01 mitigando) |
+| **Sprint 18** | **1** | **0** | **2** | **↓↓ (R-016-01/R-015-01 cerrados)** |
+
+---
+
+## Deuda técnica abierta (referencia)
+
+| ID | Descripción | CVSS/Prioridad | Sprint target |
+|---|---|---|---|
+| DEBT-031 | Rate limiting /cards/{id}/pin | 4.2 MEDIUM | Sprint 19 |
+| DEBT-032 | mTLS CoreBankingAdapter para PRD | 2.7 LOW | Pre-producción |
 
 ---
 
@@ -26,14 +65,12 @@
 
 | Exposición | Acción |
 |---|---|
-| ALTA | Escalar al PM inmediatamente; revisar en cada Daily |
-| MEDIA | Revisar en Sprint Review; monitorear en Daily si hay señales |
-| BAJA | Revisar en Sprint Review |
+| ALTA | Escalar al PM inmediatamente. Revisar en cada Daily. Puede bloquear el sprint. |
+| MEDIA | Revisar en Sprint Review. Monitorear en Daily si hay señales de materialización. |
+| BAJA | Revisar en Sprint Review. Sin acción inmediata requerida. |
 
 ---
 
-## Historial de cambios
-
-| Fecha | Cambio | Autor |
-|---|---|---|
-| 2026-03-14 | Creación inicial con riesgos de FEAT-001 | SOFIA SM Agent |
+*SOFIA Scrum Master Agent — Risk Register actualizado Sprint 18 Cierre*
+*CMMI Level 3 — RSKM SP 1.1 · RSKM SP 2.1 · RSKM SP 3.1*
+*BankPortal — Banco Meridian — 2026-03-25*

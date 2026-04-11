@@ -1,4 +1,6 @@
 ---
+sofia_version: "2.6"
+# updated: 2026-04-02 — version bump SOFIA v2.6
 name: jenkins-agent
 description: >
   Agente especializado en Jenkins para el pipeline de SOFIA. Úsalo SIEMPRE que el agente DevOps necesite:

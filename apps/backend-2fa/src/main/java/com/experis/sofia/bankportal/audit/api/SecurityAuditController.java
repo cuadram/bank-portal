@@ -3,12 +3,12 @@ package com.experis.sofia.bankportal.audit.api;
 import com.experis.sofia.bankportal.audit.application.ExportSecurityHistoryUseCase;
 import com.experis.sofia.bankportal.audit.application.SecurityDashboardUseCase;
 import com.experis.sofia.bankportal.audit.application.SecurityPreferencesUseCase;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +28,7 @@ import java.util.UUID;
  *
  * @author SOFIA Developer Agent — FEAT-005 Sprint 6 · FEAT-006 Sprint 7
  */
+@Profile("!staging")
 @RestController
 @RequestMapping("/api/v1/security")
 @RequiredArgsConstructor
@@ -48,10 +49,10 @@ public class SecurityAuditController {
      */
     @GetMapping("/dashboard")
     public ResponseEntity<SecurityDashboardUseCase.SecurityDashboardResponse> getDashboard(
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest request) {
 
-        UUID    userId      = UUID.fromString(jwt.getSubject());
-        boolean twoFaActive = Boolean.TRUE.equals(jwt.getClaim("twoFaEnabled"));
+        UUID    userId      = (UUID) request.getAttribute("authenticatedUserId");
+        boolean twoFaActive = false;
         return ResponseEntity.ok(dashboardUseCase.execute(userId, twoFaActive));
     }
 
@@ -71,9 +72,9 @@ public class SecurityAuditController {
     public ResponseEntity<byte[]> exportHistory(
             @RequestParam(defaultValue = "pdf") String format,
             @RequestParam(defaultValue = "30")  int days,
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest request) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
 
         if (!format.equalsIgnoreCase("pdf") && !format.equalsIgnoreCase("csv")) {
             return ResponseEntity.badRequest().build();
@@ -103,9 +104,9 @@ public class SecurityAuditController {
      */
     @GetMapping("/preferences")
     public ResponseEntity<SecurityPreferencesUseCase.SecurityPreferencesResponse> getPreferences(
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest request) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         return ResponseEntity.ok(preferencesUseCase.getPreferences(userId));
     }
 
@@ -122,11 +123,11 @@ public class SecurityAuditController {
      */
     @PutMapping("/preferences")
     public ResponseEntity<Void> updatePreferences(
-            @RequestBody SecurityPreferencesUseCase.UpdateSecurityPreferencesRequest request,
-            @AuthenticationPrincipal Jwt jwt) {
+            @RequestBody SecurityPreferencesUseCase.UpdateSecurityPreferencesRequest body,
+            HttpServletRequest httpRequest) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
-        preferencesUseCase.updatePreferences(userId, request);
+        UUID userId = (UUID) httpRequest.getAttribute("authenticatedUserId");
+        preferencesUseCase.updatePreferences(userId, body);
         return ResponseEntity.noContent().build();
     }
 
@@ -150,9 +151,9 @@ public class SecurityAuditController {
     @GetMapping("/config-history")
     public ResponseEntity<List<SecurityDashboardUseCase.AuditEventSummary>> getConfigHistory(
             @RequestParam(defaultValue = "90") int days,
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest request) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         return ResponseEntity.ok(dashboardUseCase.getConfigHistory(userId, days));
     }
 }

@@ -1,52 +1,332 @@
-<div class="profile-container">
-  <!-- Loading skeleton -->
+<!-- ================================================================
+     profile-page.component.html — Mi Perfil rediseñado
+     Layout: Hero card (izquierda) + Stack de cards (derecha)
+     Sprint 22 STG-Verification — BUG-STG-022-003 fix incluido
+     ================================================================ -->
+
+<div class="profile-root">
+
+  <!-- ── Page header ──────────────────────────────────────────── -->
+  <div class="page-header">
+    <h1>Mi Perfil</h1>
+    <p>Gestiona tus datos personales, seguridad y preferencias de la cuenta</p>
+  </div>
+
+  <!-- ── Skeleton loading ─────────────────────────────────────── -->
   <ng-container *ngIf="isLoading">
-    <div class="skeleton skeleton-header"></div>
-    <div class="skeleton skeleton-section"></div>
-    <div class="skeleton skeleton-section"></div>
+    <div class="skeleton-page">
+      <div class="sk-card">
+        <div class="sk sk-avatar"></div>
+        <div class="sk sk-line w80"></div>
+        <div class="sk sk-line w50"></div>
+        <div class="sk sk-line w30"></div>
+        <div class="sk sk-block"></div>
+      </div>
+      <div>
+        <div class="sk-card" style="margin-bottom:20px">
+          <div class="sk sk-line w50" style="height:14px;margin-bottom:16px"></div>
+          <div class="sk sk-block"></div>
+        </div>
+        <div class="sk-card">
+          <div class="sk sk-line w50" style="height:14px;margin-bottom:16px"></div>
+          <div class="sk sk-block"></div>
+        </div>
+      </div>
+    </div>
   </ng-container>
 
-  <!-- Error -->
-  <div *ngIf="errorMsg && !isLoading" class="alert alert-danger">{{ errorMsg }}</div>
+  <!-- ── Error ────────────────────────────────────────────────── -->
+  <div *ngIf="errorMsg && !isLoading" class="alert-error">
+    <span>⚠</span>
+    <span>{{ errorMsg }}</span>
+  </div>
 
-  <!-- Datos cargados -->
-  <ng-container *ngIf="!isLoading && profile">
+  <!-- ── Contenido ────────────────────────────────────────────── -->
+  <div *ngIf="!isLoading && profile" class="profile-grid fade-in">
 
-    <!-- Datos personales -->
-    <section class="profile-section">
-      <h2>Datos personales</h2>
-      <div class="profile-field"><label>Email</label><span>{{ profile.email }}</span></div>
-      <div class="profile-field"><label>Teléfono</label><span>{{ profile.phone || '—' }}</span></div>
-      <div class="profile-field" *ngIf="profile.address">
-        <label>Dirección</label>
-        <span>{{ profile.address.street }}, {{ profile.address.city }} {{ profile.address.postalCode }}</span>
+    <!-- ═══════════════════════════════════════════════════════
+         COLUMNA IZQUIERDA — Hero card
+         ═══════════════════════════════════════════════════════ -->
+    <aside class="hero-card card">
+      <div class="hero-card-inner">
+
+        <!-- Avatar con iniciales -->
+        <div class="avatar">{{ initials }}</div>
+
+        <div class="hero-name">{{ profile.fullName || profile.email }}</div>
+        <div class="hero-email">{{ profile.email }}</div>
+
+        <!-- Badge 2FA -->
+        <span class="badge" [ngClass]="profile.twoFactorEnabled ? 'badge-success' : 'badge-warn'">
+          {{ profile.twoFactorEnabled ? '🔒 2FA Activo' : '⚠ 2FA Inactivo' }}
+        </span>
+
+        <hr class="hero-divider" style="margin-top:16px" />
+
+        <!-- Stats rápidos -->
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-label">Miembro desde</div>
+            <div class="stat-value">{{ profile.memberSince | date:'MM/yyyy' }}</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Sesiones</div>
+            <div class="stat-value">{{ sessions.length }}</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Notificaciones</div>
+            <div class="stat-value" [style.color]="unreadCount > 0 ? 'var(--c-warn)' : 'inherit'">
+              {{ unreadCount > 0 ? unreadCount + ' nuevas' : 'Al día' }}
+            </div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Preferencias</div>
+            <div class="stat-value">{{ notificationPrefs.length }}</div>
+          </div>
+        </div>
+
+        <hr class="hero-divider" />
+
+        <!-- Quick nav -->
+        <div class="hero-actions">
+          <button class="hero-link" (click)="scrollTo('datos')">
+            <span class="link-icon">👤</span> Datos personales
+          </button>
+          <button class="hero-link" (click)="scrollTo('preferencias')">
+            <span class="link-icon">🔔</span> Preferencias
+          </button>
+          <button class="hero-link" (click)="scrollTo('inbox')">
+            <span class="link-icon">📬</span>
+            Notificaciones
+            <span class="counter-badge danger" *ngIf="unreadCount > 0" style="margin-left:auto">{{ unreadCount }}</span>
+          </button>
+          <button class="hero-link" (click)="scrollTo('sesiones')">
+            <span class="link-icon">🖥</span>
+            Sesiones activas
+            <span class="counter-badge" style="margin-left:auto">{{ sessions.length }}</span>
+          </button>
+        </div>
+
       </div>
-      <div class="profile-field"><label>Miembro desde</label><span>{{ profile.memberSince | date:'dd/MM/yyyy' }}</span></div>
-    </section>
+    </aside>
 
-    <!-- Preferencias de notificación -->
-    <section class="profile-section">
-      <h2>Notificaciones</h2>
-      <div *ngFor="let pref of notifications" class="notification-pref">
-        <label>{{ pref.code }}</label>
-        <input type="checkbox" [checked]="pref.enabled"
-               (change)="onToggleNotification(pref.code, $any($event.target).checked)" />
+    <!-- ═══════════════════════════════════════════════════════
+         COLUMNA DERECHA — Stack de cards
+         ═══════════════════════════════════════════════════════ -->
+    <div class="right-col">
+
+      <!-- ── Datos personales ─────────────────────────────── -->
+      <div class="card" id="datos">
+        <div class="card-header">
+          <div class="card-icon">👤</div>
+          <h2>Datos personales</h2>
+        </div>
+        <div class="card-body" style="padding: 0">
+          <div class="data-grid">
+
+            <div class="data-field">
+              <div class="data-label">Nombre completo</div>
+              <div class="data-value">{{ profile.fullName || '—' }}</div>
+            </div>
+
+            <div class="data-field">
+              <div class="data-label">Email</div>
+              <div class="data-value">{{ profile.email }}</div>
+            </div>
+
+            <div class="data-field">
+              <div class="data-label">Teléfono</div>
+              <div class="data-value" [class.empty]="!profile.phone">
+                {{ profile.phone || 'No registrado' }}
+              </div>
+            </div>
+
+            <div class="data-field">
+              <div class="data-label">Miembro desde</div>
+              <div class="data-value">{{ profile.memberSince | date:'dd MMMM yyyy' }}</div>
+            </div>
+
+            <ng-container *ngIf="profile.address">
+              <div class="data-field">
+                <div class="data-label">Dirección</div>
+                <div class="data-value">{{ profile.address.street || '—' }}</div>
+              </div>
+              <div class="data-field">
+                <div class="data-label">Localidad</div>
+                <div class="data-value">
+                  {{ profile.address.city || '—' }}
+                  <span *ngIf="profile.address.postalCode"> · {{ profile.address.postalCode }}</span>
+                </div>
+              </div>
+            </ng-container>
+
+            <div class="data-field" *ngIf="!profile.address">
+              <div class="data-label">Dirección</div>
+              <div class="data-value empty">No registrada</div>
+            </div>
+
+            <div class="data-field">
+              <div class="data-label">Verificación en 2 pasos</div>
+              <div class="data-value">
+                <span class="badge" [ngClass]="profile.twoFactorEnabled ? 'badge-success' : 'badge-warn'">
+                  {{ profile.twoFactorEnabled ? '🔒 Activada' : '⚠ No activada' }}
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
-    </section>
 
-    <!-- Sesiones activas -->
-    <section class="profile-section">
-      <h2>Sesiones activas</h2>
-      <div *ngFor="let session of sessions" class="session-row">
-        <span class="session-agent">{{ session.userAgent }}</span>
-        <span class="session-ip">{{ session.ipAddress }}</span>
-        <span class="session-date">{{ session.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
-        <span *ngIf="session.current" class="badge-current">Sesión actual</span>
-        <button *ngIf="!session.current" (click)="onRevokeSession(session.jti)" class="btn-revoke">
-          Revocar
-        </button>
+      <!-- ── Preferencias de notificación ────────────────── -->
+      <div class="card" id="preferencias">
+        <div class="card-header">
+          <div class="card-icon">🔔</div>
+          <h2>Preferencias de notificación</h2>
+        </div>
+        <div class="card-body" style="padding: 0 20px">
+
+          <div *ngIf="notificationPrefs.length === 0" class="empty-state">
+            <div class="es-icon">🔕</div>
+            <p>No hay preferencias configuradas</p>
+          </div>
+
+          <table class="notif-table" *ngIf="notificationPrefs.length > 0" aria-label="Preferencias de notificación por canal">
+            <thead>
+              <tr>
+                <th class="col-event">Evento</th>
+                <th>Email</th>
+                <th>App</th>
+                <th>Push</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let group of groupedPrefs">
+                <!-- Separador de categoría -->
+                <tr class="notif-category-divider">
+                  <td colspan="4">{{ group.category }}</td>
+                </tr>
+                <!-- Filas de preferencias -->
+                <tr *ngFor="let pref of group.prefs; let i = index">
+                  <td class="col-event">
+                    {{ getNotifLabel(pref.eventType) }}
+                  </td>
+                  <!-- Email -->
+                  <td>
+                    <div class="toggle-wrap">
+                      <label class="toggle" [attr.aria-label]="getNotifLabel(pref.eventType) + ' por email'">
+                        <input type="checkbox"
+                               [checked]="pref.emailEnabled"
+                               (change)="onToggleChannel(pref, 'emailEnabled', $any($event.target).checked)" />
+                        <span class="toggle-track"></span>
+                      </label>
+                    </div>
+                  </td>
+                  <!-- In-App -->
+                  <td>
+                    <div class="toggle-wrap">
+                      <label class="toggle" [attr.aria-label]="getNotifLabel(pref.eventType) + ' en app'">
+                        <input type="checkbox"
+                               [checked]="pref.inAppEnabled"
+                               (change)="onToggleChannel(pref, 'inAppEnabled', $any($event.target).checked)" />
+                        <span class="toggle-track"></span>
+                      </label>
+                    </div>
+                  </td>
+                  <!-- Push -->
+                  <td>
+                    <div class="toggle-wrap">
+                      <label class="toggle" [attr.aria-label]="getNotifLabel(pref.eventType) + ' por push'">
+                        <input type="checkbox"
+                               [checked]="pref.pushEnabled"
+                               (change)="onToggleChannel(pref, 'pushEnabled', $any($event.target).checked)" />
+                        <span class="toggle-track"></span>
+                      </label>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </section>
 
-  </ng-container>
-</div>
+      <!-- ── Notificaciones recibidas (inbox) ─────────────── -->
+      <div class="card" id="inbox">
+        <div class="card-header">
+          <div class="card-icon">📬</div>
+          <h2>Notificaciones recientes</h2>
+          <span class="counter-badge danger" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+        </div>
+
+        <div class="inbox-list" *ngIf="notificationInbox.length > 0">
+          <div *ngFor="let notif of notificationInbox"
+               class="inbox-item"
+               [class.unread]="!notif.read">
+            <div class="inbox-dot" [class.read]="notif.read"></div>
+            <div class="inbox-content">
+              <div class="inbox-title">{{ notif.title }}</div>
+              <div class="inbox-body">{{ notif.body }}</div>
+            </div>
+            <div class="inbox-meta">
+              <div class="inbox-date">{{ notif.createdAt | date:'dd/MM HH:mm' }}</div>
+              <button *ngIf="notif.actionUrl"
+                      class="inbox-action"
+                      (click)="navigateTo(notif.actionUrl)">
+                Ver →
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="inbox-empty" *ngIf="notificationInbox.length === 0">
+          <div style="font-size:32px;margin-bottom:8px">📭</div>
+          No tienes notificaciones recientes
+        </div>
+      </div>
+
+      <!-- ── Sesiones activas ─────────────────────────────── -->
+      <div class="card" id="sesiones">
+        <div class="card-header">
+          <div class="card-icon">🖥</div>
+          <h2>Sesiones activas</h2>
+          <span class="counter-badge" *ngIf="sessions.length > 0">{{ sessions.length }}</span>
+        </div>
+
+        <div class="sessions-list" *ngIf="sessions.length > 0">
+          <div *ngFor="let session of sessions"
+               class="session-item"
+               [class.current]="session.current">
+            <div class="session-icon">
+              {{ session.current ? '✅' : '🖥' }}
+            </div>
+            <div class="session-info">
+              <div class="session-agent">
+                {{ session.userAgent }}
+                <span class="badge badge-success" *ngIf="session.current" style="font-size:10px;margin-left:6px">Actual</span>
+              </div>
+              <div class="session-meta">
+                {{ session.ipAddress }} · {{ session.createdAt | date:'dd/MM/yyyy HH:mm' }}
+              </div>
+            </div>
+            <div class="session-actions">
+              <button *ngIf="!session.current"
+                      class="btn-revoke"
+                      (click)="onRevokeSession(session.jti)"
+                      [attr.aria-label]="'Revocar sesión desde ' + session.ipAddress">
+                Revocar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="sessions.length === 0">
+          <div class="es-icon">🖥</div>
+          <p>No hay sesiones activas</p>
+        </div>
+
+      </div>
+    </div><!-- /right-col -->
+
+  </div><!-- /profile-grid -->
+</div><!-- /profile-root -->

@@ -5,10 +5,10 @@
 import { NgModule }              from '@angular/core';
 import { RouterModule, Routes }  from '@angular/router';
 import { ProfilePageComponent }  from './components/profile-page.component';
-import { authGuard }             from '../../core/guards/auth.guard';
+import { AuthGuard }             from '../../core/guards/auth.guard';
 
 const routes: Routes = [
-  { path: '', component: ProfilePageComponent, canActivate: [authGuard] }
+  { path: '', component: ProfilePageComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({

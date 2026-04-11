@@ -1,0 +1,49 @@
+{
+  "sprint": 22,
+  "feature": "FEAT-020",
+  "release": "v1.22.0",
+  "goal": "Permitir al usuario de Banco Meridian consultar sus prestamos activos, simular nuevas financiaciones y solicitar un prestamo personal de forma digital, con cuadro de amortizacion y cumplimiento PSD2 / Ley 16/2011 de credito al consumo.",
+  "sp_completed": 24,
+  "sp_capacity": 24,
+  "sp_acum": 521,
+  "avg_velocity": 24,
+  "tests_new": 51,
+  "tests_unit": 11,
+  "tests_qa": 40,
+  "coverage_estimated": 88,
+  "defects": 0,
+  "ncs": 0,
+  "gherkin_scenarios": "5/5",
+  "wcag_checks": "2/2",
+  "integration_tests": "3/3",
+  "security_semaphore": "GREEN",
+  "open_debts": [
+    "DEBT-037",
+    "DEBT-044"
+  ],
+  "closed_debts": [
+    "DEBT-040",
+    "DEBT-041",
+    "DEBT-042",
+    "DEBT-043"
+  ],
+  "closed_at": "2026-04-02",
+  "jira_issues": [
+    "SCRUM-114",
+    "SCRUM-115",
+    "SCRUM-116",
+    "SCRUM-117",
+    "SCRUM-118",
+    "SCRUM-119",
+    "SCRUM-120",
+    "SCRUM-121"
+  ],
+  "lessons_learned_sprint": [
+    "LA-022-06",
+    "LA-022-07",
+    "LA-022-08"
+  ],
+  "flyway": "V24",
+  "confluence_hld": "7405570",
+  "repositorio_activo": "JPA-REAL"
+}

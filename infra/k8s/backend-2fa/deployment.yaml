@@ -1,6 +1,6 @@
-# K8s Deployment — bankportal-backend-2fa v1.6.0
-# FEAT-001→006 | Sprint 7 | DEBT-008 + US-403 + US-601 + US-604
-# DevOps Agent — 2026-06-09
+# K8s Deployment — bankportal-backend-2fa v1.15.0
+# FEAT-013 KYC Onboarding | Sprint 15 | RV-020/SAST-001/002
+# DevOps Agent — 2026-03-24
 
 apiVersion: apps/v1
 kind: Deployment
@@ -9,8 +9,8 @@ metadata:
   namespace: bankportal-prod
   labels:
     app: bankportal-2fa
-    version: "v1.6.0"
-    sprint: "sprint-7"
+    version: "v1.15.0"
+    sprint: "sprint-15"
 spec:
   replicas: 2
   strategy:
@@ -25,11 +25,11 @@ spec:
     metadata:
       labels:
         app: bankportal-2fa
-        version: "v1.6.0"
+        version: "v1.15.0"
     spec:
       containers:
         - name: bankportal-2fa
-          image: registry.meridian.internal/bankportal-backend-2fa:v1.6.0
+          image: registry.meridian.internal/bankportal-backend-2fa:v1.15.0
           ports:
             - containerPort: 8080
           env:
@@ -111,6 +111,16 @@ spec:
               value: "https://api.bankportal.meridian.com/v1/sessions/deny"
             - name: UNLOCK_BASE_URL
               value: "https://api.bankportal.meridian.com/v1/account/unlock"
+            # ── KYC Onboarding (FEAT-013 ADR-023) ────────────────────────
+            - name: KYC_STORAGE_PATH
+              value: "/data/kyc-docs"
+            - name: KYC_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef: { name: bankportal-kyc-secrets, key: KYC_ENCRYPTION_KEY }
+            - name: KYC_STORAGE_MAX_FILE_MB
+              value: "10"
+            - name: KYC_AUTO_VALIDATION_ENABLED
+              value: "true"
           livenessProbe:
             httpGet: { path: /health, port: 8080 }
             initialDelaySeconds: 45

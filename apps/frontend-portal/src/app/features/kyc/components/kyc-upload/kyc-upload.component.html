@@ -1,0 +1,43 @@
+<div class="kyc-upload"
+     [class.kyc-upload--dragging]="dragging"
+     (dragover)="onDragOver($event)"
+     (dragleave)="onDragLeave()"
+     (drop)="onDrop($event)"
+     role="region"
+     [attr.aria-label]="label">
+
+  <ng-container *ngIf="!preview && !file">
+    <span class="kyc-upload__icon" aria-hidden="true">&#8679;</span>
+    <p class="kyc-upload__label">{{ label }}</p>
+    <p class="kyc-upload__hint">JPEG, PNG o PDF · máx. 10 MB</p>
+    <label class="kyc-btn kyc-btn--secondary kyc-upload__browse">
+      Seleccionar archivo
+      <input type="file" accept="image/jpeg,image/png,application/pdf"
+             class="kyc-upload__input" (change)="onFileInput($event)"
+             aria-label="Seleccionar archivo de identidad">
+    </label>
+  </ng-container>
+
+  <ng-container *ngIf="preview">
+    <img [src]="preview" alt="Previsualización del documento" class="kyc-upload__preview">
+    <p class="kyc-upload__filename">{{ file?.name }}</p>
+    <label class="kyc-btn kyc-btn--secondary kyc-upload__browse">
+      Cambiar archivo
+      <input type="file" accept="image/jpeg,image/png,application/pdf"
+             class="kyc-upload__input" (change)="onFileInput($event)"
+             aria-label="Cambiar archivo de identidad">
+    </label>
+  </ng-container>
+
+  <ng-container *ngIf="!preview && file">
+    <span class="kyc-upload__icon" aria-hidden="true">&#128196;</span>
+    <p class="kyc-upload__filename">{{ file.name }}</p>
+    <label class="kyc-btn kyc-btn--secondary kyc-upload__browse">
+      Cambiar archivo
+      <input type="file" accept="image/jpeg,image/png,application/pdf"
+             class="kyc-upload__input" (change)="onFileInput($event)"
+             aria-label="Cambiar archivo PDF">
+    </label>
+  </ng-container>
+
+</div>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROTO-FEAT-018 — Exportación Movimientos · BankPortal</title>
+<style>
+  :root {
+    --primary: #1B3E7E;
+    --primary-light: #2952a3;
+    --accent: #C84A14;
+    --success: #2E7D32;
+    --warning: #E65100;
+    --error: #C62828;
+    --bg: #F4F6FB;
+    --surface: #FFFFFF;
+    --surface2: #EEF2FA;
+    --text: #1A1A2E;
+    --text-muted: #6B7A99;
+    --border: #D0D9EE;
+    --radius: 12px;
+    --shadow: 0 4px 24px rgba(27,62,126,0.10);
+    --shadow-modal: 0 8px 40px rgba(27,62,126,0.18);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* TOP NAV */
+  .nav { background: var(--primary); color: #fff; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-logo { font-weight: 700; font-size: 16px; letter-spacing: 1px; }
+  .nav-user { font-size: 13px; opacity: .8; }
+
+  /* MAIN LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+
+  /* ACCOUNT HEADER */
+  .account-card { background: var(--primary); color: #fff; border-radius: var(--radius); padding: 20px 24px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+  .account-iban { font-size: 13px; opacity: .75; margin-bottom: 4px; }
+  .account-balance { font-size: 28px; font-weight: 700; }
+  .account-label { font-size: 12px; opacity: .65; }
+
+  /* MOVEMENTS TABLE */
+  .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .section-title { font-size: 16px; font-weight: 600; color: var(--text); }
+  .btn-export { background: var(--surface); border: 1.5px solid var(--primary); color: var(--primary); padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all .15s; }
+  .btn-export:hover { background: var(--primary); color: #fff; }
+  .btn-export svg { width: 16px; height: 16px; }
+
+  .movements { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .mov-row { display: flex; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--border); gap: 12px; transition: background .1s; }
+  .mov-row:last-child { border-bottom: none; }
+  .mov-row:hover { background: var(--surface2); }
+  .mov-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .mov-info { flex: 1; }
+  .mov-concept { font-size: 14px; font-weight: 500; }
+  .mov-date { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .mov-type-badge { font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 600; }
+  .mov-amount { font-size: 15px; font-weight: 700; text-align: right; }
+  .mov-saldo { font-size: 11px; color: var(--text-muted); text-align: right; margin-top: 2px; }
+  .neg { color: var(--error); }
+  .pos { color: var(--success); }
+  .badge-transfer { background: #E3EEFF; color: #1B3E7E; }
+  .badge-dd { background: #FFF3E0; color: #E65100; }
+  .badge-card { background: #F3E5F5; color: #6A1B9A; }
+  .badge-income { background: #E8F5E9; color: #2E7D32; }
+
+  /* MODAL OVERLAY */
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; align-items: center; justify-content: center; }
+  .overlay.active { display: flex; }
+
+  .modal { background: var(--surface); border-radius: 16px; width: 100%; max-width: 480px; box-shadow: var(--shadow-modal); overflow: hidden; animation: slideIn .2s ease; }
+  @keyframes slideIn { from { transform: translateY(20px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+
+  .modal-header { background: var(--primary); color: #fff; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; }
+  .modal-title { font-size: 16px; font-weight: 700; }
+  .btn-close { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; line-height: 1; opacity: .8; }
+  .btn-close:hover { opacity: 1; }
+
+  .modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+
+  .field-label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+  .field-select, .field-input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; color: var(--text); background: var(--surface); outline: none; transition: border-color .15s; }
+  .field-select:focus, .field-input:focus { border-color: var(--primary); }
+
+  .date-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* CHIPS tipo movimiento */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1.5px solid var(--border); cursor: pointer; background: var(--surface); color: var(--text-muted); transition: all .15s; user-select: none; }
+  .chip.selected { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .chip:hover:not(.selected) { border-color: var(--primary); color: var(--primary); }
+
+  /* PREVIEW COUNT */
+  .preview-box { background: var(--surface2); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; }
+  .preview-count { font-size: 22px; font-weight: 700; color: var(--primary); }
+  .preview-label { font-size: 13px; color: var(--text-muted); }
+  .preview-warn { background: #FFF3E0; border: 1.5px solid var(--warning); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--warning); font-weight: 500; display: none; }
+  .preview-warn.visible { display: block; }
+
+  /* FORMAT SELECTOR */
+  .format-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .format-btn { border: 2px solid var(--border); border-radius: 10px; padding: 14px 10px; cursor: pointer; text-align: center; background: var(--surface); transition: all .15s; }
+  .format-btn:hover { border-color: var(--primary); }
+  .format-btn.selected { border-color: var(--primary); background: #E3EEFF; }
+  .format-btn .fmt-icon { font-size: 26px; display: block; margin-bottom: 6px; }
+  .format-btn .fmt-name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .format-btn .fmt-desc { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+  /* BUTTONS */
+  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+  .btn-cancel { background: none; border: 1.5px solid var(--border); color: var(--text-muted); padding: 10px 20px; border-radius: 8px; font-size: 14px; cursor: pointer; transition: all .15s; }
+  .btn-cancel:hover { border-color: var(--text-muted); }
+  .btn-primary { background: var(--primary); color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s; display: flex; align-items: center; gap: 8px; }
+  .btn-primary:hover { background: var(--primary-light); }
+  .btn-primary:disabled { background: var(--border); cursor: not-allowed; }
+
+  /* LOADING STATE */
+  .loading-modal { text-align: center; padding: 40px 24px; }
+  .spinner { width: 44px; height: 44px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 15px; color: var(--text-muted); }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--success); color: #fff; padding: 14px 20px; border-radius: 10px; font-size: 14px; font-weight: 500; box-shadow: var(--shadow-modal); display: none; align-items: center; gap: 10px; z-index: 200; animation: toastIn .2s ease; }
+  .toast.active { display: flex; }
+  @keyframes toastIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  /* PROTO LABEL */
+  .proto-badge { position: fixed; top: 70px; right: 12px; background: var(--accent); color: #fff; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; letter-spacing: .5px; z-index: 50; }
+</style>
+</head>
+<body>
+
+<div class="proto-badge">PROTOTIPO · FEAT-018 · SOFIA v2.3</div>
+
+<!-- NAV -->
+<nav class="nav" role="navigation">
+  <span class="nav-logo">🏦 BANCO MERIDIAN</span>
+  <span class="nav-user">María García · ES91 2100 0418 ****</span>
+</nav>
+
+<!-- MAIN -->
+<main class="container" role="main">
+
+  <!-- ACCOUNT CARD -->
+  <div class="account-card">
+    <div>
+      <div class="account-iban">ES91 2100 0418 4502 0005 1332</div>
+      <div class="account-balance">12.847,35 €</div>
+      <div class="account-label">Cuenta Corriente Principal</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:12px;opacity:.7">Saldo disponible</div>
+      <div style="font-size:16px;font-weight:600;margin-top:4px">12.847,35 €</div>
+    </div>
+  </div>
+
+  <!-- MOVEMENTS SECTION -->
+  <div class="section-header">
+    <h2 class="section-title">Últimos movimientos</h2>
+    <button class="btn-export" onclick="openModal()" aria-label="Exportar movimientos de la cuenta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+      </svg>
+      Exportar
+    </button>
+  </div>
+
+  <!-- MOVEMENTS LIST -->
+  <div class="movements" role="list" aria-label="Lista de movimientos">
+    <div class="mov-row" role="listitem">
+      <div class="mov-icon" style="background:#E3EEFF">💸</div>
+      <div class="mov-info">
+        <div class="mov-concept">Transferencia a Juan Martínez</div>
+        <div class="mov-date">28 mar 2026 · <span class="mov-type-badge badge-transfer">TRANSFERENCIA</span></div>
+      </div>
+      <div>
+        <div class="mov-amount neg">−250,00 €</div>
+        <div class="mov-saldo">Saldo: 12.847,35 €</div>
+      </div>
+    </div>
+    <div class="mov-row" role="listitem">
+      <div class="mov-icon" style="background:#FFF3E0">🏠</div>
+      <div class="mov-info">
+        <div class="mov-concept">Domiciliación - Gas Natural Fenosa</div>
+        <div class="mov-date">27 mar 2026 · <span class="mov-type-badge badge-dd">DOMICILIACIÓN</span></div>
+      </div>
+      <div>
+        <div class="mov-amount neg">−87,45 €</div>
+        <div class="mov-saldo">Saldo: 13.097,35 €</div>
+      </div>
+    </div>
+    <div class="mov-row" role="listitem">
+      <div class="mov-icon" style="background:#E8F5E9">💰</div>
+      <div class="mov-info">
+        <div class="mov-concept">Nómina Empresa XYZ S.L.</div>
+        <div class="mov-date">25 mar 2026 · <span class="mov-type-badge badge-income">INGRESO</span></div>
+      </div>
+      <div>
+        <div class="mov-amount pos">+2.400,00 €</div>
+        <div class="mov-saldo">Saldo: 13.184,80 €</div>
+      </div>
+    </div>
+    <div class="mov-row" role="listitem">
+      <div class="mov-icon" style="background:#F3E5F5">💳</div>
+      <div class="mov-info">
+        <div class="mov-concept">Pago tarjeta Mercadona *7732</div>
+        <div class="mov-date">24 mar 2026 · <span class="mov-type-badge badge-card">TARJETA</span></div>
+      </div>
+      <div>
+        <div class="mov-amount neg">−63,20 €</div>
+        <div class="mov-saldo">Saldo: 10.784,80 €</div>
+      </div>
+    </div>
+    <div class="mov-row" role="listitem">
+      <div class="mov-icon" style="background:#FFF3E0">💡</div>
+      <div class="mov-info">
+        <div class="mov-concept">Domiciliación - Endesa Electricidad</div>
+        <div class="mov-date">22 mar 2026 · <span class="mov-type-badge badge-dd">DOMICILIACIÓN</span></div>
+      </div>
+      <div>
+        <div class="mov-amount neg">−112,80 €</div>
+        <div class="mov-saldo">Saldo: 10.848,00 €</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- EXPORT MODAL -->
+<div class="overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" onclick="handleOverlayClick(event)">
+  <div class="modal" id="filterPanel">
+
+    <!-- ESTADO: FILTROS -->
+    <div id="stateFilters">
+      <div class="modal-header">
+        <span class="modal-title" id="modalTitle">Exportar movimientos</span>
+        <button class="btn-close" onclick="closeModal()" aria-label="Cerrar panel de exportación">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- CUENTA -->
+        <div>
+          <div class="field-label">Cuenta</div>
+          <select class="field-select" aria-label="Seleccionar cuenta">
+            <option>ES91 2100 0418 4502 0005 1332 — Principal</option>
+            <option>ES76 0049 1813 9126 1045 7822 — Ahorro</option>
+          </select>
+        </div>
+
+        <!-- RANGO FECHAS -->
+        <div>
+          <div class="field-label">Rango de fechas</div>
+          <div class="date-row">
+            <div>
+              <input type="date" class="field-input" id="fechaDesde" value="2026-01-01" min="2025-03-30" max="2026-03-30" onchange="updatePreview()" aria-label="Fecha desde">
+            </div>
+            <div>
+              <input type="date" class="field-input" id="fechaHasta" value="2026-03-30" min="2025-03-30" max="2026-03-30" onchange="updatePreview()" aria-label="Fecha hasta">
+            </div>
+          </div>
+        </div>
+
+        <!-- TIPO MOVIMIENTO -->
+        <div>
+          <div class="field-label">Tipo de movimiento</div>
+          <div class="chips" role="group" aria-label="Tipos de movimiento">
+            <div class="chip selected" onclick="toggleChip(this)" data-val="TODOS">Todos</div>
+            <div class="chip" onclick="toggleChip(this)" data-val="TRANSFERENCIA">Transferencias</div>
+            <div class="chip" onclick="toggleChip(this)" data-val="DOMICILIACION">Domiciliaciones</div>
+            <div class="chip" onclick="toggleChip(this)" data-val="TARJETA">Tarjeta</div>
+            <div class="chip" onclick="toggleChip(this)" data-val="INGRESO">Ingresos</div>
+            <div class="chip" onclick="toggleChip(this)" data-val="COMISION">Comisiones</div>
+          </div>
+        </div>
+
+        <!-- PREVIEW COUNT -->
+        <div>
+          <div class="field-label">Registros a exportar</div>
+          <div class="preview-box" role="status" aria-live="polite">
+            <span class="preview-count" id="previewCount">47</span>
+            <span class="preview-label">movimientos seleccionados</span>
+          </div>
+          <div class="preview-warn" id="previewWarn" role="alert">
+            ⚠️ Demasiados registros. Reduce el rango de fechas para exportar (máx. 500).
+          </div>
+        </div>
+
+        <!-- FORMATO -->
+        <div>
+          <div class="field-label">Formato de exportación</div>
+          <div class="format-row">
+            <div class="format-btn selected" onclick="selectFormat('PDF', this)" role="radio" aria-checked="true" aria-label="Exportar en PDF — Extracto oficial" tabindex="0">
+              <span class="fmt-icon">📄</span>
+              <div class="fmt-name">PDF</div>
+              <div class="fmt-desc">Extracto oficial</div>
+            </div>
+            <div class="format-btn" onclick="selectFormat('CSV', this)" role="radio" aria-checked="false" aria-label="Exportar en CSV — Compatible con Excel" tabindex="0">
+              <span class="fmt-icon">📊</span>
+              <div class="fmt-name">CSV</div>
+              <div class="fmt-desc">Compatible con Excel</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+        <button class="btn-primary" id="btnExport" onclick="startExport()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+          </svg>
+          Exportar
+        </button>
+      </div>
+    </div>
+
+    <!-- ESTADO: CARGANDO -->
+    <div id="stateLoading" style="display:none">
+      <div class="modal-header">
+        <span class="modal-title">Generando extracto...</span>
+      </div>
+      <div class="loading-modal">
+        <div class="spinner" role="progressbar" aria-label="Generando extracto"></div>
+        <p class="loading-text" id="loadingText">Preparando tu extracto PDF...</p>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:8px">Esto puede tardar unos segundos</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toastSuccess" role="alert" aria-live="polite">
+  <span>✅</span>
+  <span id="toastMsg">Extracto descargado correctamente</span>
+</div>
+
+<script>
+  let selectedFormat = 'PDF';
+  let tooManyRecords = false;
+
+  function openModal() {
+    document.getElementById('modalOverlay').classList.add('active');
+    document.querySelector('.btn-close').focus();
+    updatePreview();
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.getElementById('stateFilters').style.display = '';
+    document.getElementById('stateLoading').style.display = 'none';
+    document.querySelector('.btn-export').focus();
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  function toggleChip(el) {
+    const todos = el.dataset.val === 'TODOS';
+    const chips = document.querySelectorAll('.chip');
+    if (todos) {
+      chips.forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+    } else {
+      document.querySelector('[data-val="TODOS"]').classList.remove('selected');
+      el.classList.toggle('selected');
+      const anySelected = [...chips].some(c => c.classList.contains('selected') && c.dataset.val !== 'TODOS');
+      if (!anySelected) document.querySelector('[data-val="TODOS"]').classList.add('selected');
+    }
+    updatePreview();
+  }
+
+  function updatePreview() {
+    const desde = new Date(document.getElementById('fechaDesde').value);
+    const hasta = new Date(document.getElementById('fechaHasta').value);
+    const days = Math.max(0, Math.round((hasta - desde) / 86400000));
+    const selectedChips = [...document.querySelectorAll('.chip.selected')].map(c => c.dataset.val);
+    const isTodos = selectedChips.includes('TODOS');
+    const typeMultiplier = isTodos ? 1 : selectedChips.length / 6;
+    const count = Math.round(days * 1.2 * Math.max(typeMultiplier, 0.15));
+
+    document.getElementById('previewCount').textContent = count;
+    const warn = document.getElementById('previewWarn');
+    tooManyRecords = count > 500;
+    warn.classList.toggle('visible', tooManyRecords);
+    document.getElementById('btnExport').disabled = tooManyRecords;
+
+    const color = tooManyRecords ? 'var(--warning)' : 'var(--primary)';
+    document.getElementById('previewCount').style.color = color;
+  }
+
+  function selectFormat(fmt, el) {
+    selectedFormat = fmt;
+    document.querySelectorAll('.format-btn').forEach(b => {
+      b.classList.remove('selected');
+      b.setAttribute('aria-checked','false');
+    });
+    el.classList.add('selected');
+    el.setAttribute('aria-checked','true');
+  }
+
+  function startExport() {
+    if (tooManyRecords) return;
+    const count = document.getElementById('previewCount').textContent;
+    document.getElementById('stateFilters').style.display = 'none';
+    document.getElementById('stateLoading').style.display = '';
+    document.getElementById('loadingText').textContent = `Preparando tu extracto ${selectedFormat} (${count} registros)...`;
+
+    setTimeout(() => {
+      closeModal();
+      showToast(`Extracto ${selectedFormat} descargado — ${count} movimientos`);
+    }, selectedFormat === 'PDF' ? 2200 : 900);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toastSuccess');
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('active');
+    setTimeout(() => t.classList.remove('active'), 3500);
+  }
+</script>
+</body>
+</html>

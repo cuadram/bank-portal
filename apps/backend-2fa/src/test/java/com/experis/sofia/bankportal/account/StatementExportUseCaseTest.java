@@ -148,23 +148,32 @@ class StatementExportUseCaseTest {
         when(accountRepository.findByMonth(eq(accountId), any(), any(), anyInt()))
                 .thenReturn(List.of(buildTransaction("TX", "10.00", "CARGO")));
 
-        // RV-006: usar assertThat directamente
-        assertThat(useCase.export(userId, accountId, 2026, 1, "xlsx"))
+        // Sin @SpringBootTest @Async no actua — excepcion directa o en future
+        try {
+            var future = useCase.export(userId, accountId, 2026, 1, "xlsx");
+            assertThat(future)
                 .failsWithin(Duration.ofSeconds(3))
                 .withThrowableOfType(ExecutionException.class)
-                .withCauseInstanceOf(IllegalArgumentException.class)
-                .withMessageContaining("xlsx");
+                .withCauseInstanceOf(IllegalArgumentException.class);
+        } catch (IllegalArgumentException e) {
+            assertThat(e.getMessage()).contains("xlsx");
+        }
     }
 
     @Test
     @DisplayName("US-704: cuenta ajena lanza IllegalArgumentException")
     void export_foreignAccount_throwsIllegalArgument() {
-        UUID otherAccount = UUID.randomUUID(); // no está en la lista del usuario
+        UUID otherAccount = UUID.randomUUID(); // no pertenece al usuario
 
-        assertThat(useCase.export(userId, otherAccount, 2026, 1, "csv"))
+        try {
+            var future = useCase.export(userId, otherAccount, 2026, 1, "csv");
+            assertThat(future)
                 .failsWithin(Duration.ofSeconds(3))
                 .withThrowableOfType(ExecutionException.class)
                 .withCauseInstanceOf(IllegalArgumentException.class);
+        } catch (IllegalArgumentException e) {
+            assertThat(e.getMessage()).contains("no pertenece");
+        }
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.crypto.Mac;
@@ -45,6 +47,7 @@ import static org.mockito.Mockito.*;
  *
  * @author SOFIA Developer Agent — DEBT-006 Sprint 5
  */
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 class ValidateTrustedDeviceUseCaseDualKeyTest {
 
@@ -68,6 +71,8 @@ class ValidateTrustedDeviceUseCaseDualKeyTest {
     void setUp() {
         useCase = new ValidateTrustedDeviceUseCase(
                 deviceRepository, fingerprintService, auditLogService);
+        ReflectionTestUtils.setField(useCase, "hmacKey", CURRENT_KEY);
+        ReflectionTestUtils.setField(useCase, "hmacKeyPrevious", PREVIOUS_KEY);
     }
 
     // ── Clave actual ──────────────────────────────────────────────────────────

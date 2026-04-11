@@ -1,4 +1,6 @@
 ---
+sofia_version: "2.6"
+# updated: 2026-04-02 — version bump SOFIA v2.6
 name: developer-core
 description: >
   Base compartida de todos los agentes desarrolladores de SOFIA — Software Factory
@@ -23,6 +25,43 @@ Para convenciones específicas de cada stack, leer el reference file correspondi
 - Angular → leer `references/angular.md`
 - React → leer `references/react.md`
 - Node.js → leer `references/nodejs.md`
+
+---
+
+## Gate G-4b — Verificación de integración (OBLIGATORIO antes de pasar a G-5)
+
+Derivado del post-mortem STG v1.19.0. Antes de entregar el output a Code Review,
+el Developer DEBE verificar que el sistema integrado funciona:
+
+```bash
+# PASO 1: Build completo sin cache
+docker compose build --no-cache
+# Exit code != 0 -> BLOQUEANTE, no pasar a G-5
+
+# PASO 2: Levantar el stack
+docker compose up -d
+sleep 30  # esperar a que el backend esté healthy
+
+# PASO 3: Health check
+curl -f http://localhost:8181/actuator/health
+# Debe devolver {"status":"UP"}
+
+# PASO 4: Smoke test del sprint
+chmod +x infra/compose/smoke-test-v${VERSION}.sh
+./infra/compose/smoke-test-v${VERSION}.sh
+# Debe terminar con "0 FAIL"
+```
+
+Si cualquier paso falla -> corregir ANTES de pasar a G-5 (Code Review).
+
+Evidencia obligatoria a incluir en el output del Developer:
+```
+## Gate G-4b — Verificación de integración
+- docker compose build: [OK | ERROR]
+- backend /actuator/health: [UP | DOWN]
+- smoke test [VERSION]: [X/Y PASS | FAIL]
+- repositorio activo en STG: [JPA-REAL | MOCK]
+```
 
 ---
 

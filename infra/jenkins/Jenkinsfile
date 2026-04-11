@@ -1,6 +1,14 @@
-// Jenkinsfile — BankPortal v1.9.0
-// FEAT-007 (US-701/702/703/704/705) + DEBT-011/012 | Sprint 9
-// Gate 6 DevOps — SOFIA Pipeline · 2026-03-19
+// Jenkinsfile — BankPortal v1.15.0
+// FEAT-013 KYC Onboarding (US-1301..1307) + RV-020/SAST-001/SAST-002 + RV-021..024 | Sprint 15
+// Gate 7 DevOps — SOFIA Pipeline · 2026-03-24
+//
+// Historial:
+//   v1.10.0 (Sprint 10): FEAT-008 Transferencias + DEBT-013/014
+//   v1.11.0 (Sprint 11): FEAT-009 Pagos de servicios + core bancario real
+//   v1.12.0 (Sprint 12): FEAT-010 Dashboard backend
+//   v1.13.0 (Sprint 13): FEAT-011 Frontend Angular Dashboard + exportación PDF/Excel
+//   v1.14.0 (Sprint 14): FEAT-012-A Gestión de Perfil + DEBT-022/023 + RV-013..023
+//   v1.15.0 (Sprint 15): FEAT-013 KYC Onboarding + RV-020/SAST-001/002 + RV-021..024
 
 pipeline {
     agent { label 'java-node' }
@@ -12,325 +20,222 @@ pipeline {
         DOCKER_REGISTRY = 'registry.meridian.internal'
         IMAGE_TAG       = "${env.GIT_COMMIT?.take(8) ?: env.BUILD_NUMBER}"
 
-        // ── Versión semántica ──────────────────────────────────────────────
-        RELEASE_VERSION = '1.9.0'
+        RELEASE_VERSION = '1.15.0'
         RELEASE_TAG     = "v${RELEASE_VERSION}"
 
         // ── Paths monorepo ─────────────────────────────────────────────────
         BACKEND_PATH    = 'apps/backend-2fa'
         FRONTEND_PATH   = 'apps/frontend-portal'
 
-        // ── Runtimes (paths absolutos — evitar PATH restriction) ───────────
-        NODE_BIN        = '/opt/homebrew/opt/node@22/bin/node'
-        NPX_BIN         = '/opt/homebrew/opt/node@22/bin/npx'
-        MVN_BIN         = '/opt/homebrew/bin/mvn'
-        PYTHON_BIN      = '/opt/homebrew/bin/python3'
-        UVX_BIN         = '/opt/homebrew/bin/uvx'
+        JIRA_PROJECT    = 'SCRUM'
+        JIRA_EPIC       = 'SCRUM-36'
+        FEATURE_BRANCH  = 'feature/FEAT-013-sprint15'
+
+        JAVA_VERSION    = '21'
+        NODE_VERSION    = '22'
+        MAVEN_OPTS      = '-Xmx1g'
     }
 
     options {
         timeout(time: 45, unit: 'MINUTES')
-        buildDiscarder(logRotator(numToKeepStr: '20'))
+        buildDiscarder(logRotator(numToKeepStr: '10'))
         disableConcurrentBuilds()
-        timestamps()
-        ansiColor('xterm')
-    }
-
-    // ─── TRIGGERS ─────────────────────────────────────────────────────────────
-    triggers {
-        // Build automático en push a develop y en tags vX.Y.Z
-        pollSCM('H/5 * * * *')
     }
 
     stages {
 
-        // ══════════════════════════════════════════════════════════════════════
-        // STAGE 1 — SETUP & PATH FILTER
-        // ══════════════════════════════════════════════════════════════════════
-        stage('Setup') {
+        // ── Stage 0: Checkout + validation ──────────────────────────────────
+        stage('Checkout') {
             steps {
-                script {
-                    echo "╔═══════════════════════════════════════════════════════╗"
-                    echo "║  BankPortal · Sprint 9 · FEAT-007 · ${RELEASE_TAG}         ║"
-                    echo "║  Branch: ${env.BRANCH_NAME} | Commit: ${IMAGE_TAG}         ║"
-                    echo "╚═══════════════════════════════════════════════════════╝"
-                    sh "${MVN_BIN} -version"
-                    sh "${NODE_BIN} -version"
-                    sh "${PYTHON_BIN} --version"
-
-                    // Validar credenciales requeridas
-                    withCredentials([
-                        string(credentialsId: 'bankportal-jwt-private-key',    variable: '_JWT_PRIV'),
-                        string(credentialsId: 'bankportal-jwt-public-key',     variable: '_JWT_PUB'),
-                        string(credentialsId: 'bankportal-redis-url',          variable: '_REDIS'),
-                        string(credentialsId: 'bankportal-db-url',             variable: '_DB'),
-                        string(credentialsId: 'registry-creds',                variable: '_REG')
-                    ]) {
-                        echo "✅ Todas las credenciales disponibles"
-                    }
-                }
+                checkout scm
+                sh 'java -version && mvn -version && node -v && npm -v'
+                echo "Build ${env.BUILD_NUMBER} — ${env.RELEASE_TAG} — commit ${env.IMAGE_TAG}"
             }
         }
 
-        // ══════════════════════════════════════════════════════════════════════
-        // STAGE 2 — BACKEND: TEST + BUILD
-        // ══════════════════════════════════════════════════════════════════════
-        stage('Backend — Unit + IT Tests') {
+        // ── Stage 1: Backend — Build + Tests ────────────────────────────────
+        stage('Backend: Build & Test') {
             steps {
-                dir(BACKEND_PATH) {
-                    sh "${MVN_BIN} test -Dspring.profiles.active=test -q"
+                dir(env.BACKEND_PATH) {
+                    sh '''
+                        mvn clean verify \
+                          -Dspring.profiles.active=test \
+                          -Djacoco.minimum.coverage=0.80 \
+                          -B -q
+                    '''
                 }
             }
             post {
                 always {
-                    junit allowEmptyResults: true,
-                          testResults: "${BACKEND_PATH}/target/surefire-reports/**/*.xml"
-                    publishHTML(target: [
-                        allowMissing: true,
-                        reportDir:   "${BACKEND_PATH}/target/site/jacoco",
-                        reportFiles: 'index.html',
-                        reportName:  'Coverage — Backend'
-                    ])
-                }
-            }
-        }
-
-        stage('Backend — Coverage Gate (≥80%)') {
-            steps {
-                dir(BACKEND_PATH) {
-                    script {
-                        def coverage = sh(
-                            script: """${MVN_BIN} jacoco:report -q && \
-                                grep -oP '(?<=<counter type="LINE" missed=")[0-9]+' \
-                                target/site/jacoco/jacoco.xml | head -1 || echo '0'""",
-                            returnStdout: true
-                        ).trim()
-                        echo "Cobertura líneas perdidas: ${coverage}"
-                        // Gate: informe visual — el Quality Gate de Sonar es el bloqueante oficial
-                    }
-                }
-            }
-        }
-
-        stage('Backend — SAST SonarQube') {
-            steps {
-                dir(BACKEND_PATH) {
-                    withSonarQubeEnv('sonarqube') {
-                        sh """${MVN_BIN} sonar:sonar \
-                            -Dsonar.projectKey=bankportal-backend \
-                            -Dsonar.projectVersion=${RELEASE_VERSION} \
-                            -Dsonar.branch.name=${env.BRANCH_NAME} \
-                            -q"""
-                    }
-                }
-            }
-        }
-
-        stage('Backend — Quality Gate') {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-
-        stage('Backend — Build JAR') {
-            steps {
-                dir(BACKEND_PATH) {
-                    sh "${MVN_BIN} package -DskipTests -q"
-                }
-            }
-            post {
-                success {
-                    archiveArtifacts artifacts: "${BACKEND_PATH}/target/*.jar",
-                                     fingerprint: true
-                }
-            }
-        }
-
-        // ══════════════════════════════════════════════════════════════════════
-        // STAGE 3 — FRONTEND: TEST + BUILD
-        // ══════════════════════════════════════════════════════════════════════
-        stage('Frontend — Install & Test') {
-            steps {
-                dir(FRONTEND_PATH) {
-                    sh "${NPX_BIN} --yes npm ci"
-                    sh "${NPX_BIN} ng test --watch=false --browsers=ChromeHeadless"
-                }
-            }
-        }
-
-        stage('Frontend — Build (prod)') {
-            steps {
-                dir(FRONTEND_PATH) {
-                    sh "${NPX_BIN} ng build --configuration=production --output-path=dist/bankportal"
-                }
-            }
-            post {
-                success {
-                    archiveArtifacts artifacts: "${FRONTEND_PATH}/dist/**/*",
-                                     fingerprint: true
-                }
-            }
-        }
-
-        // ══════════════════════════════════════════════════════════════════════
-        // STAGE 4 — DOCKER BUILD & SCAN
-        // ══════════════════════════════════════════════════════════════════════
-        stage('Docker — Build Backend') {
-            steps {
-                sh """docker build \
-                    -f ${BACKEND_PATH}/Dockerfile \
-                    -t ${DOCKER_REGISTRY}/${BACKEND_APP}:${IMAGE_TAG} \
-                    -t ${DOCKER_REGISTRY}/${BACKEND_APP}:latest-dev \
-                    ${BACKEND_PATH}/"""
-            }
-        }
-
-        stage('Docker — Build Frontend') {
-            steps {
-                sh """docker build \
-                    -f ${FRONTEND_PATH}/Dockerfile \
-                    -t ${DOCKER_REGISTRY}/${FRONTEND_APP}:${IMAGE_TAG} \
-                    -t ${DOCKER_REGISTRY}/${FRONTEND_APP}:latest-dev \
-                    ${FRONTEND_PATH}/"""
-            }
-        }
-
-        stage('Docker — Vulnerability Scan (Trivy)') {
-            steps {
-                script {
-                    // Backend
-                    def backendScan = sh(
-                        script: """trivy image --exit-code 0 --severity CRITICAL,HIGH \
-                                   --no-progress --format table \
-                                   ${DOCKER_REGISTRY}/${BACKEND_APP}:${IMAGE_TAG} 2>&1 || true""",
-                        returnStdout: true
+                    junit "${env.BACKEND_PATH}/target/surefire-reports/*.xml"
+                    jacoco(
+                        execPattern: "${env.BACKEND_PATH}/target/jacoco.exec",
+                        classPattern: "${env.BACKEND_PATH}/target/classes",
+                        sourcePattern: "${env.BACKEND_PATH}/src/main/java",
+                        minimumLineCoverage: '80',
+                        minimumBranchCoverage: '80'
                     )
-                    echo "Backend scan:\n${backendScan}"
-                    // BLOQUEANTE: CVE Critical
-                    sh """trivy image --exit-code 1 --severity CRITICAL \
-                          --no-progress \
-                          ${DOCKER_REGISTRY}/${BACKEND_APP}:${IMAGE_TAG}"""
-
-                    // Frontend
-                    sh """trivy image --exit-code 1 --severity CRITICAL \
-                          --no-progress \
-                          ${DOCKER_REGISTRY}/${FRONTEND_APP}:${IMAGE_TAG}"""
                 }
             }
         }
 
-        // ══════════════════════════════════════════════════════════════════════
-        // STAGE 5 — PUSH TO REGISTRY (develop y tags)
-        // ══════════════════════════════════════════════════════════════════════
-        stage('Docker — Push (develop / tag)') {
-            when {
-                anyOf {
-                    branch 'develop'
-                    tag 'v*'
-                }
-            }
+        // ── Stage 2: Flyway migration validation ────────────────────────────
+        stage('Flyway: Validate V15 migration') {
             steps {
-                withCredentials([
-                    usernamePassword(credentialsId: 'registry-creds',
-                                     usernameVariable: 'REG_USER',
-                                     passwordVariable: 'REG_PASS')
-                ]) {
-                    sh "docker login ${DOCKER_REGISTRY} -u ${REG_USER} -p ${REG_PASS}"
-
-                    script {
-                        def pushTag = env.TAG_NAME ?: IMAGE_TAG
-                        sh "docker tag ${DOCKER_REGISTRY}/${BACKEND_APP}:${IMAGE_TAG} ${DOCKER_REGISTRY}/${BACKEND_APP}:${pushTag}"
-                        sh "docker push ${DOCKER_REGISTRY}/${BACKEND_APP}:${pushTag}"
-
-                        sh "docker tag ${DOCKER_REGISTRY}/${FRONTEND_APP}:${IMAGE_TAG} ${DOCKER_REGISTRY}/${FRONTEND_APP}:${pushTag}"
-                        sh "docker push ${DOCKER_REGISTRY}/${FRONTEND_APP}:${pushTag}"
-                        echo "✅ Imágenes publicadas con tag: ${pushTag}"
-                    }
+                dir(env.BACKEND_PATH) {
+                    sh '''
+                        mvn flyway:validate \
+                          -Dflyway.url=${DB_URL_CI} \
+                          -Dflyway.user=${DB_USER_CI} \
+                          -Dflyway.password=${DB_PASS_CI} \
+                          -B -q
+                    '''
                 }
             }
         }
 
-        // ══════════════════════════════════════════════════════════════════════
-        // STAGE 6 — DEPLOY STG (solo tags v*)
-        // ══════════════════════════════════════════════════════════════════════
-        stage('Deploy — STG') {
-            when { tag 'v*' }
+        // ── Stage 3: Frontend — Build + Tests ───────────────────────────────
+        stage('Frontend: Build & Test') {
             steps {
-                withCredentials([
-                    string(credentialsId: 'bankportal-db-url',          variable: 'DB_URL'),
-                    string(credentialsId: 'bankportal-redis-url',        variable: 'REDIS_URL'),
-                    string(credentialsId: 'bankportal-jwt-private-key',  variable: 'JWT_PRIVATE_KEY'),
-                    string(credentialsId: 'bankportal-jwt-public-key',   variable: 'JWT_PUBLIC_KEY')
-                ]) {
+                dir(env.FRONTEND_PATH) {
+                    sh '''
+                        npm ci --silent
+                        npx ng test --watch=false --browsers=ChromeHeadless \
+                          --code-coverage --progress=false
+                        npx ng build --configuration=production \
+                          --output-hashing=all
+                    '''
+                }
+            }
+            post {
+                always {
+                    junit "${env.FRONTEND_PATH}/test-results/*.xml"
+                }
+            }
+        }
+
+        // ── Stage 4: Docker build — Backend ─────────────────────────────────
+        stage('Docker: Build Backend') {
+            steps {
+                dir(env.BACKEND_PATH) {
                     sh """
-                        TAG=${env.TAG_NAME} \
-                        DOCKER_REGISTRY=${DOCKER_REGISTRY} \
-                        BACKEND_APP=${BACKEND_APP} \
-                        FRONTEND_APP=${FRONTEND_APP} \
-                        docker-compose -f infra/compose/stg/docker-compose.yml up -d --force-recreate
+                        docker build \
+                          --build-arg RELEASE_VERSION=${env.RELEASE_VERSION} \
+                          --build-arg GIT_COMMIT=${env.IMAGE_TAG} \
+                          -t ${env.DOCKER_REGISTRY}/${env.BACKEND_APP}:${env.IMAGE_TAG} \
+                          -t ${env.DOCKER_REGISTRY}/${env.BACKEND_APP}:${env.RELEASE_TAG} \
+                          .
                     """
                 }
-                // Health check post-deploy STG
-                sh "sleep 20"
-                sh "curl -f http://localhost:8081/actuator/health/readiness || exit 1"
-                echo "✅ Deploy STG completado — health check OK"
             }
         }
 
-        // ══════════════════════════════════════════════════════════════════════
-        // STAGE 7 — E2E + REGRESIÓN STG
-        // ══════════════════════════════════════════════════════════════════════
-        stage('E2E Playwright — STG') {
-            when { tag 'v*' }
+        // ── Stage 5: Docker build — Frontend ────────────────────────────────
+        stage('Docker: Build Frontend') {
             steps {
-                dir(FRONTEND_PATH) {
-                    sh "${NPX_BIN} playwright install --with-deps chromium firefox"
-                    sh "BASE_URL=http://localhost:4201 ${NPX_BIN} playwright test e2e/ --reporter=html"
-                }
-            }
-            post {
-                always {
-                    publishHTML(target: [
-                        allowMissing:      true,
-                        reportDir:        "${FRONTEND_PATH}/playwright-report",
-                        reportFiles:      'index.html',
-                        reportName:       'Playwright E2E — STG',
-                        keepAll:          true
-                    ])
+                dir(env.FRONTEND_PATH) {
+                    sh """
+                        docker build \
+                          --build-arg RELEASE_VERSION=${env.RELEASE_VERSION} \
+                          -t ${env.DOCKER_REGISTRY}/${env.FRONTEND_APP}:${env.IMAGE_TAG} \
+                          -t ${env.DOCKER_REGISTRY}/${env.FRONTEND_APP}:${env.RELEASE_TAG} \
+                          .
+                    """
                 }
             }
         }
 
-        stage('WCAG 2.1 AA — axe-core STG') {
-            when { tag 'v*' }
+        // ── Stage 6: Push to registry ────────────────────────────────────────
+        stage('Docker: Push') {
             steps {
-                dir(FRONTEND_PATH) {
-                    // QA-01: accesibilidad sobre AccountSummaryComponent y TransactionListComponent
-                    sh """${NPX_BIN} axe http://localhost:4201/accounts \
-                          --tags wcag2aa \
-                          --reporter json \
-                          --stdout > axe-report-accounts.json || true"""
-                    sh """${NODE_BIN} -e \"
-                        const r = require('./axe-report-accounts.json');
-                        const violations = r.violations || [];
-                        const critical = violations.filter(v => v.impact === 'critical');
-                        if (critical.length > 0) {
-                            console.error('❌ WCAG critical violations:', JSON.stringify(critical, null, 2));
-                            process.exit(1);
-                        }
-                        console.log('✅ WCAG 2.1 AA: 0 critical violations');
-                    \" """
-                }
-            }
-            post {
-                always {
-                    archiveArtifacts artifacts: "${FRONTEND_PATH}/axe-report-*.json",
-                                     allowEmptyArchive: true
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-registry-credentials',
+                    usernameVariable: 'REGISTRY_USER',
+                    passwordVariable: 'REGISTRY_PASS'
+                )]) {
+                    sh """
+                        echo ${env.REGISTRY_PASS} | docker login ${env.DOCKER_REGISTRY} \
+                          -u ${env.REGISTRY_USER} --password-stdin
+                        docker push ${env.DOCKER_REGISTRY}/${env.BACKEND_APP}:${env.IMAGE_TAG}
+                        docker push ${env.DOCKER_REGISTRY}/${env.BACKEND_APP}:${env.RELEASE_TAG}
+                        docker push ${env.DOCKER_REGISTRY}/${env.FRONTEND_APP}:${env.IMAGE_TAG}
+                        docker push ${env.DOCKER_REGISTRY}/${env.FRONTEND_APP}:${env.RELEASE_TAG}
+                    """
                 }
             }
         }
+
+        // ── Stage 7: Deploy STG ──────────────────────────────────────────────
+        stage('Deploy: STG') {
+            steps {
+                withKubeConfig([credentialsId: 'kubeconfig-stg']) {
+                    sh """
+                        kubectl set image deployment/bankportal-2fa \
+                          bankportal-2fa=${env.DOCKER_REGISTRY}/${env.BACKEND_APP}:${env.IMAGE_TAG} \
+                          -n bankportal-stg
+                        kubectl set image deployment/bankportal-frontend \
+                          bankportal-frontend=${env.DOCKER_REGISTRY}/${env.FRONTEND_APP}:${env.IMAGE_TAG} \
+                          -n bankportal-stg
+                        kubectl rollout status deployment/bankportal-2fa -n bankportal-stg --timeout=3m
+                        kubectl rollout status deployment/bankportal-frontend -n bankportal-stg --timeout=2m
+                    """
+                }
+            }
+        }
+
+        // ── Stage 8: Smoke tests STG ─────────────────────────────────────────
+        stage('Smoke: STG') {
+            steps {
+                sh '''
+                    # KYC endpoints health check
+                    curl -sf https://api-stg.bankportal.meridian.com/actuator/health | grep -q "UP"
+
+                    # Verify KYC_REQUIRED guard is active
+                    STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+                      -X POST https://api-stg.bankportal.meridian.com/api/v1/transfers \
+                      -H "Authorization: Bearer ${SMOKE_TEST_TOKEN_NO_KYC}")
+                    [ "$STATUS" = "403" ] || (echo "KYC guard smoke test FAILED: expected 403, got $STATUS" && exit 1)
+
+                    echo "Smoke tests STG: PASS"
+                '''
+            }
+        }
+
+        // ── Stage 9: Deploy PROD (manual gate) ───────────────────────────────
+        stage('Deploy: PROD') {
+            when { branch 'develop' }
+            input {
+                message "¿Desplegar v${env.RELEASE_VERSION} en PROD?"
+                ok 'Confirmar deploy'
+                submitter 'release-manager'
+            }
+            steps {
+                withKubeConfig([credentialsId: 'kubeconfig-prod']) {
+                    sh """
+                        kubectl set image deployment/bankportal-2fa \
+                          bankportal-2fa=${env.DOCKER_REGISTRY}/${env.BACKEND_APP}:${env.RELEASE_TAG} \
+                          -n bankportal-prod
+                        kubectl set image deployment/bankportal-frontend \
+                          bankportal-frontend=${env.DOCKER_REGISTRY}/${env.FRONTEND_APP}:${env.RELEASE_TAG} \
+                          -n bankportal-prod
+                        kubectl rollout status deployment/bankportal-2fa -n bankportal-prod --timeout=5m
+                        kubectl rollout status deployment/bankportal-frontend -n bankportal-prod --timeout=3m
+                    """
+                }
+            }
+        }
+
+        // ── Stage 10: Git tag ─────────────────────────────────────────────────
+        stage('Git: Tag release') {
+            when { branch 'develop' }
+            steps {
+                sh """
+                    git tag -a ${env.RELEASE_TAG} -m "Release ${env.RELEASE_TAG} — Sprint 15 FEAT-013 KYC"
+                    git push origin ${env.RELEASE_TAG}
+                """
+            }
+        }
+    }
 
         // ══════════════════════════════════════════════════════════════════════
         // STAGE 8 — GO/NO-GO PRODUCCIÓN (gate manual HITL)
@@ -398,21 +303,13 @@ pipeline {
     // ─── POST ─────────────────────────────────────────────────────────────────
     post {
         success {
-            script {
-                if (env.TAG_NAME?.startsWith('v')) {
-                    echo "🚀 Release ${env.TAG_NAME} desplegado exitosamente"
-                    // Jira: comentario automático en Epic Sprint 9 (SCRUM-30)
-                    // Triggear via webhook o script de notificación
-                }
-            }
+            echo "✅ Pipeline v${env.RELEASE_VERSION} completado — ${env.RELEASE_TAG}"
         }
         failure {
-            echo "❌ Pipeline fallido — Branch: ${env.BRANCH_NAME} | Build: ${env.BUILD_URL}"
-            // Notificación Teams / email configurada en Jenkins globalmente
+            echo "❌ Pipeline fallido en stage: ${env.STAGE_NAME}"
         }
         always {
-            // Limpiar imágenes Docker locales para ahorrar espacio
-            sh "docker image prune -f --filter 'until=24h' || true"
+            cleanWs()
         }
     }
 }

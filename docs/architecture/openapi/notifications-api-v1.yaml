@@ -1,0 +1,463 @@
+openapi: "3.0.3"
+info:
+  title: BankPortal — Notifications API
+  version: "1.0.0"
+  description: |
+    API REST para el módulo de Notificaciones Push & In-App — FEAT-014.
+    Cubre: preferencias de canal, historial de notificaciones, streaming SSE
+    y gestión de suscripciones Web Push (VAPID).
+  contact:
+    name: SOFIA Software Factory — Experis
+    email: sofia@experis.com
+
+servers:
+  - url: https://api.bankportal.bancomeridian.es/api/v1
+    description: Producción
+  - url: http://localhost:8080/api/v1
+    description: Desarrollo local
+
+tags:
+  - name: preferences
+    description: Gestión de preferencias de notificación por canal
+  - name: history
+    description: Historial de notificaciones y gestión de estado de lectura
+  - name: stream
+    description: Stream SSE de notificaciones en tiempo real
+  - name: push
+    description: Gestión de suscripciones Web Push (VAPID)
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    NotificationCategory:
+      type: string
+      enum: [TRANSACTION, SECURITY, KYC, SYSTEM, ALL]
+
+    NotificationSeverity:
+      type: string
+      enum: [INFO, HIGH]
+
+    NotificationEventType:
+      type: string
+      enum:
+        - TRANSFER_COMPLETED
+        - TRANSFER_RECEIVED
+        - PAYMENT_COMPLETED
+        - BILL_PAID
+        - SECURITY_NEW_DEVICE
+        - SECURITY_PASSWORD_CHANGED
+        - SECURITY_2FA_FAILED
+        - SECURITY_PHONE_CHANGED
+        - KYC_APPROVED
+        - KYC_REJECTED
+
+    NotificationDto:
+      type: object
+      required: [id, type, category, title, body, read, severity, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          $ref: '#/components/schemas/NotificationEventType'
+        category:
+          $ref: '#/components/schemas/NotificationCategory'
+        title:
+          type: string
+          example: "Transferencia enviada"
+        body:
+          type: string
+          example: "250.00€ a IBAN ES76 0000 1234 5678 9012 3456"
+        read:
+          type: boolean
+        readAt:
+          type: string
+          format: date-time
+          nullable: true
+        severity:
+          $ref: '#/components/schemas/NotificationSeverity'
+        createdAt:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          additionalProperties: true
+          nullable: true
+          example: { "amount": 250.00, "currency": "EUR", "iban": "ES76..." }
+
+    PageNotificationDto:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationDto'
+        totalElements:
+          type: integer
+          example: 50
+        totalPages:
+          type: integer
+          example: 3
+        number:
+          type: integer
+          example: 0
+        size:
+          type: integer
+          example: 20
+
+    NotificationPreferenceDto:
+      type: object
+      required: [eventType, emailEnabled, pushEnabled, inAppEnabled]
+      properties:
+        eventType:
+          $ref: '#/components/schemas/NotificationEventType'
+        emailEnabled:
+          type: boolean
+        pushEnabled:
+          type: boolean
+        inAppEnabled:
+          type: boolean
+
+    PreferencePatchRequest:
+      type: object
+      required: [eventType]
+      properties:
+        eventType:
+          $ref: '#/components/schemas/NotificationEventType'
+        emailEnabled:
+          type: boolean
+        pushEnabled:
+          type: boolean
+        inAppEnabled:
+          type: boolean
+
+    PushSubscribeRequest:
+      type: object
+      required: [endpoint, p256dh, auth]
+      properties:
+        endpoint:
+          type: string
+          format: uri
+          example: "https://fcm.googleapis.com/fcm/send/..."
+        p256dh:
+          type: string
+          example: "BEl62iUYgUivxIkv69yViEu..."
+        auth:
+          type: string
+          example: "HTk8L7yUlNb..."
+        userAgent:
+          type: string
+          example: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120..."
+
+    PushSubscribeResponse:
+      type: object
+      properties:
+        subscriptionId:
+          type: string
+          format: uuid
+
+    UnreadCountResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 3
+
+    MarkAllReadResponse:
+      type: object
+      properties:
+        markedCount:
+          type: integer
+          example: 12
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+security:
+  - BearerAuth: []
+
+paths:
+
+  # ─────────────────────────────────────────
+  # PREFERENCES
+  # ─────────────────────────────────────────
+
+  /notifications/preferences:
+    get:
+      tags: [preferences]
+      summary: Obtener preferencias de notificación
+      description: Retorna las preferencias de canal (email/push/in-app) del usuario autenticado para todos los tipos de evento.
+      operationId: getNotificationPreferences
+      responses:
+        '200':
+          description: Lista de preferencias por tipo de evento
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationPreferenceDto'
+        '401':
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    patch:
+      tags: [preferences]
+      summary: Actualizar preferencia de notificación
+      description: Actualiza los canales habilitados para un tipo de evento específico. Solo los campos enviados se actualizan.
+      operationId: updateNotificationPreference
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreferencePatchRequest'
+            example:
+              eventType: TRANSFER_COMPLETED
+              pushEnabled: false
+      responses:
+        '200':
+          description: Preferencia actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreferenceDto'
+        '422':
+          description: eventType inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: No autenticado
+
+  # ─────────────────────────────────────────
+  # HISTORY
+  # ─────────────────────────────────────────
+
+  /notifications:
+    get:
+      tags: [history]
+      summary: Listar notificaciones paginadas
+      description: Historial de notificaciones del usuario autenticado, ordenado por createdAt DESC. Filtrable por categoría.
+      operationId: getNotifications
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 50
+        - name: category
+          in: query
+          schema:
+            $ref: '#/components/schemas/NotificationCategory'
+          description: Filtro por categoría. ALL = sin filtro (defecto).
+      responses:
+        '200':
+          description: Página de notificaciones
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageNotificationDto'
+        '401':
+          description: No autenticado
+
+  /notifications/unread-count:
+    get:
+      tags: [history]
+      summary: Contador de notificaciones no leídas
+      operationId: getUnreadCount
+      responses:
+        '200':
+          description: Número de notificaciones no leídas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnreadCountResponse'
+        '401':
+          description: No autenticado
+
+  /notifications/mark-all-read:
+    post:
+      tags: [history]
+      summary: Marcar todas las notificaciones como leídas
+      operationId: markAllNotificationsRead
+      responses:
+        '200':
+          description: Número de notificaciones marcadas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarkAllReadResponse'
+        '401':
+          description: No autenticado
+
+  /notifications/{id}/read:
+    patch:
+      tags: [history]
+      summary: Marcar notificación como leída
+      operationId: markNotificationRead
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Notificación actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationDto'
+        '404':
+          description: Notificación no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Notificación de otro usuario
+
+  /notifications/{id}:
+    delete:
+      tags: [history]
+      summary: Eliminar notificación del historial
+      operationId: deleteNotification
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Notificación eliminada
+        '404':
+          description: Notificación no encontrada
+
+  # ─────────────────────────────────────────
+  # SSE STREAM
+  # ─────────────────────────────────────────
+
+  /notifications/stream:
+    get:
+      tags: [stream]
+      summary: Stream SSE de notificaciones en tiempo real
+      description: |
+        Endpoint Server-Sent Events. Mantiene conexión persistente y emite eventos
+        filtrados por categoría. Soporta reconexión sin pérdida mediante `Last-Event-ID`.
+        Emite heartbeat `": heartbeat"` cada 30 segundos para mantener conexión en proxies.
+      operationId: streamNotifications
+      parameters:
+        - name: categories
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Categorías separadas por coma. Vacío = todas. Ejemplo: SECURITY,TRANSACTION
+          example: "SECURITY,TRANSACTION"
+        - name: Last-Event-ID
+          in: header
+          required: false
+          schema:
+            type: string
+          description: ID del último evento recibido. El servidor reenviará los eventos perdidos desde ese ID.
+      responses:
+        '200':
+          description: Stream SSE activo
+          content:
+            text/event-stream:
+              schema:
+                type: string
+              example: |
+                id: evt-451
+                event: TRANSFER_COMPLETED
+                data: {"notificationId":"uuid","title":"Transferencia enviada","body":"250€ a IBAN ES76...","severity":"INFO","category":"TRANSACTION"}
+
+                : heartbeat
+        '401':
+          description: No autenticado
+
+  # ─────────────────────────────────────────
+  # WEB PUSH
+  # ─────────────────────────────────────────
+
+  /notifications/push/subscribe:
+    post:
+      tags: [push]
+      summary: Registrar suscripción Web Push
+      description: Registra la suscripción PushSubscription del browser para envío de notificaciones push fuera de sesión.
+      operationId: subscribePush
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushSubscribeRequest'
+      responses:
+        '201':
+          description: Suscripción registrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushSubscribeResponse'
+        '409':
+          description: Suscripción duplicada (mismo endpoint ya registrado)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Límite de 5 suscripciones activas por usuario alcanzado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: No autenticado
+
+  /notifications/push/subscribe/{subscriptionId}:
+    delete:
+      tags: [push]
+      summary: Cancelar suscripción Web Push
+      description: Elimina la suscripción push indicada. El navegador deja de recibir notificaciones push en ese dispositivo.
+      operationId: unsubscribePush
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Suscripción eliminada
+        '404':
+          description: Suscripción no encontrada
+        '403':
+          description: La suscripción pertenece a otro usuario

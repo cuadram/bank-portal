@@ -1,0 +1,125 @@
+<div class="kyc-wizard" role="main" aria-label="Verificación de identidad">
+
+  <!-- Barra de progreso accesible -->
+  <div class="kyc-progress" aria-label="Progreso del proceso">
+    <div class="kyc-progress__bar" [style.width.%]="progressPct" role="progressbar"
+         [attr.aria-valuenow]="state.step" [attr.aria-valuemax]="totalSteps">
+    </div>
+  </div>
+
+  <!-- PASO 1 — Bienvenida / reinicio tras REJECTED -->
+  <ng-container *ngIf="state.step === 1">
+    <div class="kyc-step">
+      <h1 class="kyc-step__title" *ngIf="!rejectionReason">
+        Verifica tu identidad para operar
+      </h1>
+      <h1 class="kyc-step__title kyc-step__title--rejected" *ngIf="rejectionReason">
+        Verificación no completada
+      </h1>
+      <p class="kyc-step__desc" *ngIf="rejectionReason">
+        Motivo: <strong>{{ rejectionReason }}</strong>
+      </p>
+      <p class="kyc-step__desc" *ngIf="!rejectionReason">
+        Para activar tu cuenta y operar con Banco Meridian necesitamos verificar
+        tu identidad. El proceso tarda menos de 2 minutos.
+      </p>
+      <ul class="kyc-step__list" *ngIf="!rejectionReason">
+        <li>DNI, NIE o Pasaporte vigente</li>
+        <li>Foto o escáner legible (JPEG, PNG o PDF, máx. 10 MB)</li>
+        <li>Resultado en menos de 24 horas</li>
+      </ul>
+      <button class="kyc-btn kyc-btn--primary" (click)="state.step = 2" *ngIf="!rejectionReason">
+        Comenzar verificación
+      </button>
+      <button class="kyc-btn kyc-btn--primary" (click)="restart()" *ngIf="rejectionReason">
+        Reintentar verificación
+      </button>
+    </div>
+  </ng-container>
+
+  <!-- PASO 2 — Selección tipo de documento -->
+  <ng-container *ngIf="state.step === 2">
+    <div class="kyc-step">
+      <h2 class="kyc-step__title">¿Qué documento vas a subir?</h2>
+      <div class="kyc-doc-grid" role="group" aria-label="Tipo de documento">
+        <button class="kyc-doc-card" *ngFor="let type of docTypes"
+                (click)="selectDocType(type)"
+                [class.kyc-doc-card--selected]="state.documentType === type"
+                [attr.aria-pressed]="state.documentType === type">
+          <span class="kyc-doc-card__icon" aria-hidden="true">&#128196;</span>
+          <span class="kyc-doc-card__label">{{ type }}</span>
+        </button>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- PASO 3 — Subida cara frontal -->
+  <ng-container *ngIf="state.step === 3">
+    <div class="kyc-step">
+      <h2 class="kyc-step__title">Foto del anverso de tu {{ state.documentType }}</h2>
+      <app-kyc-upload
+        label="Arrastra aquí la cara frontal"
+        [file]="state.frontFile"
+        (fileSelected)="onFrontFileSelected($event)"
+        (fileError)="state.error = $event">
+      </app-kyc-upload>
+      <p class="kyc-error" role="alert" *ngIf="state.error">{{ state.error }}</p>
+      <button class="kyc-btn kyc-btn--primary"
+              [disabled]="!state.frontFile"
+              (click)="advanceFromFront()">
+        Continuar
+      </button>
+    </div>
+  </ng-container>
+
+  <!-- PASO 4 — Reverso (DNI / NIE) -->
+  <ng-container *ngIf="state.step === 4 && needsBack">
+    <div class="kyc-step">
+      <h2 class="kyc-step__title">Foto del reverso de tu {{ state.documentType }}</h2>
+      <app-kyc-upload
+        label="Arrastra aquí la cara trasera"
+        [file]="state.backFile"
+        (fileSelected)="onBackFileSelected($event)"
+        (fileError)="state.error = $event">
+      </app-kyc-upload>
+      <p class="kyc-error" role="alert" *ngIf="state.error">{{ state.error }}</p>
+      <button class="kyc-btn kyc-btn--secondary" (click)="state.step = 3">Atrás</button>
+      <button class="kyc-btn kyc-btn--primary"
+              [disabled]="!state.backFile"
+              (click)="advanceFromBack()">
+        Continuar
+      </button>
+    </div>
+  </ng-container>
+
+  <!-- PASO 5 — Confirmación y estado -->
+  <ng-container *ngIf="state.step === 5">
+    <div class="kyc-step">
+      <ng-container *ngIf="state.kycStatus === 'APPROVED'">
+        <h2 class="kyc-step__title kyc-step__title--success">
+          &#10003; Verificación completada
+        </h2>
+        <p class="kyc-step__desc">Tu cuenta está activa. Ya puedes operar con Banco Meridian.</p>
+        <a class="kyc-btn kyc-btn--primary" routerLink="/dashboard">Ir al dashboard</a>
+      </ng-container>
+      <ng-container *ngIf="state.kycStatus !== 'APPROVED'">
+        <h2 class="kyc-step__title">Documentos enviados</h2>
+        <p class="kyc-step__desc">
+          Te avisaremos cuando hayamos revisado tu verificación (plazo estimado: 24 h).
+        </p>
+        <app-kyc-status></app-kyc-status>
+      </ng-container>
+      <ng-container *ngIf="state.uploading">
+        <div class="kyc-spinner" role="status" aria-label="Enviando documentos..."></div>
+        <p>Enviando documentos...</p>
+      </ng-container>
+      <button class="kyc-btn kyc-btn--primary"
+              *ngIf="!state.uploading && state.kycStatus === null"
+              [disabled]="state.uploading"
+              (click)="submit()">
+        Enviar documentos
+      </button>
+    </div>
+  </ng-container>
+
+</div>

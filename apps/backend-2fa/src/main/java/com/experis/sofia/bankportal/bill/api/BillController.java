@@ -9,10 +9,9 @@ import com.experis.sofia.bankportal.bill.application.dto.PaymentResultDto;
 import com.experis.sofia.bankportal.bill.domain.BillLookupResult;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,9 +45,9 @@ public class BillController {
      */
     @GetMapping
     public ResponseEntity<List<BillDto>> listPending(
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest request) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         return ResponseEntity.ok(billPaymentUseCase.listPending(userId));
     }
 
@@ -60,9 +59,9 @@ public class BillController {
     public ResponseEntity<PaymentResultDto> payBill(
             @PathVariable UUID id,
             @Valid @RequestBody PayBillCommand cmd,
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest request) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         return ResponseEntity.ok(billPaymentUseCase.pay(userId, id, cmd));
     }
 
@@ -86,9 +85,9 @@ public class BillController {
     @PostMapping("/pay")
     public ResponseEntity<PaymentResultDto> payInvoice(
             @Valid @RequestBody PayInvoiceCommand cmd,
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest request) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         return ResponseEntity.ok(billLookupAndPayUseCase.pay(userId, cmd));
     }
 }

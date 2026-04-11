@@ -1,4 +1,6 @@
 ---
+sofia_version: "2.6"
+updated: "2026-04-02"
 name: code-reviewer
 description: >
   Agente de revisión de código de SOFIA — Software Factory IA de Experis.
@@ -38,6 +40,110 @@ para mayores, y decisión libre del Developer para sugerencias.
 ## Proceso de revisión
 
 Revisar en este orden exacto — de mayor a menor impacto:
+
+---
+
+## ⛔ GUARDRAIL GR-005 — Cross-check de paquete contra el codebase real (LA-020-10)
+
+Ejecutar ANTES de emitir cualquier veredicto. BLOQUEANTE si falla.
+
+```bash
+# 1. Obtener paquete raíz real del proyecto
+ROOT_PKG=$(cat apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/twofa/BackendTwoFactorApplication.java | head -1 | grep -oP "package \K[^;]+" | sed "s/\.[^.]*$//")
+echo "Paquete raíz: $ROOT_PKG"
+
+# 2. Verificar que TODOS los ficheros nuevos del sprint usan ese paquete
+# (sustituir FEAT-XXX y módulos nuevos según el sprint)
+grep -rn "^package" apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/export/ 2>/dev/null
+grep -rn "^package" apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/transaction/ 2>/dev/null
+
+# 3. Si aparece CUALQUIER línea que NO empiece con "package com.experis.sofia.bankportal" → BLOQUEANTE
+```
+
+**REGLA CR-GR-001: La verificación de paquete no es "los ficheros nuevos son consistentes entre sí".**
+**Es "los ficheros nuevos usan el mismo paquete que el proyecto existente".**
+**Consistencia interna entre ficheros incorrectos NO equivale a corrección.**
+
+### GR-006 — Verificación de métodos referenciados contra entidades reales (LA-020-10)
+
+```bash
+# Para cada clase de dominio usada en el código nuevo:
+# Extraer métodos usados vs métodos que existen
+
+# Ejemplo para Transaction:
+METHODS_USED=$(grep -h "tx\.\.get" apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/export/service/generator/*.java 2>/dev/null | grep -oP "get\w+" | sort -u)
+METHODS_REAL=$(grep -oP "public \S+ \K(get\w+)(?=\(\))" apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/account/domain/Transaction.java 2>/dev/null | sort -u)
+# Verificar que METHODS_USED ⊆ METHODS_REAL
+```
+
+**REGLA: Si un método usado no aparece en la clase real → BLOQUEANTE.**
+
+### GR-007 — SpringContextIT existente (LA-020-10)
+
+```bash
+ls apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/integration/SpringContextIT.java
+# Si NO existe → MAYOR en el CR (bloqueante en G-4b)
+```
+
+---
+
+## Checklist obligatorio derivado de lecciones aprendidas — ejecutar SIEMPRE
+
+Antes de iniciar la revisión por niveles, ejecutar estos checks automáticos:
+
+### CHECK-LA-019-06 — Patrón DEBT-022 en todos los controllers nuevos
+```bash
+# BLOQUEANTE si devuelve resultados en controllers fuera de /test/
+grep -rn "@AuthenticationPrincipal" apps/backend-2fa/src/main/java \
+  --include="*.java" | grep -v "/test/" | grep -v "Mock"
+# Resultado esperado: 0 líneas. Si hay resultados -> BLOQUEANTE RV-DEBT022
+```
+
+### CHECK-LA-019-08 — Perfiles Spring: mocks no usan @Profile("!production")
+```bash
+# BLOQUEANTE si devuelve resultados
+grep -rn "@Profile.*!production" apps/backend-2fa/src/main/java \
+  --include="*.java"
+# Resultado esperado: 0 líneas. Si hay resultados -> BLOQUEANTE RV-PROFILE
+```
+
+### CHECK-LA-019-09 — environment.prod.ts sincronizado con environment.ts
+```bash
+# Verificar que los campos de prod coinciden con dev
+node -e "
+  const fs = require('fs');
+  const dev  = fs.readFileSync('apps/frontend-portal/src/environments/environment.ts','utf8');
+  const prod = fs.readFileSync('apps/frontend-portal/src/environments/environment.prod.ts','utf8');
+  const devKeys  = [...dev.matchAll(/  (\w+):/g)].map(m=>m[1]).filter(k=>k!=='production');
+  const prodKeys = [...prod.matchAll(/  (\w+):/g)].map(m=>m[1]).filter(k=>k!=='production');
+  const missing  = devKeys.filter(k => !prodKeys.includes(k));
+  if (missing.length) { console.error('BLOQUEANTE — campos faltantes en prod:', missing); process.exit(1); }
+  console.log('OK — environment.prod.ts sincronizado');
+"
+```
+
+### CHECK-LA-019-10 — Módulos Angular nuevos registrados en router
+```bash
+# Para cada módulo nuevo en esta feature, verificar que está en app-routing
+for MODULE in $(find apps/frontend-portal/src/app/features -name "*.module.ts" \
+  | xargs grep -l "NgModule" | grep -v spec); do
+  MODULE_NAME=$(basename $MODULE .module.ts)
+  if ! grep -q "$MODULE_NAME" apps/frontend-portal/src/app/app-routing.module.ts; then
+    echo "BLOQUEANTE — módulo no registrado en router: $MODULE_NAME"
+  fi
+done
+```
+
+### CHECK-LA-019-15 — Named params no contaminados por concatenación
+```bash
+# MAYOR si hay named params en SQL dinámico construido con concatenación
+grep -rn '":.*+.*\"' apps/backend-2fa/src/main/java --include="*.java" | grep -v "test"
+# Alternativa: buscar named params en strings concatenados
+grep -rn 'append.*":' apps/backend-2fa/src/main/java --include="*.java" | grep -v "test"
+# Si aparecen -> verificar manualmente que no hay ambigüedad de parsing
+```
+
+---
 
 ### Nivel 1 — Arquitectura y Diseño
 Verificar que la implementación respeta el LLD aprobado:
@@ -102,6 +208,9 @@ Si hay desviación no aprobada del contrato → **BLOQUEANTE**
 - ¿Se cubren happy path, error path y edge cases?
 - ¿Los mocks están bien configurados (no ocultan bugs)?
 - ¿Hay al menos un test por cada escenario Gherkin del SRS?
+- ¿Existe `SpringContextIT` que levante el contexto completo? (LA-019-04) → MAYOR si no existe
+- ¿Existe `DatabaseSchemaIT` con columnas críticas del feature? (LA-019-13) → MAYOR si no existe
+- ¿El adaptador real tiene `@Primary` y el mock tiene `@Profile("mock")`? (LA-019-08) → BLOQUEANTE si no
 
 ### Nivel 6 — Documentación por stack
 
@@ -261,6 +370,15 @@ GIT
 □ Conventional Commits aplicado
 □ PR referencia ticket Jira
 □ PR ≤ 400 líneas
+
+LECCIONES APRENDIDAS LA-019 (checks automáticos ejecutados)
+□ LA-019-06: grep @AuthenticationPrincipal → 0 resultados en controllers
+□ LA-019-08: grep @Profile(!production) → 0 resultados en adapters
+□ LA-019-09: environment.prod.ts tiene los mismos campos que environment.ts
+□ LA-019-10: todos los nuevos módulos Angular en app-routing.module.ts
+□ LA-019-11: componentes de ruta usan ActivatedRoute.paramMap (no @Input)
+□ LA-019-13: SpringContextIT y DatabaseSchemaIT presentes (o justificado)
+□ LA-019-15: SQL dinámico usa parámetros posicionales (?), no named params concatenados
 ```
 
 ## Acciones requeridas post-review
@@ -338,3 +456,168 @@ fs.copyFileSync('.sofia/session.json', snapPath);
 
 > Si este skill **no** genera artefactos de fichero (ej: atlassian-agent opera
 > sobre Jira/Confluence), usar las URLs o IDs de los recursos creados/actualizados.
+
+---
+
+## CHECKLIST ADICIONAL — Lecciones LA-TEST-001..004 (2026-03-31)
+
+### LA-TEST-001 — Verificar nombres de atributos JWT
+```bash
+# En G-5, verificar coherencia entre filtro y controlador:
+grep -r "setAttribute(" apps/backend-2fa/src/main/java/ | grep -i "userId\|jwt\|auth"
+grep -r "getAttribute(" apps/backend-2fa/src/main/java/ | grep -i "userId\|jwt\|auth"
+# Los nombres deben coincidir exactamente
+```
+
+### LA-TEST-002 — Verificar filtros type vs category
+En queries SQL de repositorios, confirmar:
+- Filtros de dirección financiera usan: `t.type IN ('CARGO','ABONO')`
+- Filtros de categoría de negocio usan: `t.category = ?`
+- Nunca mezclar ambos dominios
+
+### LA-TEST-003 — Verificar mapeo de excepciones
+Para toda `RuntimeException` custom en el PR:
+```bash
+grep -r "class.*Exception" apps/backend-2fa/src/main/java/ | grep -v "test"
+# Cada una debe aparecer en un @ExceptionHandler o tener @ResponseStatus
+```
+Discrepancia = bloqueante.
+
+### LA-TEST-004 — Verificar tipos temporales en JdbcClient
+En repositorios que usen `JdbcClient.params()` con fechas:
+- `Instant` → debe convertirse con `Timestamp.from()`
+- `LocalDate` → directo, OK
+- `LocalDateTime` → directo, OK
+- `OffsetDateTime` → para TIMESTAMPTZ, OK
+Pasar `Instant` directamente = bloqueante.
+
+---
+
+## CHECKLIST FRONTEND — Lecciones LA-STG-001..003 (2026-04-01) [NUEVO v2.5]
+
+### Verificación obligatoria con stg-pre-check.js en G-5
+
+Cuando el PR incluye cambios Angular, ejecutar ANTES de aprobar el Gate G-5:
+
+```bash
+node .sofia/scripts/stg-pre-check.js
+# EXIT 2 = BLOQUEANTE — no aprobar G-5 hasta EXIT 0 o EXIT 1
+```
+
+### LA-STG-001 — forkJoin + catchError NUNCA retorna EMPTY
+
+En cualquier fichero con `forkJoin`, revisar TODOS los observables participantes:
+- ❌ BLOQUEANTE: `catchError(err => { ...; return EMPTY; })` en observable de forkJoin
+- ✅ CORRECTO: `catchError(err => { ...; return of([]); })` o `of(null)`
+
+Causa: EMPTY completa sin emitir → forkJoin nunca emite → skeleton eterno.
+
+```bash
+# Verificación manual en G-5:
+node -e "
+const fs=require('fs'),path=require('path');
+function walk(d){fs.readdirSync(d).forEach(f=>{const p=path.join(d,f);
+if(fs.statSync(p).isDirectory()&&f!=='node_modules')walk(p);
+else if(f.endsWith('.ts')){const c=fs.readFileSync(p,'utf8');
+if(c.includes('forkJoin')&&c.includes('return EMPTY'))console.log('REVISAR:',p);}});
+}
+walk('apps/frontend-portal/src');
+"
+```
+
+### LA-STG-002 — Versiones/sprints no hardcodeados en templates
+
+Verificar que ningún template (.ts / .html) contiene patrones `Sprint N · vX.Y.Z`:
+- ❌ BLOQUEANTE: `<small>Sprint 13 · v1.13.0</small>`
+- ✅ CORRECTO: `<small>Sprint {{ sprint }} · v{{ version }}</small>`
+
+Verificar que environment.ts y environment.prod.ts tienen los campos obligatorios:
+- `version`: string con versión del sprint actual
+- `sprint`: number con número del sprint actual
+- `envLabel`: string 'STG' | 'PRD' | 'DEV'
+
+### LA-STG-003 — Endpoints frontend verificados en backend
+
+Para cada servicio Angular nuevo o modificado, listar los endpoints consumidos
+y verificar que TODOS tienen implementación en un `@*Mapping` de un Controller Java:
+
+- ❌ BLOQUEANTE: endpoint consumido en forkJoin que devuelve 404 en backend
+- ✅ CORRECTO: endpoint documentado en OpenAPI + implementado en Controller
+
+Verificación cruzada:
+```bash
+# Extraer endpoints del frontend (ejecutar stg-pre-check.js — sección CHECK-3)
+node .sofia/scripts/stg-pre-check.js
+# Revisar la sección "Endpoints consumidos detectados" → todos deben mostrar ✓
+```
+
+
+---
+
+## Lecciones aprendidas Sprint 22 — v2.6 (2026-04-02)
+
+### LA-022-07 — Step 3b OBLIGATORIO post Gate G-3
+
+**Detectado:** Sprint 22 — Step 3b no fue ejecutado ni registrado tras aprobar G-3.
+Los artefactos existian en disco pero completed_steps no incluia "3b" y sofia.log no tenia entrada.
+
+Verificacion antes de Step 4:
+  node -e "const s=JSON.parse(require('fs').readFileSync('.sofia/session.json'));
+           const ok=s.completed_steps.includes('3b');
+           if(!ok){console.error('BLOQUEANTE: Step 3b no completado');process.exit(1);}
+           else console.log('Step 3b OK');"
+
+REGLA PERMANENTE (LA-022-07):
+- Step 3b es OBLIGATORIO inmediatamente despues de Gate G-3
+- El Orchestrator verifica completed_steps.includes('3b') antes de activar Developer Agent
+- GR-012 bloquea G-4 si Step 3b no esta en completed_steps
+- Si falta: ejecutar retroactivamente (Confluence HLD + validate-fa-index + log)
+
+---
+
+### LA-022-08 — Documentation Agent genera BINARIOS REALES (.docx y .xlsx)
+
+**Detectado:** Sprint 22 — Doc Agent genero ficheros .md y los reporto como Word/Excel reales.
+
+Verificacion antes de G-8:
+  python3 -c "
+  import os
+  base = 'docs/deliverables/sprint-NN-FEAT-XXX'
+  docx = [f for f in os.listdir(base+'/word') if f.endswith('.docx')]
+  xlsx = [f for f in os.listdir(base+'/excel') if f.endswith('.xlsx')]
+  assert len(docx) == 17, f'FALTA DOCX: {len(docx)}/17'
+  assert len(xlsx) == 3,  f'FALTA XLSX: {len(xlsx)}/3'
+  print('OK:', len(docx), 'DOCX +', len(xlsx), 'XLSX reales')
+  "
+
+REGLA PERMANENTE (LA-022-08):
+- Libreria docx (npm) para .docx — NUNCA ficheros .md como entregable
+- Libreria ExcelJS para .xlsx
+- Generador gen-docs-sprintNN.js persistido como artefacto reproducible
+- Verificar extensiones en disco ANTES de reportar entrega
+
+---
+
+### LA-022-06 — Dashboard gate_pending normalizado
+
+**Detectado:** Sprint 22 — gate_pending es string ("G-5") pero el dashboard lo trataba como objeto.
+Resultado: GP.step=undefined, GP.waiting_for=undefined en el HTML generado.
+
+REGLA PERMANENTE (LA-022-06):
+- gen-global-dashboard.js normaliza gate_pending antes de usar:
+    const GP_RAW = session.gate_pending;
+    const GP = GP_RAW
+      ? (typeof GP_RAW === 'string'
+          ? { step: GP_RAW, waiting_for: GATE_ROLES[GP_RAW] || 'Responsable', jira_issue: null }
+          : GP_RAW)
+      : null;
+- Todos los accesos a GP.jira_issue tienen fallback: GP.jira_issue || GP.step
+- parseArg() soporta --gate=G-5 y --gate G-5 (con = y con espacio)
+
+### Checklist Code Review Sprint 22 — nuevas verificaciones
+
+Añadir al checklist de G-5:
+  - Step 3b en completed_steps: node -e "const s=JSON.parse(require('fs').readFileSync('.sofia/session.json')); console.log('3b OK?', s.completed_steps.includes('3b'));"
+  - Documentacion: verificar que word/*.docx y excel/*.xlsx son binarios reales (no .md)
+  - Dashboard: confirmar que gen-global-dashboard.js tiene GP_RAW normalization
+

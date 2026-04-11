@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>BankPortal · Banco Meridian — Sprint 18 — SOFIA v1.9</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg-base:#0b0f18;--bg-surface:#131929;--bg-elevated:#1a2236;--bg-hover:#1f2c44;
+  --border:#243048;--border-accent:#2e4070;
+  --text-primary:#d8e4f5;--text-secondary:#7a90b8;--text-muted:#4a6080;
+  --blue:#3d7cf4;--blue-dim:#2a5abf;--blue-glow:rgba(61,124,244,.18);
+  --green:#2ecc71;--green-bg:rgba(46,204,113,.1);
+  --yellow:#f5a623;--yellow-bg:rgba(245,166,35,.1);
+  --red:#e74c3c;--red-bg:rgba(231,76,60,.1);
+  --orange:#f07d3c;--orange-bg:rgba(240,125,60,.1);
+  --font-sans:'Sora',sans-serif;--font-mono:'DM Mono',monospace;
+  --r-sm:6px;--r-md:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg-base);color:var(--text-primary);font-family:var(--font-sans);font-size:14px;line-height:1.55}
+body{min-height:100vh;padding-bottom:48px}
+.wrap{max-width:1020px;margin:0 auto;padding:0 20px}
+.header{background:linear-gradient(135deg,#0d1e3a 0%,#1B3A6B 60%,#1a4a8a 100%);border-bottom:1px solid var(--border-accent);padding:20px 0 16px;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(61,124,244,.14) 0%,transparent 70%);pointer-events:none}
+.header-inner{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.sofia-label{font-size:10px;font-weight:600;letter-spacing:.12em;color:#7aa8f0;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px var(--blue)}
+h1{font-size:21px;font-weight:600;color:#e8f0ff;letter-spacing:-.01em}
+.sub{font-size:12px;color:#7aa8f0;margin-top:3px;font-family:var(--font-mono);font-weight:300}
+.status-badge{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.verde-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.3);color:var(--green);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+.status-meta{font-size:11px;color:#7aa8f0;text-align:right;font-family:var(--font-mono)}
+.tabs-bar{display:flex;gap:2px;background:var(--bg-surface);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:10}
+.tab-btn{padding:13px 20px;font-family:var(--font-sans);font-size:13px;font-weight:400;color:var(--text-muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .15s,border-color .15s}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
+.tab-btn:hover:not(.active){color:var(--text-secondary)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.content{padding:24px 20px 0;max-width:1020px;margin:0 auto}
+.section-title{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin:28px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.section-title::before{content:'';display:block;width:3px;height:12px;border-radius:2px;background:var(--blue)}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.kpi{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;transition:border-color .2s}
+.kpi:hover{border-color:var(--border-accent)}
+.kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px}
+.kpi-value{font-size:28px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.kpi-value.green{color:var(--green)}.kpi-value.yellow{color:var(--yellow)}.kpi-value.blue{color:var(--blue)}.kpi-value.orange{color:var(--orange)}
+.kpi-sub{font-size:11px;color:var(--text-muted);margin-top:5px;font-family:var(--font-mono);font-weight:300}
+.kpi-trend{font-size:11px;margin-top:5px}.kpi-trend.up{color:var(--green)}.kpi-trend.warn{color:var(--yellow)}.kpi-trend.info{color:var(--blue)}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10.5px;font-weight:600;font-family:var(--font-mono);white-space:nowrap}
+.badge-green{background:var(--green-bg);color:var(--green)}.badge-yellow{background:var(--yellow-bg);color:var(--yellow)}
+.badge-red{background:var(--red-bg);color:var(--red)}.badge-blue{background:var(--blue-glow);color:var(--blue)}
+.badge-orange{background:var(--orange-bg);color:var(--orange)}.badge-muted{background:var(--bg-elevated);color:var(--text-secondary);border:1px solid var(--border)}
+.alert-list{display:flex;flex-direction:column;gap:7px}
+.alert-row{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:var(--r-sm);background:var(--bg-surface);border:1px solid var(--border);transition:border-color .15s}
+.alert-row:hover{border-color:var(--border-accent)}
+.alert-text{flex:1;font-size:12.5px;line-height:1.5}
+.alert-who{font-size:11px;color:var(--text-muted);white-space:nowrap;font-family:var(--font-mono)}
+.pipeline{display:flex;gap:5px;flex-wrap:wrap}
+.step{border:1px solid var(--border);border-radius:var(--r-sm);padding:7px 10px;font-size:11px;text-align:center;min-width:72px;background:var(--bg-surface)}
+.step-n{color:var(--text-muted);font-family:var(--font-mono);font-size:10px;margin-bottom:2px}
+.step-name{font-size:11px;color:var(--text-secondary);font-weight:500;margin-bottom:2px}
+.step-ico{font-size:15px}
+.step.ok{border-color:rgba(46,204,113,.35);background:rgba(46,204,113,.06)}
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{padding:8px 10px;text-align:left;border-bottom:2px solid var(--blue-dim);color:var(--blue);font-weight:500;font-size:11px;background:var(--bg-surface)}
+.data-table td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.data-table tr:nth-child(even) td{background:rgba(26,34,54,.5)}
+.data-table tr:hover td{background:var(--bg-hover)}
+.mono{font-family:var(--font-mono);font-size:11px;color:var(--blue);font-weight:500}
+.chart-box{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--r-md);padding:16px;margin-bottom:12px}
+.chart-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:12px}
+.chart-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cmmi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cmmi-card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 12px;transition:border-color .2s}
+.cmmi-card:hover{border-color:var(--border-accent)}
+.cmmi-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.cmmi-pa{font-weight:600;font-size:13px;color:var(--blue)}
+.cmmi-nom{font-size:11px;color:var(--text-muted);margin-bottom:7px}
+.cmmi-pills{display:flex;gap:4px}
+.cmmi-pill{flex:1;text-align:center;padding:3px 0;border-radius:4px;font-size:10px;font-weight:600;font-family:var(--font-mono)}
+.cmmi-pill.ok{background:var(--green-bg);color:var(--green)}
+.roadmap-list{display:flex;flex-direction:column;gap:8px}
+.roadmap-item{border:1px solid var(--border);border-radius:var(--r-md);padding:12px 16px;background:var(--bg-surface);transition:border-color .2s}
+.roadmap-item:hover{border-color:var(--border-accent)}
+.roadmap-item.done{border-color:rgba(46,204,113,.4);background:rgba(46,204,113,.04)}
+.roadmap-item.next-sprint{border-color:var(--orange);background:rgba(240,125,60,.04)}
+.roadmap-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px}
+.roadmap-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.roadmap-tag{font-size:11px;padding:2px 8px;border-radius:4px;border:1px solid var(--border);color:var(--text-muted);font-family:var(--font-mono)}
+.dec-list{display:flex;flex-direction:column;gap:6px}
+.dec-row{display:flex;align-items:center;gap:12px;padding:9px 14px;border-radius:var(--r-sm);background:var(--bg-surface);border:1px solid var(--border)}
+.dec-text{flex:1;font-size:12.5px}
+.dec-meta{font-size:11px;color:var(--text-muted);text-align:right;min-width:170px;font-family:var(--font-mono);line-height:1.6}
+.info-box{font-size:11.5px;color:var(--text-secondary);padding:8px 12px;background:var(--bg-surface);border-radius:var(--r-sm);border:1px solid var(--border);font-family:var(--font-mono);margin-top:6px}
+.footer{margin-top:32px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);font-family:var(--font-mono);font-weight:300}
+</style>
+</head>
+<body>
+
+<div class="header"><div class="wrap header-inner">
+  <div>
+    <div class="sofia-label"><span class="dot"></span>SOFIA v1.9 · Experis · CMMI Level 3</div>
+    <h1>BankPortal — Banco Meridian</h1>
+    <div class="sub">Sprint 18 · FEAT-016 · v1.18.0 · Cerrado 2026-03-25</div>
+  </div>
+  <div class="status-badge">
+    <div class="verde-pill"><span class="pulse"></span>VERDE — Sprint 18 Completado</div>
+    <div class="status-meta">0 defectos acumulados · 0 CVEs críticos · 18 sprints</div>
+  </div>
+</div></div>
+
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab(0)">Vista General</button>
+  <button class="tab-btn" onclick="switchTab(1)">Entregas &amp; Calidad</button>
+  <button class="tab-btn" onclick="switchTab(2)">Gobierno &amp; Roadmap</button>
+</div>
+
+<!-- TAB 0 -->
+<div class="tab-pane active"><div class="content wrap">
+
+  <div class="section-title">Métricas clave — acumulado S1→S18</div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">SP Acumulados</div><div class="kpi-value blue">425</div><div class="kpi-sub">18 sprints completados</div><div class="kpi-trend up">▲ Proyección S20: ~473 SP</div></div>
+    <div class="kpi"><div class="kpi-label">Velocidad media</div><div class="kpi-value">23.6 SP</div><div class="kpi-sub">Sprints 1–18</div><div class="kpi-trend up">▲ Últimos 5 sprints: 24 SP estables</div></div>
+    <div class="kpi"><div class="kpi-label">Defectos producción</div><div class="kpi-value green">0</div><div class="kpi-sub">18 sprints · 0 escapados</div><div class="kpi-trend up">▲ Récord histórico mantenido</div></div>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Tests automatizados</div><div class="kpi-value">677</div><div class="kpi-sub">+62 en Sprint 18 · 118 TCs QA</div><div class="kpi-trend up">▲ 101 funcionales + 16 unitarios</div></div>
+    <div class="kpi"><div class="kpi-label">Cobertura application</div><div class="kpi-value green">86%</div><div class="kpi-sub">Objetivo: ≥ 80%</div><div class="kpi-trend up">▲ +1% · Cards domain 91%</div></div>
+    <div class="kpi"><div class="kpi-label">Deuda técnica abierta</div><div class="kpi-value yellow">2 items</div><div class="kpi-sub">DEBT-031 S19 · DEBT-032 Pre-PRD</div><div class="kpi-trend up">▲ DEBT-026/030/V17c/ADR-028 cerradas</div></div>
+  </div>
+
+  <div class="section-title">Logros Sprint 18 — Cerrados</div>
+  <div class="alert-list">
+    <div class="alert-row" style="border-color:rgba(46,204,113,.3)"><span class="badge badge-green">CERRADO ✅</span><div class="alert-text"><strong>FEAT-016 Gestión de Tarjetas</strong> — 24 SP. Consulta, bloqueo/desbloqueo, límites y cambio de PIN con 2FA. Frontend Angular completo. 118/118 tests PASS.</div><div class="alert-who">→ Equipo</div></div>
+    <div class="alert-row" style="border-color:rgba(46,204,113,.3)"><span class="badge badge-green">CERRADO ✅</span><div class="alert-text"><strong>ADR-028 ShedLock</strong> — Scheduler protegido contra ejecución duplicada en scale-out. Test exclusión mutua 2 instancias verificado en CI/CD. R-015-01 cerrado.</div><div class="alert-who">→ Tech Lead</div></div>
+    <div class="alert-row" style="border-color:rgba(46,204,113,.3)"><span class="badge badge-green">CERRADO ✅</span><div class="alert-text"><strong>V18b drop columns</strong> — auth_plain/p256dh_plain eliminadas de BD producción. DEBT-028 CVSS 4.1 cerrado formalmente. R-016-01 cerrado definitivamente.</div><div class="alert-who">→ DevOps + DBA</div></div>
+    <div class="alert-row" style="border-color:rgba(46,204,113,.3)"><span class="badge badge-green">CERRADO ✅</span><div class="alert-text"><strong>DEBT-026 + DEBT-030</strong> — Race condition push slots (optimistic lock). findDueTransfers paginado batches 500 (0 riesgo OOM). Verificados en integración.</div><div class="alert-who">→ Backend Dev</div></div>
+    <div class="alert-row" style="border-color:rgba(46,204,113,.3)"><span class="badge badge-green">PCI-DSS ✅</span><div class="alert-text"><strong>Compliance PCI-DSS req.3/8/10</strong> — PAN solo enmascarado en BD/respuestas/logs. PIN via BCrypt. Audit trail activo. PCI scan post-deploy limpio en STG y PRD.</div><div class="alert-who">→ Security + QA</div></div>
+  </div>
+
+  <div class="section-title">Acciones requeridas — Sprint 19</div>
+  <div class="alert-list">
+    <div class="alert-row"><span class="badge badge-yellow">PLANIFICAR</span><div class="alert-text">DEBT-031: Rate limiting específico /cards/{id}/pin — CVSS 4.2 MEDIUM. @RateLimited(maxAttempts=3, window=PT1H) por userId+cardId. Sprint 19 backlog.</div><div class="alert-who">→ Tech Lead</div></div>
+    <div class="alert-row"><span class="badge badge-muted">PRE-PRD</span><div class="alert-text">DEBT-032: mTLS en CoreBankingAdapter — SSLContext + certificados mutuos antes de go-live real. CVSS 2.7 LOW. No urgente.</div><div class="alert-who">→ DevOps</div></div>
+    <div class="alert-row"><span class="badge badge-blue">PLANNING</span><div class="alert-text">Sprint 19 — FEAT-017 por definir con PO. Capacity estimada: ~22 SP feature + 2 SP DEBT-031. Fecha: 2026-05-08.</div><div class="alert-who">→ SM + PO</div></div>
+  </div>
+
+  <div class="section-title">Pipeline Sprint 18 — Todos los gates completados ✅</div>
+  <div class="pipeline">
+    <div class="step ok"><div class="step-n">Step 1</div><div class="step-name">Scrum Master</div><div class="step-ico">✅</div></div>
+    <div class="step ok"><div class="step-n">Step 2</div><div class="step-name">Requirements</div><div class="step-ico">✅</div></div>
+    <div class="step ok"><div class="step-n">Step 3</div><div class="step-name">Architect</div><div class="step-ico">✅</div></div>
+    <div class="step ok"><div class="step-n">Step 3b</div><div class="step-name">Doc Agent</div><div class="step-ico">✅</div></div>
+    <div class="step ok"><div class="step-n">Step 4</div><div class="step-name">Developer</div><div class="step-ico">✅</div></div>
+    <div class="step ok"><div class="step-n">Step 5</div><div class="step-name">Code Review</div><div class="step-ico">✅</div></div>
+    <div class="step ok"><div class="step-n">Step 5b</div><div class="step-name">Security</div><div class="step-ico">✅</div></div>
+    <div class="step ok"><div class="step-n">Step 6</div><div class="step-name">QA Tester</div><div class="step-ico">✅</div></div>
+    <div class="step ok"><div class="step-n">Step 7</div><div class="step-name">DevOps</div><div class="step-ico">✅</div></div>
+    <div class="step ok"><div class="step-n">Step 8</div><div class="step-name">Doc Agent</div><div class="step-ico">✅</div></div>
+    <div class="step ok"><div class="step-n">Step 9</div><div class="step-name">Workflow Mgr</div><div class="step-ico">✅</div></div>
+  </div>
+
+</div></div>
+
+<!-- TAB 1 -->
+<div class="tab-pane"><div class="content wrap">
+
+  <div class="section-title">Velocidad de entrega — SP por sprint (S1→S18)</div>
+  <div class="chart-box"><div class="chart-title">Story Points entregados</div><canvas id="cVel" height="90"></canvas></div>
+
+  <div class="section-title">Burnup acumulado</div>
+  <div class="chart-box"><div class="chart-title">SP acumulados vs plan lineal</div><canvas id="cBurn" height="75"></canvas></div>
+
+  <div class="section-title">Tests automatizados</div>
+  <div class="chart-box"><div class="chart-title">Tests totales por sprint</div><canvas id="cTests" height="70"></canvas></div>
+
+  <div class="chart-grid2">
+    <div><div class="section-title">Cobertura (%)</div>
+    <div class="chart-box"><div class="chart-title">Cobertura application — min 80%</div><canvas id="cCov" height="130"></canvas></div></div>
+    <div><div class="section-title">NCs Code Review</div>
+    <div class="chart-box"><div class="chart-title">No conformidades por sprint</div><canvas id="cNCs" height="130"></canvas></div></div>
+  </div>
+
+  <div class="section-title">Últimos 4 sprints — comparativa</div>
+  <table class="data-table">
+    <thead><tr><th>Sprint</th><th>Feature</th><th>SP</th><th>Release</th><th>Tests nuevos</th><th>Cobertura</th><th>NCs</th><th>Defectos</th></tr></thead>
+    <tbody>
+      <tr style="background:rgba(61,124,244,.07)">
+        <td><strong>S18</strong></td><td><strong>FEAT-016</strong><br><span style="color:var(--text-muted);font-size:11px">Gestión de Tarjetas</span></td>
+        <td style="text-align:center">24</td><td class="mono">v1.18.0</td>
+        <td style="text-align:center;color:var(--green)"><strong>+62</strong></td>
+        <td style="text-align:center"><span class="badge badge-green">86%</span></td>
+        <td style="text-align:center">5</td><td style="text-align:center"><span class="badge badge-green">0</span></td>
+      </tr>
+      <tr><td>S17</td><td>FEAT-015<br><span style="color:var(--text-muted);font-size:11px">Transferencias Programadas</span></td><td style="text-align:center">24</td><td class="mono">v1.17.0</td><td style="text-align:center">+62</td><td style="text-align:center"><span class="badge badge-green">85%</span></td><td style="text-align:center">3</td><td style="text-align:center"><span class="badge badge-green">0</span></td></tr>
+      <tr><td>S16</td><td>FEAT-014<br><span style="color:var(--text-muted);font-size:11px">Push VAPID</span></td><td style="text-align:center">24</td><td class="mono">v1.16.0</td><td style="text-align:center">+62</td><td style="text-align:center"><span class="badge badge-green">84%</span></td><td style="text-align:center">2</td><td style="text-align:center"><span class="badge badge-green">0</span></td></tr>
+      <tr><td>S15</td><td>FEAT-013<br><span style="color:var(--text-muted);font-size:11px">KYC Onboarding</span></td><td style="text-align:center">24</td><td class="mono">v1.15.0</td><td style="text-align:center">+47</td><td style="text-align:center"><span class="badge badge-green">85%</span></td><td style="text-align:center">4</td><td style="text-align:center"><span class="badge badge-green">0</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">QA Sprint 18 — Detalle por nivel</div>
+  <table class="data-table">
+    <thead><tr><th>Nivel</th><th>TCs</th><th>PASS</th><th>FAIL</th><th>Estado</th></tr></thead>
+    <tbody>
+      <tr><td>Unitarias (Developer audit)</td><td style="text-align:center">16</td><td style="text-align:center;color:var(--green)">16</td><td style="text-align:center">0</td><td><span class="badge badge-green">86% cov</span></td></tr>
+      <tr><td>Funcional / Aceptación</td><td style="text-align:center">47</td><td style="text-align:center;color:var(--green)">47</td><td style="text-align:center">0</td><td><span class="badge badge-green">100%</span></td></tr>
+      <tr><td>Seguridad (PCI-DSS + IDOR)</td><td style="text-align:center">16</td><td style="text-align:center;color:var(--green)">16</td><td style="text-align:center">0</td><td><span class="badge badge-green">100%</span></td></tr>
+      <tr><td>Accesibilidad WCAG 2.1 AA</td><td style="text-align:center">8</td><td style="text-align:center;color:var(--green)">8</td><td style="text-align:center">0</td><td><span class="badge badge-green">100%</span></td></tr>
+      <tr><td>Integración E2E</td><td style="text-align:center">13</td><td style="text-align:center;color:var(--green)">13</td><td style="text-align:center">0</td><td><span class="badge badge-green">100%</span></td></tr>
+      <tr><td>Contrato OpenAPI 3.1</td><td style="text-align:center">18</td><td style="text-align:center;color:var(--green)">18</td><td style="text-align:center">0</td><td><span class="badge badge-green">100%</span></td></tr>
+      <tr style="font-weight:600"><td><strong>TOTAL</strong></td><td style="text-align:center"><strong>118</strong></td><td style="text-align:center;color:var(--green)"><strong>118</strong></td><td style="text-align:center"><strong>0</strong></td><td><span class="badge badge-green">0 defectos</span></td></tr>
+    </tbody>
+  </table>
+
+</div></div>
+
+<!-- TAB 2 -->
+<div class="tab-pane"><div class="content wrap">
+
+  <div class="section-title">Deuda técnica activa — 2 items</div>
+  <table class="data-table">
+    <thead><tr><th>ID</th><th>Descripción</th><th>Área</th><th>CVSS</th><th>Prioridad</th><th>Sprint</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">DEBT-031</td><td>Rate limiting específico /cards/{id}/pin</td><td><span class="badge badge-muted">Security</span></td><td style="text-align:center;color:var(--yellow)">4.2</td><td><span class="badge badge-yellow">Media</span></td><td style="text-align:center;font-weight:500">S19</td></tr>
+      <tr><td class="mono">DEBT-032</td><td>mTLS en CoreBankingAdapter para producción</td><td><span class="badge badge-muted">Infra</span></td><td style="text-align:center;color:var(--text-muted)">2.7</td><td><span class="badge badge-muted">Baja</span></td><td style="text-align:center">Pre-PRD</td></tr>
+    </tbody>
+  </table>
+  <div class="info-box">Cerradas en S18: DEBT-026 · DEBT-030 · V17c · ADR-028 ✅ | Histórico cerradas: 032 items acumulados</div>
+
+  <div class="section-title">Riesgos activos — exposición mínimo histórico</div>
+  <table class="data-table">
+    <thead><tr><th>ID</th><th>Descripción</th><th>P</th><th>I</th><th>Nivel</th><th>Estado</th><th>Sprint</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">R-016-02</td><td>Safari iOS &lt;16.4 sin Web Push nativo</td><td>Alta</td><td>Media</td><td style="text-align:center;font-weight:700;color:var(--green)">2</td><td><span class="badge badge-muted">Aceptado</span></td><td style="text-align:center;color:var(--text-muted)">—</td></tr>
+      <tr><td class="mono">R-019-01</td><td>Rate limiting insuficiente /cards/{id}/pin</td><td>Baja</td><td>Media</td><td style="text-align:center;font-weight:700;color:var(--green)">1</td><td><span class="badge badge-yellow">Planificado</span></td><td style="text-align:center;font-weight:500">S19</td></tr>
+      <tr><td class="mono">R-019-02</td><td>mTLS ausente CoreBankingAdapter (mock)</td><td>Baja</td><td>Baja</td><td style="text-align:center;font-weight:700;color:var(--green)">1</td><td><span class="badge badge-muted">Planificado</span></td><td style="text-align:center">Pre-PRD</td></tr>
+    </tbody>
+  </table>
+  <div class="info-box">Cerrados en S18: R-015-01 (ShedLock ✅) · R-018-01 (IDOR ✅) · R-018-02 (PAN logs ✅) | Exposición total: ↓↓ mínimo histórico del proyecto</div>
+
+  <div class="section-title">CMMI Level 3 — Compliance (S16→S18)</div>
+  <div class="cmmi-grid">
+    <div class="cmmi-card"><div class="cmmi-top"><span class="cmmi-pa">PP</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-nom">Project Planning</div><div class="cmmi-pills"><div class="cmmi-pill ok">S16 ✅</div><div class="cmmi-pill ok">S17 ✅</div><div class="cmmi-pill ok">S18 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-top"><span class="cmmi-pa">PMC</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-nom">Project Monitoring</div><div class="cmmi-pills"><div class="cmmi-pill ok">S16 ✅</div><div class="cmmi-pill ok">S17 ✅</div><div class="cmmi-pill ok">S18 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-top"><span class="cmmi-pa">RSKM</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-nom">Risk Management</div><div class="cmmi-pills"><div class="cmmi-pill ok">S16 ✅</div><div class="cmmi-pill ok">S17 ✅</div><div class="cmmi-pill ok">S18 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-top"><span class="cmmi-pa">VER</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-nom">Verification</div><div class="cmmi-pills"><div class="cmmi-pill ok">S16 ✅</div><div class="cmmi-pill ok">S17 ✅</div><div class="cmmi-pill ok">S18 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-top"><span class="cmmi-pa">VAL</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-nom">Validation</div><div class="cmmi-pills"><div class="cmmi-pill ok">S16 ✅</div><div class="cmmi-pill ok">S17 ✅</div><div class="cmmi-pill ok">S18 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-top"><span class="cmmi-pa">CM</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-nom">Config. Management</div><div class="cmmi-pills"><div class="cmmi-pill ok">S16 ✅</div><div class="cmmi-pill ok">S17 ✅</div><div class="cmmi-pill ok">S18 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-top"><span class="cmmi-pa">PPQA</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-nom">Process Quality Assur.</div><div class="cmmi-pills"><div class="cmmi-pill ok">S16 ✅</div><div class="cmmi-pill ok">S17 ✅</div><div class="cmmi-pill ok">S18 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-top"><span class="cmmi-pa">REQM</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-nom">Requirements Mgmt</div><div class="cmmi-pills"><div class="cmmi-pill ok">S16 ✅</div><div class="cmmi-pill ok">S17 ✅</div><div class="cmmi-pill ok">S18 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-top"><span class="cmmi-pa">DAR</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-nom">Decision Analysis</div><div class="cmmi-pills"><div class="cmmi-pill ok">S16 ✅</div><div class="cmmi-pill ok">S17 ✅</div><div class="cmmi-pill ok">S18 ✅</div></div></div>
+  </div>
+  <div class="info-box" style="margin-top:8px">Evidencias S2–S15: 154 docs generados ✅ · S16–S18: deliverables completos en docs/deliverables/ · ADRs activos: 029</div>
+
+  <div class="section-title">Roadmap</div>
+  <div class="roadmap-list">
+    <div class="roadmap-item done">
+      <div class="roadmap-top"><div><span style="font-weight:600;font-size:14px">Sprint 18</span><span style="margin-left:8px;color:var(--text-muted)">FEAT-016</span><span class="badge badge-green" style="margin-left:8px">✅ COMPLETADO</span></div><div style="display:flex;gap:6px"><span class="badge badge-green">24 SP</span><span class="badge badge-muted">v1.18.0</span></div></div>
+      <div style="font-size:12px;color:var(--text-muted)">Gestión de Tarjetas — bloqueo/desbloqueo/límites/PIN 2FA. ShedLock. PCI-DSS. 118/118 PASS.</div>
+      <div class="roadmap-tags"><div class="roadmap-tag">FEAT-016 ✅</div><div class="roadmap-tag">ADR-028 ✅</div><div class="roadmap-tag">DEBT-026/030 ✅</div><div class="roadmap-tag">V17c ✅</div><div class="roadmap-tag">PCI-DSS ✅</div></div>
+    </div>
+    <div class="roadmap-item next-sprint">
+      <div class="roadmap-top"><div><span style="font-weight:600;font-size:14px">Sprint 19</span><span style="margin-left:8px;color:var(--text-muted)">FEAT-017</span><span class="badge badge-orange" style="margin-left:8px">⟶ PRÓXIMO</span></div><span class="badge badge-muted">~24 SP</span></div>
+      <div style="font-size:12px;color:var(--text-muted)">FEAT-017 por definir con PO · DEBT-031 rate limiting /pin (2 SP) · Inicio: 2026-05-08</div>
+      <div class="roadmap-tags"><div class="roadmap-tag">DEBT-031 (2SP)</div><div class="roadmap-tag">FEAT-017 TBD (~22SP)</div></div>
+    </div>
+    <div class="roadmap-item"><div class="roadmap-top"><div><span style="font-weight:600;font-size:14px">Sprint 20</span><span style="margin-left:8px;color:var(--text-muted)">FEAT-018</span><span class="badge badge-muted" style="margin-left:8px">Backlog</span></div><span class="badge badge-muted">~24 SP</span></div><div style="font-size:12px;color:var(--text-muted)">Proyección acumulado S20: ~473 SP</div></div>
+  </div>
+
+  <div class="section-title">Decisiones — Sprint 19 Planning</div>
+  <div class="dec-list">
+    <div class="dec-row"><span class="badge badge-blue">PENDIENTE</span><div class="dec-text">¿Qué feature entra en FEAT-017?</div><div class="dec-meta">Product Owner<br>Sprint 19 Planning</div></div>
+    <div class="dec-row"><span class="badge badge-yellow">INCLUIR</span><div class="dec-text">DEBT-031 rate limiting /pin — incluir en Sprint 19 backlog (2 SP)</div><div class="dec-meta">Tech Lead<br>Sprint 19 Backlog</div></div>
+    <div class="dec-row"><span class="badge badge-muted">PRE-PRD</span><div class="dec-text">DEBT-032 mTLS CoreBankingAdapter — prerequisito go-live real</div><div class="dec-meta">DevOps<br>Pre-producción</div></div>
+  </div>
+
+</div></div>
+
+<div class="wrap"><div class="footer">
+  <span>SOFIA v1.9 · CMMI Level 3 · BankPortal — Banco Meridian</span>
+  <span>Actualizado: 2026-03-25 · Sprint 18 cerrado · Próximo: Sprint 19</span>
+</div></div>
+
+<script>
+const SPRINTS=[
+  {s:1,sp:24,acum:24,tests:40,cov:76,ncs:3},{s:2,sp:24,acum:48,tests:66,cov:78,ncs:2},
+  {s:3,sp:24,acum:72,tests:100,cov:79,ncs:2},{s:4,sp:24,acum:96,tests:121,cov:80,ncs:2},
+  {s:5,sp:24,acum:120,tests:149,cov:81,ncs:3},{s:6,sp:22,acum:142,tests:177,cov:82,ncs:2},
+  {s:7,sp:24,acum:166,tests:205,cov:83,ncs:2},{s:8,sp:24,acum:190,tests:227,cov:82,ncs:2},
+  {s:9,sp:23,acum:213,tests:255,cov:83,ncs:2},{s:10,sp:24,acum:237,tests:283,cov:84,ncs:2},
+  {s:11,sp:20,acum:257,tests:309,cov:83,ncs:1},{s:12,sp:24,acum:281,tests:343,cov:84,ncs:2},
+  {s:13,sp:24,acum:305,tests:400,cov:85,ncs:3},{s:14,sp:24,acum:329,tests:444,cov:85,ncs:5},
+  {s:15,sp:24,acum:353,tests:491,cov:85,ncs:4},{s:16,sp:24,acum:377,tests:553,cov:84,ncs:2},
+  {s:17,sp:24,acum:401,tests:615,cov:85,ncs:3},{s:18,sp:24,acum:425,tests:677,cov:86,ncs:5}
+];
+const labels=SPRINTS.map(s=>'S'+s.s);
+const AVG=(SPRINTS.reduce((a,s)=>a+s.sp,0)/SPRINTS.length).toFixed(1);
+const grid={color:'#1e2c42',drawBorder:false};
+const tick={color:'#4a6080',font:{family:"'DM Mono'",size:10}};
+const tip={backgroundColor:'#1a2236',borderColor:'#2e4070',borderWidth:1,titleColor:'#d8e4f5',bodyColor:'#7a90b8'};
+
+new Chart(document.getElementById('cVel'),{type:'bar',data:{labels,datasets:[{data:SPRINTS.map(s=>s.sp),backgroundColor:SPRINTS.map(s=>s.s===18?'#3d7cf4':'rgba(61,124,244,.45)'),borderColor:SPRINTS.map(s=>s.s===18?'#5b9bff':'rgba(61,124,244,.7)'),borderWidth:1,borderRadius:3,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{...tip,callbacks:{label:c=>c.raw+' SP'}}},scales:{x:{grid,ticks:tick},y:{grid,ticks:{...tick,callback:v=>v+'SP'},min:0,max:32}}}});
+
+new Chart(document.getElementById('cBurn'),{type:'line',data:{labels,datasets:[{label:'Entregado',data:SPRINTS.map(s=>s.acum),fill:true,backgroundColor:'rgba(61,124,244,.1)',borderColor:'#3d7cf4',borderWidth:2,pointRadius:3,tension:.3},{label:'Plan lineal',data:SPRINTS.map(s=>Math.round(s.s*parseFloat(AVG))),borderColor:'#4a6080',borderWidth:1.5,borderDash:[5,5],pointRadius:0,fill:false,tension:.3}]},options:{responsive:true,plugins:{legend:{labels:{color:'#7a90b8',font:{family:"'DM Mono'",size:10}}},tooltip:tip},scales:{x:{grid,ticks:tick},y:{grid,ticks:tick}}}});
+
+new Chart(document.getElementById('cTests'),{type:'line',data:{labels,datasets:[{data:SPRINTS.map(s=>s.tests),fill:true,backgroundColor:'rgba(46,204,113,.1)',borderColor:'#2ecc71',borderWidth:2,pointRadius:3,tension:.3}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:tip},scales:{x:{grid,ticks:tick},y:{grid,ticks:tick}}}});
+
+new Chart(document.getElementById('cCov'),{type:'line',data:{labels,datasets:[{data:SPRINTS.map(s=>s.cov),borderColor:'#3d7cf4',backgroundColor:'rgba(61,124,244,.08)',fill:true,borderWidth:2,pointRadius:3,pointBackgroundColor:SPRINTS.map(s=>s.cov>=80?'#2ecc71':'#e74c3c'),tension:.2}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{...tip,callbacks:{label:c=>c.raw+'%'}}},scales:{x:{grid,ticks:{...tick,font:{size:9}}},y:{grid,ticks:{...tick,callback:v=>v+'%'},min:70,max:92}}}});
+
+new Chart(document.getElementById('cNCs'),{type:'bar',data:{labels,datasets:[{data:SPRINTS.map(s=>s.ncs),backgroundColor:'rgba(245,166,35,.5)',borderColor:'rgba(245,166,35,.8)',borderWidth:1,borderRadius:2,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:tip},scales:{x:{grid,ticks:{...tick,font:{size:9}}},y:{grid,ticks:tick,min:0,max:7}}}});
+
+function switchTab(i){
+  document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',i===j));
+  document.querySelectorAll('.tab-pane').forEach((p,j)=>p.classList.toggle('active',i===j));
+}
+</script>
+</body>
+</html>

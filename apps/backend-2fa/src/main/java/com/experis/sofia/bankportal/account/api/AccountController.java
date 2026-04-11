@@ -5,6 +5,7 @@ import com.experis.sofia.bankportal.account.application.AccountSummaryUseCase;
 import com.experis.sofia.bankportal.account.application.TransactionDto;
 import com.experis.sofia.bankportal.account.application.TransactionHistoryUseCase;
 import com.experis.sofia.bankportal.account.domain.AccountRepositoryPort.TransactionFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -13,8 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -30,7 +29,11 @@ import java.util.UUID;
  *   GET  /api/v1/accounts/{accountId}/transactions          → US-702/703 movimientos
  * </pre>
  *
- * @author SOFIA Developer Agent — FEAT-007 Sprint 9
+ * DEBT-022 (Sprint 14): reemplazado @AuthenticationPrincipal Jwt por
+ * HttpServletRequest.getAttribute("authenticatedUserId") — elimina dependencia de
+ * oauth2-resource-server y BearerTokenAuthenticationFilter.
+ *
+ * @author SOFIA Developer Agent — FEAT-007 Sprint 9 | DEBT-022 Sprint 14
  */
 @Slf4j
 @RestController
@@ -38,8 +41,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AccountController {
 
-    private final AccountSummaryUseCase    summaryUseCase;
+    private final AccountSummaryUseCase     summaryUseCase;
     private final TransactionHistoryUseCase historyUseCase;
+
+    private UUID userId(HttpServletRequest req) {
+        return (UUID) req.getAttribute("authenticatedUserId");
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
     // US-701 — Resumen de cuentas con saldo
@@ -50,12 +57,9 @@ public class AccountController {
      * Carga en ≤ 2 segundos (p95) para usuarios con ≤ 10 cuentas.
      */
     @GetMapping
-    public ResponseEntity<List<AccountSummaryDto>> getAccounts(
-            @AuthenticationPrincipal Jwt jwt) {
-
-        UUID userId = UUID.fromString(jwt.getSubject());
+    public ResponseEntity<List<AccountSummaryDto>> getAccounts(HttpServletRequest req) {
+        UUID userId = userId(req);
         List<AccountSummaryDto> accounts = summaryUseCase.getSummary(userId);
-
         log.debug("[US-701] GET /accounts userId={} cuentas={}", userId, accounts.size());
         return ResponseEntity.ok(accounts);
     }
@@ -89,11 +93,9 @@ public class AccountController {
             @RequestParam(required = false) String q,
             @PageableDefault(size = 20, sort = "transactionDate",
                              direction = Sort.Direction.DESC) Pageable pageable,
-            @AuthenticationPrincipal Jwt jwt) {
+            HttpServletRequest req) {
 
-        // Validar búsqueda mínimo 3 chars (US-703)
         String searchQuery = (q != null && q.trim().length() >= 3) ? q.trim() : null;
-
         TransactionFilter filter = new TransactionFilter(
                 from, to, type, minAmount, maxAmount, searchQuery);
 

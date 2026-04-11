@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BankPortal — Dashboard SOFIA</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  background:#f0f0eb;color:#1a1a18;min-height:100vh;padding:0 0 48px}
+#app{max-width:1020px;margin:0 auto;padding:0 16px}
+/* Header */
+.hdr{background:#1B3A6B;border-radius:0 0 14px 14px;padding:18px 28px;
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;
+  box-shadow:0 4px 20px rgba(27,58,107,.28)}
+.hdr-eyebrow{color:#93c5fd;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.hdr-title{color:#fff;font-size:20px;font-weight:500}
+.hdr-sub{color:#bfdbfe;font-size:12px;margin-top:3px}
+.hdr-right{text-align:right}
+.pill-green{background:#16a34a;color:#fff;border-radius:8px;padding:7px 16px;
+  font-weight:600;font-size:13px;margin-bottom:6px;box-shadow:0 2px 8px rgba(22,163,74,.3)}
+.hdr-sub2{color:#bfdbfe;font-size:11px}
+/* Tabs */
+.tabs{display:flex;gap:2px;border-bottom:1px solid #e0e0d8;margin-bottom:24px}
+.tab{padding:9px 22px;font-size:13px;border:none;border-bottom:3px solid transparent;
+  background:transparent;color:#6b6b66;cursor:pointer;border-radius:4px 4px 0 0;
+  transition:all .15s;font-family:inherit}
+.tab:hover{color:#1a1a18}
+.tab.on{font-weight:600;color:#1a1a18;border-bottom-color:#1B3A6B}
+/* KPI grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:10px}
+.kpi{border:1px solid #e0e0d8;border-radius:10px;padding:15px 16px;background:#f8f8f4}
+.kpi-lbl{font-size:10px;color:#6b6b66;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.kpi-val{font-size:28px;font-weight:500;line-height:1}
+.kpi-sub{font-size:11px;color:#6b6b66;margin-top:5px}
+.kpi-trend{font-size:11px;margin-top:4px}
+/* Section title */
+.sec{font-size:12px;font-weight:600;color:#6b6b66;text-transform:uppercase;letter-spacing:.07em;
+  margin:24px 0 12px;padding-bottom:6px;border-bottom:1px solid #e0e0d8}
+/* Badge */
+.badge{display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600}
+/* Alert rows */
+.alert{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;border-radius:8px;
+  background:#f8f8f4;border:1px solid #e0e0d8;margin-bottom:8px}
+.alert-body{flex:1;font-size:13px;line-height:1.45}
+.alert-quien{font-size:11px;color:#6b6b66;white-space:nowrap;padding-top:2px}
+/* Pipeline */
+.pipeline{display:flex;gap:7px;flex-wrap:wrap}
+.pstep{border:1px solid #d4d4cc;border-radius:8px;padding:7px 11px;font-size:11px;
+  text-align:center;min-width:75px;background:#fff}
+.pstep-n{color:#9b9b96;font-size:10px;margin-bottom:2px}
+.pstep-name{font-weight:500;font-size:12px}
+.pstep-st{font-size:15px;margin-top:3px}
+/* Table */
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{padding:8px 10px;text-align:left;border-bottom:2px solid #1B3A6B;
+  color:#1B3A6B;font-weight:600;font-size:11px;background:#f8f8f4}
+th.c{text-align:center}
+td{padding:8px 10px;border-bottom:1px solid #e0e0d8;vertical-align:middle}
+td.c{text-align:center}
+td.mono{font-family:'SF Mono','Fira Code',monospace;font-size:11px}
+tr.alt{background:#f8f8f4}
+tr.hi{background:#eff6ff}
+.note{font-size:11px;color:#6b6b66;padding:7px 12px;background:#f8f8f4;
+  border-radius:6px;margin-top:4px;margin-bottom:4px}
+/* Charts — SVG */
+.chart-box{background:#f8f8f4;border:1px solid #e0e0d8;border-radius:8px;padding:16px 12px;margin-bottom:18px}
+.chart-ttl{font-size:11px;color:#6b6b66;font-weight:500;margin-bottom:10px}
+svg text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+/* CMMI grid */
+.cmmi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}
+.cmmi-card{border:1px solid #e0e0d8;border-radius:8px;padding:11px 13px;background:#f8f8f4}
+.cmmi-pa{font-weight:600;font-size:13px;color:#1B3A6B}
+.cmmi-name{font-size:11px;color:#6b6b66;margin:4px 0 7px}
+.cmmi-sp{display:flex;gap:4px}
+.cmmi-s{flex:1;text-align:center;padding:3px 0;border-radius:4px;
+  background:#dcfce7;color:#166534;font-size:10px;font-weight:600}
+/* Roadmap */
+.rm{border:1px solid #e0e0d8;border-radius:10px;padding:14px 18px;background:#f8f8f4;margin-bottom:10px}
+.rm.active{border-color:#2E5F9E;background:#eff6ff}
+.rm-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px}
+.rm-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rm-snum{font-weight:600;font-size:15px}
+.rm-feat{color:#6b6b66;font-size:13px}
+.rm-desc{font-size:12px;color:#6b6b66}
+.rm-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.rm-tag{font-size:11px;padding:2px 9px;border-radius:4px;border:1px solid #d4d4cc;
+  color:#6b6b66;background:#fff}
+/* Decision rows */
+.dec{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;
+  border:1px solid #e0e0d8;background:#f8f8f4;margin-bottom:7px}
+.dec-body{flex:1;font-size:13px}
+.dec-right{font-size:11px;color:#6b6b66;text-align:right;min-width:175px}
+.dec-quien{font-weight:500}
+.dec-when{color:#9b9b96;margin-top:1px}
+/* Footer */
+.footer{margin-top:32px;padding-top:12px;border-top:1px solid #e0e0d8;
+  display:flex;justify-content:space-between;font-size:11px;color:#9b9b96}
+/* Tabs panels */
+.panel{display:none}
+.panel.on{display:block}
+/* Two-col */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div>
+    <div class="hdr-eyebrow">SOFIA v1.7 · Experis</div>
+    <div class="hdr-title">BankPortal — Banco Meridian</div>
+    <div class="hdr-sub">Sprint 16 · FEAT-014 · v1.16.0 · Cerrado 2026-03-24</div>
+  </div>
+  <div class="hdr-right">
+    <div class="pill-green">● VERDE — En control</div>
+    <div class="hdr-sub2">0 defectos acumulados · 0 CVEs críticos</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab on" onclick="show(0,this)">Vista General</button>
+  <button class="tab" onclick="show(1,this)">Entregas &amp; Calidad</button>
+  <button class="tab" onclick="show(2,this)">Gobierno &amp; Roadmap</button>
+</div>
+
+<!-- ═══ TAB 0 — VISTA GENERAL ═══════════════════════════════════════════════ -->
+<div id="p0" class="panel on">
+
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-lbl">SP Acumulados</div>
+      <div class="kpi-val" style="color:#1B3A6B">379</div>
+      <div class="kpi-sub">16 sprints completados</div>
+      <div class="kpi-trend" style="color:#16a34a">▲ Proyección 20 sprints: ~474 SP</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Velocidad media</div>
+      <div class="kpi-val" style="color:#1B3A6B">23.7 SP</div>
+      <div class="kpi-sub">Sprints 1–16</div>
+      <div class="kpi-trend" style="color:#16a34a">▲ Últimos 4 sprints: 24 SP constantes</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Defectos producción</div>
+      <div class="kpi-val" style="color:#16a34a">0</div>
+      <div class="kpi-sub">16 sprints · 0 escapados</div>
+      <div class="kpi-trend" style="color:#16a34a">▲ Récord histórico mantenido</div>
+    </div>
+  </div>
+
+  <div class="kpi-grid" style="margin-bottom:4px">
+    <div class="kpi">
+      <div class="kpi-lbl">Tests automatizados</div>
+      <div class="kpi-val" style="color:#1B3A6B">553</div>
+      <div class="kpi-sub">+62 en Sprint 16</div>
+      <div class="kpi-trend" style="color:#16a34a">▲ ~35/sprint promedio</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Cobertura application</div>
+      <div class="kpi-val" style="color:#16a34a">84%</div>
+      <div class="kpi-sub">Objetivo: ≥ 80%</div>
+      <div class="kpi-trend" style="color:#16a34a">▲ Sostenida en rango 80–85%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Deuda técnica abierta</div>
+      <div class="kpi-val" style="color:#d97706">4 items</div>
+      <div class="kpi-sub">Sprints 17–18 objetivo</div>
+      <div class="kpi-trend" style="color:#d97706">▼ DEBT-028 CVSS 4.1 → S17 urgente</div>
+    </div>
+  </div>
+
+  <div class="sec">Acciones requeridas — Sprint 17</div>
+
+  <div class="alert">
+    <span class="badge" style="background:#fee2e2;color:#991b1b">URGENTE</span>
+    <span class="alert-body">DEBT-028: push_subscriptions.auth en claro en BD — CVSS 4.1. Incluir en Sprint 17 como MUST.</span>
+    <span class="alert-quien">→ Tech Lead</span>
+  </div>
+  <div class="alert">
+    <span class="badge" style="background:#fef3c7;color:#92400e">IMPORTANTE</span>
+    <span class="alert-body">R-016-05: Prueba de carga SSE (&gt;500 concurrentes) sin validar en STG. Planificar en Sprint 17.</span>
+    <span class="alert-quien">→ DevOps + QA</span>
+  </div>
+  <div class="alert">
+    <span class="badge" style="background:#dcfce7;color:#166534">PLANIFICAR</span>
+    <span class="alert-body">FEAT-015: Feature nueva pendiente de definición con PO. Planning Sprint 17 abierto.</span>
+    <span class="alert-quien">→ Product Owner</span>
+  </div>
+  <div class="alert">
+    <span class="badge" style="background:#eff6ff;color:#1e40af">PENDIENTE</span>
+    <span class="alert-body">Deliverables Sprints 2–15: script listo. Ejecutar <code>node gen_deliverables_sprints-02-15.js</code> (154 docs).</span>
+    <span class="alert-quien">→ Doc Agent</span>
+  </div>
+
+  <div class="sec">Pipeline Sprint 16 — Estado final</div>
+  <div class="pipeline">
+    <div class="pstep"><div class="pstep-n">Step 1</div><div class="pstep-name">Scrum Master</div><div class="pstep-st">✅</div></div>
+    <div class="pstep"><div class="pstep-n">Step 2</div><div class="pstep-name">Requirements</div><div class="pstep-st">✅</div></div>
+    <div class="pstep"><div class="pstep-n">Step 3</div><div class="pstep-name">Architect</div><div class="pstep-st">✅</div></div>
+    <div class="pstep"><div class="pstep-n">Step 3b</div><div class="pstep-name">Doc Agent</div><div class="pstep-st">✅</div></div>
+    <div class="pstep"><div class="pstep-n">Step 4</div><div class="pstep-name">Developer</div><div class="pstep-st">✅</div></div>
+    <div class="pstep"><div class="pstep-n">Step 5</div><div class="pstep-name">Code Review</div><div class="pstep-st">✅</div></div>
+    <div class="pstep"><div class="pstep-n">Step 5b</div><div class="pstep-name">Security</div><div class="pstep-st">✅</div></div>
+    <div class="pstep"><div class="pstep-n">Step 6</div><div class="pstep-name">QA Tester</div><div class="pstep-st">✅</div></div>
+    <div class="pstep"><div class="pstep-n">Step 7</div><div class="pstep-name">DevOps</div><div class="pstep-st">✅</div></div>
+    <div class="pstep"><div class="pstep-n">Step 8</div><div class="pstep-name">Doc Agent</div><div class="pstep-st">✅</div></div>
+    <div class="pstep"><div class="pstep-n">Step 9</div><div class="pstep-name">Workflow Mgr</div><div class="pstep-st">✅</div></div>
+  </div>
+
+</div><!-- /p0 -->
+
+<!-- ═══ TAB 1 — ENTREGAS & CALIDAD ══════════════════════════════════════════ -->
+<div id="p1" class="panel">
+
+  <div class="sec">Velocidad de entrega — SP por sprint</div>
+  <div class="chart-box">
+    <div class="chart-ttl">Story Points entregados · línea punteada = promedio 23.7 SP · barras en amarillo = por debajo del promedio</div>
+    <svg id="velChart" viewBox="0 0 940 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block"></svg>
+  </div>
+
+  <div class="sec">Burnup acumulado — SP entregados</div>
+  <div class="chart-box">
+    <div class="chart-ttl">SP acumulados al cierre de cada sprint</div>
+    <svg id="burnChart" viewBox="0 0 940 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block"></svg>
+  </div>
+
+  <div class="two-col">
+    <div class="chart-box" style="margin-bottom:0">
+      <div class="chart-ttl">Cobertura de tests por sprint (%) — mínimo 80%</div>
+      <svg id="covChart" viewBox="0 0 440 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block"></svg>
+    </div>
+    <div class="chart-box" style="margin-bottom:0">
+      <div class="chart-ttl">Tests automatizados acumulados</div>
+      <svg id="testsChart" viewBox="0 0 440 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block"></svg>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:24px">Últimos 4 sprints — comparativa detallada</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Sprint</th><th>Feature</th><th class="c">SP</th><th>Release</th>
+        <th class="c">Tests +Δ</th><th class="c">Cobertura</th><th class="c">NCs CR</th><th class="c">Defectos</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="hi">
+        <td class="mono" style="font-weight:700">S16</td>
+        <td><span style="font-weight:600;color:#2E5F9E">FEAT-014</span><br><span style="color:#6b6b66;font-size:11px">Notificaciones Push VAPID</span></td>
+        <td class="c" style="font-weight:600">24</td>
+        <td class="mono">v1.16.0</td>
+        <td class="c" style="font-weight:700;color:#16a34a">+62</td>
+        <td class="c"><span class="badge" style="background:#dcfce7;color:#166534">84%</span></td>
+        <td class="c">2</td>
+        <td class="c"><span class="badge" style="background:#dcfce7;color:#166534">0</span></td>
+      </tr>
+      <tr class="alt">
+        <td class="mono" style="font-weight:700">S15</td>
+        <td><span style="font-weight:600;color:#2E5F9E">FEAT-013</span><br><span style="color:#6b6b66;font-size:11px">KYC onboarding</span></td>
+        <td class="c" style="font-weight:600">24</td>
+        <td class="mono">v1.15.0</td>
+        <td class="c" style="font-weight:700;color:#16a34a">+47</td>
+        <td class="c"><span class="badge" style="background:#dcfce7;color:#166534">85%</span></td>
+        <td class="c">4</td>
+        <td class="c"><span class="badge" style="background:#dcfce7;color:#166534">0</span></td>
+      </tr>
+      <tr>
+        <td class="mono" style="font-weight:700">S14</td>
+        <td><span style="font-weight:600;color:#2E5F9E">FEAT-012</span><br><span style="color:#6b6b66;font-size:11px">Perfil usuario</span></td>
+        <td class="c" style="font-weight:600">24</td>
+        <td class="mono">v1.14.0</td>
+        <td class="c" style="font-weight:700;color:#16a34a">+44</td>
+        <td class="c"><span class="badge" style="background:#dcfce7;color:#166534">85%</span></td>
+        <td class="c">5</td>
+        <td class="c"><span class="badge" style="background:#dcfce7;color:#166534">0</span></td>
+      </tr>
+      <tr class="alt">
+        <td class="mono" style="font-weight:700">S13</td>
+        <td><span style="font-weight:600;color:#2E5F9E">FEAT-011</span><br><span style="color:#6b6b66;font-size:11px">Angular Dashboard</span></td>
+        <td class="c" style="font-weight:600">24</td>
+        <td class="mono">v1.13.0</td>
+        <td class="c" style="font-weight:700;color:#16a34a">+57</td>
+        <td class="c"><span class="badge" style="background:#dcfce7;color:#166534">85%</span></td>
+        <td class="c">3</td>
+        <td class="c"><span class="badge" style="background:#dcfce7;color:#166534">0</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+</div><!-- /p1 -->
+
+<!-- ═══ TAB 2 — GOBIERNO & ROADMAP ══════════════════════════════════════════ -->
+<div id="p2" class="panel">
+
+  <div class="sec">Deuda técnica activa — 4 items</div>
+  <table style="margin-bottom:8px">
+    <thead>
+      <tr>
+        <th style="width:105px">ID</th><th>Descripción</th>
+        <th class="c" style="width:95px">Área</th><th class="c" style="width:90px">Prioridad</th>
+        <th class="c" style="width:75px">Sprint</th><th class="c" style="width:65px">CVSS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="mono" style="font-weight:700;color:#2E5F9E">DEBT-028</td>
+        <td>Cifrar push_subscriptions.auth en reposo AES-256-GCM</td>
+        <td class="c"><span class="badge" style="background:#f8f8f4;color:#6b6b66">Security</span></td>
+        <td class="c"><span class="badge" style="background:#fee2e2;color:#991b1b">URGENTE</span></td>
+        <td class="c" style="font-weight:600">S17</td>
+        <td class="c"><span class="badge" style="background:#fef3c7;color:#92400e">4.1</span></td>
+      </tr>
+      <tr class="alt">
+        <td class="mono" style="font-weight:700;color:#2E5F9E">DEBT-027</td>
+        <td>Domain events como inner classes — acoplamiento inverso</td>
+        <td class="c"><span class="badge" style="background:#f8f8f4;color:#6b6b66">Arch</span></td>
+        <td class="c"><span class="badge" style="background:#fef3c7;color:#92400e">Media</span></td>
+        <td class="c" style="font-weight:600">S17</td>
+        <td class="c" style="color:#9b9b96">—</td>
+      </tr>
+      <tr>
+        <td class="mono" style="font-weight:700;color:#2E5F9E">DEBT-029</td>
+        <td>Footer email RGPD Art.7 — enlace de cancelación de suscripción</td>
+        <td class="c"><span class="badge" style="background:#f8f8f4;color:#6b6b66">Compliance</span></td>
+        <td class="c"><span class="badge" style="background:#f0fdf4;color:#166534">Baja</span></td>
+        <td class="c" style="font-weight:600">S17</td>
+        <td class="c" style="color:#9b9b96">—</td>
+      </tr>
+      <tr class="alt">
+        <td class="mono" style="font-weight:700;color:#2E5F9E">DEBT-026</td>
+        <td>Race condition push subscription limit bajo carga extrema (5 slots)</td>
+        <td class="c"><span class="badge" style="background:#f8f8f4;color:#6b6b66">Backend</span></td>
+        <td class="c"><span class="badge" style="background:#f0fdf4;color:#166534">Baja</span></td>
+        <td class="c" style="font-weight:600">S18</td>
+        <td class="c" style="color:#9b9b96">—</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="note">SP comprometidos Sprint 17 por deuda: ~6 SP (DEBT-027+028+029). Capacidad disponible para FEAT-015: ~18 SP.</div>
+
+  <div class="sec">Riesgos activos — 3 items</div>
+  <table style="margin-bottom:4px">
+    <thead>
+      <tr>
+        <th style="width:105px">ID</th><th>Descripción</th>
+        <th class="c">Prob.</th><th class="c">Impacto</th>
+        <th class="c" style="width:60px">Nivel</th>
+        <th class="c" style="width:110px">Estado</th>
+        <th class="c" style="width:80px">Sprint</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="mono" style="font-weight:700;color:#2E5F9E">R-016-01</td>
+        <td>push_subscriptions.auth en claro en BD</td>
+        <td class="c">Media</td><td class="c">Alta</td>
+        <td class="c" style="font-weight:700;font-size:16px;color:#dc2626">3</td>
+        <td class="c"><span class="badge" style="background:#fef3c7;color:#92400e">Mitigando</span></td>
+        <td class="c" style="font-weight:600">S17</td>
+      </tr>
+      <tr class="alt">
+        <td class="mono" style="font-weight:700;color:#2E5F9E">R-016-02</td>
+        <td>Safari iOS &lt;16.4 sin soporte Web Push nativo</td>
+        <td class="c">Alta</td><td class="c">Media</td>
+        <td class="c" style="font-weight:700;font-size:16px;color:#d97706">2</td>
+        <td class="c"><span class="badge" style="background:#dcfce7;color:#166534">Aceptado</span></td>
+        <td class="c" style="color:#9b9b96">—</td>
+      </tr>
+      <tr>
+        <td class="mono" style="font-weight:700;color:#2E5F9E">R-016-05</td>
+        <td>&gt;500 SSE concurrentes — prueba de carga pendiente en STG</td>
+        <td class="c">Baja</td><td class="c">Media</td>
+        <td class="c" style="font-weight:700;font-size:16px;color:#d97706">2</td>
+        <td class="c"><span class="badge" style="background:#eff6ff;color:#1e40af">Planificado</span></td>
+        <td class="c" style="font-weight:600">S17</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="sec">CMMI Level 3 — Compliance por área de proceso</div>
+  <div class="cmmi-grid">
+    <div class="cmmi-card"><div class="cmmi-pa">PP</div><div class="cmmi-name">Project Planning — SP 1.2·2.1·2.7</div><div class="cmmi-sp"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-pa">PMC</div><div class="cmmi-name">Project Monitoring — SP 1.1·1.2·1.6</div><div class="cmmi-sp"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-pa">RSKM</div><div class="cmmi-name">Risk Management — SP 1.1·2.1·3.1</div><div class="cmmi-sp"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-pa">VER</div><div class="cmmi-name">Verification — SP 2.1·3.1</div><div class="cmmi-sp"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-pa">CM</div><div class="cmmi-name">Config. Management — SP 1.1·1.2·2.2</div><div class="cmmi-sp"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-pa">PPQA</div><div class="cmmi-name">Process Quality — SP 1.1·1.2·2.1</div><div class="cmmi-sp"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-pa">REQM</div><div class="cmmi-name">Requirements Mgmt — SP 1.3 Trazabilidad</div><div class="cmmi-sp"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-pa">DAR</div><div class="cmmi-name">Decision Analysis — SP 1.3 ADRs</div><div class="cmmi-sp"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-pa">MA</div><div class="cmmi-name">Measurement — SP 1.1·2.1 KPIs</div><div class="cmmi-sp"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+  </div>
+  <div class="note" style="margin-bottom:4px">⚠ Sprints 2–15: evidencias formales pendientes. Ejecutar <code>node gen_deliverables_sprints-02-15.js</code> para generar los 154 documentos CMMI.</div>
+
+  <div class="sec">Roadmap — Próximos 3 sprints</div>
+
+  <div class="rm active">
+    <div class="rm-top">
+      <div class="rm-left">
+        <span class="rm-snum">Sprint 17</span>
+        <span class="rm-feat">FEAT-015</span>
+        <span class="badge" style="background:#f8f8f4;color:#6b6b66">Planificación</span>
+      </div>
+      <div style="display:flex;gap:6px">
+        <span class="badge" style="background:#f8f8f4;color:#1a1a18">24 SP</span>
+        <span class="badge" style="background:#fee2e2;color:#991b1b">MUST</span>
+      </div>
+    </div>
+    <div class="rm-desc">DEBT-027/028/029 + Feature nueva TBD con PO + Load test SSE (R-016-05)</div>
+    <div class="rm-tags">
+      <span class="rm-tag">DEBT-027 (2SP)</span>
+      <span class="rm-tag">DEBT-028 (3SP)</span>
+      <span class="rm-tag">DEBT-029 (1SP)</span>
+      <span class="rm-tag">Load test SSE</span>
+      <span class="rm-tag">FEAT-015 TBD (~18SP)</span>
+    </div>
+  </div>
+
+  <div class="rm">
+    <div class="rm-top">
+      <div class="rm-left">
+        <span class="rm-snum">Sprint 18</span>
+        <span class="rm-feat">FEAT-016</span>
+        <span class="badge" style="background:#f8f8f4;color:#6b6b66">Backlog</span>
+      </div>
+      <span class="badge" style="background:#f8f8f4;color:#1a1a18">24 SP</span>
+    </div>
+    <div class="rm-desc">Por definir con PO + DEBT-026 (race condition push)</div>
+  </div>
+
+  <div class="rm">
+    <div class="rm-top">
+      <div class="rm-left">
+        <span class="rm-snum">Sprint 19</span>
+        <span class="rm-feat">FEAT-017</span>
+        <span class="badge" style="background:#f8f8f4;color:#6b6b66">Backlog</span>
+      </div>
+      <span class="badge" style="background:#f8f8f4;color:#1a1a18">24 SP</span>
+    </div>
+    <div class="rm-desc">Por definir con PO</div>
+  </div>
+
+  <div class="sec">Decisiones pendientes — Planning Sprint 17</div>
+
+  <div class="dec">
+    <span class="badge" style="background:#fee2e2;color:#991b1b">URGENTE</span>
+    <span class="dec-body">¿DEBT-028 es bloqueante para producción o se acepta el riesgo hasta Sprint 17?</span>
+    <div class="dec-right"><div class="dec-quien">Tech Lead + Security</div><div class="dec-when">Inmediato</div></div>
+  </div>
+  <div class="dec">
+    <span class="badge" style="background:#fef3c7;color:#92400e">ABIERTA</span>
+    <span class="dec-body">¿Qué feature entra en FEAT-015? Capacidad disponible: ~18 SP tras deuda.</span>
+    <div class="dec-right"><div class="dec-quien">Product Owner</div><div class="dec-when">Sprint 17 Planning</div></div>
+  </div>
+  <div class="dec">
+    <span class="badge" style="background:#fef3c7;color:#92400e">ABIERTA</span>
+    <span class="dec-body">¿Prueba de carga SSE se hace en S17 o S18? Valida RNF-014-01 (&gt;500 concurrentes).</span>
+    <div class="dec-right"><div class="dec-quien">DevOps + QA Lead</div><div class="dec-when">Sprint 17 Planning</div></div>
+  </div>
+  <div class="dec">
+    <span class="badge" style="background:#eff6ff;color:#1e40af">PENDIENTE</span>
+    <span class="dec-body">¿Generar deliverables S2–S15 antes de auditoría CMMI? Script disponible y listo.</span>
+    <div class="dec-right"><div class="dec-quien">Documentation Agent</div><div class="dec-when">Esta semana</div></div>
+  </div>
+
+</div><!-- /p2 -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <span>SOFIA v1.7 · CMMI Level 3 · BankPortal — Banco Meridian · Experis</span>
+  <span>Actualizado: 2026-03-24 · Sprint 16 cerrado · Próximo: Sprint 17</span>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// ── Datos ─────────────────────────────────────────────────────────────────────
+const D = [
+  {s:1, sp:24,feat:"FEAT-001",tests:40, cov:76,ncs:3,acum:24 },
+  {s:2, sp:24,feat:"FEAT-001",tests:66, cov:78,ncs:2,acum:48 },
+  {s:3, sp:24,feat:"FEAT-002",tests:100,cov:79,ncs:2,acum:72 },
+  {s:4, sp:24,feat:"FEAT-003",tests:121,cov:80,ncs:2,acum:96 },
+  {s:5, sp:24,feat:"FEAT-005",tests:149,cov:81,ncs:3,acum:120},
+  {s:6, sp:22,feat:"FEAT-005",tests:177,cov:82,ncs:2,acum:142},
+  {s:7, sp:24,feat:"FEAT-006",tests:205,cov:83,ncs:2,acum:166},
+  {s:8, sp:24,feat:"FEAT-004",tests:227,cov:82,ncs:2,acum:190},
+  {s:9, sp:23,feat:"FEAT-007",tests:255,cov:83,ncs:2,acum:213},
+  {s:10,sp:24,feat:"FEAT-008",tests:283,cov:84,ncs:2,acum:237},
+  {s:11,sp:20,feat:"FEAT-009",tests:309,cov:83,ncs:1,acum:257},
+  {s:12,sp:24,feat:"FEAT-010",tests:343,cov:84,ncs:2,acum:281},
+  {s:13,sp:24,feat:"FEAT-011",tests:400,cov:85,ncs:3,acum:305},
+  {s:14,sp:24,feat:"FEAT-012",tests:444,cov:85,ncs:5,acum:329},
+  {s:15,sp:24,feat:"FEAT-013",tests:491,cov:85,ncs:4,acum:353},
+  {s:16,sp:24,feat:"FEAT-014",tests:553,cov:84,ncs:2,acum:377},
+];
+const N = D.length;
+const AVG = 23.7;
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function show(idx, btn) {
+  document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('on',i===idx));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',i===idx));
+  if(idx===1) drawCharts();
+}
+
+// ── SVG helpers ───────────────────────────────────────────────────────────────
+const svgNS = 'http://www.w3.org/2000/svg';
+function el(tag,attrs,text){
+  const e = document.createElementNS(svgNS,tag);
+  Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
+  if(text!==undefined) e.textContent=text;
+  return e;
+}
+
+// ── Velocity bar chart ────────────────────────────────────────────────────────
+function drawVelocity() {
+  const svg = document.getElementById('velChart');
+  if(svg.dataset.drawn) return;
+  svg.dataset.drawn = '1';
+  const W=940, H=200, pad={t:20,r:10,b:28,l:32};
+  const cw = W-pad.l-pad.r, ch = H-pad.t-pad.b;
+  const bw = Math.floor(cw/N)-4;
+  const gap = Math.floor((cw - bw*N)/(N+1));
+  const maxSP = 30;
+
+  // gridlines
+  [0,8,16,24,32].filter(v=>v<=maxSP).forEach(v=>{
+    const y = pad.t + ch - (v/maxSP)*ch;
+    svg.appendChild(el('line',{x1:pad.l,y1:y,x2:W-pad.r,y2:y,stroke:'#e0e0d8','stroke-width':1,'stroke-dasharray':v===0?'0':'3 3'}));
+    if(v>0) svg.appendChild(el('text',{x:pad.l-4,y:y+4,'text-anchor':'end','font-size':10,fill:'#9b9b96'},String(v)));
+  });
+
+  // avg line
+  const avgY = pad.t + ch - (AVG/maxSP)*ch;
+  svg.appendChild(el('line',{x1:pad.l,y1:avgY,x2:W-pad.r,y2:avgY,stroke:'#2E5F9E','stroke-width':1.5,'stroke-dasharray':'6 4'}));
+  svg.appendChild(el('text',{x:W-pad.r+2,y:avgY+4,'font-size':10,fill:'#2E5F9E'},`Avg ${AVG}`));
+
+  // bars
+  D.forEach((d,i)=>{
+    const bh = (d.sp/maxSP)*ch;
+    const x  = pad.l + gap + i*(bw+gap);
+    const y  = pad.t + ch - bh;
+    const color = d.sp < AVG ? '#d97706' : '#1B3A6B';
+
+    // tooltip group
+    const g = el('g',{class:'bar-g',style:'cursor:pointer'});
+    const rect = el('rect',{x,y,width:bw,height:bh,fill:color,rx:3});
+    g.appendChild(rect);
+
+    // label below avg
+    if(d.sp < 24){
+      const lbl = el('text',{x:x+bw/2,y:y-5,'text-anchor':'middle','font-size':10,fill:'#6b6b66'},String(d.sp));
+      g.appendChild(lbl);
+    }
+
+    // x-axis label
+    const xlbl = el('text',{x:x+bw/2,y:pad.t+ch+16,'text-anchor':'middle','font-size':10,fill:'#9b9b96'},`S${d.s}`);
+    g.appendChild(xlbl);
+
+    // tooltip on hover
+    const tip = el('title',{},'');
+    tip.textContent = `Sprint ${d.s} · ${d.feat} · ${d.sp} SP`;
+    g.appendChild(tip);
+    svg.appendChild(g);
+  });
+}
+
+// ── Burnup chart ──────────────────────────────────────────────────────────────
+function drawBurnup() {
+  const svg = document.getElementById('burnChart');
+  if(svg.dataset.drawn) return;
+  svg.dataset.drawn = '1';
+  const W=940, H=180, pad={t:16,r:10,b:28,l:36};
+  const cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
+  const maxA = 420;
+
+  // gridlines
+  [0,100,200,300,400].filter(v=>v<=maxA).forEach(v=>{
+    const y = pad.t+ch-(v/maxA)*ch;
+    svg.appendChild(el('line',{x1:pad.l,y1:y,x2:W-pad.r,y2:y,stroke:'#e0e0d8','stroke-width':1,'stroke-dasharray':v===0?'0':'3 3'}));
+    svg.appendChild(el('text',{x:pad.l-4,y:y+4,'text-anchor':'end','font-size':10,fill:'#9b9b96'},String(v)));
+  });
+
+  // build area polygon + polyline
+  const pts = D.map((d,i)=>{
+    const x = pad.l + (i/(N-1))*cw;
+    const y = pad.t+ch-(d.acum/maxA)*ch;
+    return [x,y];
+  });
+
+  // fill area
+  const fill = [
+    `${pts[0][0]},${pad.t+ch}`,
+    ...pts.map(p=>`${p[0]},${p[1]}`),
+    `${pts[pts.length-1][0]},${pad.t+ch}`
+  ].join(' ');
+  svg.appendChild(el('polygon',{points:fill,fill:'rgba(27,58,107,.12)',stroke:'none'}));
+
+  // line
+  const line = el('polyline',{points:pts.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#1B3A6B','stroke-width':2.5,'stroke-linejoin':'round'});
+  svg.appendChild(line);
+
+  // dots at key sprints + labels
+  [0,3,7,11,15].forEach(i=>{
+    const [x,y] = pts[i];
+    svg.appendChild(el('circle',{cx:x,cy:y,r:4,fill:'#1B3A6B',stroke:'#fff','stroke-width':2}));
+    const lbl = D[i].acum;
+    svg.appendChild(el('text',{x:x,y:y-10,'text-anchor':'middle','font-size':10,fill:'#2E5F9E'},String(lbl)));
+  });
+
+  // x-axis labels
+  D.filter((_,i)=>i%3===0||i===N-1).forEach((d,_)=>{
+    const i = D.indexOf(d);
+    const x = pad.l+(i/(N-1))*cw;
+    svg.appendChild(el('text',{x,y:pad.t+ch+16,'text-anchor':'middle','font-size':10,fill:'#9b9b96'},`S${d.s}`));
+  });
+}
+
+// ── Coverage line chart ───────────────────────────────────────────────────────
+function drawCoverage() {
+  const svg = document.getElementById('covChart');
+  if(svg.dataset.drawn) return;
+  svg.dataset.drawn = '1';
+  const W=440, H=160, pad={t:14,r:8,b:26,l:30};
+  const cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
+  const [minC,maxC]=[70,90];
+
+  // 80% reference line
+  const refY = pad.t+ch-((80-minC)/(maxC-minC))*ch;
+  svg.appendChild(el('line',{x1:pad.l,y1:refY,x2:W-pad.r,y2:refY,stroke:'#dc2626','stroke-width':1.2,'stroke-dasharray':'5 3'}));
+  svg.appendChild(el('text',{x:pad.l+2,y:refY-4,'font-size':9,fill:'#dc2626'},'80% mín'));
+
+  const pts = D.map((d,i)=>{
+    const x = pad.l+(i/(N-1))*cw;
+    const y = pad.t+ch-((d.cov-minC)/(maxC-minC))*ch;
+    return [x,y];
+  });
+  svg.appendChild(el('polyline',{points:pts.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#2E5F9E','stroke-width':2.2,'stroke-linejoin':'round'}));
+  pts.forEach(([x,y])=>svg.appendChild(el('circle',{cx:x,cy:y,r:2.8,fill:'#2E5F9E'})));
+
+  // x labels
+  D.filter((_,i)=>i%4===0||i===N-1).forEach(d=>{
+    const i=D.indexOf(d), x=pad.l+(i/(N-1))*cw;
+    svg.appendChild(el('text',{x,y:H-4,'text-anchor':'middle','font-size':9,fill:'#9b9b96'},`S${d.s}`));
+  });
+}
+
+// ── Tests area chart ──────────────────────────────────────────────────────────
+function drawTests() {
+  const svg = document.getElementById('testsChart');
+  if(svg.dataset.drawn) return;
+  svg.dataset.drawn = '1';
+  const W=440, H=160, pad={t:14,r:8,b:26,l:30};
+  const cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
+  const maxT = 580;
+
+  const pts = D.map((d,i)=>{
+    const x = pad.l+(i/(N-1))*cw;
+    const y = pad.t+ch-(d.tests/maxT)*ch;
+    return [x,y];
+  });
+
+  const fill = [
+    `${pts[0][0]},${pad.t+ch}`,
+    ...pts.map(p=>`${p[0]},${p[1]}`),
+    `${pts[pts.length-1][0]},${pad.t+ch}`
+  ].join(' ');
+  svg.appendChild(el('polygon',{points:fill,fill:'rgba(22,163,74,.14)'}));
+  svg.appendChild(el('polyline',{points:pts.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#16a34a','stroke-width':2.2,'stroke-linejoin':'round'}));
+
+  // labels at key points
+  [0,7,11,15].forEach(i=>{
+    const [x,y]=pts[i];
+    svg.appendChild(el('circle',{cx:x,cy:y,r:3,fill:'#16a34a'}));
+    svg.appendChild(el('text',{x,y:y-8,'text-anchor':'middle','font-size':9,fill:'#16a34a'},String(D[i].tests)));
+  });
+
+  D.filter((_,i)=>i%4===0||i===N-1).forEach(d=>{
+    const i=D.indexOf(d), x=pad.l+(i/(N-1))*cw;
+    svg.appendChild(el('text',{x,y:H-4,'text-anchor':'middle','font-size':9,fill:'#9b9b96'},`S${d.s}`));
+  });
+}
+
+function drawCharts(){
+  drawVelocity();
+  drawBurnup();
+  drawCoverage();
+  drawTests();
+}
+</script>
+</body>
+</html>

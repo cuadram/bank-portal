@@ -1,0 +1,368 @@
+openapi: 3.0.3
+info:
+  title: BankPortal Direct Debits API
+  description: |
+    SEPA Direct Debit Core management — FEAT-017
+    Banco Meridian · Sprint 19 · v1.19.0
+    SOFIA v2.2 · Architect Agent
+  version: 1.0.0
+  contact:
+    name: Experis / Banco Meridian
+    email: sofia@experis.es
+
+servers:
+  - url: https://api.bankportal.bancomeridia.es/api/v1
+    description: Production
+  - url: http://localhost:8080/api/v1
+    description: Local DEV
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Mandates
+    description: SEPA DD mandates management (FEAT-017 US-1701..1704)
+  - name: Debits
+    description: SEPA DD debit records (FEAT-017 US-1702)
+
+paths:
+  /direct-debits/mandates:
+    get:
+      tags: [Mandates]
+      summary: List all mandates for authenticated user
+      operationId: getMandates
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 0, minimum: 0 }
+        - name: size
+          in: query
+          schema: { type: integer, default: 20, minimum: 1, maximum: 50 }
+        - name: status
+          in: query
+          schema: { type: string, enum: [ACTIVE, CANCELLED, SUSPENDED] }
+      responses:
+        '200':
+          description: Paginated mandate list
+          content:
+            application/json:
+              schema: { \$ref: '#/components/schemas/MandatePage' }
+        '401': { \$ref: '#/components/responses/Unauthorized' }
+
+    post:
+      tags: [Mandates]
+      summary: Create new SEPA DD mandate
+      operationId: createMandate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { \$ref: '#/components/schemas/CreateMandateRequest' }
+      responses:
+        '201':
+          description: Mandate created
+          headers:
+            Location:
+              schema: { type: string }
+              description: URL of created mandate
+          content:
+            application/json:
+              schema: { \$ref: '#/components/schemas/MandateResponse' }
+        '401': { \$ref: '#/components/responses/Unauthorized' }
+        '409': { \$ref: '#/components/responses/Conflict' }
+        '422': { \$ref: '#/components/responses/UnprocessableEntity' }
+
+  /direct-debits/mandates/{id}:
+    get:
+      tags: [Mandates]
+      summary: Get mandate detail
+      operationId: getMandate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Mandate detail
+          content:
+            application/json:
+              schema: { \$ref: '#/components/schemas/MandateResponse' }
+        '401': { \$ref: '#/components/responses/Unauthorized' }
+        '403': { \$ref: '#/components/responses/Forbidden' }
+        '404': { \$ref: '#/components/responses/NotFound' }
+
+    delete:
+      tags: [Mandates]
+      summary: Cancel SEPA DD mandate (requires OTP)
+      operationId: cancelMandate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { \$ref: '#/components/schemas/CancelMandateRequest' }
+      responses:
+        '200':
+          description: Mandate cancelled
+          content:
+            application/json:
+              schema: { \$ref: '#/components/schemas/CancelMandateResponse' }
+        '401': { \$ref: '#/components/responses/Unauthorized' }
+        '403': { \$ref: '#/components/responses/Forbidden' }
+        '404': { \$ref: '#/components/responses/NotFound' }
+        '422':
+          description: PSD2 D-2 block or other validation error
+          content:
+            application/json:
+              schema: { \$ref: '#/components/schemas/ErrorResponse' }
+              examples:
+                psd2Block:
+                  value:
+                    error_code: MANDATE_CANCELLATION_BLOCKED_PSD2
+                    message: Cannot cancel mandate — pending debit due in 2 business days
+                    due_date: '2026-05-10'
+
+  /direct-debits/debits:
+    get:
+      tags: [Debits]
+      summary: List debit records with filters
+      operationId: getDebits
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [PENDING, CHARGED, RETURNED, REJECTED] }
+        - name: from
+          in: query
+          schema: { type: string, format: date }
+        - name: to
+          in: query
+          schema: { type: string, format: date }
+        - name: mandateId
+          in: query
+          schema: { type: string, format: uuid }
+        - name: page
+          in: query
+          schema: { type: integer, default: 0 }
+        - name: size
+          in: query
+          schema: { type: integer, default: 20, maximum: 50 }
+      responses:
+        '200':
+          description: Paginated debit list
+          content:
+            application/json:
+              schema: { \$ref: '#/components/schemas/DirectDebitPage' }
+        '401': { \$ref: '#/components/responses/Unauthorized' }
+
+  /direct-debits/debits/{id}:
+    get:
+      tags: [Debits]
+      summary: Get debit detail
+      operationId: getDebit
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Debit detail
+          content:
+            application/json:
+              schema: { \$ref: '#/components/schemas/DirectDebitResponse' }
+        '401': { \$ref: '#/components/responses/Unauthorized' }
+        '403': { \$ref: '#/components/responses/Forbidden' }
+        '404': { \$ref: '#/components/responses/NotFound' }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    CreateMandateRequest:
+      type: object
+      required: [creditorName, creditorIban, accountId, otp]
+      properties:
+        creditorName:
+          type: string
+          maxLength: 140
+          example: Gym Club Meridian SA
+        creditorIban:
+          type: string
+          maxLength: 34
+          example: ES9121000418450200051332
+          description: ISO 13616 mod-97, must be SEPA country
+        accountId:
+          type: string
+          format: uuid
+        otp:
+          type: string
+          pattern: '^\d{6}$'
+          example: '123456'
+
+    CancelMandateRequest:
+      type: object
+      required: [otp]
+      properties:
+        otp:
+          type: string
+          pattern: '^\d{6}$'
+
+    MandateResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        creditorName:
+          type: string
+        creditorIban:
+          type: string
+        mandateRef:
+          type: string
+          example: BNK-001234-1714567890
+        mandateType:
+          type: string
+          enum: [CORE, B2B]
+        status:
+          type: string
+          enum: [ACTIVE, CANCELLED, SUSPENDED]
+        signedAt:
+          type: string
+          format: date
+        cancelledAt:
+          type: string
+          format: date
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+
+    CancelMandateResponse:
+      type: object
+      properties:
+        mandateId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [CANCELLED]
+        cancelledAt:
+          type: string
+          format: date-time
+
+    MandatePage:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { \$ref: '#/components/schemas/MandateResponse' }
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        hasNext:
+          type: boolean
+
+    DirectDebitResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        mandateId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          format: double
+          example: 45.99
+        currency:
+          type: string
+          example: EUR
+        status:
+          type: string
+          enum: [PENDING, CHARGED, RETURNED, REJECTED]
+        dueDate:
+          type: string
+          format: date
+        chargedAt:
+          type: string
+          format: date-time
+          nullable: true
+        returnReason:
+          type: string
+          nullable: true
+          example: AM04
+
+    DirectDebitPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { \$ref: '#/components/schemas/DirectDebitResponse' }
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        hasNext:
+          type: boolean
+
+    ErrorResponse:
+      type: object
+      properties:
+        error_code:
+          type: string
+        message:
+          type: string
+        field:
+          type: string
+          nullable: true
+        due_date:
+          type: string
+          format: date
+          nullable: true
+
+  responses:
+    Unauthorized:
+      description: Invalid or expired JWT token
+      content:
+        application/json:
+          schema: { \$ref: '#/components/schemas/ErrorResponse' }
+          example: { error_code: TOKEN_EXPIRED, message: Token has expired }
+    Forbidden:
+      description: Access to resource denied
+      content:
+        application/json:
+          schema: { \$ref: '#/components/schemas/ErrorResponse' }
+          example: { error_code: ACCESS_DENIED, message: Resource does not belong to user }
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema: { \$ref: '#/components/schemas/ErrorResponse' }
+          example: { error_code: MANDATE_NOT_FOUND, message: Mandate not found }
+    Conflict:
+      description: Duplicate mandate
+      content:
+        application/json:
+          schema: { \$ref: '#/components/schemas/ErrorResponse' }
+          example: { error_code: DUPLICATE_MANDATE, message: Active mandate already exists for this creditor }
+    UnprocessableEntity:
+      description: Validation error
+      content:
+        application/json:
+          schema: { \$ref: '#/components/schemas/ErrorResponse' }
+          examples:
+            invalidIban:
+              value: { error_code: INVALID_IBAN, field: creditorIban, message: IBAN checksum failed }
+            invalidOtp:
+              value: { error_code: INVALID_OTP, message: OTP is incorrect or expired }

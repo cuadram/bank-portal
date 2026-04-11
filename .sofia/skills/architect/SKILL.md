@@ -1,4 +1,6 @@
 ---
+sofia_version: "2.6"
+updated: "2026-04-02"
 name: architect
 description: >
   Agente de arquitectura de software de SOFIA — Software Factory IA de Experis.
@@ -33,6 +35,56 @@ observabilidad y despliegue independiente.
 - Proyecto y cliente
 - Contexto del monorepo (servicios existentes, contratos API vigentes, modelos de datos)
 - Sprint y referencia Jira (FEAT-XXX / BUG-XXX)
+```
+
+---
+
+---
+
+## Reglas críticas derivadas de lecciones aprendidas
+
+### LA-019-08 — Estrategia de perfiles Spring: el Architect la define en el LLD
+
+El LLD debe especificar la estrategia de perfiles para cada adaptador:
+
+```
+Adaptador real (JPA/HTTP):  @Primary, sin @Profile  → activo en todos los entornos
+Adaptador mock (test):      @Profile("mock")         → solo activo cuando se declara explicitamente
+Adaptador mock (test):      NUNCA @Profile("!production") → activa en dev Y staging
+```
+
+Plantilla de diseño para cada puerto de dominio en el LLD:
+```
+[Puerto de dominio]
+- Interface: XxxRepositoryPort
+- Implementación real: JpaXxxRepositoryAdapter (@Primary)
+  - Activa en: dev, staging, production
+  - Perfil: sin @Profile (activa por defecto)
+- Implementación mock: MockXxxRepositoryAdapter
+  - Activa en: tests unitarios unicamente
+  - Perfil: @Profile("mock")
+```
+
+### LA-019-13 — Mapa de tipos BD→Java obligatorio en el LLD
+
+El LLD DEBE incluir una tabla de tipos para cada tabla nueva o modificada.
+Esta tabla es la fuente de verdad para el Developer y el QA:
+
+```markdown
+## Mapa de tipos — [nombre_tabla]
+
+| Columna | Tipo PostgreSQL | Tipo Java | Notas |
+|---|---|---|---|
+| id | uuid | UUID | Usar rs.getObject("id", UUID.class) |
+| created_at | timestamptz | Instant | Timestamp with timezone |
+| updated_at | timestamptz | Instant | Timestamp with timezone |
+| transaction_date | timestamp | LocalDateTime | WITHOUT TIME ZONE — NO Instant |
+| amount | numeric(15,2) | BigDecimal | NO double/float |
+| status | varchar(20) | String / Enum.name() | NO PostgreSQL ENUM |
+| user_id | uuid | UUID | FK — UUID no String |
+
+REGLA: `timestamp without time zone` → SIEMPRE `LocalDateTime` en Java.
+NUNCA usar `Instant` para columnas sin zona horaria — los filtros fallan silenciosamente.
 ```
 
 ---
@@ -397,6 +449,12 @@ CONSISTENCIA
 □ Contrato de integración backend ↔ frontend alineado entre ambos LLDs
 □ Estructura de paquetes coincide con el stack declarado en el Orchestrator
 □ Los RNF del SRS están reflejados en el diseño (timeouts, circuit breakers, etc.)
+
+LECCIONES APRENDIDAS LA-019
+□ LA-019-08: estrategia de perfiles definida por cada puerto de dominio
+    (JPA: @Primary sin perfil | Mock: @Profile("mock") exclusivamente)
+□ LA-019-13: mapa de tipos BD→Java incluido para cada tabla nueva o modificada
+    (timestamp without TZ → LocalDateTime | timestamptz → Instant)
 ```
 
 
@@ -460,3 +518,76 @@ fs.copyFileSync('.sofia/session.json', snapPath);
 
 > Si este skill **no** genera artefactos de fichero (ej: atlassian-agent opera
 > sobre Jira/Confluence), usar las URLs o IDs de los recursos creados/actualizados.
+
+
+---
+
+## Lecciones aprendidas Sprint 22 — v2.6 (2026-04-02)
+
+### LA-022-07 — Step 3b OBLIGATORIO post Gate G-3
+
+**Detectado:** Sprint 22 — Step 3b no fue ejecutado ni registrado tras aprobar G-3.
+Los artefactos existian en disco pero completed_steps no incluia "3b" y sofia.log no tenia entrada.
+
+Verificacion antes de Step 4:
+  node -e "const s=JSON.parse(require('fs').readFileSync('.sofia/session.json'));
+           const ok=s.completed_steps.includes('3b');
+           if(!ok){console.error('BLOQUEANTE: Step 3b no completado');process.exit(1);}
+           else console.log('Step 3b OK');"
+
+REGLA PERMANENTE (LA-022-07):
+- Step 3b es OBLIGATORIO inmediatamente despues de Gate G-3
+- El Orchestrator verifica completed_steps.includes('3b') antes de activar Developer Agent
+- GR-012 bloquea G-4 si Step 3b no esta en completed_steps
+- Si falta: ejecutar retroactivamente (Confluence HLD + validate-fa-index + log)
+
+---
+
+### LA-022-08 — Documentation Agent genera BINARIOS REALES (.docx y .xlsx)
+
+**Detectado:** Sprint 22 — Doc Agent genero ficheros .md y los reporto como Word/Excel reales.
+
+Verificacion antes de G-8:
+  python3 -c "
+  import os
+  base = 'docs/deliverables/sprint-NN-FEAT-XXX'
+  docx = [f for f in os.listdir(base+'/word') if f.endswith('.docx')]
+  xlsx = [f for f in os.listdir(base+'/excel') if f.endswith('.xlsx')]
+  assert len(docx) == 17, f'FALTA DOCX: {len(docx)}/17'
+  assert len(xlsx) == 3,  f'FALTA XLSX: {len(xlsx)}/3'
+  print('OK:', len(docx), 'DOCX +', len(xlsx), 'XLSX reales')
+  "
+
+REGLA PERMANENTE (LA-022-08):
+- Libreria docx (npm) para .docx — NUNCA ficheros .md como entregable
+- Libreria ExcelJS para .xlsx
+- Generador gen-docs-sprintNN.js persistido como artefacto reproducible
+- Verificar extensiones en disco ANTES de reportar entrega
+
+---
+
+### LA-022-06 — Dashboard gate_pending normalizado
+
+**Detectado:** Sprint 22 — gate_pending es string ("G-5") pero el dashboard lo trataba como objeto.
+Resultado: GP.step=undefined, GP.waiting_for=undefined en el HTML generado.
+
+REGLA PERMANENTE (LA-022-06):
+- gen-global-dashboard.js normaliza gate_pending antes de usar:
+    const GP_RAW = session.gate_pending;
+    const GP = GP_RAW
+      ? (typeof GP_RAW === 'string'
+          ? { step: GP_RAW, waiting_for: GATE_ROLES[GP_RAW] || 'Responsable', jira_issue: null }
+          : GP_RAW)
+      : null;
+- Todos los accesos a GP.jira_issue tienen fallback: GP.jira_issue || GP.step
+- parseArg() soporta --gate=G-5 y --gate G-5 (con = y con espacio)
+
+### Checklist Step 3b — Architect es responsable de completarlo post G-3
+
+Inmediatamente despues de que el Tech Lead apruebe G-3:
+1. Verificar que HLD esta publicado en Confluence (page status=current)
+2. Ejecutar: node .sofia/scripts/validate-fa-index.js (PASS 8/8 obligatorio)
+3. Añadir "3b" a session.completed_steps
+4. Registrar en sofia.log: [STEP-3b] [architect] COMPLETED — Confluence OK + validate-fa-index PASS
+5. NO pasar el control al Developer hasta completar estos 4 pasos
+

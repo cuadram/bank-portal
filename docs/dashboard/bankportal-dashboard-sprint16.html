@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>BankPortal · Banco Meridian — SOFIA v1.9</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg-base:       #0b0f18;
+    --bg-surface:    #131929;
+    --bg-elevated:   #1a2236;
+    --bg-hover:      #1f2c44;
+    --border:        #243048;
+    --border-accent: #2e4070;
+    --text-primary:  #d8e4f5;
+    --text-secondary:#7a90b8;
+    --text-muted:    #4a6080;
+    --blue:          #3d7cf4;
+    --blue-dim:      #2a5abf;
+    --blue-glow:     rgba(61,124,244,.18);
+    --green:         #2ecc71;
+    --green-dim:     #166534;
+    --green-bg:      rgba(46,204,113,.1);
+    --yellow:        #f5a623;
+    --yellow-dim:    #92400e;
+    --yellow-bg:     rgba(245,166,35,.1);
+    --red:           #e74c3c;
+    --red-dim:       #991b1b;
+    --red-bg:        rgba(231,76,60,.1);
+    --brand:         #1B3A6B;
+    --brand-light:   #4f8ef7;
+    --font-sans:     'Sora', sans-serif;
+    --font-mono:     'DM Mono', monospace;
+    --radius-sm:     6px;
+    --radius-md:     10px;
+    --radius-lg:     14px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--bg-base); color: var(--text-primary); font-family: var(--font-sans); font-size: 14px; line-height: 1.55; }
+  body { min-height: 100vh; padding-bottom: 40px; }
+  .wrap { max-width: 1020px; margin: 0 auto; padding: 0 20px; }
+  .header {
+    background: linear-gradient(135deg, #0d1e3a 0%, #1B3A6B 60%, #1a4a8a 100%);
+    border-bottom: 1px solid var(--border-accent);
+    padding: 20px 0 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content:'';
+    position:absolute;inset:0;
+    background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(61,124,244,.12) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .header-inner { display:flex; justify-content:space-between; align-items:center; gap:16px; }
+  .header-left .sofia-label {
+    font-size: 10px; font-weight: 600; letter-spacing: .12em;
+    color: #7aa8f0; text-transform: uppercase; margin-bottom: 5px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sofia-label .dot { width:6px;height:6px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px var(--blue); }
+  .header-left h1 { font-size: 21px; font-weight: 600; color: #e8f0ff; letter-spacing: -.01em; }
+  .header-left .sub { font-size: 12px; color: #7aa8f0; margin-top: 3px; font-family: var(--font-mono); font-weight: 300; }
+  .status-badge { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .verde-pill {
+    display:inline-flex;align-items:center;gap:6px;
+    background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.3);
+    color:var(--green);border-radius:20px;padding:5px 14px;
+    font-size:12px;font-weight:600;
+  }
+  .verde-pill .pulse { width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.7)} }
+  .status-meta { font-size: 11px; color: #7aa8f0; text-align: right; font-family: var(--font-mono); }
+  .tabs-bar {
+    display: flex; gap: 2px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .tab-btn {
+    padding: 13px 20px; font-family: var(--font-sans); font-size: 13px; font-weight: 400;
+    color: var(--text-muted); background: transparent; border: none;
+    border-bottom: 2px solid transparent; cursor: pointer;
+    transition: color .15s, border-color .15s;
+    letter-spacing: .01em;
+  }
+  .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 500; }
+  .tab-btn:hover:not(.active) { color: var(--text-secondary); }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+  .content { padding: 24px 20px 0; max-width: 1020px; margin: 0 auto; }
+  .section-title {
+    font-size: 10.5px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .1em; color: var(--text-muted);
+    margin: 28px 0 12px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::before { content:''; display:block; width:3px;height:12px;border-radius:2px;background:var(--blue); }
+  .kpi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 10px; }
+  .kpi {
+    background: var(--bg-surface); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 14px 16px;
+    transition: border-color .2s;
+  }
+  .kpi:hover { border-color: var(--border-accent); }
+  .kpi-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: 8px; }
+  .kpi-value { font-size: 28px; font-weight: 600; line-height: 1; letter-spacing: -.02em; color: var(--text-primary); }
+  .kpi-value.green { color: var(--green); }
+  .kpi-value.yellow { color: var(--yellow); }
+  .kpi-value.blue { color: var(--blue); }
+  .kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 5px; font-family: var(--font-mono); font-weight: 300; }
+  .kpi-trend { font-size: 11px; margin-top: 5px; }
+  .kpi-trend.up { color: var(--green); }
+  .kpi-trend.warn { color: var(--yellow); }
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 10.5px; font-weight: 600; font-family: var(--font-mono);
+    white-space: nowrap;
+  }
+  .badge-green  { background: var(--green-bg);  color: var(--green); }
+  .badge-yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .badge-red    { background: var(--red-bg);    color: var(--red); }
+  .badge-blue   { background: var(--blue-glow); color: var(--blue); }
+  .badge-muted  { background: var(--bg-elevated); color: var(--text-secondary); border: 1px solid var(--border); }
+  .alert-list { display: flex; flex-direction: column; gap: 7px; }
+  .alert-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 14px; border-radius: var(--radius-sm);
+    background: var(--bg-surface); border: 1px solid var(--border);
+    transition: border-color .15s;
+  }
+  .alert-row:hover { border-color: var(--border-accent); }
+  .alert-text { flex: 1; font-size: 12.5px; color: var(--text-primary); line-height: 1.5; }
+  .alert-who { font-size: 11px; color: var(--text-muted); white-space: nowrap; font-family: var(--font-mono); }
+  .pipeline { display: flex; gap: 5px; flex-wrap: wrap; }
+  .step {
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 7px 10px; font-size: 11px; text-align: center; min-width: 68px;
+    background: var(--bg-surface);
+  }
+  .step-n { font-size: 10px; color: var(--text-muted); margin-bottom: 2px; font-family: var(--font-mono); }
+  .step-name { font-weight: 500; font-size: 11.5px; color: var(--text-secondary); }
+  .step-ok { font-size: 13px; margin-top: 3px; }
+  .chart-wrap { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px; }
+  .chart-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 12px; }
+  .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .data-table th {
+    padding: 9px 12px; text-align: left;
+    border-bottom: 1px solid var(--border-accent);
+    color: var(--blue); font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .06em;
+    background: var(--bg-elevated);
+  }
+  .data-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--text-primary); }
+  .data-table tr:hover td { background: var(--bg-hover); }
+  .data-table .mono { font-family: var(--font-mono); font-size: 11px; color: var(--blue); font-weight: 500; }
+  .data-table .dim { color: var(--text-muted); font-size: 11px; }
+  .data-table .center { text-align: center; }
+  .table-note {
+    font-size: 11px; color: var(--text-muted); padding: 8px 12px;
+    background: var(--bg-surface); border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    border: 1px solid var(--border); border-top: none;
+    font-family: var(--font-mono); font-weight: 300;
+  }
+  .cmmi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .cmmi-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; }
+  .cmmi-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+  .cmmi-pa { font-weight: 600; font-size: 13px; color: var(--blue); font-family: var(--font-mono); }
+  .cmmi-name { font-size: 11px; color: var(--text-muted); margin-bottom: 7px; }
+  .cmmi-sprints { display: flex; gap: 4px; }
+  .cmmi-s {
+    flex: 1; text-align: center; padding: 3px 0;
+    border-radius: 4px; font-size: 10px; font-weight: 600;
+    background: var(--green-bg); color: var(--green);
+    font-family: var(--font-mono);
+  }
+  .roadmap-list { display: flex; flex-direction: column; gap: 8px; }
+  .roadmap-card { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; background: var(--bg-surface); }
+  .roadmap-card.next { border-color: var(--border-accent); background: var(--bg-elevated); }
+  .roadmap-card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .roadmap-card-left { display: flex; align-items: center; gap: 10px; }
+  .roadmap-sprint { font-size: 15px; font-weight: 600; }
+  .roadmap-feat { font-size: 13px; color: var(--text-secondary); }
+  .roadmap-right { display: flex; gap: 6px; align-items: center; }
+  .roadmap-desc { font-size: 12px; color: var(--text-muted); }
+  .roadmap-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .roadmap-tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border); color: var(--text-muted); font-family: var(--font-mono); font-weight: 300; }
+  .dec-row { display: flex; align-items: center; gap: 12px; padding: 9px 14px; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1px solid var(--border); margin-bottom: 6px; }
+  .dec-text { flex: 1; font-size: 12.5px; }
+  .dec-meta { font-size: 11px; color: var(--text-muted); text-align: right; min-width: 160px; font-family: var(--font-mono); font-weight: 300; }
+  .niv-3 { color: var(--red); font-weight: 700; }
+  .niv-2 { color: var(--yellow); font-weight: 700; }
+  .niv-1 { color: var(--green); font-weight: 700; }
+  .footer {
+    margin-top: 32px; padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--text-muted);
+    font-family: var(--font-mono); font-weight: 300;
+    max-width: 1020px; margin-left: auto; margin-right: auto;
+  }
+  .footer span:first-child { color: var(--blue); font-weight: 500; }
+  @media (max-width: 680px) {
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .chart-grid-2 { grid-template-columns: 1fr; }
+    .cmmi-grid { grid-template-columns: 1fr 1fr; }
+    .header-inner { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="wrap">
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="sofia-label"><span class="dot"></span>SOFIA v1.9 · Experis</div>
+        <h1>BankPortal — Banco Meridian</h1>
+        <div class="sub">Sprint 16 · FEAT-014 · v1.16.0 · Cerrado 2026-03-24</div>
+      </div>
+      <div class="status-badge">
+        <div class="verde-pill"><span class="pulse"></span>VERDE — En control</div>
+        <div class="status-meta">0 defectos producción · 0 CVEs críticos · CMMI L3</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab(0)">Vista General</button>
+  <button class="tab-btn" onclick="switchTab(1)">Entregas &amp; Calidad</button>
+  <button class="tab-btn" onclick="switchTab(2)">Gobierno &amp; Roadmap</button>
+</div>
+
+<!-- TAB 0 -->
+<div class="tab-pane active" id="pane-0">
+<div class="content">
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">SP Acumulados</div><div class="kpi-value">377</div><div class="kpi-sub">16 sprints completados</div><div class="kpi-trend up">▲ Proyección: ~471 SP en 20 sprints</div></div>
+    <div class="kpi"><div class="kpi-label">Velocidad media</div><div class="kpi-value blue">23.6 SP</div><div class="kpi-sub">Sprints 1–16</div><div class="kpi-trend up">▲ Últimos 4 sprints: 24 SP constantes</div></div>
+    <div class="kpi"><div class="kpi-label">Defectos producción</div><div class="kpi-value green">0</div><div class="kpi-sub">16 sprints · 0 escapados</div><div class="kpi-trend up">▲ Record histórico mantenido</div></div>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Tests automatizados</div><div class="kpi-value">553</div><div class="kpi-sub">+62 en Sprint 16</div><div class="kpi-trend up">▲ ~34/sprint promedio</div></div>
+    <div class="kpi"><div class="kpi-label">Cobertura application</div><div class="kpi-value green">84%</div><div class="kpi-sub">Objetivo: ≥ 80%</div><div class="kpi-trend up">▲ Sostenida en rango 80–85%</div></div>
+    <div class="kpi"><div class="kpi-label">Deuda técnica abierta</div><div class="kpi-value yellow">4 items</div><div class="kpi-sub">Sprints 17–18 objetivo</div><div class="kpi-trend warn">▼ DEBT-028 CVSS 4.1 → S17 urgente</div></div>
+  </div>
+
+  <div class="section-title">Acciones requeridas — Sprint 17</div>
+  <div class="alert-list">
+    <div class="alert-row"><span class="badge badge-red">URGENTE</span><div class="alert-text">DEBT-028: push_subscriptions.auth en claro en BD — CVSS 4.1. Incluir en Sprint 17 como MUST. Cifrar con AES-GCM.</div><div class="alert-who">→ Tech Lead</div></div>
+    <div class="alert-row"><span class="badge badge-yellow">IMPORTANTE</span><div class="alert-text">R-016-05: Prueba de carga SSE (>500 concurrentes) sin validar. Planificar en Sprint 17.</div><div class="alert-who">→ DevOps + QA</div></div>
+    <div class="alert-row"><span class="badge badge-blue">PLANIFICAR</span><div class="alert-text">FEAT-015: Feature nueva pendiente de definición con PO. Planning Sprint 17 abierto. ~17 SP disponibles.</div><div class="alert-who">→ Product Owner</div></div>
+    <div class="alert-row"><span class="badge badge-green">COMPLETADO</span><div class="alert-text">Evidencias CMMI Sprints 2–15 generadas ✅ — 154 documentos disponibles en docs/deliverables/</div><div class="alert-who">→ Documentation Agent</div></div>
+  </div>
+
+  <div class="section-title">Pipeline Sprint 16 — Estado final</div>
+  <div class="pipeline">
+    <div class="step"><div class="step-n">Step 1</div><div class="step-name">Scrum Master</div><div class="step-ok">✅</div></div>
+    <div class="step"><div class="step-n">Step 2</div><div class="step-name">Requirements</div><div class="step-ok">✅</div></div>
+    <div class="step"><div class="step-n">Step 3</div><div class="step-name">Architect</div><div class="step-ok">✅</div></div>
+    <div class="step"><div class="step-n">Step 3b</div><div class="step-name">Doc Agent</div><div class="step-ok">✅</div></div>
+    <div class="step"><div class="step-n">Step 4</div><div class="step-name">Developer</div><div class="step-ok">✅</div></div>
+    <div class="step"><div class="step-n">Step 5</div><div class="step-name">Code Review</div><div class="step-ok">✅</div></div>
+    <div class="step"><div class="step-n">Step 5b</div><div class="step-name">Security</div><div class="step-ok">✅</div></div>
+    <div class="step"><div class="step-n">Step 6</div><div class="step-name">QA Tester</div><div class="step-ok">✅</div></div>
+    <div class="step"><div class="step-n">Step 7</div><div class="step-name">DevOps</div><div class="step-ok">✅</div></div>
+    <div class="step"><div class="step-n">Step 8</div><div class="step-name">Doc Agent</div><div class="step-ok">✅</div></div>
+    <div class="step"><div class="step-n">Step 9</div><div class="step-name">Workflow Mgr</div><div class="step-ok">✅</div></div>
+  </div>
+</div>
+</div>
+
+<!-- TAB 1 -->
+<div class="tab-pane" id="pane-1">
+<div class="content">
+  <div class="chart-wrap"><div class="chart-title">Velocidad de entrega — Story Points por sprint</div><canvas id="chart-velocity" height="200"></canvas></div>
+  <div class="chart-wrap"><div class="chart-title">Burnup acumulado — SP entregados vs plan lineal</div><canvas id="chart-burnup" height="180"></canvas></div>
+  <div class="chart-wrap"><div class="chart-title">Crecimiento de tests automatizados</div><canvas id="chart-tests" height="160"></canvas></div>
+  <div class="chart-grid-2">
+    <div class="chart-wrap" style="margin-bottom:0"><div class="chart-title">Cobertura por sprint (%)</div><canvas id="chart-cov" height="150"></canvas></div>
+    <div class="chart-wrap" style="margin-bottom:0"><div class="chart-title">NCs por sprint (Code Review)</div><canvas id="chart-ncs" height="150"></canvas></div>
+  </div>
+
+  <div class="section-title" style="margin-top:24px">Últimos 4 sprints — comparativa</div>
+  <table class="data-table">
+    <thead><tr><th>Sprint</th><th>Feature</th><th class="center">SP</th><th>Release</th><th class="center">Tests +Δ</th><th class="center">Cobertura</th><th class="center">NCs</th><th class="center">Defectos</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:600">S16</td><td><span style="font-weight:500">FEAT-014</span><br><span class="dim">Push VAPID</span></td><td class="center">24</td><td class="mono">v1.16.0</td><td class="center" style="color:var(--green);font-weight:600">+62</td><td class="center"><span class="badge badge-green">84%</span></td><td class="center">2</td><td class="center"><span class="badge badge-green">0</span></td></tr>
+      <tr><td style="font-weight:600">S15</td><td><span style="font-weight:500">FEAT-013</span><br><span class="dim">KYC onboarding</span></td><td class="center">24</td><td class="mono">v1.15.0</td><td class="center" style="color:var(--green);font-weight:600">+47</td><td class="center"><span class="badge badge-green">85%</span></td><td class="center">4</td><td class="center"><span class="badge badge-green">0</span></td></tr>
+      <tr><td style="font-weight:600">S14</td><td><span style="font-weight:500">FEAT-012</span><br><span class="dim">Perfil usuario</span></td><td class="center">24</td><td class="mono">v1.14.0</td><td class="center" style="color:var(--green);font-weight:600">+44</td><td class="center"><span class="badge badge-green">85%</span></td><td class="center">5</td><td class="center"><span class="badge badge-green">0</span></td></tr>
+      <tr><td style="font-weight:600">S13</td><td><span style="font-weight:500">FEAT-011</span><br><span class="dim">Angular Dashboard</span></td><td class="center">24</td><td class="mono">v1.13.0</td><td class="center" style="color:var(--green);font-weight:600">+57</td><td class="center"><span class="badge badge-green">85%</span></td><td class="center">3</td><td class="center"><span class="badge badge-green">0</span></td></tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+<!-- TAB 2 -->
+<div class="tab-pane" id="pane-2">
+<div class="content">
+  <div class="section-title">Deuda técnica activa — 4 items</div>
+  <table class="data-table">
+    <thead><tr><th>ID</th><th>Descripción</th><th>Área</th><th>Prioridad</th><th class="center">Sprint obj.</th><th class="center">CVSS</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">DEBT-026</td><td>Race condition push subscription limit (5 slots)</td><td><span class="badge badge-muted">Backend</span></td><td><span class="badge badge-green">Baja</span></td><td class="center" style="font-weight:600">S18</td><td class="center dim">—</td></tr>
+      <tr><td class="mono">DEBT-027</td><td>Domain events como inner classes — acoplamiento arquitectural</td><td><span class="badge badge-muted">Arch</span></td><td><span class="badge badge-yellow">Media</span></td><td class="center" style="font-weight:600">S17</td><td class="center dim">—</td></tr>
+      <tr><td class="mono">DEBT-028</td><td>Cifrar push_subscriptions.auth en reposo AES-GCM</td><td><span class="badge badge-muted">Security</span></td><td><span class="badge badge-red">MUST</span></td><td class="center" style="font-weight:600;color:var(--red)">S17</td><td class="center"><span class="badge badge-yellow">4.1</span></td></tr>
+      <tr><td class="mono">DEBT-029</td><td>Footer email RGPD Art.7 — enlace cancelación suscripción</td><td><span class="badge badge-muted">Compliance</span></td><td><span class="badge badge-green">Baja</span></td><td class="center" style="font-weight:600">S17</td><td class="center dim">—</td></tr>
+    </tbody>
+  </table>
+  <div class="table-note">SP comprometidos en Sprint 17 por deuda: ~7 SP (DEBT-027 2SP + DEBT-028 3SP + DEBT-029 1SP + load test 1SP). Capacidad restante FEAT-015: ~17 SP.</div>
+
+  <div class="section-title">Riesgos activos — 3 items</div>
+  <table class="data-table">
+    <thead><tr><th>ID</th><th>Descripción</th><th class="center">Prob.</th><th class="center">Impacto</th><th class="center">Nivel</th><th>Estado</th><th class="center">Sprint</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">R-016-01</td><td>push_subscriptions.auth en claro en BD</td><td class="center">Media</td><td class="center">Alta</td><td class="center"><span class="niv-3">3</span></td><td><span class="badge badge-yellow">Mitigando</span></td><td class="center" style="font-weight:600">S17</td></tr>
+      <tr><td class="mono">R-016-02</td><td>Safari iOS &lt;16.4 sin soporte Web Push</td><td class="center">Alta</td><td class="center">Media</td><td class="center"><span class="niv-2">2</span></td><td><span class="badge badge-green">Aceptado</span></td><td class="center dim">—</td></tr>
+      <tr><td class="mono">R-016-05</td><td>&gt;500 SSE concurrentes — prueba de carga pendiente</td><td class="center">Baja</td><td class="center">Media</td><td class="center"><span class="niv-2">2</span></td><td><span class="badge badge-blue">Planificado</span></td><td class="center" style="font-weight:600">S17</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">CMMI Level 3 — Compliance por área de proceso</div>
+  <div class="cmmi-grid">
+    <div class="cmmi-card"><div class="cmmi-header"><span class="cmmi-pa">PP</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-name">Project Planning</div><div class="cmmi-sprints"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-header"><span class="cmmi-pa">PMC</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-name">Project Monitoring</div><div class="cmmi-sprints"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-header"><span class="cmmi-pa">RSKM</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-name">Risk Management</div><div class="cmmi-sprints"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-header"><span class="cmmi-pa">VER</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-name">Verification</div><div class="cmmi-sprints"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-header"><span class="cmmi-pa">VAL</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-name">Validation</div><div class="cmmi-sprints"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-header"><span class="cmmi-pa">CM</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-name">Config. Management</div><div class="cmmi-sprints"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-header"><span class="cmmi-pa">PPQA</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-name">Process Quality Assurance</div><div class="cmmi-sprints"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-header"><span class="cmmi-pa">REQM</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-name">Requirements Management</div><div class="cmmi-sprints"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+    <div class="cmmi-card"><div class="cmmi-header"><span class="cmmi-pa">DAR</span><span class="badge badge-green">L3 ✓</span></div><div class="cmmi-name">Decision Analysis</div><div class="cmmi-sprints"><div class="cmmi-s">S14 ✅</div><div class="cmmi-s">S15 ✅</div><div class="cmmi-s">S16 ✅</div></div></div>
+  </div>
+  <div class="table-note" style="margin-top:8px;border-radius:var(--radius-sm);border:1px solid var(--border)">✅ Evidencias formales Sprints 2–15 generadas — 154 documentos en docs/deliverables/ (2026-03-24). Listo para auditoría CMMI.</div>
+
+  <div class="section-title">Roadmap — Próximos sprints</div>
+  <div class="roadmap-list">
+    <div class="roadmap-card next">
+      <div class="roadmap-card-head"><div class="roadmap-card-left"><span class="roadmap-sprint">Sprint 17</span><span class="roadmap-feat">FEAT-015</span><span class="badge badge-blue">Planificación</span></div><div class="roadmap-right"><span class="badge badge-muted">24 SP</span><span class="badge badge-red">MUST</span></div></div>
+      <div class="roadmap-desc">DEBT-027/028/029 + Load test SSE + Feature nueva TBD (~17 SP disponibles)</div>
+      <div class="roadmap-tags"><span class="roadmap-tag">DEBT-027 (2SP)</span><span class="roadmap-tag">DEBT-028 (3SP)</span><span class="roadmap-tag">DEBT-029 (1SP)</span><span class="roadmap-tag">Load test SSE (1SP)</span><span class="roadmap-tag">FEAT-015 TBD (~17SP)</span></div>
+    </div>
+    <div class="roadmap-card">
+      <div class="roadmap-card-head"><div class="roadmap-card-left"><span class="roadmap-sprint">Sprint 18</span><span class="roadmap-feat">FEAT-016</span><span class="badge badge-muted">Backlog</span></div><div class="roadmap-right"><span class="badge badge-muted">24 SP</span><span class="badge badge-muted">TBD</span></div></div>
+      <div class="roadmap-desc">Por definir con PO + DEBT-026 (race condition push)</div>
+    </div>
+    <div class="roadmap-card">
+      <div class="roadmap-card-head"><div class="roadmap-card-left"><span class="roadmap-sprint">Sprint 19</span><span class="roadmap-feat">FEAT-017</span><span class="badge badge-muted">Backlog</span></div><div class="roadmap-right"><span class="badge badge-muted">24 SP</span><span class="badge badge-muted">TBD</span></div></div>
+      <div class="roadmap-desc">Por definir con PO</div>
+    </div>
+  </div>
+
+  <div class="section-title">Decisiones pendientes — Planning Sprint 17</div>
+  <div class="dec-row"><span class="badge badge-red">URGENTE</span><div class="dec-text">¿DEBT-028 bloquea producción o se acepta hasta S17?</div><div class="dec-meta">Tech Lead + Security<br>Inmediato</div></div>
+  <div class="dec-row"><span class="badge badge-yellow">ABIERTA</span><div class="dec-text">¿Qué feature entra en FEAT-015?</div><div class="dec-meta">Product Owner<br>Sprint 17 Planning</div></div>
+  <div class="dec-row"><span class="badge badge-yellow">ABIERTA</span><div class="dec-text">¿Prueba de carga SSE se realiza en S17 o S18?</div><div class="dec-meta">DevOps + QA Lead<br>Sprint 17 Planning</div></div>
+</div>
+</div>
+
+<div class="footer">
+  <span>SOFIA v1.9 · CMMI Level 3 · BankPortal — Banco Meridian</span>
+  <span>Actualizado: 2026-03-24 · Sprint 16 cerrado · Próximo: Sprint 17</span>
+</div>
+
+<script>
+const SPRINTS = [
+  {s:1,sp:24,acum:24,tests:40,cov:76,ncs:3},{s:2,sp:24,acum:48,tests:66,cov:78,ncs:2},
+  {s:3,sp:24,acum:72,tests:100,cov:79,ncs:2},{s:4,sp:24,acum:96,tests:121,cov:80,ncs:2},
+  {s:5,sp:24,acum:120,tests:149,cov:81,ncs:3},{s:6,sp:22,acum:142,tests:177,cov:82,ncs:2},
+  {s:7,sp:24,acum:166,tests:205,cov:83,ncs:2},{s:8,sp:24,acum:190,tests:227,cov:82,ncs:2},
+  {s:9,sp:23,acum:213,tests:255,cov:83,ncs:2},{s:10,sp:24,acum:237,tests:283,cov:84,ncs:2},
+  {s:11,sp:20,acum:257,tests:309,cov:83,ncs:1},{s:12,sp:24,acum:281,tests:343,cov:84,ncs:2},
+  {s:13,sp:24,acum:305,tests:400,cov:85,ncs:3},{s:14,sp:24,acum:329,tests:444,cov:85,ncs:5},
+  {s:15,sp:24,acum:353,tests:491,cov:85,ncs:4},{s:16,sp:24,acum:377,tests:553,cov:84,ncs:2},
+];
+const AVG = (377/16).toFixed(1);
+const labels = SPRINTS.map(s=>`S${s.s}`);
+Chart.defaults.color = '#7a90b8';
+Chart.defaults.font.family = "'DM Mono', monospace";
+Chart.defaults.font.size = 11;
+const gridOpts = { color: 'rgba(36,48,72,.7)', drawBorder: false };
+const tickOpts = { color: '#7a90b8', font:{ size:10 } };
+
+new Chart(document.getElementById('chart-velocity'), {
+  type:'bar', data:{ labels, datasets:[{ label:'SP', data:SPRINTS.map(s=>s.sp),
+    backgroundColor:SPRINTS.map(s=>s.sp===24?'rgba(61,124,244,.75)':s.sp===22?'rgba(245,166,35,.7)':'rgba(46,204,113,.7)'),
+    borderRadius:4, borderSkipped:false }]},
+  options:{ responsive:true, plugins:{ legend:{display:false},
+    tooltip:{ backgroundColor:'#1a2236', borderColor:'#2e4070', borderWidth:1,
+      callbacks:{ label:(ctx)=>` ${ctx.raw} SP entregados`,
+        afterLabel:(ctx)=>{ const d=SPRINTS[ctx.dataIndex]; return [` Tests: ${d.tests}`,` Cobertura: ${d.cov}%`,` NCs: ${d.ncs}`]; }}}},
+    scales:{ x:{grid:gridOpts,ticks:tickOpts}, y:{grid:gridOpts,ticks:tickOpts,min:0,max:32} }}
+});
+
+new Chart(document.getElementById('chart-burnup'), {
+  type:'line', data:{ labels, datasets:[
+    { label:'SP Entregados', data:SPRINTS.map(s=>s.acum), borderColor:'#3d7cf4', backgroundColor:'rgba(61,124,244,.08)', fill:true, tension:0.35, pointRadius:2, borderWidth:2 },
+    { label:'Plan lineal', data:SPRINTS.map((_,i)=>Math.round((i+1)*parseFloat(AVG))), borderColor:'rgba(79,142,247,.35)', borderDash:[6,4], fill:false, tension:0, pointRadius:0, borderWidth:1 }
+  ]},
+  options:{ responsive:true, plugins:{ legend:{labels:{color:'#7a90b8',boxWidth:12,font:{size:11}}}, tooltip:{backgroundColor:'#1a2236',borderColor:'#2e4070',borderWidth:1}},
+    scales:{ x:{grid:gridOpts,ticks:tickOpts}, y:{grid:gridOpts,ticks:tickOpts} }}
+});
+
+new Chart(document.getElementById('chart-tests'), {
+  type:'line', data:{ labels, datasets:[{ label:'Tests', data:SPRINTS.map(s=>s.tests),
+    borderColor:'#2ecc71', backgroundColor:'rgba(46,204,113,.07)', fill:true, tension:0.35, pointRadius:2, borderWidth:2 }]},
+  options:{ responsive:true, plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a2236',borderColor:'#2e4070',borderWidth:1}},
+    scales:{ x:{grid:gridOpts,ticks:tickOpts}, y:{grid:gridOpts,ticks:tickOpts} }}
+});
+
+new Chart(document.getElementById('chart-cov'), {
+  type:'line', data:{ labels, datasets:[{ label:'Cobertura %', data:SPRINTS.map(s=>s.cov),
+    borderColor:'#4f8ef7', backgroundColor:'rgba(61,124,244,.06)', fill:true, tension:0.3, pointRadius:3, pointBackgroundColor:'#4f8ef7', borderWidth:2 }]},
+  options:{ responsive:true, plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a2236',borderColor:'#2e4070',borderWidth:1}},
+    scales:{ x:{grid:gridOpts,ticks:tickOpts}, y:{grid:gridOpts,ticks:tickOpts,min:70,max:90} }}
+});
+
+new Chart(document.getElementById('chart-ncs'), {
+  type:'bar', data:{ labels, datasets:[{ label:'NCs', data:SPRINTS.map(s=>s.ncs),
+    backgroundColor:'rgba(245,166,35,.65)', borderRadius:3, borderSkipped:false }]},
+  options:{ responsive:true, plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a2236',borderColor:'#2e4070',borderWidth:1}},
+    scales:{ x:{grid:gridOpts,ticks:tickOpts}, y:{grid:gridOpts,ticks:tickOpts,min:0,max:7} }}
+});
+
+function switchTab(idx) {
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  document.querySelectorAll('.tab-pane').forEach((p,i)=>p.classList.toggle('active',i===idx));
+}
+</script>
+</body>
+</html>
