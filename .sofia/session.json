@@ -2559,5 +2559,15 @@
     "overall_status": "GREEN",
     "script_version": "1.0.0",
     "sofia_version": "2.7"
+  },
+  "repository": {
+    "remote": "https://github.com/cuadram/bank-portal.git",
+    "provider": "github",
+    "visibility": "public",
+    "default_branch": "main",
+    "develop_branch": "develop",
+    "active_branch": "feature/FEAT-021-sprint23",
+    "branching_model": "feature/FEAT-XXX-sprintYY",
+    "guardrail": "GR-CORE-030"
   }
 }

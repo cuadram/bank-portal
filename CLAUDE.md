@@ -215,3 +215,24 @@ Skills:    .sofia/skills/fa-agent/SKILL.md (leer para detalle completo)
 ## SOFIA-CORE
 
 Framework: /Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE
+
+## REPOSITORIO GIT
+- **Remote:** https://github.com/cuadram/bank-portal.git
+- **Provider:** GitHub (public)
+- **Rama main:** main
+- **Rama develop:** develop
+- **Rama activa sprint:** feature/FEAT-021-sprint23
+- **Branching model:** feature/FEAT-XXX-sprintYY desde develop
+- **Guardrail:** GR-CORE-030 (Gate 1 bloqueante)
+
+### Comandos de referencia
+```bash
+# Verificar estado
+git remote -v && git branch -a
+# Nuevo sprint
+git checkout develop && git checkout -b feature/FEAT-XXX-sprintYY
+# Cierre sprint
+git checkout develop && git merge --no-ff feature/FEAT-XXX-sprintYY && git push origin develop
+# Release
+git checkout main && git merge --no-ff develop && git tag vX.Y.0 && git push origin main --tags
+```
