@@ -46,7 +46,7 @@ check() {
 
 echo ""
 echo -e "${BOLD}╔══════════════════════════════════════════════════════════╗${RESET}"
-echo -e "${BOLD}║   SOFIA v1.8 — Persistence Protocol Audit             ║${RESET}"
+echo -e "${BOLD}║   SOFIA v1.6.1 — Persistence Protocol Audit             ║${RESET}"
 echo -e "${BOLD}╚══════════════════════════════════════════════════════════╝${RESET}"
 echo -e "  Repo: ${BLUE}$REPO${RESET}\n"
 
@@ -89,7 +89,7 @@ SKILLS=(
   "developer-core" "java-developer" "angular-developer" "react-developer"
   "nodejs-developer" "dotnet-developer" "code-reviewer" "qa-tester"
   "devops" "jenkins-agent" "workflow-manager" "documentation-agent"
-  "atlassian-agent" "security-agent" "performance-agent"
+  "atlassian-agent" "performance-agent" "security-agent"
 )
 
 SKILLS_OK=0; SKILLS_WARN=0; SKILLS_FAIL=0
@@ -173,13 +173,13 @@ echo -e "  Skills: ${GREEN}$SKILLS_OK OK${RESET} · ${YELLOW}$SKILLS_WARN WARN${
 echo ""
 
 if   [ "$FAIL" -eq 0 ] && [ "$WARN" -eq 0 ]; then
-  echo -e "  ${GREEN}${BOLD}🎉 SOFIA v1.8 — Persistence Protocol: COMPLETO${RESET}"
+  echo -e "  ${GREEN}${BOLD}🎉 SOFIA v1.6 — Persistence Protocol: COMPLETO${RESET}"
   EXIT_CODE=0
 elif [ "$FAIL" -eq 0 ]; then
-  echo -e "  ${YELLOW}${BOLD}⚠️  SOFIA v1.8 — Persistence Protocol: FUNCIONAL (con advertencias)${RESET}"
+  echo -e "  ${YELLOW}${BOLD}⚠️  SOFIA v1.6 — Persistence Protocol: FUNCIONAL (con advertencias)${RESET}"
   EXIT_CODE=1
 else
-  echo -e "  ${RED}${BOLD}❌ SOFIA v1.8 — Persistence Protocol: REQUIERE ATENCIÓN${RESET}"
+  echo -e "  ${RED}${BOLD}❌ SOFIA v1.6 — Persistence Protocol: REQUIERE ATENCIÓN${RESET}"
   echo -e "\n${BOLD}  Items a corregir:${RESET}"
   echo -e "$REPORT"
   EXIT_CODE=2

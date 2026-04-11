@@ -34,7 +34,7 @@ USER meridian
 
 # Copiar JAR desde builder
 COPY --from=builder --chown=meridian:meridian \
-     /build/target/bankportal-backend-2fa-*.jar app.jar
+     /build/target/backend-2fa-*.jar app.jar
 
 # Variables de entorno (valores por defecto no sensibles)
 ENV SERVER_PORT=8080

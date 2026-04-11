@@ -38,18 +38,6 @@ public interface UserNotificationRepository {
     int markAllReadByUserId(UUID userId, Instant readAt);
 
     /**
-     * US-301 v2 — Paginado con filtro completo (eventType + unreadOnly + windowStart).
-     * Delegado al método básico como compatibilidad.
-     */
-    default Page<UserNotification> findByUserIdWithFilter(
-            UUID userId,
-            com.experis.sofia.bankportal.notification.application.NotificationHistoryUseCase.NotificationFilter filter,
-            java.time.Instant windowStart,
-            Pageable pageable) {
-        return findByUserId(userId, filter != null ? filter.eventType() : null, pageable);
-    }
-
-    /**
      * DEBT-012 — Purga notificaciones anteriores al cutoff indicado.
      * @param cutoff instante de corte (exclusivo — elimina created_at < cutoff)
      * @return número de filas eliminadas
