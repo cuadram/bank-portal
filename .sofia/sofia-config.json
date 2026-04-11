@@ -304,7 +304,14 @@
       ],
       "ALL": [
         "GR-011"
-      ]
+      ],
+      "G-1": {
+        "checks": [
+          "GR-CORE-030: git init + main+develop + remote configurado y pusheado antes de primer sprint"
+        ],
+        "blocking": true,
+        "note": "Verificar con: git remote -v && git branch -a"
+      }
     },
     "frontend": {
       "version": "1.0",
@@ -353,7 +360,7 @@
         "envLabel"
       ]
     },
-    "updated": "2026-04-02"
+    "updated": "2026-04-11T14:24:00.516Z"
   },
   "documentation_agent": {
     "version": "2.1",
