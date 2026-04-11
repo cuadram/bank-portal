@@ -1,0 +1,21 @@
+{
+  "decisions": [
+    {
+      "la_id": "LA-023-01",
+      "decision": "ACCEPTED",
+      "decided_at": "2026-04-07T11:58:16.509089Z",
+      "decided_by": "product-owner",
+      "source_sprint": 23,
+      "sofia_core_version": "2.6.29"
+    },
+    {
+      "la_id": "LA-CORE-033",
+      "decision": "ACCEPTED",
+      "decided_at": "2026-04-07T12:09:50.101143Z",
+      "decided_by": "product-owner",
+      "source_sprint": 23,
+      "sofia_core_version": "2.6.31"
+    }
+  ],
+  "last_updated": "2026-04-07T12:09:50.101146Z"
+}

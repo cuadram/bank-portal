@@ -1,11 +1,11 @@
 {
-  "document": "FA-BankPortal-Banco-Meridian.docx",
+  "document": "FA-bank-portal-Banco Meridian.docx",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "generated_by": "FA-Agent — SOFIA v2.3",
   "last_updated": "2026-03-31",
-  "last_sprint": 22,
-  "total_functionalities": 78,
+  "last_sprint": 23,
+  "total_functionalities": 86,
   "notes": "S1-S15 RECONSTRUIDO. S16-S21 documentadas con evidencias directas.",
   "functionalities": [
     {
@@ -1394,6 +1394,154 @@
       ],
       "regulation": "DEBT-036, DEBT-037, CVSS 2.1",
       "source": "SCRUM-121"
+    },
+    {
+      "id": "FA-021-A",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "version": "v1.23.0",
+      "title": "Consulta de Depósitos Activos",
+      "module": "deposit",
+      "status": "ACTIVE",
+      "business_rules": [
+        "RN-F021-05",
+        "RN-F021-10"
+      ],
+      "regulation": [
+        "Ley 44/2002",
+        "FGD RDL 16/2011"
+      ],
+      "source": "US-F021-01"
+    },
+    {
+      "id": "FA-021-B",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "version": "v1.23.0",
+      "title": "Detalle de Depósito y Cuadro de Liquidación IRPF",
+      "module": "deposit",
+      "status": "ACTIVE",
+      "business_rules": [
+        "RN-F021-04",
+        "RN-F021-06",
+        "RN-F021-10"
+      ],
+      "regulation": [
+        "IRPF Art.25 Ley 35/2006",
+        "Ley 44/2002"
+      ],
+      "source": "US-F021-02"
+    },
+    {
+      "id": "FA-021-C",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "version": "v1.23.0",
+      "title": "Simulador de Depósito a Plazo Fijo",
+      "module": "deposit",
+      "status": "ACTIVE",
+      "business_rules": [
+        "RN-F021-01",
+        "RN-F021-02",
+        "RN-F021-03",
+        "RN-F021-04",
+        "RN-F021-06"
+      ],
+      "regulation": [
+        "Ley 44/2002 (información precontractual)",
+        "IRPF Art.25 Ley 35/2006"
+      ],
+      "source": "US-F021-03"
+    },
+    {
+      "id": "FA-021-D",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "version": "v1.23.0",
+      "title": "Apertura de Depósito con Confirmación 2FA (SCA)",
+      "module": "deposit",
+      "status": "ACTIVE",
+      "business_rules": [
+        "RN-F021-01",
+        "RN-F021-02",
+        "RN-F021-03",
+        "RN-F021-07",
+        "RN-F021-08",
+        "RN-F021-10"
+      ],
+      "regulation": [
+        "PSD2 Dir.2015/2366 SCA",
+        "Ley 44/2002"
+      ],
+      "source": "US-F021-04"
+    },
+    {
+      "id": "FA-021-E",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "version": "v1.23.0",
+      "title": "Instrucción de Renovación al Vencimiento",
+      "module": "deposit",
+      "status": "ACTIVE",
+      "business_rules": [
+        "RN-F021-07",
+        "RN-F021-10"
+      ],
+      "regulation": [
+        "Ley 44/2002"
+      ],
+      "source": "US-F021-05"
+    },
+    {
+      "id": "FA-021-F",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "version": "v1.23.0",
+      "title": "Cancelación Anticipada de Depósito con Penalización",
+      "module": "deposit",
+      "status": "ACTIVE",
+      "business_rules": [
+        "RN-F021-08",
+        "RN-F021-09",
+        "RN-F021-10"
+      ],
+      "regulation": [
+        "Ley 44/2002",
+        "PSD2 SCA"
+      ],
+      "source": "US-F021-06"
+    },
+    {
+      "id": "FA-021-G",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "version": "v1.23.0",
+      "title": "Módulo Angular Depósitos — Frontend Portal",
+      "module": "deposit-frontend",
+      "status": "ACTIVE",
+      "business_rules": [
+        "RN-F021-05"
+      ],
+      "regulation": [
+        "WCAG 2.1 AA"
+      ],
+      "source": "US-F021-01..06"
+    },
+    {
+      "id": "FA-DEBT-023A",
+      "feat": "DEBT-036+037+044",
+      "sprint": 23,
+      "version": "v1.23.0",
+      "title": "Cierre Deuda Técnica Sprint 23: IBAN Audit Log · Regex PAN Maestro · TAE Externalizado",
+      "module": "export,card,loan,deposit",
+      "status": "ACTIVE",
+      "business_rules": [
+        "RN-F021-03"
+      ],
+      "regulation": [
+        "CWE-20 (DEBT-037)"
+      ],
+      "source": "DEBT-036 + DEBT-037 + DEBT-044"
     }
   ],
   "business_rules": [
@@ -2358,6 +2506,86 @@
       "feat": "FEAT-020",
       "sprint": "22",
       "description": "Regex PAN Maestro acepta 12–19 dígitos — CVSS 2.1 corregido (DEBT-037)"
+    },
+    {
+      "id": "RN-F021-01",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "description": "Importe mínimo de depósito: 1.000€. Por debajo → 400 AMOUNT_TOO_LOW.",
+      "category": "validation",
+      "source": "US-F021-03, US-F021-04"
+    },
+    {
+      "id": "RN-F021-02",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "description": "Plazo del depósito: mínimo 1 mes, máximo 60 meses. Fuera de rango → 400.",
+      "category": "validation",
+      "source": "US-F021-03, US-F021-04"
+    },
+    {
+      "id": "RN-F021-03",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "description": "TIN y TAE configurables en application.properties por perfil de entorno. Sin hardcode en código fuente (DEBT-044).",
+      "category": "configuration",
+      "source": "US-F021-03, US-F021-04, DEBT-044"
+    },
+    {
+      "id": "RN-F021-04",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "description": "Retención IRPF en origen por tramos (Art.25 Ley 35/2006): 19% hasta 6.000€ / 21% entre 6.001€ y 50.000€ / 23% superior a 50.000€.",
+      "category": "regulatory",
+      "source": "US-F021-02, US-F021-03"
+    },
+    {
+      "id": "RN-F021-05",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "description": "Badge FGD informativo si importe del depósito ≤ 100.000€ (RDL 16/2011). Cobertura por titular y entidad.",
+      "category": "regulatory",
+      "source": "US-F021-01"
+    },
+    {
+      "id": "RN-F021-06",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "description": "Todos los cálculos monetarios (intereses, IRPF, penalización) usan BigDecimal con redondeo HALF_EVEN (coherente con ADR-034).",
+      "category": "technical",
+      "source": "US-F021-02, US-F021-03, US-F021-06"
+    },
+    {
+      "id": "RN-F021-07",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "description": "Instrucción de renovación por defecto: RENEW_MANUAL. El cliente debe instruir explícitamente si desea renovación automática.",
+      "category": "business",
+      "source": "US-F021-05"
+    },
+    {
+      "id": "RN-F021-08",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "description": "OTP 2FA obligatorio para apertura y cancelación anticipada de depósito (PSD2 SCA). Sin OTP → 400 OTP_REQUIRED. OTP inválido → 401 OTP_INVALID.",
+      "category": "security",
+      "source": "US-F021-04, US-F021-06"
+    },
+    {
+      "id": "RN-F021-09",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "description": "Penalización por cancelación anticipada = porcentaje configurable (application.properties) × intereses devengados hasta la fecha de cancelación.",
+      "category": "business",
+      "source": "US-F021-06"
+    },
+    {
+      "id": "RN-F021-10",
+      "feat": "FEAT-021",
+      "sprint": 23,
+      "description": "Aislamiento total entre clientes: un cliente no puede consultar, modificar ni cancelar depósitos de otro. Violación → 403 ACCESS_DENIED.",
+      "category": "security",
+      "source": "US-F021-01..06"
     }
   ],
   "modules": [
@@ -2385,8 +2613,33 @@
     "SEPA-DD",
     "AML-KYC"
   ],
-  "total_business_rules": 188,
+  "total_business_rules": 198,
   "last_sprint_consolidated": 21,
-  "last_feat": "FEAT-019",
-  "updated_at": "2026-04-05T08:17:39.189Z"
+  "last_feat": "FEAT-021",
+  "updated_at": "2026-04-09T15:16:44.876411+00:00",
+  "doc_version": "0.3",
+  "doc_path": "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx",
+  "doc_history": [
+    {
+      "version": "0.1",
+      "date": "2026-04-05",
+      "sprint": "S1–S22 / FEAT-019",
+      "desc": "Actualización automática gate-8b. 78 func, 188 RN. Indice clickable v2.6. SOFIA v2.7."
+    },
+    {
+      "version": "0.2",
+      "date": "2026-04-06",
+      "sprint": "S1–S23 / FEAT-021",
+      "desc": "Actualización automática gate-8b. 86 func, 198 RN. Indice clickable v2.6. SOFIA v2.7."
+    },
+    {
+      "version": "0.3",
+      "date": "2026-04-09",
+      "sprint": "S1–S23 / FEAT-021",
+      "desc": "Actualización automática gate-8b. 86 func, 198 RN. Indice clickable v2.6. SOFIA v2.7."
+    }
+  ],
+  "markdowns": [
+    "docs/functional-analysis/FA-FEAT-021-sprint23.md"
+  ]
 }

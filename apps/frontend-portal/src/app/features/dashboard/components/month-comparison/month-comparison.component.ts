@@ -16,8 +16,10 @@ import { MonthComparison } from '../../services/dashboard.service';
       </ng-container>
       <div *ngIf="!loading && comparison">
         <div class="row">
-          <span>Gastos este mes</span>
-          <strong>{{ comparison.currentMonth.totalExpenses | currency:'EUR':'symbol':'1.2-2':'es' }}</strong>
+          <div class="row-left">
+            <span class="row-label">Gastos este mes</span>
+            <strong>{{ comparison.currentMonth.totalExpenses | currency:'EUR':'symbol':'1.2-2':'es' }}</strong>
+          </div>
           <span class="badge" [class.up]="(comparison.expensesVariationPercent ?? 0) > 0"
                               [class.down]="(comparison.expensesVariationPercent ?? 0) < 0">
             <ng-container *ngIf="comparison.expensesVariationPercent !== null">
@@ -28,11 +30,14 @@ import { MonthComparison } from '../../services/dashboard.service';
           </span>
         </div>
         <div class="row">
-          <span>Gastos mes anterior</span>
-          <strong *ngIf="comparison.previousMonth">
-            {{ comparison.previousMonth.totalExpenses | currency:'EUR':'symbol':'1.2-2':'es' }}
-          </strong>
-          <span *ngIf="!comparison.previousMonth" class="muted">Sin datos</span>
+          <div class="row-left">
+            <span class="row-label">Gastos mes anterior</span>
+            <strong *ngIf="comparison.previousMonth">
+              {{ comparison.previousMonth.totalExpenses | currency:'EUR':'symbol':'1.2-2':'es' }}
+            </strong>
+            <span *ngIf="!comparison.previousMonth" class="muted">Sin datos</span>
+          </div>
+          <span class="badge-placeholder"></span>
         </div>
       </div>
     </div>
@@ -40,7 +45,11 @@ import { MonthComparison } from '../../services/dashboard.service';
   styles: [`
     .comparison-card { background:#fff; padding:1.5rem; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,.1); }
     h3 { color:#1B3A6B; margin-top:0; }
-    .row { display:flex; align-items:center; gap:1rem; margin-bottom:.8rem; justify-content:space-between; }
+    .row { display:flex; align-items:center; justify-content:space-between; margin-bottom:.8rem; }
+    .row-left { display:flex; align-items:center; gap:.75rem; }
+    .row-label { color:#555; font-size:.9rem; width:10rem; flex-shrink:0; }
+    .row-left strong, .row-left .muted { display:inline-block; width:7rem; text-align:right; font-variant-numeric:tabular-nums; }
+    .badge-placeholder { min-width:60px; }
     .badge { padding:.2rem .6rem; border-radius:12px; font-size:.8rem; font-weight:600; }
     .badge.up { background:#ffebee; color:#c62828; }
     .badge.down { background:#e8f5e9; color:#2e7d32; }

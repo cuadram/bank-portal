@@ -42,6 +42,7 @@ spring:
 totp:
   issuer: ${TOTP_ISSUER:BankMeridian}
   aes-key: ${TOTP_AES_KEY}
+  stg-bypass-code: ""   # vacío en producción — STG override en application-staging.yml
   period: 30
   code-digits: 6
   tolerance: 1
@@ -120,3 +121,15 @@ logging:
     root: INFO
     com.experis.sofia.bankportal: DEBUG
     org.springframework.security: WARN
+
+# Productos bancarios — FEAT-021 + DEBT-044
+bank:
+  products:
+    deposit:
+      tin: 0.0325
+      tae: 0.0330
+      penalty-rate: 0.25
+      min-amount: 1000
+      max-plazo-meses: 60
+    loan:
+      tae: 6.95

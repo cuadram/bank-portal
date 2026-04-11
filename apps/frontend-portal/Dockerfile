@@ -45,7 +45,15 @@ server {
     add_header Content-Security-Policy   "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.bankmeridian.com" always;
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
-    # SPA: todas las rutas sirven index.html
+    # index.html: nunca cachear — garantiza que el navegador cargue el bundle correcto tras rebuild
+    location = /index.html {
+        add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+        add_header Pragma "no-cache" always;
+        expires 0;
+        try_files $uri =404;
+    }
+
+    # SPA routing
     location / {
         try_files $uri $uri/ /index.html;
     }

@@ -36,7 +36,12 @@ const routes: Routes = [
         path: 'export',
         loadChildren: () => import('./features/export/export.module').then(m => m.ExportModule)
       },
-      // FEAT-020 Sprint 22 — LA-FRONT-001: ruta préstamos registrada
+      // FEAT-021 Sprint 23 — LA-FRONT-001: ruta depositos registrada (LA-023-01)
+      {
+        path: 'depositos',
+        loadChildren: () => import('./features/deposits/deposits.module').then(m => m.DepositsModule)
+      },
+            // FEAT-020 Sprint 22 — LA-FRONT-001: ruta préstamos registrada
       {
         path: 'prestamos',
         loadChildren: () => import('./features/loans/loans.module').then(m => m.LoansModule)

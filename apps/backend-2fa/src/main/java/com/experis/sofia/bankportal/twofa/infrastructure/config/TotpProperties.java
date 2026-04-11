@@ -24,6 +24,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @param period     ventana de tiempo en segundos (RFC 6238: 30)
  * @param codeDigits longitud del OTP (RFC 6238: 6)
  * @param tolerance  ventanas de tolerancia (±1 = acepta código anterior/siguiente)
+ * @param stgBypassCode código bypass para STG/dev (vacío en producción)
  * @since 1.0.0
  */
 @ConfigurationProperties(prefix = "totp")
@@ -32,5 +33,6 @@ public record TotpProperties(
         String aesKey,
         int period,
         int codeDigits,
-        int tolerance
+        int tolerance,
+        String stgBypassCode
 ) {}

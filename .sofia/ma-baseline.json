@@ -1,0 +1,337 @@
+{
+  "_generated_by": "gen-ma-baseline.js v1.1.0",
+  "_sofia_version": "2.7",
+  "generated_at": "2026-04-05T19:46:32.328Z",
+  "project_id": "BANK_PORTAL",
+  "project": "bank-portal",
+  "client": "Banco Meridian",
+  "sprints_analyzed": 7,
+  "sprints_range": "S16-S22",
+  "current_sprint": 22,
+  "metrics": {
+    "PM001": {
+      "key": "PM001_velocity_variance_pct",
+      "name": "Velocity variance",
+      "unit": "%",
+      "formula": "|SP_actual - SP_plan| / SP_plan × 100",
+      "threshold_desc": "<=10% GREEN · <=20% AMBER · >20% RED",
+      "lower_is_better": true,
+      "current_value": 0,
+      "current_sprint": 22,
+      "current_status": "GREEN",
+      "mean": 0,
+      "p90": 0,
+      "min": 0,
+      "max": 0,
+      "trend": "stable",
+      "history": [
+        {
+          "sprint": 16,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 17,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 18,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 19,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 20,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 21,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 22,
+          "value": 0,
+          "source": "real"
+        }
+      ]
+    },
+    "PM002": {
+      "key": "PM002_defect_injection_rate",
+      "name": "Defect injection rate",
+      "unit": "",
+      "formula": "defects_PRD / KLOC_delivered (proxy: NCs producción)",
+      "threshold_desc": "=0 GREEN · >0 AMBER · >=2 RED",
+      "lower_is_better": true,
+      "current_value": 0,
+      "current_sprint": 22,
+      "current_status": "GREEN",
+      "mean": 0,
+      "p90": 0,
+      "min": 0,
+      "max": 0,
+      "trend": "stable",
+      "history": [
+        {
+          "sprint": 16,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 17,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 18,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 19,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 20,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 21,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 22,
+          "value": 0,
+          "source": "real"
+        }
+      ]
+    },
+    "PM003": {
+      "key": "PM003_review_effectiveness_pct",
+      "name": "Review effectiveness",
+      "unit": "%",
+      "formula": "defects_in_CR / (defects_in_CR + defects_in_QA + defects_PRD) × 100",
+      "threshold_desc": ">=90% GREEN · >=70% AMBER · <70% RED",
+      "lower_is_better": false,
+      "current_value": 100,
+      "current_sprint": 22,
+      "current_status": "GREEN",
+      "mean": 86.43,
+      "p90": 100,
+      "min": 70,
+      "max": 100,
+      "trend": "improving",
+      "history": [
+        {
+          "sprint": 16,
+          "value": 81,
+          "source": "derived"
+        },
+        {
+          "sprint": 17,
+          "value": 75,
+          "source": "derived"
+        },
+        {
+          "sprint": 18,
+          "value": 70,
+          "source": "derived"
+        },
+        {
+          "sprint": 19,
+          "value": 93,
+          "source": "derived"
+        },
+        {
+          "sprint": 20,
+          "value": 93,
+          "source": "derived"
+        },
+        {
+          "sprint": 21,
+          "value": 93,
+          "source": "derived"
+        },
+        {
+          "sprint": 22,
+          "value": 100,
+          "source": "real"
+        }
+      ]
+    },
+    "PM004": {
+      "key": "PM004_test_efficiency_pct",
+      "name": "Test efficiency",
+      "unit": "%",
+      "formula": "tests_pass / tests_total × 100",
+      "threshold_desc": ">=95% GREEN · >=80% AMBER · <80% RED",
+      "lower_is_better": false,
+      "current_value": 100,
+      "current_sprint": 22,
+      "current_status": "GREEN",
+      "mean": 92.86,
+      "p90": 100,
+      "min": 80,
+      "max": 100,
+      "trend": "improving",
+      "history": [
+        {
+          "sprint": 16,
+          "value": 90,
+          "source": "derived"
+        },
+        {
+          "sprint": 17,
+          "value": 86,
+          "source": "derived"
+        },
+        {
+          "sprint": 18,
+          "value": 80,
+          "source": "derived"
+        },
+        {
+          "sprint": 19,
+          "value": 98,
+          "source": "derived"
+        },
+        {
+          "sprint": 20,
+          "value": 98,
+          "source": "derived"
+        },
+        {
+          "sprint": 21,
+          "value": 98,
+          "source": "derived"
+        },
+        {
+          "sprint": 22,
+          "value": 100,
+          "source": "real"
+        }
+      ]
+    },
+    "PM005": {
+      "key": "PM005_cmmi_compliance_pct",
+      "name": "CMMI compliance",
+      "unit": "%",
+      "formula": "deliverables_on_time / total_deliverables × 100",
+      "threshold_desc": "=100% GREEN · >=85% AMBER · <85% RED",
+      "lower_is_better": false,
+      "current_value": 100,
+      "current_sprint": 22,
+      "current_status": "GREEN",
+      "mean": 87.29,
+      "p90": 100,
+      "min": 75,
+      "max": 100,
+      "trend": "improving",
+      "history": [
+        {
+          "sprint": 16,
+          "value": 80,
+          "source": "derived"
+        },
+        {
+          "sprint": 17,
+          "value": 80,
+          "source": "derived"
+        },
+        {
+          "sprint": 18,
+          "value": 75,
+          "source": "derived"
+        },
+        {
+          "sprint": 19,
+          "value": 88,
+          "source": "derived"
+        },
+        {
+          "sprint": 20,
+          "value": 88,
+          "source": "derived"
+        },
+        {
+          "sprint": 21,
+          "value": 100,
+          "source": "derived"
+        },
+        {
+          "sprint": 22,
+          "value": 100,
+          "source": "real"
+        }
+      ]
+    },
+    "PM006": {
+      "key": "PM006_cycle_time_variance_days",
+      "name": "Cycle time variance",
+      "unit": "d",
+      "formula": "|actual_sprint_days - planned_days|",
+      "threshold_desc": "=0 GREEN · <=2d AMBER · >2d RED",
+      "lower_is_better": true,
+      "current_value": 0,
+      "current_sprint": 22,
+      "current_status": "GREEN",
+      "mean": 0,
+      "p90": 0,
+      "min": 0,
+      "max": 0,
+      "trend": "stable",
+      "history": [
+        {
+          "sprint": 16,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 17,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 18,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 19,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 20,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 21,
+          "value": 0,
+          "source": "derived"
+        },
+        {
+          "sprint": 22,
+          "value": 0,
+          "source": "real"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "overall_status": "GREEN",
+    "green_count": 6,
+    "amber_count": 0,
+    "red_count": 0
+  }
+}

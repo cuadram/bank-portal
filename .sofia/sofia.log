@@ -395,3 +395,93 @@
 [2026-04-05T08:17:39.189Z] [FA-VALIDATE] OK: last_sprint: 22 coincide con datos ✓
 [2026-04-05T08:17:39.189Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
 [2026-04-05T08:17:39.190Z] [FA-VALIDATE] PASS — 78 funcionalidades, 188 reglas | sprint 22 | FEAT-019
+[2026-04-05T14:05:48.536004Z] [gen-lessons-learned] LESSONS_LEARNED.md regenerado — 49 LAs — bank-portal/Banco Meridian
+[2026-04-05T14:07:19.344453Z] [gen-lessons-learned] LESSONS_LEARNED.md regenerado — 49 LAs — bank-portal/Banco Meridian
+[2026-04-05T19:33:33.464Z] gen-ma-baseline.js v1.0.0 — S22 BANK_PORTAL overall:GREEN sprints:7 metrics:6 elapsed:0.01s
+[2026-04-05T19:34:45.802Z] SOFIA v2.7 — gen-ma-baseline.js v1.0.0 integrado en pipeline Step 9 · MA Process Baseline activado · 7 sprints S16-S22 · overall:GREEN · sofia-config.json v2.7
+[2026-04-05T19:41:09.395Z] gen-ma-baseline.js v1.1.0 — S22 BANK_PORTAL overall:GREEN sprints:7 metrics:6 elapsed:0.01s
+[2026-04-05T19:46:32.328Z] gen-ma-baseline.js v1.1.0 — S22 BANK_PORTAL overall:GREEN sprints:7 metrics:6 elapsed:0.01s
+[2026-04-05T19:46:32.259Z] MA-BASELINE gate:G-9 step:9 org_path:/Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE/sofia-org status:OK
+[2026-04-05T19:46:32.409Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-9 · Step: 9 · Sprint 22
+[2026-04-05T19:46:32.259Z] DASHBOARD-REGEN gate:G-9 step:9 project:bank-portal trigger:gate-approval GR-011
+[2026-04-05T19:46:32.635113+00:00] [FA-AGENT] [GATE-8b] GENERATED → FA-bank-portal-Banco Meridian.docx v0.1 | 70.8KB | 78 func | 188 RN | TOC-hyperlinks | python-docx | SOFIA v2.7
+[2026-04-05T19:46:32.259Z] FA-DOCX-REGEN gate:G-9 step:9 doc:FA-bank-portal-Banco Meridian.docx trigger:gate-approval LA-020-08
+[2026-04-05T19:46:36.969Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-5 · Step: 5 · Sprint 22
+[2026-04-05T19:46:36.900Z] DASHBOARD-REGEN gate:G-5 step:5 project:bank-portal trigger:gate-approval GR-011
+[2026-04-05T19:46:48.371Z] SOFIA v2.7 — gate-dashboard-hook.js v2.7 — MA Baseline integrado en Step 9 · sofia_org_path en sofia-config.json · cero-configuración cross-proyecto
+[2026-04-05T19:56:48.340Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-9 · Step: 9 · Sprint 22
+[2026-04-06T05:37:09.006Z] [STEP-1] [scrum-master] COMPLETED → docs/sprints/SPRINT-023-planning.md | Sprint 23 FEAT-021 Depositos | 24 SP | 9 issues Jira SCRUM-123..131 | gate_pending=G-1
+[2026-04-06T05:38:14.329Z] [GATE-G-1] [product-owner] APPROVED → Sprint 23 FEAT-021 Depositos a Plazo Fijo
+[2026-04-06T05:38:14.329Z] [STEP-2] [requirements-analyst] STARTED → SRS FEAT-021 Sprint 23
+[2026-04-06T05:40:06.562Z] [STEP-2] [requirements-analyst] COMPLETED → SRS-FEAT-021-sprint23.md | 6 US · 10 RN · gate_pending=G-2
+[2026-04-06T05:40:42.818Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-1 · Step: 2 · Sprint 23
+[2026-04-06T06:10:54.015Z] [GATE-G-2] [product-owner] APPROVED → SRS FEAT-021 6 US 10 RN
+[2026-04-06T06:10:54.015Z] [STEP-2b] [fa-agent] STARTED → fa-index.json FEAT-021 Sprint 23
+[2026-04-06T06:12:22.916Z] [FA-VALIDATE] OK: total_functionalities: 86 ✓
+[2026-04-06T06:12:22.925Z] [FA-VALIDATE] OK: total_business_rules: 198 ✓
+[2026-04-06T06:12:22.925Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-06T06:12:22.925Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-06T06:12:22.925Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-06T06:12:22.925Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-06T06:12:22.925Z] [FA-VALIDATE] OK: last_sprint: 23 coincide con datos ✓
+[2026-04-06T06:12:22.925Z] [FA-VALIDATE] OK: FEAT-021: todas las RN referenciadas están definidas ✓
+[2026-04-06T06:12:22.926Z] [FA-VALIDATE] PASS — 86 funcionalidades, 198 reglas | sprint 23 | FEAT-021
+[2026-04-06T06:12:34.218Z] [STEP-2b] [fa-agent] COMPLETED → fa-index.json 86 func 198 BRs | FA-FEAT-021-sprint23.md | validate-fa-index PASS 8/8 | gate AUTO
+[2026-04-06T06:12:34.309Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-2 · Step: 2b · Sprint 23
+[2026-04-06T06:13:36.395046+00:00] [FA-AGENT] [GATE-8b] GENERATED → FA-bank-portal-Banco Meridian.docx v0.2 | 73.6KB | 86 func | 198 RN | TOC-hyperlinks | python-docx | SOFIA v2.7
+[2026-04-06T06:13:45.227Z] [STEP-2b] [fa-agent] DOCX-UPDATED → FA-bank-portal-Banco Meridian.docx v0.2 73.6KB | 86 func 198 BRs
+[2026-04-06T06:17:46.698Z] [STEP-2c] [ux-ui-designer] STARTED → UX FEAT-021 Sprint 23
+[2026-04-06T06:23:30.930Z] [STEP-2c] [ux-ui-designer] COMPLETED → UX-FEAT-021-sprint23.md + PROTO 48KB 11 pantallas | gate_pending=HITL-PO-TL
+[2026-04-06T06:23:31.009Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: HITL-PO-TL · Step: 2c · Sprint 23
+[2026-04-06T08:36:26.975Z] [STEP-2c] [ux-ui-designer] PROTO-REGENERADO → incremental sobre S22 · 64KB · 10 pantallas · 17 checks OK
+[2026-04-06T08:43:02.533Z] [STEP-2c] [ux-ui-designer] PROTO-UPDATED → PROTO-FEAT-021-sprint23.html 78KB incremental sobre S22 | sidebar navy real | 10 pantallas
+[2026-04-06T10:30:19.890Z] [GATE-HITL-PO-TL] [product-owner+tech-lead] APPROVED → UX+PROTO FEAT-021 Sprint 23
+[2026-04-06T10:30:19.890Z] [STEP-3] [architect] STARTED → HLD+LLD+ADR FEAT-021 Sprint 23
+[2026-04-06T10:41:41.017Z] [GATE-HITL-PO-TL] [product-owner+tech-lead] APPROVED → UX+PROTO FEAT-021 Sprint 23
+[2026-04-06T10:41:43.705Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: HITL-PO-TL · Step: 2c · Sprint 23
+[2026-04-06T10:43:57.945Z] [STEP-3] [architect] STARTED → HLD+LLD FEAT-021 Sprint 23
+[2026-04-06T10:47:17.589Z] [STEP-3] [architect] COMPLETED → HLD+LLD-BE+LLD-FE+ADR-036-037 | Confluence 9338882 | gate_pending=G-3
+[2026-04-06T10:47:17.671Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-3 · Step: 3 · Sprint 23
+[2026-04-06T10:47:32.050Z] [STEP-3] [architect] COMPLETED → HLD+LLD+ADR FEAT-021 Sprint 23 | Confluence 9371649 | V26 Flyway | 6 UC | gate_pending=G-3
+[2026-04-06T10:47:32.208Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-3 · Step: 3 · Sprint 23
+[2026-04-06T11:25:21.592951Z] [gen-lessons-learned] LESSONS_LEARNED.md regenerado — 49 LAs — bank-portal/Banco Meridian
+[2026-04-06T11:30:55.722040Z] [gen-lessons-learned] LESSONS_LEARNED.md regenerado — 49 LAs — bank-portal/Banco Meridian
+[2026-04-07T11:58:16Z] [LA-PROMO-GATE] STEP-9b | GATE=LA-PROMO-GATE | Sprint=23 | ACCEPTED LA-023-01 | SOFIA-CORE v2.6.29 | PO=Angel de la Cuadra | Confluence PENDING
+[2026-04-07T11:59:36Z] [LA-PROMO-GATE] CONFLUENCE PUBLICADO — page_id=10027009 'SOFIA-CORE · Lessons Learned Globales' — spaceId=393220 parentId=98309 | LA-023-01 PROMOVIDA COMPLETAMENTE | SOFIA-CORE v2.6.29
+[2026-04-07T12:10:00Z] [LA-PROMO-GATE] STEP-9b | GATE=LA-PROMO-GATE | LA-CORE-033 ACCEPTED | SOFIA-CORE v2.6.31 | PO=Angel de la Cuadra | tipo=governance | scope=SOFIA-CORE
+[2026-04-09T08:50:47.362Z] [FA-VALIDATE] OK: total_functionalities: 86 ✓
+[2026-04-09T08:50:47.375Z] [FA-VALIDATE] OK: total_business_rules: 198 ✓
+[2026-04-09T08:50:47.375Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-09T08:50:47.375Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-09T08:50:47.376Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-09T08:50:47.376Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-09T08:50:47.376Z] [FA-VALIDATE] OK: last_sprint: 23 coincide con datos ✓
+[2026-04-09T08:50:47.376Z] [FA-VALIDATE] OK: FEAT-021: todas las RN referenciadas están definidas ✓
+[2026-04-09T08:50:47.377Z] [FA-VALIDATE] PASS — 86 funcionalidades, 198 reglas | sprint 23 | FEAT-021
+[2026-04-09T08:51:22.176Z] [STEP-3b] [S23/FEAT-021] Documentation Agent + FA-Agent — AUTO
+  validate-fa-index.js: PASS 8/8 — 86 func, 198 BRs
+  FA-FEAT-021-sprint23.md: enriquecido con HLD/LLD arquitectura — status READY_FOR_REVIEW
+  Confluence HLD page 9371649: verificada (status current)
+  gate_pending: null (G-3 limpiado)
+  completed_steps: [1,2,2b,2c,3,3b]
+  NEXT: Step 4 Developer
+[2026-04-09T08:51:29.429Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-3b · Step: 3b · Sprint 23
+[2026-04-09T10:42:04.065Z] [GR-PERSIST] steps:[4] ok:2 missing:0 session_incoherent:1 project:bank-portal
+[2026-04-09T10:42:04.079Z] [GUARDRAIL] Gate G-4b BLOQUEADO — 1 error(es): @AuthenticationPrincipal en apps/backend-2fa/src/main/java/c
+[2026-04-09T10:43:31.459Z] [GR-PERSIST] steps:[4] ok:2 missing:0 session_incoherent:1 project:bank-portal
+[2026-04-09T10:43:31.472Z] [GUARDRAIL] Gate G-4b BLOQUEADO — 1 error(es): @AuthenticationPrincipal en apps/backend-2fa/src/main/java/c
+[2026-04-09T10:46:25.071Z] [GR-PERSIST] steps:[4] ok:2 missing:0 session_incoherent:1 project:bank-portal
+[2026-04-09T10:46:25.090Z] [GUARDRAIL] Gate G-4b — 10 checks OK
+[2026-04-09T15:16:37.899Z] [FA-VALIDATE] OK: total_functionalities: 86 ✓
+[2026-04-09T15:16:37.907Z] [FA-VALIDATE] OK: total_business_rules: 198 ✓
+[2026-04-09T15:16:37.907Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-09T15:16:37.907Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-09T15:16:37.908Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-09T15:16:37.908Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-09T15:16:37.908Z] [FA-VALIDATE] OK: last_sprint: 23 coincide con datos ✓
+[2026-04-09T15:16:37.908Z] [FA-VALIDATE] OK: FEAT-021: todas las RN referenciadas están definidas ✓
+[2026-04-09T15:16:37.909Z] [FA-VALIDATE] PASS — 86 funcionalidades, 198 reglas | sprint 23 | FEAT-021
+[2026-04-09T15:16:44.876411+00:00] [FA-AGENT] [GATE-8b] GENERATED → FA-bank-portal-Banco Meridian.docx v0.3 | 73.7KB | 86 func | 198 RN | TOC-hyperlinks | python-docx | SOFIA v2.7
+[2026-04-09T16:20:41.711Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-9 · Step: 9 · Sprint 23
+[2026-04-09T16:50:40.000Z] BATCH-APPROVE-LA · product-owner · 49 LAs aprobadas · LESSONS_LEARNED.md regenerado (84 LAs)
+[2026-04-09T17:23:29Z] LA-REGISTER · LA-023-03 · approved:product-owner · Total LAs: 85
