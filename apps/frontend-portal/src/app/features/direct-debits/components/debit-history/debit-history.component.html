@@ -1,0 +1,38 @@
+<!-- FEAT-017 Sprint 19 — DebitHistoryComponent -->
+<div class="debit-history-container" aria-label="Historial de recibos domiciliados">
+  <h2>Historial de Recibos</h2>
+
+  <div *ngIf="loading" role="status" aria-live="polite">Cargando historial...</div>
+
+  <div *ngIf="errorMsg" role="alert" class="error-banner">
+    <p>{{ errorMsg }}</p>
+    <button (click)="loadDebits()">Reintentar</button>
+  </div>
+
+  <table *ngIf="!loading && !errorMsg" role="table" aria-label="Recibos domiciliados">
+    <caption>{{ totalElements }} recibos encontrados</caption>
+    <thead>
+      <tr>
+        <th scope="col">Fecha vencimiento</th>
+        <th scope="col">Importe</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Motivo devolución</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let debit of debits">
+        <td>{{ debit.dueDate }}</td>
+        <td>{{ debit.amount | number:'1.2-2' }} {{ debit.currency }}</td>
+        <td>
+          <span [class]="statusClass(debit.status)" role="status">
+            {{ statusLabel(debit.status) }}
+          </span>
+        </td>
+        <td>{{ debit.returnReason ?? '—' }}</td>
+      </tr>
+      <tr *ngIf="debits.length === 0">
+        <td colspan="4">No hay recibos en el período seleccionado.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

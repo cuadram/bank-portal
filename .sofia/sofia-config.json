@@ -1,0 +1,394 @@
+{
+  "_comment": "SOFIA v2.5 — Configuración del proyecto. Editar con: python3 .sofia/scripts/sofia-wizard.py --update",
+  "sofia_version": "2.7",
+  "project": "bank-portal",
+  "client": "Banco Meridian",
+  "project_description": "Portal bancario con microservicios Java + Angular",
+  "created_at": "2026-03-18T20:18:57Z",
+  "updated_at": "2026-04-05T19:34:28.899Z",
+  "stack": {
+    "backend": [
+      "java"
+    ],
+    "frontend": [
+      "angular"
+    ],
+    "database": [
+      "postgresql",
+      "redis"
+    ],
+    "messaging": [],
+    "infra": [
+      "docker",
+      "jenkins"
+    ]
+  },
+  "methodology": {
+    "type": "scrumban",
+    "sprint_length_days": 14,
+    "velocity_reference_sp": 24,
+    "estimation_unit": "story_points"
+  },
+  "team_roles": {
+    "product_owner": "",
+    "tech_lead": "",
+    "scrum_master": "",
+    "qa_lead": "",
+    "release_manager": "",
+    "pm": "",
+    "security_team": "security-team",
+    "client_contact": ""
+  },
+  "jira": {
+    "project_key": "SCRUM",
+    "cloud_id": "8898340d-94ed-45c2-8831-395d407a4e77",
+    "sprint_board_id": null,
+    "gate_label": "sofia-gate",
+    "nc_label": "sofia-nc"
+  },
+  "confluence": {
+    "space_key": "SOFIA",
+    "space_id": "393220",
+    "parent_page_id": "229379"
+  },
+  "pipeline": {
+    "active_steps": [
+      "1",
+      "2",
+      "2b",
+      "2c",
+      "3",
+      "3b",
+      "4",
+      "5",
+      "5b",
+      "5c",
+      "6",
+      "7",
+      "7b",
+      "8",
+      "8b",
+      "9"
+    ],
+    "optional_steps": {
+      "5b": true,
+      "performance": false,
+      "5c": false,
+      "7b": false
+    },
+    "gates_enabled": true,
+    "atlassian_sync": true,
+    "auto_dashboard": true,
+    "fa_agent_enabled": true,
+    "pipeline_steps_total": 17
+  },
+  "quality": {
+    "coverage_threshold": 80,
+    "max_cve_high": 3,
+    "max_cve_critical": 0,
+    "cmmi_level": 3
+  },
+  "paths": {
+    "repo": "/Users/cuadram/proyectos/bank-portal",
+    "node": "/opt/homebrew/opt/node@22/bin/node",
+    "npx": "/opt/homebrew/opt/node@22/bin/npx",
+    "python3": "/usr/bin/python3",
+    "uvx": "uvx",
+    "docs": "docs",
+    "src": "src",
+    "infra": "infra",
+    "deliverables": "docs/deliverables",
+    "functional_analysis": "docs/functional-analysis"
+  },
+  "document_style": {
+    "language": "es",
+    "corporate_color": "1B3A6B",
+    "font": "Arial",
+    "paper": "A4"
+  },
+  "dashboard": {
+    "generator": ".sofia/scripts/gen-global-dashboard.js",
+    "output": "docs/dashboard/bankportal-global-dashboard.html",
+    "gate_pending_normalize": true,
+    "gate_roles": {
+      "G-1": "Product Owner",
+      "G-2": "Product Owner",
+      "HITL-PO-TL": "Product Owner + Tech Lead",
+      "G-3": "Tech Lead",
+      "G-4": "Tech Lead",
+      "G-5": "Tech Lead",
+      "G-5b": "Security Agent",
+      "G-6": "QA Lead + Product Owner",
+      "G-7": "Release Manager",
+      "G-8": "Project Manager",
+      "G-9": "Workflow Manager"
+    },
+    "parsearg_supports_equals": true,
+    "jira_issue_fallback": "GP.step"
+  },
+  "fa_agent": {
+    "enabled": true,
+    "skill_version": "2.1",
+    "generator": "python-docx",
+    "script": ".sofia/scripts/gen-fa-document.py",
+    "output_dir": "docs/functional-analysis",
+    "doc_name_pattern": "FA-{project}-{client}.docx",
+    "index_file": "fa-index.json",
+    "gates": [
+      "2b",
+      "3b",
+      "8b"
+    ],
+    "banking_domains": [
+      "retail",
+      "minorista",
+      "mayorista"
+    ],
+    "regulations": [
+      "PSD2",
+      "SEPA-SDD",
+      "SEPA-SCT",
+      "PCI-DSS",
+      "Basilea-III",
+      "EMIR",
+      "GDPR",
+      "AML-KYC"
+    ]
+  },
+  "workflow_directives": {
+    "version": "2026-04-02",
+    "persist_all_artifacts": true,
+    "read_disk_on_continue": true,
+    "gates_explicit_approval": true,
+    "gates_jira_confluence_sync": true,
+    "test_evidence_logs_required": true,
+    "dashboard_standard": "SOFIA-v1.9+",
+    "all_deliverables_mandatory": true,
+    "dashboard_on_every_gate": true,
+    "gate_hook_script": ".sofia/scripts/gate-dashboard-hook.js",
+    "cmmi_lights_in_dashboard": true,
+    "stg_pre_check_script": ".sofia/scripts/stg-pre-check.js",
+    "stg_pre_check_mandatory": true,
+    "version_from_environment": true,
+    "lessons_learned_mandatory": true,
+    "lessons_learned_regen_on_step9": true,
+    "gr010_anti_debt_vencida": true,
+    "security_semaphore_green_required_for_g9": true,
+    "step_3b_mandatory_post_g3": true,
+    "doc_agent_binaries_required": true,
+    "doc_agent_verify_extensions": true,
+    "gate_pending_normalize_to_object": true,
+    "gen_lessons_learned_script": ".sofia/scripts/gen-lessons-learned.py",
+    "ma_baseline_mandatory": true,
+    "gen_ma_baseline_script": ".sofia/scripts/gen-ma-baseline.js",
+    "ma_baseline_invoke_at_g9": true
+  },
+  "agents": {
+    "total": 23,
+    "new_in_v2": [
+      "fa-agent"
+    ],
+    "updated_in_v24": [
+      "angular-developer",
+      "documentation-agent",
+      "java-developer",
+      "orchestrator"
+    ],
+    "updated_in_v25": [
+      "orchestrator",
+      "angular-developer",
+      "code-reviewer"
+    ],
+    "formalized_in_v26": [
+      "performance-agent",
+      "jenkins-agent"
+    ],
+    "updated_in_v26": [
+      "orchestrator",
+      "workflow-manager",
+      "documentation-agent",
+      "guardrails"
+    ]
+  },
+  "guardrails": {
+    "version": "1.3",
+    "activated": "2026-03-30",
+    "origin": "RCA HOTFIX-S20 — LA-020-09/10/11",
+    "script": ".sofia/scripts/guardrail-pre-gate.js",
+    "spring_context_it": "apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/integration/SpringContextIT.java",
+    "integration_test_base": "apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/integration/config/IntegrationTestBase.java",
+    "checks": {
+      "GR-001": {
+        "name": "Package root verification",
+        "blocking": true,
+        "gate": "G-4b",
+        "la": "LA-020-09"
+      },
+      "GR-002": {
+        "name": "API Surface — methods exist in real entity",
+        "blocking": true,
+        "gate": "G-4b",
+        "la": "LA-020-09"
+      },
+      "GR-003": {
+        "name": "SpringContextIT must exist",
+        "blocking": true,
+        "gate": "G-4b",
+        "la": "LA-020-11"
+      },
+      "GR-004": {
+        "name": "mvn compile EXIT 0",
+        "blocking": true,
+        "gate": "G-4b",
+        "la": "LA-020-11"
+      },
+      "GR-005": {
+        "name": "CR package cross-check vs codebase",
+        "blocking": true,
+        "gate": "G-5",
+        "la": "LA-020-10"
+      },
+      "GR-006": {
+        "name": "CR API methods vs real class",
+        "blocking": true,
+        "gate": "G-5",
+        "la": "LA-020-10"
+      },
+      "GR-010": {
+        "name": "Deuda CVSS>=4.0 vencida — bloquea G-9",
+        "blocking": true,
+        "gate": "G-9",
+        "la": "LA-022-01"
+      },
+      "GR-011": {
+        "name": "Dashboard freshness — regenerar en cada gate",
+        "blocking": true,
+        "gate": "ALL",
+        "la": "LA-022-05"
+      },
+      "GR-012": {
+        "name": "Step 3b en completed_steps antes de G-4",
+        "blocking": true,
+        "gate": "G-4",
+        "la": "LA-022-07"
+      }
+    },
+    "root_package": "com.experis.sofia.bankportal",
+    "root_package_file": "apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/twofa/BackendTwoFactorApplication.java",
+    "known_wrong_methods": [
+      "getValueDate",
+      "getDescription",
+      "getBalance",
+      "getCurrency",
+      "getAccountingDate"
+    ],
+    "mandatory_pre_gate": {
+      "G-4b": [
+        "GR-001",
+        "GR-002",
+        "GR-003",
+        "GR-004"
+      ],
+      "G-5": [
+        "GR-005",
+        "GR-006"
+      ],
+      "G-6": [
+        "GR-003"
+      ],
+      "G-4": [
+        "GR-012"
+      ],
+      "G-9": [
+        "GR-010"
+      ],
+      "ALL": [
+        "GR-011"
+      ]
+    },
+    "frontend": {
+      "version": "1.0",
+      "activated": "2026-04-01",
+      "origin": "STG Verification v1.21.0 — BUG-VER-001/002/003",
+      "script": ".sofia/scripts/stg-pre-check.js",
+      "checks": {
+        "GR-007": {
+          "name": "forkJoin + catchError→EMPTY detection",
+          "blocking": true,
+          "gate": "G-4",
+          "la": "LA-STG-001"
+        },
+        "GR-008": {
+          "name": "Hardcoded version/sprint in templates",
+          "blocking": true,
+          "gate": "G-4",
+          "la": "LA-STG-002"
+        },
+        "GR-009": {
+          "name": "Frontend endpoints exist in backend",
+          "blocking": true,
+          "gate": "G-5",
+          "la": "LA-STG-003"
+        }
+      },
+      "mandatory_pre_gate": {
+        "G-4": [
+          "GR-007",
+          "GR-008"
+        ],
+        "G-5": [
+          "GR-007",
+          "GR-008",
+          "GR-009"
+        ],
+        "G-4b": [
+          "GR-007",
+          "GR-008",
+          "GR-009"
+        ]
+      },
+      "required_environment_fields": [
+        "version",
+        "sprint",
+        "envLabel"
+      ]
+    },
+    "updated": "2026-04-02"
+  },
+  "documentation_agent": {
+    "version": "2.1",
+    "la_022_08": true,
+    "required_docx": 17,
+    "required_xlsx": 3,
+    "generator_pattern": "gen-docs-sprint{N}.js",
+    "libraries": {
+      "docx": "npm docx",
+      "xlsx": "ExcelJS"
+    },
+    "verify_extensions_before_report": true,
+    "cover_page_required": true,
+    "branding": "EXPERIS | ManpowerGroup"
+  },
+  "ma_baseline": {
+    "enabled": true,
+    "version": "1.0.0",
+    "script": ".sofia/scripts/gen-ma-baseline.js",
+    "output_project": ".sofia/ma-baseline.json",
+    "output_org_local": ".sofia/org-baseline.json",
+    "output_org_external": "ver SOFIA_ORG_PATH env var",
+    "invoke_at_step": "9",
+    "invoke_after": "write_process_metrics_to_session",
+    "invoke_before": "gen-global-dashboard.js",
+    "metrics": [
+      "PM001_velocity_variance_pct",
+      "PM002_defect_injection_rate",
+      "PM003_review_effectiveness_pct",
+      "PM004_test_efficiency_pct",
+      "PM005_cmmi_compliance_pct",
+      "PM006_cycle_time_variance_days"
+    ],
+    "cmmi_pa": "MA",
+    "enables_l4_qpm": true,
+    "sofia_org_path": "/Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE/sofia-org"
+  }
+}

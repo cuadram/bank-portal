@@ -1,4 +1,6 @@
 ---
+sofia_version: "2.6"
+# updated: 2026-04-02 — version bump SOFIA v2.6
 name: developer-core
 description: >
   Base compartida de todos los agentes desarrolladores de SOFIA — Software Factory
@@ -23,6 +25,43 @@ Para convenciones específicas de cada stack, leer el reference file correspondi
 - Angular → leer `references/angular.md`
 - React → leer `references/react.md`
 - Node.js → leer `references/nodejs.md`
+
+---
+
+## Gate G-4b — Verificación de integración (OBLIGATORIO antes de pasar a G-5)
+
+Derivado del post-mortem STG v1.19.0. Antes de entregar el output a Code Review,
+el Developer DEBE verificar que el sistema integrado funciona:
+
+```bash
+# PASO 1: Build completo sin cache
+docker compose build --no-cache
+# Exit code != 0 -> BLOQUEANTE, no pasar a G-5
+
+# PASO 2: Levantar el stack
+docker compose up -d
+sleep 30  # esperar a que el backend esté healthy
+
+# PASO 3: Health check
+curl -f http://localhost:8181/actuator/health
+# Debe devolver {"status":"UP"}
+
+# PASO 4: Smoke test del sprint
+chmod +x infra/compose/smoke-test-v${VERSION}.sh
+./infra/compose/smoke-test-v${VERSION}.sh
+# Debe terminar con "0 FAIL"
+```
+
+Si cualquier paso falla -> corregir ANTES de pasar a G-5 (Code Review).
+
+Evidencia obligatoria a incluir en el output del Developer:
+```
+## Gate G-4b — Verificación de integración
+- docker compose build: [OK | ERROR]
+- backend /actuator/health: [UP | DOWN]
+- smoke test [VERSION]: [X/Y PASS | FAIL]
+- repositorio activo en STG: [JPA-REAL | MOCK]
+```
 
 ---
 
@@ -402,3 +441,65 @@ Registrar la migración como DEBT de impacto MEDIO al crear la Fase 1.
 
 ## Ready for Code Reviewer ✅
 ```
+
+
+---
+
+## Persistence Protocol — Implementación obligatoria (SOFIA v1.6)
+
+**Este skill DEBE ejecutar los siguientes pasos antes de retornar al Orchestrator.**
+Ver protocolo completo en `.sofia/PERSISTENCE_PROTOCOL.md`.
+
+### Al INICIAR
+
+```
+1. Leer .sofia/session.json
+2. Escribir en sofia.log:
+   [TIMESTAMP] [STEP-4] [developer-core] STARTED → descripción breve
+3. Actualizar session.json: status = "in_progress", pipeline_step = "4", updated_at = now
+```
+
+### Al COMPLETAR
+
+```javascript
+const fs  = require('fs');
+const now = new Date().toISOString();
+
+// 1. Actualizar session.json
+const session = JSON.parse(fs.readFileSync('.sofia/session.json', 'utf8'));
+const step = '4';
+if (!session.completed_steps.includes(step)) session.completed_steps.push(step);
+session.pipeline_step          = step;
+session.pipeline_step_name     = 'developer-core';
+session.last_skill             = 'developer-core';
+session.last_skill_output_path = 'src/';
+session.updated_at             = now;
+session.status                 = 'completed'; // o 'gate_pending' si hay gate
+if (!session.artifacts) session.artifacts = {};
+session.artifacts[step]        = [ /* rutas de artefactos generados */ ];
+fs.writeFileSync('.sofia/session.json', JSON.stringify(session, null, 2));
+
+// 2. Escribir en sofia.log (append-only)
+const logEntry = `[${now}] [STEP-4] [developer-core] COMPLETED → src/ | <detalles>\n`;
+fs.appendFileSync('.sofia/sofia.log', logEntry);
+
+// 3. Crear snapshot
+const snapPath = `.sofia/snapshots/step-4-${Date.now()}.json`;
+fs.copyFileSync('.sofia/session.json', snapPath);
+```
+
+### Bloque de confirmación — incluir al final de cada respuesta
+
+```
+---
+✅ PERSISTENCE CONFIRMED — DEVELOPER_CORE STEP-4
+- session.json: updated (step 4 added to completed_steps)
+- sofia.log: entry written [TIMESTAMP]
+- snapshot: .sofia/snapshots/step-4-[timestamp].json
+- artifacts:
+  · src/<artefacto-principal>
+---
+```
+
+> Si este skill **no** genera artefactos de fichero (ej: atlassian-agent opera
+> sobre Jira/Confluence), usar las URLs o IDs de los recursos creados/actualizados.

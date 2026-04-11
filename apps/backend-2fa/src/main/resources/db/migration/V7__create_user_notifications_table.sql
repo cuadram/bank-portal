@@ -25,9 +25,9 @@ CREATE INDEX idx_user_notifications_user_unread
     WHERE is_read = false;
 
 -- Job de limpieza nocturna de expiradas (US-204 pattern)
+-- NOTA: now() no es IMMUTABLE, no se puede usar en predicado de índice parcial
 CREATE INDEX idx_user_notifications_expires
-    ON user_notifications(expires_at)
-    WHERE expires_at < now();
+    ON user_notifications(expires_at);
 
 COMMENT ON TABLE user_notifications
     IS 'Centro de Notificaciones de Seguridad — FEAT-004 Sprint 5';

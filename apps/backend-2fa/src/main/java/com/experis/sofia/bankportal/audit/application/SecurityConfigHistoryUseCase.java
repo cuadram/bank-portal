@@ -41,10 +41,10 @@ public class SecurityConfigHistoryUseCase {
     private final AuditLogService         auditLogService;
 
     /** Ventana máxima de consulta: 90 días. */
-    static final int HISTORY_WINDOW_DAYS = 90;
+    public static final int HISTORY_WINDOW_DAYS = 90;
 
     /** Eventos de configuración incluidos en el historial (US-604 + DEBT-008 filter). */
-    static final List<String> CONFIG_EVENT_TYPES = List.of(
+    public static final List<String> CONFIG_EVENT_TYPES = List.of(
             "PREFERENCES_UPDATED",
             "PASSWORD_CHANGED",
             "TWO_FA_ENABLED",

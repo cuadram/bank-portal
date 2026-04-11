@@ -1,7 +1,3 @@
-# BankPortal — Backend 2FA + Session Management + Trusted Devices | Banco Meridian
-# FEAT-001 + FEAT-002 + FEAT-003 | Sprint 4
-# SOFIA Software Factory — Experis
-
 spring:
   application:
     name: bankportal-backend-2fa
@@ -46,15 +42,16 @@ spring:
 totp:
   issuer: ${TOTP_ISSUER:BankMeridian}
   aes-key: ${TOTP_AES_KEY}
+  stg-bypass-code: ""   # vacío en producción — STG override en application-staging.yml
   period: 30
   code-digits: 6
   tolerance: 1
 
 jwt:
-  private-key: ${JWT_PRIVATE_KEY}
-  public-key: ${JWT_PUBLIC_KEY}
+  secret: ${JWT_SECRET:changeme-jwt-hmac-secret-min-32bytes!}
+  pre-auth-secret: ${JWT_PRE_AUTH_SECRET:changeme-preauth-hmac-secret-32bytes!}
   pre-auth-ttl-seconds: ${JWT_PRE_AUTH_TTL_SECONDS:300}
-  session-ttl-seconds: ${JWT_SESSION_TTL_SECONDS:3600}
+  session-ttl-seconds: ${JWT_SESSION_TTL_SECONDS:28800}
 
 rate-limit:
   capacity: ${RATE_LIMIT_MAX_ATTEMPTS:5}
@@ -69,7 +66,6 @@ session:
     hmac-key: ${SESSION_DENY_LINK_HMAC_KEY}
     ttl-hours: ${SESSION_DENY_LINK_TTL_HOURS:24}
 
-# Trusted Devices — FEAT-003 (ADR-008)
 trusted-device:
   hmac-key: ${TRUSTED_DEVICE_HMAC_KEY}
   ttl-days: ${TRUSTED_DEVICE_TTL_DAYS:30}
@@ -80,6 +76,26 @@ notification:
   email:
     from: ${EMAIL_FROM:seguridad@bankmeridian.com}
     deny-base-url: ${DENY_BASE_URL:https://api.bankportal.meridian.com/v1/sessions/deny}
+
+kyc:
+  storage:
+    path: ${KYC_STORAGE_PATH:/tmp/kyc-docs}
+    encryption-key: ${KYC_ENCRYPTION_KEY:}
+    max-file-mb: ${KYC_STORAGE_MAX_FILE_MB:10}
+  grace-period-days: ${KYC_GRACE_PERIOD_DAYS:90}
+  auto-validation-enabled: ${KYC_AUTO_VALIDATION_ENABLED:true}
+
+# ── FEAT-014: Notificaciones Push & In-App ─────────────────────────────────
+notifications:
+  push:
+    vapid-public-key: ${VAPID_PUBLIC_KEY:}
+    vapid-private-key: ${VAPID_PRIVATE_KEY:}
+    vapid-subject: ${VAPID_SUBJECT:mailto:no-reply@bancomeridian.es}
+    ttl-seconds: ${VAPID_TTL_SECONDS:86400}
+  sse:
+    replay-ttl-seconds: ${SSE_REPLAY_TTL_SECONDS:300}
+  alert:
+    transaction-amount-threshold: ${NOTIFICATION_THRESHOLD_ALERT:1000}
 
 scheduling:
   enabled: ${SCHEDULING_ENABLED:true}
@@ -105,3 +121,15 @@ logging:
     root: INFO
     com.experis.sofia.bankportal: DEBUG
     org.springframework.security: WARN
+
+# Productos bancarios — FEAT-021 + DEBT-044
+bank:
+  products:
+    deposit:
+      tin: 0.0325
+      tae: 0.0330
+      penalty-rate: 0.25
+      min-amount: 1000
+      max-plazo-meses: 60
+    loan:
+      tae: 6.95

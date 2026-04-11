@@ -75,6 +75,18 @@ public class RevokeSessionUseCase {
 
     // ── Excepciones de dominio ────────────────────────────────────────────────
 
+    /** Revoca sesión directamente desde acción de notificación. */
+    @org.springframework.transaction.annotation.Transactional
+    public void revokeSession(UUID sessionId, UUID userId) {
+        var session = sessionRepository.findActiveByIdAndUserId(sessionId, userId)
+                .orElseThrow(() -> new SessionNotFoundException(sessionId));
+        redisAdapter.addToBlacklist(session.getJti(), java.time.Duration.ofHours(1));
+        session.revoke(
+            com.experis.sofia.bankportal.session.domain.model.SessionRevocationReason.MANUAL);
+        sessionRepository.save(session);
+        auditLogService.log("SESSION_REVOKED_FROM_NOTIFICATION", userId, sessionId.toString());
+    }
+
     public static class SessionNotFoundException extends RuntimeException {
         public SessionNotFoundException(UUID id) {
             super("SESSION_NOT_FOUND: " + id);

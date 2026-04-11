@@ -1,0 +1,253 @@
+<svg width="100%" viewBox="0 0 680 1100" xmlns="http://www.w3.org/2000/svg">
+<!--
+  SOFIA v2.2 - Pipeline de Entrega BankPortal
+  Generado: 2026-03-28
+  Sprint: 19 (completado) | Siguiente: S20 pendiente PO
+  14 pasos | 9 gates | 20 agentes | Scrumban + CMMI L3
+  Colores:
+    coral   = Gestión
+    blue    = Planificación/Arquitectura
+    teal    = FA-Agent / QA
+    purple  = Desarrollo
+    amber   = Calidad / Seguridad
+    green   = DevOps
+    gray    = Documentación
+  Gates:
+    coral badge  = HITL (parada explícita, aprobación requerida)
+    teal badge   = AUTO (flujo automático, sin parada)
+    amber badge  = AUTO★ (bloqueante si CVE críticos)
+-->
+<style>
+  text { font-family: Arial, sans-serif; fill: #3C5165; }
+  .ts  { font-size: 11px; fill: #5F5E5A; }
+  .th  { font-size: 13px; font-weight: 600; fill: #2C2C2A; }
+
+  /* Gestión - coral */
+  .c-coral rect { fill: #FAECE7; stroke: #993C1D; }
+  .c-coral .ts  { fill: #993C1D; }
+  .c-coral .th  { fill: #4A1B0C; }
+
+  /* Planificación/Arquitectura - blue */
+  .c-blue rect { fill: #E6F1FB; stroke: #185FA5; }
+  .c-blue .ts  { fill: #185FA5; }
+  .c-blue .th  { fill: #042C53; }
+
+  /* FA-Agent / QA - teal */
+  .c-teal rect { fill: #E1F5EE; stroke: #0F6E56; }
+  .c-teal .ts  { fill: #0F6E56; }
+  .c-teal .th  { fill: #04342C; }
+
+  /* Desarrollo - purple */
+  .c-purple rect { fill: #EEEDFE; stroke: #534AB7; }
+  .c-purple .ts  { fill: #534AB7; }
+  .c-purple .th  { fill: #26215C; }
+
+  /* Calidad/Seguridad - amber */
+  .c-amber rect { fill: #FAEEDA; stroke: #854F0B; }
+  .c-amber .ts  { fill: #854F0B; }
+  .c-amber .th  { fill: #412402; }
+
+  /* DevOps - green */
+  .c-green rect { fill: #EAF3DE; stroke: #3B6D11; }
+  .c-green .ts  { fill: #3B6D11; }
+  .c-green .th  { fill: #173404; }
+
+  /* Documentación - gray */
+  .c-gray rect { fill: #F1EFE8; stroke: #5F5E5A; }
+  .c-gray .ts  { fill: #5F5E5A; }
+  .c-gray .th  { fill: #2C2C2A; }
+</style>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#888780" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<text class="ts" x="340" y="14" text-anchor="middle" dominant-baseline="central">SOFIA v2.2 · 20 agentes · 14 pasos · 9 gates · Scrumban + CMMI L3</text>
+
+<!-- FASE: PLANIFICACIÓN -->
+<text class="ts" x="30" y="36" dominant-baseline="central">Planificación</text>
+<line x1="138" y1="36" x2="310" y2="36" stroke="#D3D1C7" stroke-width="0.5" stroke-dasharray="2 3"/>
+
+<g class="c-coral">
+<rect x="20" y="50" width="290" height="52" rx="8" stroke-width="0.5"/>
+<text class="ts" x="32" y="61" dominant-baseline="central">Paso 1 · Gestión</text>
+<text class="th" x="32" y="76" dominant-baseline="central">Scrum Master</text>
+<text class="ts" x="32" y="92" dominant-baseline="central">Sprint planning · backlog refinement</text>
+</g>
+<line x1="310" y1="76" x2="340" y2="76" stroke="#B4B2A9" stroke-width="1"/>
+<g class="c-coral">
+<rect x="340" y="61" width="205" height="30" rx="15" stroke-width="0.5"/>
+<text class="ts" x="443" y="76" text-anchor="middle" dominant-baseline="central">G-1 · HITL-PO</text>
+</g>
+<line x1="165" y1="104" x2="165" y2="128" stroke="#B4B2A9" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<g class="c-blue">
+<rect x="20" y="130" width="290" height="52" rx="8" stroke-width="0.5"/>
+<text class="ts" x="32" y="141" dominant-baseline="central">Paso 2 · Planificación</text>
+<text class="th" x="32" y="156" dominant-baseline="central">Requirements Analyst</text>
+<text class="ts" x="32" y="172" dominant-baseline="central">SRS · user stories · criterios AC</text>
+</g>
+<line x1="310" y1="156" x2="340" y2="156" stroke="#B4B2A9" stroke-width="1"/>
+<g class="c-coral">
+<rect x="340" y="141" width="205" height="30" rx="15" stroke-width="0.5"/>
+<text class="ts" x="443" y="156" text-anchor="middle" dominant-baseline="central">G-2 · HITL-PO</text>
+</g>
+<line x1="165" y1="184" x2="165" y2="208" stroke="#B4B2A9" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<g class="c-teal">
+<rect x="20" y="210" width="290" height="52" rx="8" stroke-width="0.5"/>
+<text class="ts" x="32" y="221" dominant-baseline="central">Paso 2b · Análisis funcional</text>
+<text class="th" x="32" y="236" dominant-baseline="central">FA-Agent</text>
+<text class="ts" x="32" y="252" dominant-baseline="central">Análisis funcional autónomo</text>
+</g>
+<line x1="310" y1="236" x2="340" y2="236" stroke="#B4B2A9" stroke-width="1"/>
+<g class="c-teal">
+<rect x="340" y="221" width="205" height="30" rx="15" stroke-width="0.5"/>
+<text class="ts" x="443" y="236" text-anchor="middle" dominant-baseline="central">AUTO · sin parada</text>
+</g>
+<line x1="165" y1="264" x2="165" y2="282" stroke="#B4B2A9" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- FASE: DISEÑO -->
+<text class="ts" x="30" y="275" dominant-baseline="central">Diseño</text>
+<line x1="76" y1="275" x2="310" y2="275" stroke="#D3D1C7" stroke-width="0.5" stroke-dasharray="2 3"/>
+
+<g class="c-blue">
+<rect x="20" y="290" width="290" height="52" rx="8" stroke-width="0.5"/>
+<text class="ts" x="32" y="301" dominant-baseline="central">Paso 3 · Arquitectura</text>
+<text class="th" x="32" y="316" dominant-baseline="central">Architect</text>
+<text class="ts" x="32" y="332" dominant-baseline="central">HLD · LLD · ADR · OpenAPI spec</text>
+</g>
+<line x1="310" y1="316" x2="340" y2="316" stroke="#B4B2A9" stroke-width="1"/>
+<g class="c-coral">
+<rect x="340" y="301" width="205" height="30" rx="15" stroke-width="0.5"/>
+<text class="ts" x="443" y="316" text-anchor="middle" dominant-baseline="central">G-3 · HITL-TL</text>
+</g>
+<line x1="165" y1="344" x2="165" y2="368" stroke="#B4B2A9" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<g class="c-gray">
+<rect x="20" y="370" width="290" height="52" rx="8" stroke-width="0.5"/>
+<text class="ts" x="32" y="381" dominant-baseline="central">Paso 3b · Documentación</text>
+<text class="th" x="32" y="396" dominant-baseline="central">Doc Agent + FA-Agent</text>
+<text class="ts" x="32" y="412" dominant-baseline="central">Arquitectura → Confluence sync</text>
+</g>
+<line x1="310" y1="396" x2="340" y2="396" stroke="#B4B2A9" stroke-width="1"/>
+<g class="c-teal">
+<rect x="340" y="381" width="205" height="30" rx="15" stroke-width="0.5"/>
+<text class="ts" x="443" y="396" text-anchor="middle" dominant-baseline="central">AUTO · sin parada</text>
+</g>
+<line x1="165" y1="424" x2="165" y2="442" stroke="#B4B2A9" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- FASE: DESARROLLO -->
+<text class="ts" x="30" y="435" dominant-baseline="central">Desarrollo</text>
+<line x1="102" y1="435" x2="310" y2="435" stroke="#D3D1C7" stroke-width="0.5" stroke-dasharray="2 3"/>
+
+<g class="c-purple">
+<rect x="20" y="450" width="290" height="52" rx="8" stroke-width="0.5"/>
+<text class="ts" x="32" y="461" dominant-baseline="central">Paso 4 · Desarrollo</text>
+<text class="th" x="32" y="476" dominant-baseline="central">Developer</text>
+<text class="ts" x="32" y="492" dominant-baseline="central">Backend · Frontend · Flyway SQL</text>
+</g>
+<line x1="165" y1="504" x2="165" y2="528" stroke="#B4B2A9" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<g class="c-amber">
+<rect x="20" y="530" width="290" height="52" rx="8" stroke-width="0.5"/>
+<text class="ts" x="32" y="541" dominant-baseline="central">Paso 5 · Calidad</text>
+<text class="th" x="32" y="556" dominant-baseline="central">Code Reviewer</text>
+<text class="ts" x="32" y="572" dominant-baseline="central">CR report · 0 bloqueantes</text>
+</g>
+<line x1="310" y1="556" x2="340" y2="556" stroke="#B4B2A9" stroke-width="1"/>
+<g class="c-coral">
+<rect x="340" y="541" width="205" height="30" rx="15" stroke-width="0.5"/>
+<text class="ts" x="443" y="556" text-anchor="middle" dominant-baseline="central">G-5 · HITL-TL</text>
+</g>
+<line x1="165" y1="584" x2="165" y2="608" stroke="#B4B2A9" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<g class="c-amber">
+<rect x="20" y="610" width="290" height="52" rx="8" stroke-width="0.5"/>
+<text class="ts" x="32" y="621" dominant-baseline="central">Paso 5b · Seguridad</text>
+<text class="th" x="32" y="636" dominant-baseline="central">Security Agent</text>
+<text class="ts" x="32" y="652" dominant-baseline="central">SAST · dependencias · CVSS</text>
+</g>
+<line x1="310" y1="636" x2="340" y2="636" stroke="#B4B2A9" stroke-width="1"/>
+<g class="c-amber">
+<rect x="340" y="621" width="205" height="30" rx="15" stroke-width="0.5"/>
+<text class="ts" x="443" y="636" text-anchor="middle" dominant-baseline="central">AUTO* bloquea si CVE crítico</text>
+</g>
+<line x1="165" y1="664" x2="165" y2="678" stroke="#B4B2A9" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- FASE: VALIDACIÓN -->
+<text class="ts" x="30" y="671" dominant-baseline="central">Validación</text>
+<line x1="101" y1="671" x2="310" y2="671" stroke="#D3D1C7" stroke-width="0.5" stroke-dasharray="2 3"/>
+
+<g class="c-teal">
+<rect x="20" y="690" width="290" height="52" rx="8" stroke-width="0.5"/>
+<text class="ts" x="32" y="701" dominant-baseline="central">Paso 6 · QA</text>
+<text class="th" x="32" y="716" dominant-baseline="central">QA Tester</text>
+<text class="ts" x="32" y="732" dominant-baseline="central">Test plan · ejecución · informe QA</text>
+</g>
+<line x1="310" y1="716" x2="340" y2="716" stroke="#B4B2A9" stroke-width="1"/>
+<g class="c-coral">
+<rect x="340" y="701" width="205" height="30" rx="15" stroke-width="0.5"/>
+<text class="ts" x="443" y="716" text-anchor="middle" dominant-baseline="central">G-6 · HITL-QA</text>
+</g>
+<line x1="165" y1="744" x2="165" y2="768" stroke="#B4B2A9" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<g class="c-green">
+<rect x="20" y="770" width="290" height="52" rx="8" stroke-width="0.5"/>
+<text class="ts" x="32" y="781" dominant-baseline="central">Paso 7 · DevOps</text>
+<text class="th" x="32" y="796" dominant-baseline="central">DevOps</text>
+<text class="ts" x="32" y="812" dominant-baseline="central">Tag · image · release notes</text>
+</g>
+<line x1="310" y1="796" x2="340" y2="796" stroke="#B4B2A9" stroke-width="1"/>
+<g class="c-coral">
+<rect x="340" y="781" width="205" height="30" rx="15" stroke-width="0.5"/>
+<text class="ts" x="443" y="796" text-anchor="middle" dominant-baseline="central">G-7 · HITL-DV</text>
+</g>
+<line x1="165" y1="824" x2="165" y2="838" stroke="#B4B2A9" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- FASE: ENTREGA -->
+<text class="ts" x="30" y="831" dominant-baseline="central">Entrega</text>
+<line x1="80" y1="831" x2="310" y2="831" stroke="#D3D1C7" stroke-width="0.5" stroke-dasharray="2 3"/>
+
+<g class="c-gray">
+<rect x="20" y="850" width="290" height="52" rx="8" stroke-width="0.5"/>
+<text class="ts" x="32" y="861" dominant-baseline="central">Paso 8 · Documentación</text>
+<text class="th" x="32" y="876" dominant-baseline="central">Documentation Agent</text>
+<text class="ts" x="32" y="892" dominant-baseline="central">Sprint summary · Confluence page</text>
+</g>
+<line x1="310" y1="876" x2="340" y2="876" stroke="#B4B2A9" stroke-width="1"/>
+<g class="c-coral">
+<rect x="340" y="861" width="205" height="30" rx="15" stroke-width="0.5"/>
+<text class="ts" x="443" y="876" text-anchor="middle" dominant-baseline="central">G-8 · HITL-PM</text>
+</g>
+<line x1="165" y1="904" x2="165" y2="928" stroke="#B4B2A9" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<g class="c-teal">
+<rect x="20" y="930" width="290" height="52" rx="8" stroke-width="0.5"/>
+<text class="ts" x="32" y="941" dominant-baseline="central">Paso 8b · Análisis funcional</text>
+<text class="th" x="32" y="956" dominant-baseline="central">FA-Agent</text>
+<text class="ts" x="32" y="972" dominant-baseline="central">Consolidación acumulada S1 a Sn</text>
+</g>
+<line x1="310" y1="956" x2="340" y2="956" stroke="#B4B2A9" stroke-width="1"/>
+<g class="c-teal">
+<rect x="340" y="941" width="205" height="30" rx="15" stroke-width="0.5"/>
+<text class="ts" x="443" y="956" text-anchor="middle" dominant-baseline="central">AUTO · sin parada</text>
+</g>
+<line x1="165" y1="984" x2="165" y2="1008" stroke="#B4B2A9" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<g class="c-coral">
+<rect x="20" y="1010" width="290" height="52" rx="8" stroke-width="0.5"/>
+<text class="ts" x="32" y="1021" dominant-baseline="central">Paso 9 · Cierre</text>
+<text class="th" x="32" y="1036" dominant-baseline="central">Workflow Manager</text>
+<text class="ts" x="32" y="1052" dominant-baseline="central">Atlassian sync · JQL verify · cierre</text>
+</g>
+<line x1="310" y1="1036" x2="340" y2="1036" stroke="#B4B2A9" stroke-width="1"/>
+<g class="c-teal">
+<rect x="340" y="1021" width="205" height="30" rx="15" stroke-width="0.5"/>
+<text class="ts" x="443" y="1036" text-anchor="middle" dominant-baseline="central">G-9 · AUTO · JQL = 0 open</text>
+</g>
+
+<line x1="20" y1="1080" x2="650" y2="1080" stroke="#D3D1C7" stroke-width="0.5"/>
+<text class="ts" x="30" y="1093" dominant-baseline="central">Estado: S19 FEAT-017 v1.19.0 cerrado | S20 pendiente definicion PO | 2026-03-28</text>
+</svg>

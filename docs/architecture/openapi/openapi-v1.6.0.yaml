@@ -1,0 +1,172 @@
+openapi: 3.0.3
+info:
+  title: BankPortal API
+  version: 1.6.0
+  description: BankPortal — Banco Meridian. FEAT-007 Consulta de Cuentas y Movimientos.
+
+security:
+  - bearerAuth: []
+
+paths:
+  /api/v1/accounts:
+    get:
+      summary: Listar cuentas del usuario autenticado
+      operationId: listAccounts
+      tags: [accounts]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/AccountSummary' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/v1/accounts/{accountId}/transactions:
+    get:
+      summary: Historial de movimientos con cursor-based pagination
+      operationId: listTransactions
+      tags: [transactions]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: cursor
+          in: query
+          schema: { type: string }
+          description: Cursor Base64 opaco del último item recibido
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20, maximum: 50 }
+        - name: dateFrom
+          in: query
+          schema: { type: string, format: date }
+        - name: dateTo
+          in: query
+          schema: { type: string, format: date }
+        - name: type
+          in: query
+          schema: { type: string, enum: [CARGO, ABONO] }
+        - name: q
+          in: query
+          schema: { type: string }
+          description: Búsqueda full-text en concept (debounce 300ms client-side)
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TransactionPage' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /api/v1/accounts/{accountId}/statements:
+    post:
+      summary: Generar extracto PDF y obtener signed URL de descarga
+      operationId: generateStatement
+      tags: [statements]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [range]
+              properties:
+                range:
+                  type: string
+                  enum: [30d, 90d, 365d]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StatementResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/v1/accounts/{accountId}/summary/categories:
+    get:
+      summary: Resumen de gastos por categoría
+      operationId: getCategorySummary
+      tags: [accounts]
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: period
+          in: query
+          schema: { type: string, enum: [1m, 3m, 6m], default: 1m }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CategorySummary' }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    AccountSummary:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        alias: { type: string }
+        ibanMasked: { type: string, example: "****1234" }
+        type: { type: string, enum: [CORRIENTE, AHORRO, NOMINA] }
+        availableBalance: { type: number, format: double }
+        accountingBalance: { type: number, format: double }
+        updatedAt: { type: string, format: date-time }
+
+    Transaction:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        date: { type: string, format: date-time }
+        concept: { type: string }
+        amount: { type: number, format: double }
+        balanceAfter: { type: number, format: double }
+        category: { type: string }
+
+    TransactionPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Transaction' }
+        nextCursor: { type: string, nullable: true }
+        total: { type: integer }
+
+    StatementResponse:
+      type: object
+      properties:
+        downloadUrl: { type: string, description: "Signed URL TTL 60s" }
+        filename: { type: string, example: "extracto-1234-202603.pdf" }
+        expiresAt: { type: string, format: date-time }
+
+    CategorySummary:
+      type: object
+      properties:
+        period: { type: string }
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              name: { type: string }
+              total: { type: number }
+              percentage: { type: number }
+
+  responses:
+    Unauthorized:
+      description: JWT ausente o expirado
+    Forbidden:
+      description: La cuenta no pertenece al usuario autenticado

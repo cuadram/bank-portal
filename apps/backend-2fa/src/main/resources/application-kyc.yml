@@ -1,0 +1,16 @@
+# application-kyc-storage.yml — Configuración de almacenamiento KYC
+# Montada sobre application.yml en producción
+# FEAT-013 ADR-023 · Sprint 15
+
+kyc:
+  storage:
+    path: ${KYC_STORAGE_PATH:/tmp/kyc-docs}
+    encryption-key: ${KYC_ENCRYPTION_KEY:}
+    max-file-mb: ${KYC_STORAGE_MAX_FILE_MB:10}
+  auto-validation-enabled: ${KYC_AUTO_VALIDATION_ENABLED:true}
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB

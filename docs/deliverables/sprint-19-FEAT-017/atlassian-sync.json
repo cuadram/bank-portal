@@ -1,0 +1,49 @@
+{
+  "sprint": 19,
+  "feature": "FEAT-017",
+  "cloudId": "8898340d-94ed-45c2-8831-395d407a4e77",
+  "gates": {
+    "G-1": {
+      "jira_epic_created": "SCRUM-88",
+      "jira_issues_created": [
+        "SCRUM-89",
+        "SCRUM-90",
+        "SCRUM-91",
+        "SCRUM-92",
+        "SCRUM-93",
+        "SCRUM-94",
+        "SCRUM-95"
+      ],
+      "jira_states": {
+        "SCRUM-88": "Por hacer",
+        "SCRUM-89": "Por hacer",
+        "SCRUM-90": "Por hacer",
+        "SCRUM-91": "Por hacer",
+        "SCRUM-92": "Por hacer",
+        "SCRUM-93": "Por hacer",
+        "SCRUM-94": "Por hacer",
+        "SCRUM-95": "Por hacer"
+      },
+      "confluence_pages_updated": [
+        "Sprints BankPortal (98309) \u2192 v5"
+      ],
+      "synced_at": "2026-03-26T07:26:34Z",
+      "sync_status": "OK",
+      "approved_at": null,
+      "approved_by": null,
+      "board_transitions": {
+        "SCRUM-88": "En curso (Epic activo)",
+        "SCRUM-89": "En curso (DEBT-031 S1 dia 1 MUST)",
+        "SCRUM-90": "En curso (US-1701 S1 dia 1 bloqueante)",
+        "SCRUM-91": "Por hacer (US-1702 pendiente)",
+        "SCRUM-92": "Por hacer (US-1703 pendiente)",
+        "SCRUM-93": "Por hacer (US-1704 pendiente)",
+        "SCRUM-94": "Por hacer (US-1705 pendiente)",
+        "SCRUM-95": "Por hacer (US-1706 pendiente)"
+      },
+      "board_updated_at": "2026-03-26T07:35:00Z"
+    }
+  },
+  "sprint_closed": false,
+  "closed_at": null
+}

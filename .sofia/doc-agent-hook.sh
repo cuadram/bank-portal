@@ -1,13 +1,6 @@
 #!/bin/bash
 # ============================================================================
 # SOFIA — Documentation Agent Hook v1.4
-# Disparado automáticamente por git post-commit
-# Genera .docx y .xlsx para el sprint activo tras cada commit
-#
-# Modos:
-#   A) gen_all_word.js + gen_all_excel.py en docs/deliverables/ → multi-sprint
-#   B) gen_word.js + gen_excel.py más reciente en sprint/ → sprint individual
-#   Solo actúa si el commit toca docs/deliverables/*.js o *.py
 # ============================================================================
 
 REPO="$(git rev-parse --show-toplevel 2>/dev/null)"
@@ -31,12 +24,12 @@ export NODE_PATH="/opt/homebrew/lib/node_modules:/usr/local/lib/node_modules:$NO
 # ── Detectar Python con openpyxl ─────────────────────────────────────────────
 PY=""
 VENV_DIR="$REPO/.sofia/venv"
-
-[ -x "$VENV_DIR/bin/python3" ] && "$VENV_DIR/bin/python3" -c "import openpyxl" 2>/dev/null \
-    && PY="$VENV_DIR/bin/python3"
-[ -z "$PY" ] && [ -x "$HOME/.sofia-venv/bin/python3" ] \
-    && "$HOME/.sofia-venv/bin/python3" -c "import openpyxl" 2>/dev/null \
-    && PY="$HOME/.sofia-venv/bin/python3"
+[ -x "$VENV_DIR/bin/python3" ] && \
+    "$VENV_DIR/bin/python3" -c "import openpyxl" 2>/dev/null && \
+    PY="$VENV_DIR/bin/python3"
+[ -z "$PY" ] && [ -x "$HOME/.sofia-venv/bin/python3" ] && \
+    "$HOME/.sofia-venv/bin/python3" -c "import openpyxl" 2>/dev/null && \
+    PY="$HOME/.sofia-venv/bin/python3"
 if [ -z "$PY" ]; then
     for c in "/opt/homebrew/bin/python3" "/usr/local/bin/python3" "$(command -v python3 2>/dev/null)"; do
         [ -x "$c" ] && "$c" -c "import openpyxl" 2>/dev/null && PY="$c" && break
@@ -48,17 +41,13 @@ if [ -z "$PY" ]; then
         [ -x "$c" ] && SYS_PY="$c" && break
     done
     if [ -n "$SYS_PY" ]; then
-        echo "  🐍 SOFIA Doc Agent: creando venv e instalando openpyxl..."
         "$SYS_PY" -m venv "$VENV_DIR"
         "$VENV_DIR/bin/pip" install openpyxl -q
         PY="$VENV_DIR/bin/python3"
-        echo "  ✅ openpyxl instalado en $VENV_DIR"
-    else
-        echo "  ⚠️  SOFIA Doc Agent: python3 no encontrado — skipping Excel docs"
     fi
 fi
 
-# ── Solo actuar si el commit toca scripts de docs ────────────────────────────
+# ── Solo actuar si el commit toca scripts de documentación ────────────────────
 CHANGED=$(git diff-tree --no-commit-id -r --name-only HEAD 2>/dev/null)
 echo "$CHANGED" | grep -qE "docs/deliverables/.*\.(js|py)$" || exit 0
 
@@ -67,19 +56,14 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "  📑 SOFIA Documentation Agent v1.4"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# ── Modo A: Scripts maestros ──────────────────────────────────────────────────
+# ── Modo A: Scripts maestros ───────────────────────────────────────────────────
 if [ -f "$DELIVERABLES/gen_all_word.js" ] || [ -f "$DELIVERABLES/gen_all_excel.py" ]; then
     echo "  Modo: multi-sprint"
-    if [ -f "$DELIVERABLES/gen_all_word.js" ] && [ -n "$NODE" ]; then
-        echo ""; echo "  📄 Word docs (todos los sprints)..."
-        cd "$DELIVERABLES" && "$NODE" gen_all_word.js && echo "  ✅ Word OK" || echo "  ❌ Error Word"
-        cd "$REPO"
-    fi
-    if [ -f "$DELIVERABLES/gen_all_excel.py" ] && [ -n "$PY" ]; then
-        echo ""; echo "  📊 Excel docs (todos los sprints)..."
-        "$PY" "$DELIVERABLES/gen_all_excel.py" && echo "  ✅ Excel OK" || echo "  ❌ Error Excel"
-    fi
-    echo ""; echo "  ✅ SOFIA: delivery packages actualizados"
+    [ -f "$DELIVERABLES/gen_all_word.js" ] && [ -n "$NODE" ] && \
+        cd "$DELIVERABLES" && "$NODE" gen_all_word.js && cd "$REPO"
+    [ -f "$DELIVERABLES/gen_all_excel.py" ] && [ -n "$PY" ] && \
+        "$PY" "$DELIVERABLES/gen_all_excel.py"
+    echo "  ✅ SOFIA: delivery packages actualizados"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     exit 0
 fi
@@ -92,12 +76,16 @@ SPRINT_DIR=$(find "$DELIVERABLES" -name "gen_word.js" \
 [ -z "$SPRINT_DIR" ] && exit 0
 
 echo "  Modo: sprint individual → $(basename $SPRINT_DIR)"
-[ -f "$SPRINT_DIR/gen_word.js" ] && [ -n "$NODE" ] && \
-    echo "" && echo "  📄 Word docs..." && \
-    "$NODE" "$SPRINT_DIR/gen_word.js" && echo "  ✅ Word OK" || true
-[ -f "$SPRINT_DIR/gen_excel.py" ] && [ -n "$PY" ] && \
-    echo "" && echo "  📊 Excel docs..." && \
-    "$PY" "$SPRINT_DIR/gen_excel.py" && echo "  ✅ Excel OK" || true
+if [ -f "$SPRINT_DIR/gen_word.js" ] && [ -n "$NODE" ]; then
+    echo "  📄 Word docs..."
+    cd "$SPRINT_DIR" && "$NODE" gen_word.js && cd "$REPO" \
+        && echo "  ✅ Word OK" || echo "  ❌ Error Word"
+fi
+if [ -f "$SPRINT_DIR/gen_excel.py" ] && [ -n "$PY" ]; then
+    echo "  📊 Excel docs..."
+    "$PY" "$SPRINT_DIR/gen_excel.py" \
+        && echo "  ✅ Excel OK" || echo "  ❌ Error Excel"
+fi
 
-echo ""; echo "  ✅ SOFIA: delivery package en $(basename $SPRINT_DIR)"
+echo "  ✅ SOFIA: delivery package en $(basename $SPRINT_DIR)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

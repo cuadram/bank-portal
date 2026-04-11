@@ -1,0 +1,1215 @@
+{
+  "version": "2.0",
+  "sofia_version": "2.3",
+  "status": "gate_pending",
+  "project": "bank-portal",
+  "client": "Banco Meridian",
+  "current_sprint": 21,
+  "current_feature": "FEAT-019",
+  "current_step": "7",
+  "pipeline_step": "7",
+  "pipeline_step_name": "devops",
+  "completed_steps": [
+    "1",
+    "2",
+    "2b",
+    "2c",
+    "3",
+    "3b",
+    "4",
+    "5",
+    "5b",
+    "6",
+    "7"
+  ],
+  "pending_steps": [
+    "5",
+    "5b",
+    "6",
+    "7",
+    "8",
+    "8b",
+    "9"
+  ],
+  "last_skill": "devops",
+  "last_skill_output_path": "docs/releases/RELEASE-NOTES-v1.21.0.md",
+  "gate_pending": "G-7",
+  "sprint_goal": "Dar al usuario de Banco Meridian control total sobre su identidad digital: consultar y actualizar perfil, gestionar consentimientos GDPR y ejercer derechos de portabilidad y supresion",
+  "sprint_capacity_sp": 24,
+  "artifacts": {
+    "1": [
+      "docs/sprints/SPRINT-021-planning.md",
+      "Confluence page 6520833 (Sprint 21 Planning)",
+      "Jira SCRUM-106..113 (8 issues creados)"
+    ],
+    "2": [
+      "docs/requirements/SRS-FEAT-019-sprint21.md"
+    ],
+    "3": [
+      "docs/architecture/hld/HLD-FEAT-019.md",
+      "docs/architecture/lld/LLD-FEAT-019-backend.md",
+      "docs/architecture/lld/LLD-FEAT-019-frontend.md",
+      "docs/architecture/adr/ADR-032-033-privacy-decisions.md",
+      "docs/architecture/openapi/openapi-privacy-v1.yaml"
+    ],
+    "4": [
+      "apps/backend-2fa/src/main/resources/db/migration/V22__profile_gdpr.sql",
+      "apps/backend-2fa/src/main/java/.../privacy/domain/ (5 ficheros)",
+      "apps/backend-2fa/src/main/java/.../privacy/infrastructure/ (2 repositorios)",
+      "apps/backend-2fa/src/main/java/.../privacy/application/ (4 servicios + 5 DTOs)",
+      "apps/backend-2fa/src/main/java/.../privacy/api/ (PrivacyController, AdminGdprController, Exceptions)",
+      "apps/backend-2fa/src/main/java/.../twofa/infrastructure/AsyncConfig.java",
+      "apps/backend-2fa/src/main/java/.../export/service/ExportAuditService.java (DEBT-036)",
+      "apps/backend-2fa/src/main/java/.../export/service/generator/PdfDocumentGenerator.java (SCRUM-113)",
+      "apps/backend-2fa/src/test/java/.../privacy/ (4 suites — 20 tests PASS)",
+      "apps/frontend-portal/src/app/features/privacy/ (module + 4 components + service)",
+      "apps/frontend-portal/src/app/app-routing.module.ts (/perfil + /privacidad)",
+      "apps/frontend-portal/src/app/shell/shell.component.ts (nav items)",
+      "docs/qa/TEST-EXECUTION-FEAT-019-sprint21.md"
+    ],
+    "5": [
+      "docs/code-review/CR-FEAT-019-sprint21.md",
+      "FIX: apps/backend-2fa/.../privacy/api/AdminGdprController.java (@PreAuthorize + audit log)",
+      "FIX: apps/backend-2fa/.../integration/SpringContextIT.java (TC-IT-001-G/H/I)",
+      "FIX: apps/frontend-portal/src/environments/environment.ts (sync con prod)"
+    ],
+    "6": [
+      "docs/qa/QA-FEAT-019-sprint21.md",
+      "infra/compose/smoke-test-v1.21.0.sh"
+    ],
+    "7": [
+      "docs/releases/RELEASE-NOTES-v1.21.0.md",
+      "docs/runbooks/RUNBOOK-backend-2fa-v1.21.0.md",
+      "infra/compose/smoke-test-v1.21.0.sh"
+    ],
+    "8": [
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-SRS.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-HLD.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-LLD-backend.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-LLD-frontend.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-Test-Plan.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-QA-Report.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-Code-Review-Report.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-Release-Notes.docx",
+      "docs/deliverables/sprint-20-FEAT-018/FEAT-018-Runbook.docx",
+      "docs/deliverables/sprint-20-FEAT-018/Sprint-20-Report-PMC.docx",
+      "docs/deliverables/sprint-20-FEAT-018/NC-Tracker.xlsx",
+      "docs/deliverables/sprint-20-FEAT-018/Decision-Log.xlsx",
+      "docs/deliverables/sprint-20-FEAT-018/Quality-Dashboard.xlsx",
+      "docs/sprints/SPRINT-020-data.json",
+      "docs/dashboard/bankportal-global-dashboard.html",
+      "Confluence page 5996545 (Sprint 20 Resultados)"
+    ],
+    "9": [
+      "docs/sprints/SPRINT-020-retrospectiva.md",
+      "Jira SCRUM-98..105 todos Finalizada — JQL PASS 0 open",
+      "Confluence Sprint 20 Resultados 5996545",
+      "Confluence Sprint 20 Retrospectiva 6029313"
+    ],
+    "2b": [
+      "docs/functional-analysis/FA-FEAT-019-sprint21.md",
+      "docs/functional-analysis/fa-index.json (70 funcionalidades, S1-S21)"
+    ],
+    "3b": [
+      "Confluence page 6619138 (HLD publicado bajo Arquitectura)"
+    ],
+    "5b": [
+      "docs/security/SEC-FEAT-019-sprint21.md",
+      "docs/backlog/DEBT-040-042-sprint21.md"
+    ],
+    "8b": [
+      "docs/functional-analysis/fa-index.json (FEAT-018 + DEBT-035 DELIVERED, 63 funcionalidades)"
+    ],
+    "2c": [
+      "docs/ux-ui/UX-FEAT-019-sprint21.md",
+      "docs/ux-ui/prototypes/PROTO-FEAT-019-sprint21.html"
+    ]
+  },
+  "gates": {
+    "G-1": {
+      "approved_by": "product-owner+tech-lead",
+      "approved_at": "2026-03-31T15:57:47.806Z",
+      "step": "1"
+    },
+    "HITL-PO-TL": {
+      "approved_by": "product-owner+tech-lead",
+      "approved_at": "2026-03-31T16:07:40.795Z",
+      "step": "2c"
+    },
+    "G-3": {
+      "approved_by": "tech-lead",
+      "approved_at": "2026-03-31T17:01:00.800Z",
+      "step": "3"
+    }
+  },
+  "fa_agent": {
+    "last_gate": "full-rebuild",
+    "last_updated": "2026-03-31T16:57:33.285463+00:00",
+    "last_feat": "FEAT-019",
+    "doc_path": "docs/functional-analysis/FA-BankPortal-Banco-Meridian.docx",
+    "doc_version": "3.0",
+    "index_path": "docs/functional-analysis/fa-index.json",
+    "functionalities": 52,
+    "business_rules": 86,
+    "last_sprint_consolidated": 21,
+    "skill_version": "2.3",
+    "active": true,
+    "rebuild_note": "S1-S15 reconstruidos desde Flyway V1-V15, use cases y pom.xml. Sprint17 corregido: FEAT-015 = Transferencias Programadas.",
+    "sprints_covered": "S1-S21",
+    "markdowns": [
+      "docs/functional-analysis/FA-FEAT-001-sprint01-02.md",
+      "docs/functional-analysis/FA-FEAT-002-sprint03.md",
+      "docs/functional-analysis/FA-FEAT-003-sprint04.md",
+      "docs/functional-analysis/FA-FEAT-004-sprint05-08.md",
+      "docs/functional-analysis/FA-FEAT-005-sprint06.md",
+      "docs/functional-analysis/FA-FEAT-006-sprint07.md",
+      "docs/functional-analysis/FA-FEAT-007-sprint09.md",
+      "docs/functional-analysis/FA-FEAT-008-sprint10.md",
+      "docs/functional-analysis/FA-FEAT-009-sprint11.md",
+      "docs/functional-analysis/FA-FEAT-010-sprint12.md",
+      "docs/functional-analysis/FA-FEAT-011-sprint13.md",
+      "docs/functional-analysis/FA-FEAT-012-sprint14.md",
+      "docs/functional-analysis/FA-FEAT-013-sprint15.md",
+      "docs/functional-analysis/FA-FEAT-014-sprint16.md",
+      "docs/functional-analysis/FA-FEAT-015-sprint17.md",
+      "docs/functional-analysis/FA-FEAT-016-sprint18.md",
+      "docs/functional-analysis/FA-FEAT-017-sprint19.md"
+    ],
+    "generator": "python-docx",
+    "docx_verified": true,
+    "docx_size_kb": 68
+  },
+  "devops": {
+    "tag": "v1.21.0",
+    "image": "backend-2fa:v1.21.0",
+    "release_notes": "docs/releases/RELEASE-NOTES-v1.21.0.md",
+    "runbook": "docs/runbooks/RUNBOOK-backend-2fa-v1.21.0.md",
+    "smoke_test": "infra/compose/smoke-test-v1.21.0.sh",
+    "breaking_changes": false,
+    "flyway_migrations": [
+      "V22__profile_gdpr.sql"
+    ],
+    "new_env_vars": [],
+    "new_dependencies": []
+  },
+  "security": {
+    "last_audit": "2026-03-31",
+    "semaphore": "YELLOW",
+    "cve_critical": 0,
+    "cve_high": 0,
+    "sast_findings": 3,
+    "sast_blocker": 0,
+    "open_debts": [
+      {
+        "id": "DEBT-037",
+        "area": "Security",
+        "priority": "Baja",
+        "cvss": "2.1",
+        "sprint_target": "S22",
+        "desc": "Regex PAN Maestro 19d"
+      },
+      {
+        "id": "DEBT-040",
+        "area": "Security",
+        "priority": "Alta",
+        "cvss": "5.3",
+        "sprint_target": "S21",
+        "desc": "Race condition DataExportService - unique index gdpr_requests"
+      },
+      {
+        "id": "DEBT-041",
+        "area": "Security",
+        "priority": "Alta",
+        "cvss": "4.8",
+        "sprint_target": "S21",
+        "desc": "OTP 2FA no validado en PrivacyController.requestDeletion"
+      },
+      {
+        "id": "DEBT-042",
+        "area": "Security",
+        "priority": "Media",
+        "cvss": "2.1",
+        "sprint_target": "S22",
+        "desc": "Deletion token sin TTL 24h"
+      }
+    ],
+    "pci_dss_compliant": true,
+    "gdpr_compliant": true
+  },
+  "qa": {
+    "report_path": "docs/qa/QA-FEAT-019-sprint21.md",
+    "verdict": "LISTO PARA RELEASE — CON CONDICIONES",
+    "test_cases_total": 69,
+    "test_cases_pass": 65,
+    "test_cases_fail": 0,
+    "test_cases_blocked": 4,
+    "defects_open": 0,
+    "functional_coverage": "100%",
+    "gherkin_scenarios_covered": "16/16",
+    "unit_coverage_estimated": "88%",
+    "security_checks": "6/8",
+    "wcag_checks": "5/5",
+    "integration_checks": "9/9",
+    "repositorio_activo": "JPA-REAL",
+    "smoke_test": "infra/compose/smoke-test-v1.21.0.sh",
+    "blocked_debts": [
+      "DEBT-040",
+      "DEBT-041",
+      "DEBT-042"
+    ],
+    "approved_by": [],
+    "sprint": 21,
+    "feature": "FEAT-019"
+  },
+  "metrics": {
+    "total_sp": 473,
+    "total_tests": 524,
+    "coverage": 88,
+    "defects": 0,
+    "ncs_last_sprint": 0
+  },
+  "sprint_history": {
+    "sprint_16": {
+      "feature": "FEAT-014",
+      "status": "completed",
+      "sp": 24,
+      "acum": 377,
+      "tests": 553,
+      "cov": 84,
+      "ncs": 2,
+      "rel": "v1.16.0",
+      "closed_at": "2026-03-24"
+    },
+    "sprint_17": {
+      "feature": "FEAT-015",
+      "status": "completed",
+      "sp": 24,
+      "acum": 401,
+      "tests": 615,
+      "cov": 85,
+      "ncs": 3,
+      "rel": "v1.17.0",
+      "closed_at": "2026-04-22"
+    },
+    "sprint_18": {
+      "feature": "FEAT-016",
+      "status": "completed",
+      "sp": 24,
+      "acum": 425,
+      "tests": 677,
+      "cov": 86,
+      "ncs": 5,
+      "rel": "v1.18.0",
+      "closed_at": "2026-03-25"
+    },
+    "sprint_19": {
+      "feature": "FEAT-017",
+      "status": "completed",
+      "sp": 24,
+      "acum": 449,
+      "tests": 708,
+      "cov": 87,
+      "ncs": 0,
+      "rel": "v1.19.0",
+      "closed_at": "2026-03-27"
+    },
+    "sprint_20": {
+      "feature": "FEAT-018",
+      "status": "completed",
+      "sp": 24,
+      "acum": 473,
+      "tests": 124,
+      "cov": 88,
+      "ncs": 0,
+      "rel": "v1.20.0",
+      "closed_at": "2026-03-30",
+      "notes": "Tests propios del sprint. Total acumulado en todos los sprints: ver qa.test_cases_total"
+    }
+  },
+  "cmmi": {
+    "level": 3,
+    "active": true,
+    "evidence_sprints": [
+      14,
+      15,
+      16
+    ],
+    "process_areas": [
+      "PP",
+      "PMC",
+      "RSKM",
+      "VER",
+      "VAL",
+      "CM",
+      "PPQA",
+      "REQM",
+      "DAR"
+    ]
+  },
+  "code_review": {
+    "verdict": "APPROVED",
+    "findings_blocker": 0,
+    "findings_major": 0,
+    "findings_minor": 0,
+    "findings_suggestion": 1,
+    "fixes_applied": [
+      "RV-F019-01",
+      "RV-F019-02",
+      "RV-F019-03"
+    ],
+    "tests_added": 3,
+    "report": "docs/code-review/CR-FEAT-019-sprint21.md",
+    "reviewed_at": "2026-03-31T20:09:39.586Z"
+  },
+  "updated_at": "2026-04-01T05:36:48.855Z",
+  "resume_next": "Gate G-1 pendiente. Aprobar para continuar con Step 2 Requirements.",
+  "sprint_closed": false,
+  "gate8_approved_by": "release-manager",
+  "gate8_approved_at": "2026-03-25T17:00:00Z",
+  "retrospective": "docs/sprints/SPRINT-020-retrospectiva.md",
+  "confluence_retro_id": "6029313",
+  "atlassian_synced": false,
+  "atlassian_sync_date": "2026-03-30",
+  "sprint_closed_at": "2026-03-30T09:52:50.683Z",
+  "dashboard_global": {
+    "path": "docs/dashboard/bankportal-global-dashboard.html",
+    "alias": "docs/quality/sofia-dashboard.html",
+    "last_generated": "2026-03-30T19:00:34.519Z",
+    "last_gate": "DASHBOARD-AGENTS-GUARDRAILS",
+    "last_step": "9",
+    "sprint": 20,
+    "feature": "FEAT-018",
+    "generator": ".sofia/scripts/gen-global-dashboard.js"
+  },
+  "gate_history": [
+    {
+      "gate": "G-1",
+      "step": "1",
+      "approved_at": "2026-03-26T15:37:22.716Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-2",
+      "step": "2b",
+      "approved_at": "2026-03-27T06:22:31.721Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-3",
+      "step": "3",
+      "approved_at": "2026-03-27T06:33:02.031Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-4",
+      "step": "4",
+      "approved_at": "2026-03-27T13:38:34.828Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-5",
+      "step": "5",
+      "approved_at": "2026-03-27T13:39:58.068Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-6",
+      "step": "6",
+      "approved_at": "2026-03-27T13:50:30.062Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-7",
+      "step": "7",
+      "approved_at": "2026-03-27T13:52:04.994Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-8",
+      "step": "8b",
+      "approved_at": "2026-03-27T13:53:49.767Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_at": "2026-03-27T13:58:05.169Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-VERIFY",
+      "step": "verification",
+      "approved_at": "2026-03-27T15:19:17.114Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-1",
+      "step": "1",
+      "approved_at": "2026-03-30T06:54:47.784Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-2",
+      "step": "2",
+      "approved_at": "2026-03-30T07:26:39.308Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "HITL-PO-TL",
+      "step": "2c",
+      "approved_at": "2026-03-30T07:35:52.664Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-3",
+      "step": "3",
+      "approved_at": "2026-03-30T07:41:35.761Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-4",
+      "step": "4",
+      "approved_at": "2026-03-30T08:49:22.524Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-5",
+      "step": "5",
+      "approved_at": "2026-03-30T09:16:16.427Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-6",
+      "step": "6",
+      "approved_at": "2026-03-30T09:28:49.574Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-7",
+      "step": "7",
+      "approved_at": "2026-03-30T09:46:19.310Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-8",
+      "step": "8",
+      "approved_at": "2026-03-30T09:51:29.735Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_at": "2026-03-30T09:52:50.683Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-CLOSE-S20",
+      "step": "9",
+      "approved_at": "2026-03-30T10:10:33.586Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-CLOSE-S20",
+      "step": "9",
+      "approved_at": "2026-03-30T10:20:45.509Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-CLOSE-S20",
+      "step": "9",
+      "approved_at": "2026-03-30T11:50:50.124Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "SESSION-CLOSE-S20",
+      "step": "9",
+      "approved_at": "2026-03-30T12:43:55.413Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-CONFLUENCE-SYNC-S20",
+      "step": "9",
+      "approved_at": "2026-03-30T13:04:52.821Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "MANUAL-UPDATE-S20",
+      "step": "9",
+      "approved_at": "2026-03-30T13:08:49.828Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-TEST-FA",
+      "step": "8b",
+      "approved_at": "2026-03-30T13:28:50.597Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-DASHBOARD-FIX-S20",
+      "step": "9",
+      "approved_at": "2026-03-30T13:45:24.440Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-DASHBOARD-COHERENCE",
+      "step": "9",
+      "approved_at": "2026-03-30T13:46:22.994Z",
+      "sprint": 20,
+      "feature": "FEAT-018"
+    },
+    {
+      "gate": "G-1",
+      "step": "1",
+      "approved_at": "2026-03-31T07:28:37.429Z",
+      "sprint": 21,
+      "feature": "FEAT-019"
+    },
+    {
+      "gate": "G-1",
+      "step": "1",
+      "approved_at": "2026-03-31T15:56:36.520Z",
+      "sprint": 21,
+      "feature": "FEAT-019"
+    },
+    {
+      "gate": "G-1",
+      "step": "1",
+      "approved_at": "2026-03-31T15:57:47.806Z",
+      "sprint": 21,
+      "feature": "FEAT-019"
+    },
+    {
+      "gate": "HITL-PO-TL",
+      "step": "2c",
+      "approved_at": "2026-03-31T16:07:40.795Z",
+      "sprint": 21,
+      "feature": "FEAT-019"
+    },
+    {
+      "gate": "G-3",
+      "step": "3",
+      "approved_at": "2026-03-31T17:01:00.800Z",
+      "sprint": 21,
+      "feature": "FEAT-019"
+    },
+    {
+      "gate": "G-4",
+      "step": "4",
+      "approved_at": "2026-03-31T20:09:39.586Z",
+      "sprint": 21,
+      "feature": "FEAT-019"
+    },
+    {
+      "gate": "G-5",
+      "step": "5",
+      "approved_by": "tech-lead",
+      "approved_at": "2026-03-31T20:12:04.744Z",
+      "sprint": 21,
+      "feature": "FEAT-019"
+    },
+    {
+      "gate": "G-5b",
+      "step": "5b",
+      "approved_by": "security-agent-auto",
+      "approved_at": "2026-03-31T20:16:46.290Z",
+      "sprint": 21,
+      "feature": "FEAT-019",
+      "note": "Semáforo YELLOW — cve_critical=0, pipeline auto-avanza a QA"
+    },
+    {
+      "gate": "G-5b",
+      "step": "5b",
+      "approved_by": "security-auto",
+      "approved_at": "2026-04-01T05:31:12.640Z",
+      "sprint": 21,
+      "feature": "FEAT-019",
+      "note": "YELLOW — auto por 0 cve_critical"
+    },
+    {
+      "gate": "G-6",
+      "step": "6",
+      "approved_by": "qa-lead+product-owner",
+      "approved_at": "2026-04-01T05:34:58.606Z",
+      "sprint": 21,
+      "feature": "FEAT-019"
+    },
+    {
+      "gate": "G-7",
+      "step": "7",
+      "approved_by": "release-manager",
+      "approved_at": "2026-04-01T05:36:48.855Z",
+      "sprint": 21,
+      "feature": "FEAT-019",
+      "note": "Release Notes + Runbook generados"
+    }
+  ],
+  "lessons_learned": [
+    {
+      "id": "LA-019-03",
+      "sprint": 19,
+      "type": "process",
+      "description": "Gates G-6..G-9 auto-aprobados incorrectamente. Corrección: cada gate HITL requiere parada explícita individual.",
+      "correction": "Desde Sprint 20: parada obligatoria en cada gate HITL con pregunta al rol definido.",
+      "registered_at": "2026-03-27T14:06:00.285397Z"
+    },
+    {
+      "id": "LA-019-04",
+      "sprint": 19,
+      "type": "testing",
+      "description": "Tests unitarios no detectan conflictos de beans Spring — requieren @SpringBootTest completo",
+      "correction": "G-4 requiere IT smoke test por feature nueva"
+    },
+    {
+      "id": "LA-019-05",
+      "sprint": 19,
+      "type": "devops",
+      "description": "Build Angular sin --configuration=production no activa budget CSS ni environment.prod.ts",
+      "correction": "CI y Dockerfile usan siempre ng build --configuration=production"
+    },
+    {
+      "id": "LA-019-06",
+      "sprint": 19,
+      "type": "process",
+      "description": "Patrón DEBT-022 no verificable automáticamente en Code Review",
+      "correction": "Script grep DEBT-022 obligatorio en G-5"
+    },
+    {
+      "id": "LA-019-07",
+      "sprint": 19,
+      "type": "testing",
+      "description": "Smoke test desactualizado — no cubre endpoints del sprint corriente",
+      "correction": "smoke-test actualizado obligatorio como artefacto de G-4"
+    },
+    {
+      "id": "LA-019-08",
+      "sprint": 19,
+      "type": "architecture",
+      "description": "@Profile(!production) activa Mock en STG — BD real nunca consultada",
+      "correction": "Mocks solo con @Profile(mock) o @Profile(test). @Primary en adaptador real."
+    },
+    {
+      "id": "LA-019-09",
+      "sprint": 19,
+      "type": "config",
+      "description": "environment.prod.ts desincronizado con environment.ts",
+      "correction": "Validación automática de campos en CI"
+    },
+    {
+      "id": "LA-019-10",
+      "sprint": 19,
+      "type": "frontend",
+      "description": "Módulos Angular nuevos no registrados en router",
+      "correction": "Checklist G-4 incluye verificación de registro en app-routing.module.ts"
+    },
+    {
+      "id": "LA-019-11",
+      "sprint": 19,
+      "type": "frontend",
+      "description": "Componentes de ruta usan @Input para params — nunca se populan",
+      "correction": "Usar siempre ActivatedRoute.paramMap en componentes de ruta"
+    },
+    {
+      "id": "LA-019-12",
+      "sprint": 19,
+      "type": "data",
+      "description": "UUIDs inválidos en seeds SQL (caracteres no hex)",
+      "correction": "Validar UUIDs con regex antes de ejecutar seeds"
+    },
+    {
+      "id": "LA-019-13",
+      "sprint": 19,
+      "type": "database",
+      "description": "timestamp without time zone vs Instant Java — incompatibilidad de tipos",
+      "correction": "LLD incluye mapa de tipos BD→Java. Usar LocalDateTime para columnas sin timezone."
+    },
+    {
+      "id": "LA-019-14",
+      "sprint": 19,
+      "type": "frontend",
+      "description": "OnPush + paramMap no dispara CD al cambiar cuenta",
+      "correction": "OnPush solo cuando se garantiza inmutabilidad y markForCheck() en todos los observables"
+    },
+    {
+      "id": "LA-019-15",
+      "sprint": 19,
+      "type": "backend",
+      "description": "Named params JdbcClient contaminados por concatenación de text blocks",
+      "correction": "SQL dinámico siempre usa parámetros posicionales (?)"
+    },
+    {
+      "id": "LA-019-16",
+      "sprint": 19,
+      "type": "process",
+      "description": "QA no declara si prueba contra Mock o BD real",
+      "correction": "Informe QA obliga campo: Repositorio activo: MOCK|JPA-REAL"
+    },
+    {
+      "id": "LA-020-01",
+      "sprint": 20,
+      "type": "process",
+      "description": "Jira debe actualizarse en cada step del pipeline sin instruccion explicita",
+      "correction": "Regla permanente: transicion automatica en cada gate"
+    },
+    {
+      "id": "LA-020-02",
+      "sprint": 20,
+      "type": "security",
+      "description": "Hallazgos CVSS >= 4.0 deben resolverse en el mismo sprint donde se detectan",
+      "correction": "No diferir si CVSS >= 4.0"
+    },
+    {
+      "id": "LA-020-03",
+      "sprint": 20,
+      "type": "architecture",
+      "description": "Audit log con datos derivados crea inconsistencia — enriquecer en momento de escritura",
+      "correction": "DEBT-036: inyectar AccountRepository en ExportAuditService"
+    },
+    {
+      "id": "LA-020-04",
+      "sprint": 20,
+      "type": "devops",
+      "description": "Workflow Jira debe configurarse con todos los estados SOFIA antes del primer sprint",
+      "correction": "Checklist onboarding incluye configuracion workflow"
+    },
+    {
+      "id": "LA-020-05",
+      "sprint": 20,
+      "type": "process",
+      "description": "Documentation Agent (10 DOCX + 3 XLSX + dashboard) no ejecutado en Step 8 — error detectado post-cierre",
+      "correction": "Desde Sprint 21: Documentation Agent es BLOQUEANTE para Gate G-9. No se cierra sprint sin estos artefactos."
+    },
+    {
+      "id": "LA-020-06",
+      "sprint": 20,
+      "type": "process",
+      "description": "sprint-NN-planning-doc.docx es obligatorio en word/ de cada sprint — faltaba S18, S19, S20",
+      "correction": "Checklist deliverables: planning-doc.docx bloqueante para Gate G-8 desde Sprint 21"
+    },
+    {
+      "id": "LA-020-07",
+      "sprint": 20,
+      "type": "dashboard",
+      "description": "Dashboard no se regeneraba en cada aprobacion de gate, solo al cerrar sprint",
+      "correction": "gate-dashboard-hook.js invocado en cada gate. dashboard_on_every_gate:true en sofia-config.json"
+    },
+    {
+      "id": "LA-020-08",
+      "sprint": 20,
+      "type": "process",
+      "description": "gen-fa-document.py no se invocaba automaticamente en Step 8b — FA-BankPortal-Banco-Meridian.docx no se actualizaba en S19 ni S20. Script solo cubria hasta FEAT-016.",
+      "correction": "gen-fa-document.py debe ejecutarse en Step 8b de cada sprint. Anadir llamada al gate-dashboard-hook como paso obligatorio. Script actualizado con FEAT-017 y FEAT-018."
+    },
+    {
+      "id": "LA-020-09",
+      "sprint": 20,
+      "type": "process",
+      "description": "Developer Agent generó ficheros bajo paquete incorrecto (es.meridian) inferido de documentación, sin verificar paquete raíz real del proyecto.",
+      "correction": "REGLA PERMANENTE: antes de crear cualquier fichero Java en un sprint, el Developer Agent DEBE ejecutar: (1) cat BankPortalApplication.java | head -1 para obtener el package raíz real, (2) ls src/main/java/ para confirmar estructura. Sin esta verificación el fichero no se escribe.",
+      "registered_at": "2026-03-30T18:42:40.685Z"
+    },
+    {
+      "id": "LA-020-10",
+      "sprint": 20,
+      "type": "code-review",
+      "description": "Code Reviewer validó consistencia interna entre ficheros nuevos pero no contra el codebase real. Marcó paquete incorrecto como correcto porque era uniforme entre los nuevos ficheros.",
+      "correction": "REGLA PERMANENTE: el Code Reviewer DEBE ejecutar grep del package raíz contra los nuevos ficheros y contrastar con el package del proyecto. Checklist G-5 añade: grep -r \"^package\" src/main/java/com/ | head -1 vs package de cada fichero nuevo. Discrepancia = bloqueante.",
+      "registered_at": "2026-03-30T18:42:40.686Z"
+    },
+    {
+      "id": "LA-020-11",
+      "sprint": 20,
+      "type": "testing",
+      "description": "Sprint 20 cerrado sin SpringContextIT ni integrations tests. 446 unit tests pasando ocultaron que la build no compilaría. Gate G-4b aprobado sin mvn compile real.",
+      "correction": "REGLA PERMANENTE: SpringContextIT es BLOQUEANTE para Gate G-4b. Si no existe en el proyecto, el Developer Agent lo crea en el mismo step. mvn compile (no mvn test) debe ejecutarse via sofia-shell antes de declarar G-4b OK. Sin BUILD SUCCESS en consola el gate no se aprueba.",
+      "registered_at": "2026-03-30T18:42:40.686Z"
+    },
+    {
+      "id": "LA-TEST-001",
+      "sprint": 20,
+      "type": "backend",
+      "description": "ExportController usaba getAttribute(\"userId\") pero JwtAuthenticationFilter escribe \"authenticatedUserId\". Discrepancia de nombre de atributo de request invisible en compilacion y en Code Review — causa HTTP 500 en produccion.",
+      "correction": "REGLA PERMANENTE: al usar HttpServletRequest.getAttribute() para propagar claims JWT, el nombre del atributo debe verificarse contra el filtro que lo escribe en el mismo PR. Checklist G-5 añade: grep authenticatedUserId en controladores que extraigan userId del request.",
+      "registered_at": "2026-03-31T07:54:00.000Z"
+    },
+    {
+      "id": "LA-TEST-002",
+      "sprint": 20,
+      "type": "backend",
+      "description": "TransactionExportRepository filtraba t.type (CARGO|ABONO — direction financiera) cuando el ExportRequest.tipoMovimiento contiene valores de categoria de negocio (DOMICILIACION, PAGO_TARJETA, INGRESO...). Compilacion correcta, tests unitarios pasaban, fallo silencioso en runtime: filtro nunca coincide.",
+      "correction": "REGLA PERMANENTE: distinguir siempre entre type (direccion financiera: CARGO/ABONO) y category (tipo negocio: DOMICILIACION/PAGO_TARJETA/INGRESO/COMISION/TRANSFERENCIA_*). Tests de integracion deben verificar que el filtro devuelve registros, no solo HTTP 200.",
+      "registered_at": "2026-03-31T07:54:00.000Z"
+    },
+    {
+      "id": "LA-TEST-003",
+      "sprint": 20,
+      "type": "backend",
+      "description": "Excepciones de dominio (ExportRangeException, ExportLimitExceededException) sin @ResponseStatus ni @ControllerAdvice mapeo → Spring devuelve HTTP 500 en lugar de 400/422. La suite de tests detecto que TC-014 (rango invertido) retornaba 500 en lugar de 400.",
+      "correction": "REGLA PERMANENTE: toda excepcion de dominio custom debe tener @ResponseStatus o estar mapeada en un @ControllerAdvice. Developer Agent debe crear ExceptionHandler en el mismo step que crea las excepciones. Checklist G-4 añade: verificar que todas las RuntimeException del modulo tienen handler HTTP explicito.",
+      "registered_at": "2026-03-31T07:54:00.000Z"
+    },
+    {
+      "id": "LA-TEST-004",
+      "sprint": 20,
+      "type": "backend",
+      "description": "JdbcClient (Spring 6) no convierte java.time.Instant automaticamente para columnas TIMESTAMP without time zone de PostgreSQL. Pasar Instant directo en params() lanza DataAccessException en runtime — invisible en compilacion y en tests unitarios con mocks.",
+      "correction": "REGLA PERMANENTE: para columnas TIMESTAMP (sin timezone) en PostgreSQL via JdbcClient, usar siempre Timestamp.from(instant) o LocalDateTime. Para columnas TIMESTAMPTZ usar OffsetDateTime. Developer Agent debe incluir este mapeo en el LLD y verificarlo en el IT smoke test antes de G-4b.",
+      "registered_at": "2026-03-31T07:54:00.000Z"
+    },
+    {
+      "id": "LA-FRONT-001",
+      "sprint": 21,
+      "type": "frontend",
+      "description": "Módulos Angular implementados en features/ no registrados en app-routing.module.ts ni en el sidebar (shell.component.ts). El módulo existe y compila pero es inaccesible para el usuario.",
+      "correction": "REGLA PERMANENTE: al crear cualquier módulo Angular en features/, el Developer Agent debe en el mismo step: (1) añadir la ruta lazy en app-routing.module.ts, (2) añadir el nav item en shell.component.ts. Checklist G-4 añade: verificar que todo módulo en features/ tiene ruta y nav item.",
+      "registered_at": "2026-03-31T07:12:44.461Z"
+    },
+    {
+      "id": "LA-FRONT-002",
+      "sprint": 21,
+      "type": "frontend",
+      "description": "Componente placeholder creado para resolver error de build (export.module.ts sin componente) pero quedó en producción con botones \"Próximamente\", ocultando funcionalidad backend ya implementada.",
+      "correction": "REGLA PERMANENTE: antes de crear un componente placeholder, verificar si el backend tiene el endpoint implementado. Si existe, implementar el componente real directamente. Un placeholder nunca debe llegar a una imagen Docker de producción.",
+      "registered_at": "2026-03-31T07:12:44.463Z"
+    },
+    {
+      "id": "LA-FRONT-003",
+      "sprint": 21,
+      "type": "frontend",
+      "description": "Import path incorrecto en componente anidado: desde components/export-panel/ se usó ../services/ (1 nivel) cuando el servicio está en ../../services/ (2 niveles). Error invisible hasta docker build.",
+      "correction": "REGLA PERMANENTE: al crear componentes en subdirectorios anidados (components/nombre/), calcular el path relativo desde la ubicación real del fichero. Verificar siempre: profundidad del componente vs profundidad del módulo al que pertenece el servicio.",
+      "registered_at": "2026-03-31T07:12:44.463Z"
+    },
+    {
+      "id": "LA-FRONT-004",
+      "sprint": 21,
+      "type": "frontend",
+      "description": "Backend ProfileController no implementado (FEAT-012 S14) pero el módulo Angular de perfil estaba registrado en el router. El componente cargaba, hacía forkJoin a /api/v1/profile, obtenía EMPTY y no renderizaba nada — sin error visible para el usuario.",
+      "correction": "REGLA PERMANENTE: antes de registrar una ruta Angular, verificar que el endpoint backend correspondiente existe. Si no existe, registrar deuda técnica (DEBT-XXX) y mantener la ruta comentada hasta implementación. No exponer rutas con endpoints inexistentes.",
+      "registered_at": "2026-03-31T07:12:44.463Z"
+    },
+    {
+      "id": "LA-FRONT-005",
+      "sprint": 21,
+      "type": "frontend",
+      "description": "docker compose up sirve la imagen preconstruida — cambios en source code no se reflejan sin docker compose build. Confusión recurrente: el fichero en disco estaba correcto pero el contenedor seguía mostrando la versión anterior.",
+      "correction": "REGLA PERMANENTE: cualquier cambio en frontend Angular requiere docker compose build frontend + docker compose up -d --no-deps frontend. Documentar este flujo en el runbook del proyecto. Añadir al checklist de G-4b.",
+      "registered_at": "2026-03-31T07:12:44.463Z"
+    },
+    {
+      "id": "LA-021-01",
+      "sprint": 21,
+      "type": "process",
+      "description": "FA-Agent actualizaba functionalities en Gate 2b pero NO el array business_rules. total_business_rules estaba hardcodeado y desincronizado del array real (141 declarado vs 129 real en S20). Detectado al verificar el estado del análisis funcional antes de Gate G-3.",
+      "correction": "REGLA PERMANENTE: (1) En Gate 2b, añadir business_rules de la feature nueva junto a functionalities — nunca uno sin el otro. (2) total_business_rules = len(business_rules) — NUNCA hardcodeado. (3) validate-fa-index.js bloqueante en Gate 2b, 3b y 8b. Script creado: .sofia/scripts/validate-fa-index.js. FA-Agent SKILL.md bumped a v2.3.",
+      "registered_at": "2026-03-31T16:22:28.742Z",
+      "script": ".sofia/scripts/validate-fa-index.js",
+      "checks": [
+        "total_functionalities == len(functionalities)",
+        "total_business_rules == len(business_rules)",
+        "cada FA-XXX tiene business_rules no vacio",
+        "todas las RN referenciadas existen en business_rules",
+        "sin IDs duplicados en functionalities ni business_rules",
+        "last_sprint coincide con datos reales",
+        "RN de FEAT actual presentes en business_rules"
+      ]
+    },
+    {
+      "id": "LA-021-02",
+      "sprint": 21,
+      "type": "testing",
+      "description": "IntegrationTestBase no declaraba campos testUserId/testAccountId que DashboardJpaAdapterIT usaba, causando error de compilación de tests y bloqueando mvn test.",
+      "correction": "REGLA: IntegrationTestBase debe declarar todos los fixtures UUID comunes usados por los tests hijos. Cualquier campo usado en múltiples ITs debe estar en la clase base, no en la hija.",
+      "registered_at": "2026-03-31T19:55:32.761Z"
+    }
+  ],
+  "unit_test_verification": {
+    "executed_at": "2026-03-30T09:17:42.787Z",
+    "result": "PASS",
+    "test_cases_total": 124,
+    "test_cases_pass": 124,
+    "failures": 0,
+    "errors": 0,
+    "sprint": 20,
+    "feature": "FEAT-018",
+    "functional_coverage": "100%",
+    "unit_coverage": "88%",
+    "evidence": "docs/qa/QA-FEAT-018-sprint20.md",
+    "approved_by": [
+      "qa-lead",
+      "product-owner"
+    ]
+  },
+  "bugs_found_post_sprint19": [
+    {
+      "id": "BUG-S19-001",
+      "severity": "HIGH",
+      "class": "TransactionCategorizationService",
+      "description": "RECIBO DOMICILIADO AGUA categorizado como RECIBO_UTIL en lugar de DOMICILIACION — prioridad de reglas incorrecta",
+      "impact": "Categorización errónea de domiciliaciones SEPA DD",
+      "fixed": true,
+      "fixed_at": "2026-03-27T14:57:17.000Z"
+    },
+    {
+      "id": "BUG-S19-002",
+      "severity": "HIGH",
+      "class": "NextExecutionDateCalculator",
+      "description": "Transferencias programadas día-31: siguiente ejecución cae en Feb-28 en lugar de Mar-31 — violación PSD2/SEPA",
+      "impact": "Transferencias programadas día-31 ejecutadas en fecha incorrecta",
+      "fixed": true,
+      "fixed_at": "2026-03-27T14:57:17.000Z"
+    }
+  ],
+  "test_fixes_applied": {
+    "total_files_modified": 16,
+    "compilation_fixes": 5,
+    "mock_fixes": 4,
+    "stub_alignment_fixes": 4,
+    "context_fixes": 3,
+    "applied_at": "2026-03-27T14:57:17.000Z"
+  },
+  "smoke_test": {
+    "executed_at": "2026-03-27T20:51:05+01:00",
+    "result": "PASS",
+    "total": 17,
+    "ok": 17,
+    "fail": 0,
+    "log": "docs/qa/SMOKE-TEST-v1.19.0-20260327-205105.log",
+    "script": "infra/compose/smoke-test-v1.19.sh"
+  },
+  "hotfix": {
+    "version": "v1.19.0-hotfix",
+    "date": "2026-03-27",
+    "bugs_fixed": [
+      "BUG-POST-S19-001: ConflictingBeanDefinitionException ibanValidator",
+      "BUG-POST-S19-002: HTTP 403 en lugar de 401 sin JWT",
+      "BUG-POST-S19-003: HTTP 500 DirectDebitController AuthenticationPrincipal",
+      "BUG-POST-S19-004: Flyway V20 ENUM→VARCHAR migration fix"
+    ],
+    "migrations_added": [
+      "V20__fix_mandate_enum_varchar.sql"
+    ],
+    "report": "docs/qa/HOTFIX-REPORT-v1.19.0-20260327.md",
+    "lessons": [
+      "LA-019-04",
+      "LA-019-05"
+    ]
+  },
+  "post_mortem": "docs/qa/POST-MORTEM-STG-v1.19.0-20260328.md",
+  "skills_updated_s20": [
+    "qa-tester",
+    "java-developer",
+    "angular-developer",
+    "code-reviewer",
+    "devops",
+    "architect",
+    "developer-core",
+    "orchestrator"
+  ],
+  "lessons_applied_to_skills": {
+    "qa-tester": [
+      "LA-019-07",
+      "LA-019-08",
+      "LA-019-16"
+    ],
+    "java-developer": [
+      "LA-019-04",
+      "LA-019-06",
+      "LA-019-08",
+      "LA-019-13",
+      "LA-019-15",
+      "LA-TEST-001",
+      "LA-TEST-002",
+      "LA-TEST-003",
+      "LA-TEST-004"
+    ],
+    "angular-developer": [
+      "LA-019-05",
+      "LA-019-09",
+      "LA-019-10",
+      "LA-019-11",
+      "LA-019-12",
+      "LA-019-14"
+    ],
+    "code-reviewer": [
+      "LA-019-06",
+      "LA-019-08",
+      "LA-019-09",
+      "LA-019-10",
+      "LA-019-11",
+      "LA-019-13",
+      "LA-019-15",
+      "LA-TEST-001",
+      "LA-TEST-002",
+      "LA-TEST-003",
+      "LA-TEST-004"
+    ],
+    "devops": [
+      "LA-019-05",
+      "LA-019-07"
+    ],
+    "architect": [
+      "LA-019-08",
+      "LA-019-13"
+    ],
+    "developer-core": [
+      "LA-019-04",
+      "LA-019-07",
+      "LA-019-08"
+    ],
+    "orchestrator": [
+      "LA-019-04",
+      "LA-019-07",
+      "LA-019-08",
+      "LA-019-13",
+      "LA-021-01"
+    ],
+    "fa-agent": [
+      "LA-021-01"
+    ]
+  },
+  "ux_ui_agent": {
+    "version": "1.0",
+    "integrated_at": "2026-03-28",
+    "skill_path": ".sofia/skills/ux-ui-designer/SKILL.md",
+    "pipeline_step": "2c",
+    "gate": "HITL-PO-TL",
+    "design_system_path": "docs/ux-ui/UX-DESIGN-SYSTEM.md",
+    "active": true,
+    "skill_version": "2.0",
+    "prototype_template": "docs/ux-ui/prototypes/PROTO-TEMPLATE.html",
+    "prototype_output_pattern": "docs/ux-ui/prototypes/PROTO-FEAT-XXX-sprintYY.html"
+  },
+  "pipeline_steps_total": 15,
+  "agents_total": 21,
+  "last_package": {
+    "version": "2.3",
+    "path": "dist/sofia-deploy-v2.3.zip",
+    "size_kb": 486.1,
+    "entries": 92,
+    "skills": 21,
+    "packaged_at": "2026-03-30T14:20:12.820Z",
+    "notes": "fa-agent v2.2 + orchestrator v2.2: LA-020-08 CHECK 3b docx verification"
+  },
+  "hotfix_s20": {
+    "version": "HOTFIX-S20",
+    "commit": "07519ea95104779aa5196f79b23293a319cf5d63",
+    "date": "2026-03-30T15:17:10.367Z",
+    "scope": "export/** + directdebit/webhook/ + transaction/processor/ + pom.xml",
+    "issues_fixed": [
+      "PACK-001: paquete es.meridian.bankportal → com.experis.sofia.bankportal (16 ficheros)",
+      "API-001: PdfDocumentGenerator usa getTransactionDate/getConcept/getBalanceAfter",
+      "API-002: CsvDocumentGenerator sin getCurrency/getAccountingDate (no existen en Transaction)",
+      "API-003: CoreBankingReturnedHandler usa DebitMandateRepository + NotificationService reales",
+      "API-004: ActiveDirectDebitFilter usa DebitStatus enum (no String)",
+      "NEW-001: TransactionExportRepository creado (JdbcClient, queries posicionales LA-019-15)",
+      "NEW-002: ExportAuditLogRepository creado",
+      "NEW-003: ExportLimitExceededException + ExportRangeException creadas",
+      "POM-001: pdfbox 3.0.2 + spring-retry añadidos",
+      "CLEAN-001: arbol es/meridian/bankportal eliminado"
+    ],
+    "status": "APPLIED"
+  },
+  "guardrails": {
+    "version": "1.0",
+    "activated_at": "2026-03-30T18:51:48.730Z",
+    "commit": "2b7e28359271a43535d06dad13e31d1ee604e0bf",
+    "origin": "RCA HOTFIX-S20",
+    "lessons": [
+      "LA-020-09",
+      "LA-020-10",
+      "LA-020-11"
+    ],
+    "checks_total": 9,
+    "script": ".sofia/scripts/guardrail-pre-gate.js",
+    "spring_context_it": "CREADO",
+    "integration_test_base": "CREADO",
+    "skills_updated": [
+      "java-developer",
+      "code-reviewer",
+      "orchestrator",
+      "fa-agent"
+    ],
+    "sofia_config_updated": true
+  },
+  "open_debts": [
+    {
+      "id": "DEBT-036",
+      "area": "Backend",
+      "priority": "Media",
+      "desc": "IBAN real en export_audit_log",
+      "sprint_target": "S21",
+      "jira": "SCRUM-112"
+    },
+    {
+      "id": "DEBT-037",
+      "area": "Security",
+      "priority": "Baja",
+      "cvss": "2.1",
+      "desc": "Regex PAN Maestro 19d",
+      "sprint_target": "S22"
+    },
+    {
+      "id": "DEBT-039",
+      "area": "Backend",
+      "priority": "Media",
+      "desc": "ProfileController - absorbido por FEAT-019 US-1+US-2",
+      "sprint_target": "S21",
+      "status": "ABSORBED_BY_FEAT019"
+    },
+    {
+      "id": "DEBT-040",
+      "area": "Security",
+      "priority": "Alta",
+      "cvss": "5.3",
+      "sprint_target": "S21",
+      "desc": "Race condition DataExportService"
+    },
+    {
+      "id": "DEBT-041",
+      "area": "Security",
+      "priority": "Alta",
+      "cvss": "4.8",
+      "sprint_target": "S21",
+      "desc": "OTP 2FA no validado requestDeletion"
+    },
+    {
+      "id": "DEBT-042",
+      "area": "Security",
+      "priority": "Media",
+      "cvss": "2.1",
+      "sprint_target": "S22",
+      "desc": "Deletion token sin TTL 24h"
+    }
+  ],
+  "skills_updated_s21": [
+    "fa-agent"
+  ]
+}

@@ -1,15 +1,14 @@
-# docker-compose.yml — BankPortal v1.9.0 STG local
-# Sprint 9 · FEAT-007 · DEBT-011/012
-# Sprint 10: MailHog añadido para testing de emails
+# docker-compose.yml — BankPortal v1.9.0
+# STG · Sprint 9 · FEAT-007 · DEBT-011/012
+# Variables sensibles inyectadas desde .env — NUNCA commitear .env con valores reales
+
+version: '3.9'
 
 services:
 
   # ── BACKEND ──────────────────────────────────────────────────────────────────
   backend:
-    build:
-      context: ../../apps/backend-2fa
-      dockerfile: Dockerfile
-    image: bankportal-backend-2fa:${IMAGE_TAG:-latest-dev}
+    image: ${REGISTRY:-registry.meridian.internal}/bankportal-backend-2fa:${IMAGE_TAG:-latest-dev}
     container_name: bankportal-backend
     restart: unless-stopped
     ports:
@@ -17,32 +16,33 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE:      ${SPRING_PROFILE:-staging}
       SERVER_PORT:                 8080
+      # Base de datos
       SPRING_DATASOURCE_URL:       ${DB_URL}
       SPRING_DATASOURCE_USERNAME:  ${DB_USER:-bankportal}
       SPRING_DATASOURCE_PASSWORD:  ${DB_PASSWORD}
+      # Redis — DEBT-011: SSE Pub/Sub multi-pod
       SPRING_REDIS_URL:            ${REDIS_URL}
+      # JWT
       JWT_PRIVATE_KEY:             ${JWT_PRIVATE_KEY}
       JWT_PUBLIC_KEY:              ${JWT_PUBLIC_KEY}
+      # FEAT-007: extractos + notificaciones
       STATEMENT_EXPORT_MAX_TRANSACTIONS: 500
       SSE_REDIS_CHANNEL_PREFIX:    sse:user
+      # DEBT-012: purga nocturna
       NOTIFICATION_PURGE_CRON:     "0 0 2 * * *"
+      # Actuator / observabilidad
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,metrics,prometheus
-      # MailHog SMTP para STG
-      SPRING_MAIL_HOST:            mailhog
-      SPRING_MAIL_PORT:            1025
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
-      mailhog:
-        condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
-      interval: 15s
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health/liveness"]
+      interval: 30s
       timeout: 5s
-      retries: 10
-      start_period: 90s
+      retries: 5
+      start_period: 60s
     deploy:
       resources:
         limits:
@@ -51,10 +51,7 @@ services:
 
   # ── FRONTEND ─────────────────────────────────────────────────────────────────
   frontend:
-    build:
-      context: ../../apps/frontend-portal
-      dockerfile: Dockerfile
-    image: bankportal-frontend-portal:${IMAGE_TAG:-latest-dev}
+    image: ${REGISTRY:-registry.meridian.internal}/bankportal-frontend-portal:${IMAGE_TAG:-latest-dev}
     container_name: bankportal-frontend
     restart: unless-stopped
     ports:
@@ -63,10 +60,11 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:80/health"]
       interval: 30s
-      timeout: 3s
-      retries: 3
+      timeout: 5s
+      retries: 5
+      start_period: 15s
     deploy:
       resources:
         limits:
@@ -111,25 +109,6 @@ services:
       resources:
         limits:
           memory: 128M
-
-  # ── MAILHOG — SMTP fake para STG (Sprint 10) ─────────────────────────────────
-  # UI: http://localhost:8025 — captura todos los emails enviados por el backend
-  mailhog:
-    image: mailhog/mailhog:v1.0.1
-    container_name: bankportal-mailhog
-    restart: unless-stopped
-    ports:
-      - "1025:1025"   # SMTP → backend
-      - "8025:8025"   # Web UI
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8025"]
-      interval: 10s
-      timeout: 3s
-      retries: 3
-    deploy:
-      resources:
-        limits:
-          memory: 64M
 
 volumes:
   postgres_data:

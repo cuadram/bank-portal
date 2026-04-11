@@ -1,0 +1,103 @@
+{
+  "_generated_by": "gen-ma-baseline.js v1.0.0",
+  "generated_at": "2026-04-05T19:33:33.464Z",
+  "projects": {
+    "BANK_PORTAL": {
+      "project": "bank-portal",
+      "client": "Banco Meridian",
+      "updated_at": "2026-04-05T19:33:33.464Z",
+      "PM001": {
+        "mean": 0,
+        "p90": 0,
+        "trend": "stable",
+        "current_status": "GREEN"
+      },
+      "PM002": {
+        "mean": 0,
+        "p90": 0,
+        "trend": "stable",
+        "current_status": "GREEN"
+      },
+      "PM003": {
+        "mean": 86.43,
+        "p90": 100,
+        "trend": "improving",
+        "current_status": "GREEN"
+      },
+      "PM004": {
+        "mean": 92.86,
+        "p90": 100,
+        "trend": "improving",
+        "current_status": "GREEN"
+      },
+      "PM005": {
+        "mean": 87.29,
+        "p90": 100,
+        "trend": "improving",
+        "current_status": "GREEN"
+      },
+      "PM006": {
+        "mean": 0,
+        "p90": 0,
+        "trend": "stable",
+        "current_status": "GREEN"
+      }
+    }
+  },
+  "org_baseline": {
+    "PM001": {
+      "key": "PM001_velocity_variance_pct",
+      "name": "Velocity variance",
+      "projects_count": 1,
+      "org_mean": 0,
+      "org_p90": 0,
+      "target": "<=10% GREEN · <=20% AMBER · >20% RED",
+      "updated_at": "2026-04-05T19:33:33.464Z"
+    },
+    "PM002": {
+      "key": "PM002_defect_injection_rate",
+      "name": "Defect injection rate",
+      "projects_count": 1,
+      "org_mean": 0,
+      "org_p90": 0,
+      "target": "=0 GREEN · >0 AMBER · >=2 RED",
+      "updated_at": "2026-04-05T19:33:33.464Z"
+    },
+    "PM003": {
+      "key": "PM003_review_effectiveness_pct",
+      "name": "Review effectiveness",
+      "projects_count": 1,
+      "org_mean": 86.43,
+      "org_p90": 86.43,
+      "target": ">=90% GREEN · >=70% AMBER · <70% RED",
+      "updated_at": "2026-04-05T19:33:33.464Z"
+    },
+    "PM004": {
+      "key": "PM004_test_efficiency_pct",
+      "name": "Test efficiency",
+      "projects_count": 1,
+      "org_mean": 92.86,
+      "org_p90": 92.86,
+      "target": ">=95% GREEN · >=80% AMBER · <80% RED",
+      "updated_at": "2026-04-05T19:33:33.464Z"
+    },
+    "PM005": {
+      "key": "PM005_cmmi_compliance_pct",
+      "name": "CMMI compliance",
+      "projects_count": 1,
+      "org_mean": 87.29,
+      "org_p90": 87.29,
+      "target": "=100% GREEN · >=85% AMBER · <85% RED",
+      "updated_at": "2026-04-05T19:33:33.464Z"
+    },
+    "PM006": {
+      "key": "PM006_cycle_time_variance_days",
+      "name": "Cycle time variance",
+      "projects_count": 1,
+      "org_mean": 0,
+      "org_p90": 0,
+      "target": "=0 GREEN · <=2d AMBER · >2d RED",
+      "updated_at": "2026-04-05T19:33:33.464Z"
+    }
+  }
+}

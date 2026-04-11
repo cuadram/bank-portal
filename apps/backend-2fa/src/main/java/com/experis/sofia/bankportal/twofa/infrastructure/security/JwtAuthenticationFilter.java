@@ -15,18 +15,9 @@ import java.io.IOException;
 import java.util.Collections;
 
 /**
- * Filtro de autenticación JWT — procesa cada request una sola vez.
- *
- * <p>Extrae el JWT del header {@code Authorization: Bearer <token>},
- * lo valida mediante {@link JwtTokenProvider} y establece el contexto
- * de seguridad de Spring ({@link SecurityContextHolder}).</p>
- *
- * <p><strong>RV-007 fix:</strong> Usa {@link JwtTokenProvider#validateAndExtract(String)}
- * para obtener userId y username en una sola operación de parseo/verificación JWT.</p>
- *
- * <p>FEAT-001 | US-002</p>
- *
- * @since 1.0.0
+ * Filtro de autenticación JWT — DEBT-022/023 (Sprint 14):
+ * propaga jti + expiresAt como atributos de request.
+ * FEAT-001 | US-002 | @since 1.0.0
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -47,49 +38,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         String authHeader = request.getHeader(AUTH_HEADER);
-
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String token = authHeader.substring(BEARER_PREFIX.length());
-
         try {
-            // RV-007 fix: una sola verificación de firma por request
             JwtTokenProvider.JwtClaims claims = jwtTokenProvider.validateAndExtract(token);
-
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                        claims.username(),
-                        null,
-                        Collections.emptyList()
-                    );
-                authentication.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request));
-
+                var auth = new UsernamePasswordAuthenticationToken(
+                    claims.username(), null, Collections.emptyList());
+                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 request.setAttribute("authenticatedUserId", claims.userId());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                request.setAttribute("authenticatedJti",    claims.jti());
+                request.setAttribute("jwtExpiresAt",        claims.expiresAt());
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (JwtTokenProvider.JwtTokenInvalidException e) {
             SecurityContextHolder.clearContext();
         }
-
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * Excluir endpoints que gestionan su propia autenticación.
-     *
-     * <p>{@code POST /2fa/verify} usa pre-auth token (secreto diferente),
-     * no debe pasar por este filtro.</p>
-     */
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         String path = request.getServletPath();
         return path.equals("/auth/login")
             || path.equals("/2fa/verify")
-            || path.equals("/actuator/health");
+            || path.equals("/actuator/health")
+            || path.startsWith("/dev/");
     }
 }

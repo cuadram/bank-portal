@@ -22,6 +22,9 @@ public interface TrustedDeviceRepository {
     /** Cuenta dispositivos activos — para límite máximo de 10. */
     int countActiveByUserId(UUID userId);
 
+    /** Marca como revocados los dispositivos con fecha de expiración pasada. Retorna el número de registros actualizados. */
+    default int markExpiredAsRevoked() { return 0; /* stub — impl en JPA */ }
+
     /** Busca por fingerprint de dispositivo — para detectar si ya tiene trust token. */
     Optional<TrustedDevice> findActiveByUserIdAndFingerprint(UUID userId, String fingerprintHash);
 }

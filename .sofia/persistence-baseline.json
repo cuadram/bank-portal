@@ -1,0 +1,58 @@
+{
+  "_comment": "BankPortal persistence baseline — rutas especificas del proyecto",
+  "_note": "BankPortal evolucionó S1-S22 con estructura propia anterior a SOFIA-CORE v2.6.8",
+  "_note2": "Sprint 23+ usará la estructura canonica completa",
+  "version": "1.0",
+  "project": "bank-portal",
+  "step_overrides": {
+    "2": {
+      "paths": [
+        "docs/functional-analysis/FA-FEAT-020-sprint22.md",
+        "docs/functional-analysis/fa-index.json"
+      ],
+      "_reason": "SRS en docs/deliverables/ no en docs/requirements/ (estructura pre-S22)"
+    },
+    "2b": {
+      "paths": [
+        "docs/functional-analysis/fa-index.json"
+      ],
+      "_reason": "Draft FA se convierte en final — draft eliminado correctamente"
+    },
+    "4": {
+      "paths": [
+        "apps/backend-2fa/src/main/java/",
+        "apps/frontend-portal/src/"
+      ],
+      "_reason": "BankPortal usa apps/ no src/ (monorepo multi-modulo)"
+    },
+    "4b": {
+      "paths": [
+        "apps/backend-2fa/src/main/java/"
+      ],
+      "_reason": "Mismo motivo que step 4"
+    },
+    "5b": {
+      "paths": [
+        "docs/deliverables/sprint-22-FEAT-020/SEC-FEAT-020-sprint22.md"
+      ],
+      "_reason": "Security report en deliverables no en docs/security/"
+    },
+    "7": {
+      "paths": [
+        "docs/releases/RELEASE-NOTES-v1.22.0.md",
+        "docs/runbooks/RUNBOOK-backend-2fa-v1.22.0.md",
+        "infra/compose/"
+      ],
+      "_reason": "Runbook con nombre especifico de version, infra en infra/compose/"
+    },
+    "8b": {
+      "paths": [
+        "docs/functional-analysis/FA-FEAT-020-sprint22.md",
+        "docs/functional-analysis/FA-BankPortal-Banco-Meridian.docx",
+        "docs/functional-analysis/fa-index.json"
+      ],
+      "_reason": "FA docx con nombre canonico BankPortal — generado con python-docx"
+    }
+  },
+  "sprint23_compliance": "Desde Sprint 23 se usa estructura canonica: docs/requirements/, src/, docs/security/, docs/runbooks/RUNBOOK-vX.md"
+}

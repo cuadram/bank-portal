@@ -4,14 +4,13 @@ import com.experis.sofia.bankportal.notification.application.MarkNotificationsUs
 import com.experis.sofia.bankportal.notification.application.NotificationHistoryUseCase;
 import com.experis.sofia.bankportal.notification.application.UnreadCountService;
 import com.experis.sofia.bankportal.notification.domain.UserNotification;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -52,13 +51,13 @@ public class NotificationController {
      */
     @GetMapping
     public ResponseEntity<Page<NotificationDto>> getHistory(
-            @AuthenticationPrincipal Jwt jwt,
+            HttpServletRequest request,
             @RequestParam(required = false) String eventType,
             @RequestParam(required = false) Boolean unreadOnly,
             @PageableDefault(size = 20, sort = "createdAt",
                              direction = Sort.Direction.DESC) Pageable pageable) {
 
-        UUID userId = UUID.fromString(jwt.getSubject());
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         var filter = new NotificationHistoryUseCase.NotificationFilter(eventType, unreadOnly);
 
         return ResponseEntity.ok(
@@ -75,9 +74,9 @@ public class NotificationController {
      */
     @PutMapping("/{id}/read")
     public ResponseEntity<Void> markRead(
-            @AuthenticationPrincipal Jwt jwt,
+            HttpServletRequest request,
             @PathVariable UUID id) {
-        markUseCase.markAsRead(UUID.fromString(jwt.getSubject()), id);
+        markUseCase.markAsRead((UUID) request.getAttribute("authenticatedUserId"), id);
         return ResponseEntity.noContent().build();
     }
 
@@ -86,8 +85,8 @@ public class NotificationController {
      * Retorna el número de notificaciones actualizadas.
      */
     @PutMapping("/read-all")
-    public ResponseEntity<MarkAllResponse> markAllRead(@AuthenticationPrincipal Jwt jwt) {
-        int updated = markUseCase.markAllAsRead(UUID.fromString(jwt.getSubject()));
+    public ResponseEntity<MarkAllResponse> markAllRead(HttpServletRequest request) {
+        int updated = markUseCase.markAllAsRead((UUID) request.getAttribute("authenticatedUserId"));
         return ResponseEntity.ok(new MarkAllResponse(updated));
     }
 
@@ -100,8 +99,8 @@ public class NotificationController {
      * Usado por el badge del header y como estado inicial del SSE.
      */
     @GetMapping("/unread-count")
-    public ResponseEntity<UnreadCountResponse> getUnreadCount(@AuthenticationPrincipal Jwt jwt) {
-        long count = unreadCountService.getUnreadCount(UUID.fromString(jwt.getSubject()));
+    public ResponseEntity<UnreadCountResponse> getUnreadCount(HttpServletRequest request) {
+        long count = unreadCountService.getUnreadCount((UUID) request.getAttribute("authenticatedUserId"));
         return ResponseEntity.ok(new UnreadCountResponse(count));
     }
 
@@ -129,7 +128,7 @@ public class NotificationController {
                     n.getBody(),
                     n.getActionUrl(),
                     n.getContextId(),
-                    n.getCreatedAt(),
+                    n.getCreatedAt().atZone(java.time.ZoneOffset.UTC).toInstant(),
                     n.getReadAt() != null,
                     n.getIpSubnet(),
                     n.isUnusualLocation());

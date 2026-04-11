@@ -1,0 +1,321 @@
+{
+  "version": "2.0",
+  "sofia_version": "2.2",
+  "status": "in_progress",
+  "project": "bank-portal",
+  "client": "Banco Meridian",
+  "current_sprint": 19,
+  "current_feature": "FEAT-017",
+  "current_step": "1",
+  "pipeline_step": "5b",
+  "pipeline_step_name": "security-agent",
+  "completed_steps": [
+    "1",
+    "2",
+    "2b",
+    "3",
+    "3b",
+    "4",
+    "5",
+    "5b"
+  ],
+  "pending_steps": [
+    "6",
+    "7",
+    "8",
+    "8b",
+    "9"
+  ],
+  "last_skill": "code-reviewer",
+  "last_skill_output_path": "docs/architecture/",
+  "gate_pending": null,
+  "sprint_goal": "Gestion completa domiciliaciones bancarias: alta, consulta, baja y notificaciones push \u2014 SEPA DD Core \u00b7 PSD2 Art.77/80",
+  "sprint_capacity_sp": 24,
+  "artifacts": {
+    "1": [
+      "docs/sprints/SPRINT-019-planning.md"
+    ],
+    "2": [
+      "docs/requirements/SRS-FEAT-017-sprint19.md"
+    ],
+    "3": [
+      "docs/architecture/hld/HLD-FEAT-017.md",
+      "docs/architecture/lld/LLD-FEAT-017-backend.md",
+      "docs/architecture/lld/LLD-FEAT-017-frontend.md",
+      "docs/architecture/adr/ADR-029-sepa-mandate-storage.md",
+      "docs/architecture/openapi/openapi-direct-debits-v1.yaml"
+    ],
+    "4": [
+      "apps/backend-2fa/src/main/resources/db/migration/V19__direct_debits.sql",
+      "apps/backend-2fa/src/main/java/.../directdebit/ (21 clases Java)",
+      "apps/frontend-portal/src/app/features/direct-debits/ (18 archivos Angular)",
+      "docs/qa/TEST-EXECUTION-FEAT-017-sprint19.md"
+    ],
+    "5": [
+      "docs/code-review/CR-FEAT-017-sprint19.md"
+    ],
+    "2b": [
+      "docs/functional-analysis/FA-FEAT-017-sprint19.md"
+    ],
+    "3b": [
+      "docs/architecture/hld/HLD-FEAT-017.md (Confluence page 4882434)"
+    ],
+    "5b": [
+      "docs/security/SEC-FEAT-017-sprint19.md"
+    ]
+  },
+  "gates": {
+    "G-1": {
+      "approved_by": "product-owner",
+      "approved_at": "2026-03-27T06:13:40.364Z",
+      "step": "1"
+    },
+    "G-2": {
+      "approved_by": "product-owner",
+      "approved_at": "2026-03-27T06:32:40.223987Z",
+      "step": "2b"
+    },
+    "G-3": {
+      "approved_by": "tech-lead",
+      "approved_at": "2026-03-27T13:34:47.130989Z",
+      "step": "3"
+    }
+  },
+  "fa_agent": {
+    "last_gate": "full-rebuild",
+    "last_updated": "2026-03-27T06:19:13.547Z",
+    "last_feat": "FEAT-017",
+    "doc_path": "docs/functional-analysis/FA-BankPortal-Banco-Meridian.docx",
+    "doc_version": "2.0",
+    "index_path": "docs/functional-analysis/fa-index.json",
+    "functionalities": 58,
+    "business_rules": 113,
+    "last_sprint_consolidated": 19,
+    "skill_version": "2.1",
+    "active": true,
+    "rebuild_note": "S1-S15 reconstruidos desde Flyway V1-V15, use cases y pom.xml. Sprint17 corregido: FEAT-015 = Transferencias Programadas.",
+    "sprints_covered": "S1-S19",
+    "markdowns": [
+      "docs/functional-analysis/FA-FEAT-001-sprint01-02.md",
+      "docs/functional-analysis/FA-FEAT-002-sprint03.md",
+      "docs/functional-analysis/FA-FEAT-003-sprint04.md",
+      "docs/functional-analysis/FA-FEAT-004-sprint05-08.md",
+      "docs/functional-analysis/FA-FEAT-005-sprint06.md",
+      "docs/functional-analysis/FA-FEAT-006-sprint07.md",
+      "docs/functional-analysis/FA-FEAT-007-sprint09.md",
+      "docs/functional-analysis/FA-FEAT-008-sprint10.md",
+      "docs/functional-analysis/FA-FEAT-009-sprint11.md",
+      "docs/functional-analysis/FA-FEAT-010-sprint12.md",
+      "docs/functional-analysis/FA-FEAT-011-sprint13.md",
+      "docs/functional-analysis/FA-FEAT-012-sprint14.md",
+      "docs/functional-analysis/FA-FEAT-013-sprint15.md",
+      "docs/functional-analysis/FA-FEAT-014-sprint16.md",
+      "docs/functional-analysis/FA-FEAT-015-sprint17.md",
+      "docs/functional-analysis/FA-FEAT-016-sprint18.md",
+      "docs/functional-analysis/FA-FEAT-017-sprint19.md"
+    ],
+    "generator": "python-docx"
+  },
+  "devops": {
+    "jenkinsfile": "apps/backend-2fa/Jenkinsfile",
+    "dockerfile": "apps/backend-2fa/Dockerfile",
+    "release_notes": "docs/releases/RELEASE-NOTES-v1.18.0.md",
+    "runbook": "docs/runbooks/RUNBOOK-backend-2fa-v1.18.0.md",
+    "tag": "v1.18.0",
+    "image": "backend-2fa:v1.18.0",
+    "breaking_changes": false,
+    "flyway_migrations": [
+      "V18__cards_management.sql",
+      "V18b__drop_push_plain_columns.sql",
+      "V18c__shedlock.sql"
+    ],
+    "new_env_vars": [
+      "CORE_BANKING_URL",
+      "CORE_BANKING_TIMEOUT_MS",
+      "SHEDLOCK_DEFAULT_LOCK_AT_MOST_FOR"
+    ],
+    "rollback_warning": "V18b DROP COLUMN irreversible \u2014 requiere restore BD si rollback a version < v1.18.0"
+  },
+  "security": {
+    "last_audit": "2026-03-27",
+    "semaphore": "GREEN",
+    "cve_critical": 0,
+    "cve_high": 0,
+    "sast_findings": 2,
+    "sast_blocker": 0,
+    "open_debts": [
+      {
+        "id": "DEBT-031",
+        "area": "Security",
+        "priority": "Media",
+        "cvss": "4.2",
+        "sprint_target": 19,
+        "desc": "Rate limiting /cards/{id}/pin"
+      },
+      {
+        "id": "DEBT-032",
+        "area": "Security/Infra",
+        "priority": "Baja",
+        "cvss": "2.7",
+        "sprint_target": "Pre-produccion",
+        "desc": "mTLS CoreBankingAdapter"
+      }
+    ],
+    "risks_closed_this_sprint": [
+      "R-016-01",
+      "R-015-01"
+    ],
+    "pci_dss_compliant": true
+  },
+  "qa": {
+    "report_path": "docs/qa/QA-FEAT-016-sprint18.md",
+    "verdict": "LISTO PARA RELEASE",
+    "test_cases_total": 101,
+    "test_cases_pass": 101,
+    "test_cases_fail": 0,
+    "defects_open": 0,
+    "functional_coverage": "100%",
+    "unit_coverage_estimated": "86%",
+    "security_checks": "16/16",
+    "wcag_checks": "8/8",
+    "api_contracts_verified": "18/18",
+    "performance_get_cards_p95_ms": 194,
+    "performance_post_block_p95_ms": 312,
+    "ncs_sprint18": 0,
+    "approved_by": [
+      "qa-lead",
+      "product-owner"
+    ],
+    "approved_at": "2026-03-25T15:00:00Z"
+  },
+  "metrics": {
+    "total_sp": 425,
+    "total_tests": 677,
+    "coverage": 86,
+    "defects": 0,
+    "ncs_last_sprint": 5
+  },
+  "sprint_history": {
+    "sprint_16": {
+      "feature": "FEAT-014",
+      "status": "completed",
+      "sp": 24,
+      "acum": 377,
+      "tests": 553,
+      "cov": 84,
+      "ncs": 2,
+      "rel": "v1.16.0",
+      "closed_at": "2026-03-24"
+    },
+    "sprint_17": {
+      "feature": "FEAT-015",
+      "status": "completed",
+      "sp": 24,
+      "acum": 401,
+      "tests": 615,
+      "cov": 85,
+      "ncs": 3,
+      "rel": "v1.17.0",
+      "closed_at": "2026-04-22"
+    },
+    "sprint_18": {
+      "feature": "FEAT-016",
+      "status": "completed",
+      "sp": 24,
+      "acum": 425,
+      "tests": 677,
+      "cov": 86,
+      "ncs": 5,
+      "rel": "v1.18.0",
+      "closed_at": "2026-03-25"
+    }
+  },
+  "cmmi": {
+    "level": 3,
+    "active": true,
+    "evidence_sprints": [
+      14,
+      15,
+      16
+    ],
+    "process_areas": [
+      "PP",
+      "PMC",
+      "RSKM",
+      "VER",
+      "VAL",
+      "CM",
+      "PPQA",
+      "REQM",
+      "DAR"
+    ]
+  },
+  "code_review": {
+    "findings_blocker": 0,
+    "findings_minor": 3,
+    "findings_suggestion": 2,
+    "deferred": [
+      "RV-F017-01",
+      "RV-F017-02",
+      "RV-F017-03"
+    ],
+    "verdict": "APPROVED"
+  },
+  "updated_at": "2026-03-27T13:41:05.952877Z",
+  "resume_next": "GATE-1 product-owner \u2192 Sprint 19 FEAT-017 Domiciliaciones y Recibos",
+  "sprint_closed": false,
+  "gate8_approved_by": "release-manager",
+  "gate8_approved_at": "2026-03-25T17:00:00Z",
+  "retrospective": "docs/sprints/SPRINT-018-retrospectiva.md",
+  "confluence_retro_id": "3932161",
+  "atlassian_synced": true,
+  "atlassian_sync_date": "2026-03-25",
+  "sprint_closed_at": "2026-03-25T17:05:00Z",
+  "dashboard_global": {
+    "path": "docs/dashboard/bankportal-global-dashboard.html",
+    "alias": "docs/quality/sofia-dashboard.html",
+    "last_generated": "2026-03-27T13:39:58.068Z",
+    "last_gate": "G-5",
+    "last_step": "5",
+    "sprint": 19,
+    "feature": "FEAT-017",
+    "generator": ".sofia/scripts/gen-global-dashboard.js"
+  },
+  "gate_history": [
+    {
+      "gate": "G-1",
+      "step": "1",
+      "approved_at": "2026-03-26T15:37:22.716Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-2",
+      "step": "2b",
+      "approved_at": "2026-03-27T06:22:31.721Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-3",
+      "step": "3",
+      "approved_at": "2026-03-27T06:33:02.031Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-4",
+      "step": "4",
+      "approved_at": "2026-03-27T13:38:34.828Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    },
+    {
+      "gate": "G-5",
+      "step": "5",
+      "approved_at": "2026-03-27T13:39:58.068Z",
+      "sprint": 19,
+      "feature": "FEAT-017"
+    }
+  ]
+}

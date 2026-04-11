@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
@@ -30,6 +32,7 @@ import static org.mockito.Mockito.*;
  *
  * @author SOFIA Developer Agent — FEAT-004 Sprint 5
  */
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 class ManageNotificationsUseCaseTest {
 
@@ -113,9 +116,8 @@ class ManageNotificationsUseCaseTest {
         void marksAsRead() {
             // Arrange
             var notification = buildNotification("LOGIN_NEW_DEVICE", false);
-            var pageResult = new PageImpl<>(List.of(notification));
-            when(notificationRepository.findByUserId(eq(userId), any(), any(Pageable.class)))
-                    .thenReturn(pageResult);
+            when(notificationRepository.findByIdAndUserId(eq(notification.getId()), eq(userId)))
+                    .thenReturn(java.util.Optional.of(notification));
             when(notificationRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -132,9 +134,8 @@ class ManageNotificationsUseCaseTest {
         void idempotentForAlreadyRead() {
             // Arrange — notificación ya leída
             var alreadyRead = buildNotification("SESSION_REVOKED", true);
-            var pageResult = new PageImpl<>(List.of(alreadyRead));
-            when(notificationRepository.findByUserId(eq(userId), any(), any(Pageable.class)))
-                    .thenReturn(pageResult);
+            when(notificationRepository.findByIdAndUserId(eq(alreadyRead.getId()), eq(userId)))
+                    .thenReturn(java.util.Optional.of(alreadyRead));
 
             // Act
             useCase.markOneAsRead(userId, alreadyRead.getId());

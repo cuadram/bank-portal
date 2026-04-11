@@ -1,0 +1,554 @@
+openapi: "3.0.3"
+info:
+  title: BankPortal Privacy & Profile API
+  description: |
+    API de perfil de usuario y centro de privacidad GDPR para BankPortal — Banco Meridian.
+    Cumple GDPR Arts. 7, 12, 15, 16, 17, 20 y PSD2-SCA.
+    FEAT-019 — Sprint 21 — v1.21.0
+  version: "1.0.0"
+  contact:
+    name: SOFIA v2.3 — Experis
+servers:
+  - url: /api/v1
+    description: BankPortal API v1
+
+tags:
+  - name: Profile
+    description: Gestión del perfil de usuario — GDPR Art.16
+  - name: Privacy
+    description: Centro de Privacidad GDPR — Arts. 7, 15, 17, 20
+  - name: Admin
+    description: Panel de administración GDPR — Art.12
+
+paths:
+
+  # ─────────── PERFIL ───────────
+
+  /profile:
+    get:
+      tags: [Profile]
+      operationId: getProfile
+      summary: Consultar datos personales del usuario autenticado
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Perfil del usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+
+    patch:
+      tags: [Profile]
+      operationId: updateProfile
+      summary: Actualizar datos personales (nombre, apellidos, dirección)
+      description: |
+        Si el body incluye `telefonoNuevo`, el sistema inicia el flujo OTP y devuelve 202.
+        Si el body no incluye `telefonoNuevo`, actualiza directamente y devuelve 200.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdateRequest'
+      responses:
+        "200":
+          description: Perfil actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        "202":
+          description: OTP requerido para cambio de teléfono
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpRequiredResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/UnprocessableEntity'
+        "423":
+          description: Locked — KYC pendiente, perfil en solo lectura
+
+  /profile/phone-confirm:
+    patch:
+      tags: [Profile]
+      operationId: confirmPhoneUpdate
+      summary: Confirmar cambio de teléfono con código OTP
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneUpdateRequest'
+      responses:
+        "200":
+          description: Teléfono actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        "422":
+          description: OTP inválido o expirado
+
+  /profile/sessions:
+    get:
+      tags: [Profile]
+      operationId: getSessions
+      summary: Listar sesiones activas del usuario
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Lista de sesiones activas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SessionResponse'
+
+  /profile/sessions/{sessionId}:
+    delete:
+      tags: [Profile]
+      operationId: closeSession
+      summary: Cerrar sesión remota — JWT invalidado inmediatamente en Redis
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Sesión cerrada correctamente
+        "409":
+          description: No se puede cerrar la sesión actual
+        "404":
+          description: Sesión no encontrada o no pertenece al usuario
+
+  # ─────────── PRIVACIDAD ───────────
+
+  /privacy/consents:
+    get:
+      tags: [Privacy]
+      operationId: getConsents
+      summary: Consultar consentimientos GDPR del usuario
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Lista de consentimientos con estado actual
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConsentResponse'
+
+    patch:
+      tags: [Privacy]
+      operationId: updateConsent
+      summary: Actualizar un consentimiento GDPR — registra en consent_history
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsentUpdateRequest'
+      responses:
+        "200":
+          description: Consentimiento actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentResponse'
+        "422":
+          description: Consentimiento SECURITY no puede desactivarse (RN-F019-15)
+
+  /privacy/data-export:
+    post:
+      tags: [Privacy]
+      operationId: requestDataExport
+      summary: Solicitar portabilidad de datos — generación asíncrona (GDPR Art.15/20)
+      security:
+        - bearerAuth: []
+      responses:
+        "202":
+          description: Solicitud aceptada — se notificará al usuario cuando esté listo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExportResponse'
+        "409":
+          description: Ya existe un export activo para este usuario (RN-F019-19)
+
+  /privacy/data-export/status:
+    get:
+      tags: [Privacy]
+      operationId: getExportStatus
+      summary: Consultar estado de la solicitud de portabilidad de datos
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Estado actual del export
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExportResponse'
+        "404":
+          description: No hay solicitud activa para este usuario
+
+  /privacy/data-export/download:
+    get:
+      tags: [Privacy]
+      operationId: downloadExport
+      summary: Descargar JSON firmado con datos personales — enlace válido 48h
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: token
+          in: query
+          required: true
+          description: Token HMAC-SHA256 firmado con TTL 48h
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Fichero JSON firmado
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                example: "attachment; filename=\"mis-datos-2026-03-31.json\""
+            X-Content-SHA256:
+              schema:
+                type: string
+                description: Hash SHA-256 del contenido para verificación de integridad
+        "410":
+          description: Enlace de descarga expirado (> 48h) (RN-F019-23)
+
+  /privacy/deletion-request:
+    post:
+      tags: [Privacy]
+      operationId: requestDeletion
+      summary: Solicitar eliminación de cuenta — Paso 1 (OTP) — GDPR Art.17
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeletionRequestDto'
+      responses:
+        "202":
+          description: OTP validado — email de confirmación enviado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Email de confirmación enviado. Tienes 24 horas para confirmar."
+        "422":
+          description: OTP inválido o expirado
+
+  /privacy/deletion-request/confirm:
+    get:
+      tags: [Privacy]
+      operationId: confirmDeletion
+      summary: Confirmar eliminación de cuenta — Paso 2 (email link)
+      parameters:
+        - name: token
+          in: query
+          required: true
+          description: Token único de confirmación enviado por email (TTL 24h)
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cuenta suspendida. Borrado lógico programado en 30 días.
+        "410":
+          description: Enlace expirado (> 24h desde envío)
+        "409":
+          description: Token ya utilizado (single-use)
+
+  # ─────────── ADMIN GDPR ───────────
+
+  /admin/gdpr-requests:
+    get:
+      tags: [Admin]
+      operationId: getGdprRequests
+      summary: Listado de solicitudes GDPR con control de SLA — solo ADMIN
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tipo
+          in: query
+          schema:
+            type: string
+            enum: [EXPORT, DELETION, CONSENT]
+        - name: estado
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, IN_PROGRESS, COMPLETED, REJECTED]
+        - name: fechaDesde
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: fechaHasta
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        "200":
+          description: Lista paginada de solicitudes GDPR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GdprRequestPage'
+        "403":
+          description: Acceso denegado — requiere rol ADMIN
+
+# ─────────── SCHEMAS ───────────
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Unauthorized:
+      description: JWT ausente o inválido
+    Forbidden:
+      description: Sin permisos para este recurso
+    UnprocessableEntity:
+      description: Validación fallida — ver detalle en body
+
+  schemas:
+
+    ProfileResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        nombre:
+          type: string
+        apellidos:
+          type: string
+        telefono:
+          type: string
+          description: Teléfono enmascarado (ej. +34 ***-**-89)
+        email:
+          type: string
+          description: Solo lectura — no modificable desde la app (RN-F019-01)
+        direccion:
+          $ref: '#/components/schemas/DireccionDto'
+        kycStatus:
+          type: string
+          enum: [PENDING, APPROVED, REJECTED]
+        createdAt:
+          type: string
+          format: date-time
+
+    ProfileUpdateRequest:
+      type: object
+      properties:
+        nombre:
+          type: string
+          minLength: 2
+        apellidos:
+          type: string
+          minLength: 2
+        telefonoNuevo:
+          type: string
+          description: Si presente, inicia flujo OTP (RN-F019-05)
+        direccion:
+          $ref: '#/components/schemas/DireccionDto'
+
+    PhoneUpdateRequest:
+      type: object
+      required: [otpCode, otpToken]
+      properties:
+        otpCode:
+          type: string
+          minLength: 6
+          maxLength: 6
+        otpToken:
+          type: string
+
+    OtpRequiredResponse:
+      type: object
+      properties:
+        otpToken:
+          type: string
+        message:
+          type: string
+          example: "OTP enviado al teléfono registrado"
+
+    DireccionDto:
+      type: object
+      properties:
+        calle:
+          type: string
+        ciudad:
+          type: string
+        codigoPostal:
+          type: string
+        pais:
+          type: string
+
+    SessionResponse:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+        dispositivo:
+          type: string
+          example: "Chrome — macOS 14"
+        ipMasked:
+          type: string
+          example: "192.168.*.*"
+        lastAccess:
+          type: string
+          format: date-time
+        isCurrent:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    ConsentResponse:
+      type: object
+      properties:
+        tipo:
+          type: string
+          enum: [MARKETING, ANALYTICS, COMMUNICATIONS, SECURITY]
+        activo:
+          type: boolean
+        updatedAt:
+          type: string
+          format: date-time
+        version:
+          type: integer
+
+    ConsentUpdateRequest:
+      type: object
+      required: [tipo, activo]
+      properties:
+        tipo:
+          type: string
+          enum: [MARKETING, ANALYTICS, COMMUNICATIONS]
+          description: SECURITY no puede modificarse (RN-F019-15)
+        activo:
+          type: boolean
+
+    DataExportResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+          format: uuid
+        estado:
+          type: string
+          enum: [PENDING, IN_PROGRESS, COMPLETED, REJECTED]
+        slaDeadline:
+          type: string
+          format: date-time
+        downloadAvailableUntil:
+          type: string
+          format: date-time
+          description: Solo presente cuando estado = COMPLETED
+
+    DeletionRequestDto:
+      type: object
+      required: [otpCode]
+      properties:
+        otpCode:
+          type: string
+          minLength: 6
+          maxLength: 6
+
+    GdprRequestResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        tipo:
+          type: string
+          enum: [EXPORT, DELETION, CONSENT]
+        estado:
+          type: string
+          enum: [PENDING, IN_PROGRESS, COMPLETED, REJECTED]
+        createdAt:
+          type: string
+          format: date-time
+        slaDeadline:
+          type: string
+          format: date-time
+        diasRestantes:
+          type: integer
+          description: Días hasta vencimiento SLA
+        slaAlertSent:
+          type: boolean
+
+    GdprRequestPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/GdprRequestResponse'
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer

@@ -1,0 +1,62 @@
+# SMOKE TEST v1.21.0 — POST-FIX LOG
+# BankPortal · Sprint 21 · FEAT-019 · 2026-04-01T09:36:49.652Z
+# Ejecutado contra: http://localhost:8081 (Docker Compose STG local)
+# Repositorio activo: JPA-REAL (PostgreSQL 16)
+# Commit: e744da0 — fix(FEAT-019): corregir 4 fallos smoke test v1.21.0
+# =============================================================================
+
+==============================================
+ BankPortal Smoke Test v1.21.0 — FINAL
+ 2026-04-01T09:36:49.652Z
+==============================================
+
+  ✅ [1]  GET /actuator/health → 200
+  ✅ [2]  GET /profile sin JWT → 401
+  ✅ [2]  GET /privacy/consents sin JWT → 401
+  ✅ [2]  GET /admin/gdpr-requests sin JWT → 401
+  ✅ [3]  GET /profile con JWT → 200
+  ✅ [F1] PATCH /profile email → 400 (RN-F019-01)
+  ✅ [F2] GET /profile/sessions → 200
+  ✅ [5]  GET /privacy/consents → 200
+  ✅ [5]  PATCH SECURITY=false → 422 (RN-F019-10)
+  ✅ [5]  PATCH MARKETING=false → 200
+  ✅ [6]  POST /data-export 1a vez → 202
+  ✅ [F3] POST /data-export 2a vez → 409 cooldown (RN-F019-12)
+  ✅ [F4] GET /data-export/status → 200
+  ✅ [7]  GET /deletion-request/confirm UUID inexistente → 404
+  ✅ [8]  GET /admin/gdpr-requests rol USER → 403
+  ✅ [9]  GET /accounts → 200 (FEAT-001/003)
+  ✅ [9]  GET /notifications/preferences → 200 (FEAT-014)
+
+==============================================
+ RESULTADO: 17/17 OK | 0 FAIL
+==============================================
+ ✅ SMOKE TEST PASS — v1.21.0
+
+# =============================================================================
+# FIXES APLICADOS EN ESTE RUN
+# =============================================================================
+# F1 — UpdateProfileRequest + UpdateProfileUseCase
+#      PATCH /profile con campo email → 400 BAD_REQUEST (RN-F019-01)
+#      Causa: DTO no tenía campo email; use case no validaba su presencia.
+#      Fix: campo email añadido al DTO; guardia en execute() + @ResponseStatus(BAD_REQUEST).
+#
+# F2 — ProfileController
+#      GET /profile/sessions → 200
+#      Causa: endpoint no existía en ProfileController (estaba en /api/v1/sessions).
+#      Fix: inyectado ListActiveSessionsUseCase; nuevo @GetMapping("/sessions").
+#
+# F3 — GdprRequestRepository + DataExportService
+#      POST /data-export 2a vez → 409 CONFLICT (RN-F019-12)
+#      Causa: findActiveByUserIdAndTipo solo buscaba PENDING/IN_PROGRESS.
+#             El async completaba en ~100ms → la 2ª llamada no encontraba conflicto.
+#      Fix: nueva query findRecentByUserIdAndTipo (cooldown 24h, cualquier estado).
+#
+# F4 — GdprRequestRepository + DataExportService
+#      GET /data-export/status → 200
+#      Causa: getExportStatus() usaba findActiveByUserIdAndTipo → 404 si COMPLETED.
+#      Fix: nueva query findLatestByUserIdAndTipo (sin filtro de estado).
+#
+# F5 (smoke test bug, no código) — /deletion-request/confirm requiere JWT.
+#      Fix: smoke test corregido para enviar AUTH header en [7].
+# =============================================================================

@@ -1,0 +1,1 @@
+{"type":"urn:bankportal:export:access-denied","title":"Acceso denegado","status":403,"detail":"La cuenta indicada no pertenece al usuario autenticado","instance":"/api/v1/accounts/b2000000-0002-0002-0002-000000000001/exports/csv"}

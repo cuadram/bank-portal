@@ -1,0 +1,261 @@
+openapi: "3.0.3"
+info:
+  title: BankPortal Export API
+  description: >
+    API de exportación de movimientos bancarios — FEAT-018 Sprint 20.
+    Cumplimiento PSD2 Art.47, GDPR Art.15, PCI-DSS Req.3.4/10.
+  version: "1.0.0"
+  contact:
+    name: BankPortal Team — Banco Meridian
+servers:
+  - url: https://api.bankportal.meridian.es/api/v1
+    description: Producción
+  - url: http://localhost:8080/api/v1
+    description: Local
+
+tags:
+  - name: exports
+    description: Exportación de movimientos bancarios (PSD2 Art.47)
+
+paths:
+  /accounts/{accountId}/exports/preview:
+    get:
+      tags: [exports]
+      summary: Preview count de registros exportables
+      description: Retorna el número de movimientos que se exportarán con los filtros aplicados, sin generar el documento.
+      operationId: getExportPreview
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: fechaDesde
+          in: query
+          required: true
+          schema: { type: string, format: date, example: "2026-01-01" }
+        - name: fechaHasta
+          in: query
+          required: true
+          schema: { type: string, format: date, example: "2026-03-30" }
+        - name: tipoMovimiento
+          in: query
+          required: false
+          schema:
+            type: string
+            default: TODOS
+            enum: [TODOS, TRANSFERENCIA_EMITIDA, TRANSFERENCIA_RECIBIDA, DOMICILIACION, PAGO_TARJETA, INGRESO, COMISION]
+      responses:
+        "200":
+          description: Preview del número de registros
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ExportPreviewResponse' }
+        "400":
+          description: Parámetros inválidos o rango > 12 meses
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        "401":
+          description: No autenticado
+        "403":
+          description: Acceso denegado a la cuenta
+
+  /accounts/{accountId}/exports/pdf:
+    post:
+      tags: [exports]
+      summary: Exportar movimientos en PDF
+      description: >
+        Genera y descarga un extracto PDF de movimientos. 
+        PAN enmascarado (PCI-DSS). Hash SHA-256 en pie de página.
+        Máximo 500 registros. Historial máximo: 12 meses (PSD2 Art.47).
+      operationId: exportMovementsPdf
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ExportRequest' }
+      responses:
+        "200":
+          description: PDF generado exitosamente
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
+          headers:
+            Content-Disposition:
+              schema: { type: string, example: 'attachment; filename="movimientos_00051332_2026-03-30.pdf"' }
+        "400":
+          description: Validación fallida o límite excedido
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        "401":
+          description: No autenticado
+        "403":
+          description: Acceso denegado
+        "422":
+          description: Límite de registros excedido (> 500)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+
+  /accounts/{accountId}/exports/csv:
+    post:
+      tags: [exports]
+      summary: Exportar movimientos en CSV
+      description: >
+        Genera y descarga un CSV de movimientos en formato europeo
+        (UTF-8 BOM, separador ;, coma decimal). Sin PAN completo (PCI-DSS).
+      operationId: exportMovementsCsv
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ExportRequest' }
+      responses:
+        "200":
+          description: CSV generado exitosamente
+          content:
+            text/csv:
+              schema: { type: string, format: binary }
+          headers:
+            Content-Disposition:
+              schema: { type: string, example: 'attachment; filename="movimientos_00051332_2026-03-30.csv"' }
+        "400":
+          description: Validación fallida
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        "401":
+          description: No autenticado
+        "422":
+          description: Límite de registros excedido
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+
+  /admin/exports/audit-log:
+    get:
+      tags: [exports]
+      summary: Consultar audit log de exportaciones (ADMIN)
+      description: >
+        Lista el audit log de exportaciones. Solo accesible con rol ADMIN.
+        Retención 7 años (GDPR Art.17§3b + PCI-DSS Req.10).
+      operationId: getExportAuditLog
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: query
+          required: false
+          schema: { type: string, format: uuid }
+        - name: fechaDesde
+          in: query
+          required: false
+          schema: { type: string, format: date }
+        - name: fechaHasta
+          in: query
+          required: false
+          schema: { type: string, format: date }
+        - name: page
+          in: query
+          schema: { type: integer, default: 0 }
+        - name: size
+          in: query
+          schema: { type: integer, default: 20, maximum: 100 }
+      responses:
+        "200":
+          description: Página de registros de audit log
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items: { $ref: '#/components/schemas/ExportAuditLogEntry' }
+                  totalElements: { type: integer }
+                  totalPages: { type: integer }
+        "403":
+          description: Acceso denegado — rol ADMIN requerido
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ExportRequest:
+      type: object
+      required: [fechaDesde, fechaHasta]
+      properties:
+        fechaDesde:
+          type: string
+          format: date
+          description: Fecha inicio del rango (máximo 12 meses atrás)
+          example: "2026-01-01"
+        fechaHasta:
+          type: string
+          format: date
+          description: Fecha fin del rango (≤ hoy)
+          example: "2026-03-30"
+        tipoMovimiento:
+          type: string
+          default: TODOS
+          enum: [TODOS, TRANSFERENCIA_EMITIDA, TRANSFERENCIA_RECIBIDA, DOMICILIACION, PAGO_TARJETA, INGRESO, COMISION]
+
+    ExportPreviewResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Número de registros que se exportarían
+          example: 47
+        exceedsLimit:
+          type: boolean
+          description: true si count > 500
+          example: false
+        limitMaxRecords:
+          type: integer
+          example: 500
+
+    ExportAuditLogEntry:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        userId: { type: string, format: uuid }
+        timestampUtc: { type: string, format: date-time }
+        iban: { type: string, example: "ES91210004184502****" }
+        fechaDesde: { type: string, format: date }
+        fechaHasta: { type: string, format: date }
+        tipoMovimiento: { type: string }
+        formato: { type: string, enum: [PDF, CSV] }
+        numRegistros: { type: integer }
+        ipOrigen: { type: string, example: "192.168.1.1" }
+        hashSha256: { type: string, description: "Solo para PDF" }
+
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp: { type: string, format: date-time }
+        status: { type: integer }
+        error: { type: string }
+        message: { type: string }
+        path: { type: string }

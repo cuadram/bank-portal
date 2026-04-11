@@ -1,0 +1,192 @@
+{
+  "version": "1.9",
+  "sofia_version": "1.9",
+  "status": "gate_pending",
+  "project": "bank-portal",
+  "client": "Banco Meridian",
+  "current_sprint": 17,
+  "current_feature": "FEAT-015",
+  "current_step": "2",
+  "pipeline_step": "3",
+  "pipeline_step_name": "architect",
+  "completed_steps": [
+    "1",
+    "2",
+    "3"
+  ],
+  "last_skill": "architect",
+  "last_skill_output_path": "docs/architecture/",
+  "gate_pending": "gate-step3-tech-lead",
+  "sprint_goal": "Transferencias Programadas y Recurrentes + DEBT-027/028/029 + Load test SSE",
+  "sprint_capacity_sp": 24,
+  "artifacts": {
+    "1": [
+      "docs/sprints/SPRINT-017-planning.md",
+      "docs/backlog/FEAT-015.md",
+      "docs/sprints/risk-register-bankportal.md"
+    ],
+    "2": [
+      "docs/requirements/SRS-FEAT-015.md"
+    ],
+    "3": [
+      "docs/architecture/hld/HLD-FEAT-015.md",
+      "docs/architecture/lld/LLD-FEAT-015-backend.md",
+      "docs/architecture/lld/LLD-FEAT-015-frontend.md",
+      "docs/architecture/adr/ADR-026-shedlock-deferred.md",
+      "docs/architecture/adr/ADR-027-no-edit-amount-recurrent.md"
+    ]
+  },
+  "gates": {
+    "1": {
+      "status": "approved",
+      "by": "product-owner",
+      "at": "2026-03-24T18:35:00Z"
+    },
+    "2": {
+      "status": "approved",
+      "by": "product-owner",
+      "at": "2026-03-24T18:48:51.501Z"
+    },
+    "3": {
+      "status": "pending",
+      "by": "tech-lead",
+      "sla": "48h",
+      "at": null
+    }
+  },
+  "security": {
+    "last_audit": "2026-03-24",
+    "open_debts": [
+      {
+        "id": "DEBT-026",
+        "area": "Backend",
+        "priority": "Baja",
+        "cvss": "-",
+        "sprint_target": 18
+      },
+      {
+        "id": "DEBT-027",
+        "area": "Arch",
+        "priority": "Media",
+        "cvss": "-",
+        "sprint_target": 17
+      },
+      {
+        "id": "DEBT-028",
+        "area": "Security",
+        "priority": "MUST",
+        "cvss": "4.1",
+        "sprint_target": 17
+      },
+      {
+        "id": "DEBT-029",
+        "area": "Compliance",
+        "priority": "Baja",
+        "cvss": "-",
+        "sprint_target": 17
+      }
+    ]
+  },
+  "risks": {
+    "active": [
+      {
+        "id": "R-016-01",
+        "desc": "push_subscriptions.auth en claro en BD",
+        "prob": "Media",
+        "imp": "Alta",
+        "niv": 3,
+        "estado": "Mitigando",
+        "sprint": 17
+      },
+      {
+        "id": "R-016-02",
+        "desc": "Safari iOS <16.4 sin Web Push",
+        "prob": "Alta",
+        "imp": "Media",
+        "niv": 2,
+        "estado": "Aceptado",
+        "sprint": "-"
+      },
+      {
+        "id": "R-016-05",
+        "desc": ">500 SSE concurrentes sin prueba carga",
+        "prob": "Baja",
+        "imp": "Media",
+        "niv": 2,
+        "estado": "Planificado",
+        "sprint": 17
+      },
+      {
+        "id": "R-015-01",
+        "desc": "Scheduler en múltiples instancias",
+        "prob": "Media",
+        "imp": "Alta",
+        "niv": 3,
+        "estado": "Mitigado-diferido",
+        "sprint": 18
+      },
+      {
+        "id": "R-015-02",
+        "desc": "NextExecutionDate incorrecta meses cortos",
+        "prob": "Media",
+        "imp": "Media",
+        "niv": 2,
+        "estado": "Planificado",
+        "sprint": 17
+      }
+    ]
+  },
+  "metrics": {
+    "total_sp": 377,
+    "total_tests": 553,
+    "coverage": 84,
+    "defects": 0,
+    "ncs_last_sprint": 2
+  },
+  "sprint_history": {
+    "sprint_16": {
+      "feature": "FEAT-014",
+      "status": "completed",
+      "sp": 24,
+      "acum": 377,
+      "tests": 553,
+      "cov": 84,
+      "ncs": 2,
+      "rel": "v1.16.0",
+      "closed_at": "2026-03-24"
+    },
+    "sprint_17": {
+      "feature": "FEAT-015",
+      "status": "in_progress",
+      "sp": 24,
+      "acum": null,
+      "tests": null,
+      "cov": null,
+      "ncs": null,
+      "rel": "v1.17.0"
+    }
+  },
+  "cmmi": {
+    "level": 3,
+    "active": true,
+    "evidence_sprints": [
+      14,
+      15,
+      16
+    ],
+    "process_areas": [
+      "PP",
+      "PMC",
+      "RSKM",
+      "VER",
+      "VAL",
+      "CM",
+      "PPQA",
+      "REQM",
+      "DAR"
+    ]
+  },
+  "adrs_pending": [],
+  "updated_at": "2026-03-24T18:52:31.439Z",
+  "resume_next": "Sprint 17 — Gate 3 pendiente Tech Lead (HLD+LLD+ADRs FEAT-015). Siguiente tras aprobación: Step 3b Documentation Agent."
+}

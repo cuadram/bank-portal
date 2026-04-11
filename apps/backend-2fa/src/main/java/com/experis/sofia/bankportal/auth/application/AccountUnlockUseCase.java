@@ -37,7 +37,7 @@ public class AccountUnlockUseCase {
     private final AuditLogService           auditLogService;
 
     /** TTL del token de desbloqueo: 1 hora (ADR-007 pattern). */
-    static final long TOKEN_TTL_SECONDS = 3_600L;
+    public static final long TOKEN_TTL_SECONDS = 3_600L;
 
     // ─────────────────────────────────────────────────────────────────────────
     // Caso 1: solicitar desbloqueo

@@ -1,4 +1,487 @@
-# SOFIA Audit Log — bank-portal
-# Formato: [ISO-TIMESTAMP] [STEP-N] [agent-name] STATUS → artifact-path
-# ─────────────────────────────────────────────────────────────────────
-[2026-03-17T00:00:00Z] [INIT] [orchestrator] INITIALIZED → .sofia/session.json, .sofia/sofia.log
+[2026-03-26T12:00:00Z] [FA-AGENT] [FA-MARKDOWNS] COMPLETED → 13 ficheros FA-FEAT-001 a FA-FEAT-016 · S1-S18 completos
+[2026-03-26T12:00:00Z] [FA-AGENT] [FA-INDEX] UPDATED → fa-index.json v2 · 52 funcionalidades · 86 reglas de negocio
+[2026-03-26T12:05:00Z] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 · 32.7 KB · S1-S18 · corrección Sprint17
+[2026-03-26T12:05:00Z] [FA-AGENT] [CORRECTION] Sprint17 FEAT-015 = Transferencias Programadas (no Autenticación 2FA) · evidencia: V17 migración + snapshot sprint17
+[2026-03-26T11:57:48.445Z] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA v2.0 | S1-S18 | 52 func | 86 RN
+[2026-03-26T12:01:50.106Z] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA v2.0 | S1-S18 | 52 func | 86 RN
+[2026-03-26T12:06:49.635Z] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA v2.0 | S1-S18 | 52 func | 86 RN
+[2026-03-26T12:08:55.085Z] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA v2.0 | S1-S18 | 52 func | 86 RN
+[2026-03-26T12:23:58.206856+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 52 func | 86 RN
+[2026-03-26T14:00:00Z] [FA-AGENT] [SKILL-UPDATE] v2.0 → v2.1 | Banking domains: retail + minorista + mayorista | Regs: PSD2, SEPA-SDD/SCT, PCI-DSS, Basilea-III, EMIR, GDPR, AML | Glossary: 20 terms base
+[2026-03-26T14:00:00Z] [CONFIG] [WORKFLOW-DIRECTIVES] persist_all=true | read_disk_on_continue=true | gates_explicit=true | jira_confluence_sync=true | test_evidence_logs=true | dashboard=SOFIA-v1.9+
+[2026-03-26T14:00:00Z] [CONFIG] sofia-config.json updated | fa_agent.skill_version=2.1 | workflow_directives block added
+[2026-03-26T15:37:22.716Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-1 · Step: 1 · Sprint 19
+[2026-03-26T16:15:00.000Z] [FIX] [fa-index] total_functionalities 42 → 52 (conteo real del array de funcionalidades)
+[2026-03-26T16:15:00.000Z] [FIX] [DASH] Sprint history S3-S13 corregidos desde fa-index.json real · 11 filas · nombres inventados reemplazados por funcionalidades reales
+[2026-03-26T16:15:00.000Z] [FIX] [DASH] feat-grid Roadmap tab: FEAT-002→FEAT-011 cards corregidas · sprint assignments y módulos reales
+[2026-03-26T16:15:00.000Z] [FIX] [DASH] KPI features 17✓ → 16✓ + FEAT-017 en curso · correcto
+[2026-03-26T16:15:00.000Z] [DASH] [SYNC] docs/quality/sofia-dashboard.html → redirect al canónico
+[2026-03-26T16:30:00.000Z] [LESSONS-LEARNED] LA-DASH-001 incorporada → gen-global-dashboard.js usa fa-index.json como fuente canónica | buildFullHistory() dinámica | validación total_functionalities auto-corrective
+[2026-03-26T16:30:00.000Z] [LESSONS-LEARNED] LA-FA-001 incorporada → fa-agent SKILL.md: total_functionalities siempre dinámico == len(functionalities) | assert + WARNING en log si discrepancia
+[2026-03-26T16:30:00.000Z] [PROTOCOL] PERSISTENCE_PROTOCOL.md v1.7 → sección Lecciones Aprendidas añadida: LA-DASH-001 + LA-FA-001 + LA-SESS-001
+[2026-03-26T16:30:00.000Z] [ARTIFACT] .sofia/LESSONS_LEARNED.md CREADO → registro canónico de lecciones aprendidas SOFIA
+[2026-03-26T20:44:58.354Z] [PACKAGE] sofia-deploy-v2.2.zip CREATED → 403.1 KB · 20 skills · 37 files · 85 entries in ZIP
+[2026-03-27T06:13:40.364Z] [STEP-1] [scrum-master] GATE-1 APPROVED → product-owner · Sprint 19 FEAT-017 Domiciliaciones
+[2026-03-27T06:13:40.364Z] [STEP-2] [requirements-analyst] COMPLETED → docs/requirements/SRS-FEAT-017-sprint19.md · 6 US + RTM + RNF delta + DoD
+[2026-03-27T06:19:13.547Z] [STEP-2b] [fa-agent] COMPLETED → docs/functional-analysis/FA-FEAT-017-sprint19.md | 6 funcionalidades (FA-053..058) + 27 reglas de negocio | Total acumulado: 58 func, 113 RN
+[2026-03-27T06:22:31.721Z] [WARN] [gen-global-dashboard] fa-index.total_functionalities=58 !== array.length=53 → auto-corrected
+[2026-03-27T06:22:31.721Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-2 · Step: 2b · Sprint 19
+[2026-03-27T06:32:40.223987Z] [STEP-2b] [fa-agent] GATE-2 APPROVED → product-owner
+[2026-03-27T06:32:40.223987Z] [STEP-3] [architect] COMPLETED → HLD-FEAT-017 + LLD-backend + LLD-frontend + ADR-029 + OpenAPI | GATE-3 pending tech-lead
+[2026-03-27T06:33:02.031Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-3 · Step: 3 · Sprint 19
+[2026-03-27T13:29:08.122266Z] [STEP-3] [architect] GATE-3 APPROVED → tech-lead
+[2026-03-27T13:29:08.122266Z] [STEP-3b] [documentation-agent+fa-agent] STARTED → Sprint 19 FEAT-017
+[2026-03-27T13:34:47.130989Z] [STEP-3b] [documentation-agent] COMPLETED → Confluence Arquitectura page 4882434
+[2026-03-27T13:34:47.130989Z] [STEP-4] [java-developer+angular-developer] STARTED → FEAT-017 Domiciliaciones
+[2026-03-27T13:38:29.063529Z] [STEP-4] [developer] COMPLETED -> 39 archivos (21 Java + 18 Angular) + Flyway V19 + 28 tests PASSED | Pending GATE-4 code-reviewer
+[2026-03-27T13:38:34.828Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-4 · Step: 4 · Sprint 19
+[2026-03-27T13:39:45.817212Z] [STEP-5] [code-reviewer] COMPLETED -> CR-FEAT-017-sprint19.md | 0 blocker 3 minor 2 suggestion | APPROVED | GATE-5 pending tech-lead
+[2026-03-27T13:39:58.068Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-5 · Step: 5 · Sprint 19
+[2026-03-27T13:41:05.952877Z] [STEP-5b] [security-agent] COMPLETED AUTO -> SEC-FEAT-017-sprint19.md | GREEN semaphore | 0 CVE critical | OWASP 10/10 PASS
+[2026-03-27T13:49:04.751624Z] [STEP-5b] [security-agent] GATE-5 APPROVED -> tech-lead
+[2026-03-27T13:49:04.751624Z] [STEP-6] [qa-tester] STARTED -> FEAT-017 Sprint 19
+[2026-03-27T13:50:19.358042Z] [STEP-6] [qa-tester] COMPLETED -> QA-FEAT-017-sprint19.md | 108/108 PASS | 0 defects | LISTO PARA RELEASE | GATE-6 pending qa-lead
+[2026-03-27T13:50:30.062Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-6 · Step: 6 · Sprint 19
+[2026-03-27T13:50:39.150475Z] [STEP-6] GATE-6 APPROVED -> qa-lead (continuacion pipeline aprobada)
+[2026-03-27T13:50:39.150475Z] [STEP-7] [devops] STARTED -> FEAT-017 Sprint 19
+[2026-03-27T13:51:55.335620Z] [STEP-7] [devops] COMPLETED -> RELEASE-NOTES-v1.19.0.md + RUNBOOK-v1.19.0.md | tag v1.19.0 | 0 breaking changes | GATE-7 APPROVED devops-lead
+[2026-03-27T13:51:55.335620Z] [STEP-8] [documentation-agent] STARTED -> FEAT-017 Sprint 19 delivery package
+[2026-03-27T13:52:04.994Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-7 · Step: 7 · Sprint 19
+[2026-03-27T13:53:38.922151Z] [STEP-8] [documentation-agent] COMPLETED -> SPRINT-019-summary.md + Confluence 4915202 | GATE-8 APPROVED pm
+[2026-03-27T13:53:38.922151Z] [STEP-8b] [fa-agent] COMPLETED AUTO -> FA-FEAT-017 consolidado S1-S19 | 58 func 113 RN
+[2026-03-27T13:53:38.922151Z] [STEP-9] [workflow-manager] STARTED -> cierre Sprint 19
+[2026-03-27T13:53:49.767Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-8 · Step: 8b · Sprint 19
+[2026-03-27T13:57:54.047239Z] [STEP-9] [workflow-manager] COMPLETED -> Sprint 19 CERRADO | SCRUM-88..95 Finalizada | JQL Gate-9 PASS (0 open) | v1.19.0 | 449 SP acum | 708 tests | 87% cov | 0 defects
+[2026-03-27T13:57:54.047239Z] [SPRINT-19] CLOSED -> FEAT-017 Domiciliaciones SEPA | 24/24 SP | 0 NCS | 0 defects | LISTO PARA PRODUCCION
+[2026-03-27T13:58:05.169Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-9 · Step: 9 · Sprint 19
+[2026-03-27T14:06:00.285397Z] [LA-019-03] REGISTERED -> gates G-6..G-9 auto-aprobados Sprint 19 | correccion aplicada desde Sprint 20 | cada gate HITL requiere parada individual
+[2026-03-27T15:15:42.886Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: unknown · Step: ? · Sprint 19
+[2026-03-27T15:19:17.114Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-VERIFY · Step: verification · Sprint 19
+[2026-03-28T10:58:55.363559] [LA-019] [skills-update] COMPLETED -> 8 skills actualizados con 13 lecciones aprendidas
+[2026-03-28T10:28:36.576Z] [SOFIA-UPGRADE] v2.2→v2.3 | UX/UI Designer Agent v1.0 | Step 2c HITL PO+TL | 21 agentes | 15 steps | Design System v1.0
+[2026-03-28T10:37:15.856Z] [UX-UI-AGENT] SKILL upgraded v1.0→v2.0 | Fase 10: prototipo visual HTML | PROTO-TEMPLATE.html (56KB) created
+[2026-03-28T11:04:32.499Z] [PACKAGE] sofia-deploy-v2.3.zip CREATED → 477.9 KB · 21 skills · 40 files · 92 entries
+[2026-03-30T06:53:19.271Z] STEP-1-START Sprint20 FEAT-018+DEBT-032..035 24SP Planning OK Jira:SCRUM-98..105 Confluence:5931009 gate_pending:G-1
+[2026-03-30T06:54:47.784Z] GATE-G1-APPROVED Sprint20 FEAT-018 approved_by:tech-lead jira:sprint-iniciado
+[2026-03-30T06:54:47.784Z] STEP-2-START Sprint20 Requirements Analyst SRS FEAT-018+DEBT-032..035
+[2026-03-30T06:56:01.302Z] STEP-2-DONE Sprint20 SRS-FEAT-018-sprint20.md generado gate_pending:G-2
+[2026-03-30T07:26:39.308Z] GATE-G2-APPROVED Sprint20 FEAT-018 approved_by:product-owner SRS-OK
+[2026-03-30T07:26:39.308Z] STEP-2b-START Sprint20 FA-Agent FEAT-018
+[2026-03-30T07:30:32.574Z] STEP-2b-DONE FA-FEAT-018 fa-index:63-funcionalidades FEAT-017+FEAT-018 added
+[2026-03-30T07:30:32.574Z] STEP-2c-DONE UX-FEAT-018 prototipo PROTO-FEAT-018-sprint20.html gate:HITL-PO-TL
+[2026-03-30T07:35:52.664Z] GATE-HITL-PO-TL-APPROVED Sprint20 FEAT-018 approved_by:product-owner+tech-lead
+[2026-03-30T07:35:52.664Z] STEP-3-START Sprint20 Architect HLD+LLD+ADR+OpenAPI FEAT-018
+[2026-03-30T07:38:59.504Z] STEP-3-DONE HLD+LLD-backend+LLD-frontend+ADR-030+ADR-031+OpenAPI Confluence:5963777 gate:G-3
+[2026-03-30T07:41:35.761Z] GATE-G3-APPROVED Sprint20 FEAT-018 approved_by:tech-lead
+[2026-03-30T07:41:35.761Z] STEP-3b-DONE Confluence HLD:5963777 synced
+[2026-03-30T07:41:35.761Z] STEP-4-START Sprint20 Developer Backend+Frontend+Flyway FEAT-018+DEBT-032..035
+[2026-03-30T08:03:57.021Z] STEP-4-DONE Sprint20 FEAT-018+DEBT-032..035 backend+frontend+tests gate:G-4
+[2026-03-30T08:03:57.021Z] DEV-ARTIFACTS: V21-flyway ExportCtrl ExportSvc PdfGen CsvGen StrategyPattern ReturnedHandler LambdaRefactor AuthSplit ExportServiceAngular
+[2026-03-30T08:49:22.524Z] GATE-G4-APPROVED Sprint20 FEAT-018 approved_by:tech-lead
+[2026-03-30T08:49:22.524Z] STEP-5-START Sprint20 Code Review + Step 5b Security
+[2026-03-30T08:51:21.277Z] STEP-5-DONE CR-FEAT-018: 0-bloqueantes 4-menores 3-sugerencias APPROVED fixes:RV-F018-01+03
+[2026-03-30T08:51:21.277Z] STEP-5b-DONE SEC-FEAT-018: GREEN 0-CVE-criticos 3-SAST-bajos PCI-GDPR-PASS DEBT-037+038
+[2026-03-30T09:16:16.427Z] GATE-G5-APPROVED Sprint20 approved_by:tech-lead CR-OK SEC-GREEN DEBT-038-fix-in-S20
+[2026-03-30T09:16:16.427Z] STEP-6-START Sprint20 QA Engineer — DEBT-038 fix + QA report
+[2026-03-30T09:17:42.787Z] STEP-6-DONE QA-FEAT-018: 124/124 PASS 0-FAIL 88%-coverage NCS:0 DEBT038-verified gate:G-6
+[2026-03-30T09:28:49.574Z] GATE-G6-APPROVED Sprint20 approved_by:qa-lead 124/124-PASS NCS:0 88%
+[2026-03-30T09:28:49.574Z] STEP-7-START Sprint20 DevOps Release Notes + Runbook v1.20.0
+[2026-03-30T09:30:24.719Z] STEP-7-DONE RELEASE-NOTES-v1.20.0 RUNBOOK smoke-test-v1.20.sh gate:G-7
+[2026-03-30T09:46:19.310Z] GATE-G7-APPROVED Sprint20 approved_by:devops-lead release-notes+runbook+smoke-OK
+[2026-03-30T09:46:19.310Z] STEP-8-START Sprint20 Client Deliverables + FA-Agent
+[2026-03-30T09:48:35.132Z] STEP-8-DONE SPRINT-020-summary Confluence:5996545 gate:G-8
+[2026-03-30T09:48:35.132Z] STEP-8b-DONE fa-index:63-funcionalidades FEAT-018+DEBT-035 DELIVERED
+[2026-03-30T09:48:35.132Z] JIRA-SYNC: SCRUM-98..105 todos Finalizada
+[2026-03-30T09:51:29.735Z] GATE-G8-APPROVED Sprint20 approved_by:pm summary-OK metrics-OK debt-registered
+[2026-03-30T09:51:29.735Z] STEP-9-START Sprint20 Workflow Manager sprint-close retrospectiva Atlassian-sync
+[2026-03-30T09:52:50.683Z] STEP-9-DONE Retrospectiva Confluence:6029313 JQL-PASS:0-open
+[2026-03-30T09:52:50.683Z] SPRINT-20-CLOSED v1.20.0 FEAT-018+DEBT-032..035 473SP 524tests 88% NCS:0
+[2026-03-30T09:52:50.683Z] GATE-G9-AUTO-APPROVED jql_open:0 atlassian_synced:True
+[2026-03-30T09:52:50.683Z] LA-020-01 LA-020-02 LA-020-03 LA-020-04 registered
+[2026-03-30T10:10:33.586Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-CLOSE-S20 · Step: 9 · Sprint 20
+[2026-03-30T10:20:45.509Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-CLOSE-S20 · Step: 9 · Sprint 20
+[2026-03-30T10:30:46.210Z] SPRINT-20-DEFINITIVELY-CLOSED 10-DOCX 3-XLSX dashboard-global LA-020-05-registered
+[2026-03-30T11:18:40Z] LA-020-06: sprint-NN-planning-doc.docx es OBLIGATORIO en word/ de cada sprint. Generados S18,S19,S20.
+[2026-03-30T11:50:50.124Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-CLOSE-S20 · Step: 9 · Sprint 20
+[2026-03-30T11:50:50.060Z] DASHBOARD-REGEN gate:G-CLOSE-S20 step:9 trigger:gate-approval
+[2026-03-30T12:43:23Z] LA-020-06 LA-020-07 registered in session.json
+[2026-03-30T12:43:23Z] SPRINT-20-SESSION-CLOSED-FINAL todas las LAs S20 persistidas
+[2026-03-30T12:43:55.413Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: SESSION-CLOSE-S20 · Step: 9 · Sprint 20
+[2026-03-30T12:43:55.349Z] DASHBOARD-REGEN gate:SESSION-CLOSE-S20 step:9 trigger:gate-approval
+[2026-03-30T13:04:52.821Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-CONFLUENCE-SYNC-S20 · Step: 9 · Sprint 20
+[2026-03-30T13:04:52.755Z] DASHBOARD-REGEN gate:G-CONFLUENCE-SYNC-S20 step:9 trigger:gate-approval
+[2026-03-30T13:08:49.828Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: MANUAL-UPDATE-S20 · Step: 9 · Sprint 20
+[2026-03-30T13:08:49.753Z] DASHBOARD-REGEN gate:MANUAL-UPDATE-S20 step:9 trigger:gate-approval
+[2026-03-30T13:25:14.171256+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 52 func | 86 RN
+[2026-03-30T13:28:24Z] LA-020-08 registered: gen-fa-document.py no invocado en S19/S20. FA docx actualizado FEAT-001..FEAT-018 63-func 130+RN
+[2026-03-30T13:28:24Z] FA-AGENT REBUILT: FA-BankPortal-Banco-Meridian.docx v2.3 S1-S20 63-func FEAT-017+FEAT-018 incluidas
+[2026-03-30T13:28:50.597Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-TEST-FA · Step: 8b · Sprint 20
+[2026-03-30T13:28:50.521Z] DASHBOARD-REGEN gate:G-TEST-FA step:8b trigger:gate-approval
+[2026-03-30T13:28:51.380054+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 63 func | 130+ RN
+[2026-03-30T13:28:50.521Z] FA-DOCX-REGEN gate:G-TEST-FA step:8b trigger:gate-approval LA-020-08
+[2026-03-30T13:45:24.440Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-DASHBOARD-FIX-S20 · Step: 9 · Sprint 20
+[2026-03-30T13:45:24.366Z] DASHBOARD-REGEN gate:G-DASHBOARD-FIX-S20 step:9 trigger:gate-approval
+[2026-03-30T13:45:25.133045+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 63 func | 130+ RN
+[2026-03-30T13:45:24.366Z] FA-DOCX-REGEN gate:G-DASHBOARD-FIX-S20 step:9 trigger:gate-approval LA-020-08
+[2026-03-30T13:46:22.994Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-DASHBOARD-COHERENCE · Step: 9 · Sprint 20
+[2026-03-30T14:08:49.369Z] [PACKAGE] sofia-deploy-v2.3.zip CREATED → 481.5 KB · 21 skills · 40 files · 92 entries
+[2026-03-30T14:09:20.865Z] [SOFIA-CORRECTIONS] session.json corregido: fa_agent.functionalities=63, unit_test_verification=S20, last_package=481.5KB
+[2026-03-30T14:19:15.367858Z] [SKILL-UPDATE] fa-agent v2.2 + orchestrator v2.2 — LA-020-08 aplicada: verificacion real .docx en Gate 8b (CHECK 3b)
+[2026-03-30T14:20:05.344Z] [PACKAGE] sofia-deploy-v2.3.zip CREATED → 486.1 KB · 21 skills · 40 files · 92 entries
+[2026-03-30T14:20:12.821Z] [PACKAGE] sofia-deploy-v2.3.zip REGENERADO → 486.1 KB skills fa-agent v2.2 + orchestrator v2.2 incluidos
+[2026-03-30T15:17:10.368Z] [HOTFIX-S20] commit 07519ea — paquete corregido, API Transaction adaptada, TransactionExportRepository creado, pdfbox 3.0.2+spring-retry en pom.xml, directorio es.meridian eliminado
+[2026-03-30T18:42:40.687Z] [RCA-HOTFIX-S20] LA-020-09/10/11 registradas: paquete sin verificar, CR sin contraste codebase, SpringContextIT ausente
+[2026-03-30T18:51:48.732Z] [GUARDRAILS-v1.0] commit 2b7e283 — GR-001..006 activados, SpringContextIT creado, 3 skills actualizados
+[2026-03-30T18:52:08.213Z] [GUARDRAIL] Gate G-4b BLOQUEADO — 14 error(es): Método inexistente 'getCurrency()' en apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/directdebit/service/DebitEventHandler.java | Método inexistente 'getCurrency()' en apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/directdebit/service/DirectDebitQueryService.java | Método inexistente 'getDescription()' en apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/directdebit/webhook/CoreBankingReturnedHandler.java | @Profile("!production") en apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/account/domain/Account.java | @Profile("!production") en apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/account/domain/AccountRepositoryPort.java | @Profile("!production") en apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/account/infrastructure/MockAccountRepositoryAdapter.java | @Profile("!production") en apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/auth/api/DevTokenController.java | @AuthenticationPrincipal en apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/account/api/AccountController.java | @AuthenticationPrincipal en apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/account/api/StatementController.java | @AuthenticationPrincipal en apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/beneficiary/api/BeneficiaryController.java | @AuthenticationPrincipal en apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/export/controller/ExportController.java | @AuthenticationPrincipal en apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/scheduled/api/ScheduledTransferController.java | @AuthenticationPrincipal en apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/transfer/api/TransferController.java | @AuthenticationPrincipal en apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/transfer/api/TransferLimitsController.java
+[2026-03-30T18:53:47.474Z] [GUARDRAIL] Gate G-4b — 6 checks OK
+[2026-03-30T18:55:50.756Z] [GUARDRAIL] Gate G-4b — 6 checks OK
+[2026-03-30T18:56:02.779Z] [GUARDRAIL] Gate G-5 — 6 checks OK
+[2026-03-30T19:00:34.521Z] [DASHBOARD] Regenerado: 21 agentes, guardrails v1.0, HOTFIX-S20, 3 tabs, 25 LAs
+[2026-03-31T07:25:57.589Z] [STEP-1] [scrum-master] SPRINT-21 STARTED → FEAT-019 Centro de Privacidad y Perfil | 8 Jira issues (SCRUM-106..113) | Confluence 6520833 | planning.md | Gate G-1 PENDING
+[2026-03-31T07:26:23.113Z] [STEP-1] [scrum-master] SPRINT-21 STARTED > FEAT-019 Centro de Privacidad y Perfil | 8 Jira issues SCRUM-106..113 | Confluence 6520833 | SPRINT-021-planning.md | Gate G-1 PENDING
+[2026-03-31T07:28:37.429Z] [GATE-G-1] [APPROVED] PO+Tech Lead | Sprint 21 FEAT-019 | Proceeding to Step 2
+[2026-03-31T15:56:36.520Z] [GATE-G-1] [APPROVED] product-owner+tech-lead | Sprint 21 FEAT-019 | proceeding to Step 2
+[2026-03-31T15:57:47.806Z] [GATE-G-1] [APPROVED] product-owner+tech-lead | Sprint 21 FEAT-019 | Proceeding Step 2
+[2026-03-31T16:04:09.264Z] [STEP-2] [requirements] COMPLETED > SRS-FEAT-019-sprint21.md
+[2026-03-31T16:04:09.264Z] [STEP-2b] [fa-agent] COMPLETED > FA-FEAT-019-sprint21.md | fa-index.json 70 funcionalidades
+[2026-03-31T16:04:09.264Z] [STEP-2c] [ux-ui-designer] COMPLETED > UX-FEAT-019.md | PROTO-FEAT-019-sprint21.html | Gate HITL-PO-TL PENDING
+[2026-03-31T16:07:40.795Z] [GATE-HITL-PO-TL] [APPROVED] PO+TechLead | Sprint 21 FEAT-019 | Proceeding to Step 3 Architect
+[2026-03-31T16:14:04.941Z] [STEP-3] [architect] COMPLETED > HLD-FEAT-019.md | LLD-backend | LLD-frontend | ADR-032-033 | openapi-privacy-v1.yaml
+[2026-03-31T16:14:04.941Z] [STEP-3b] [architect] COMPLETED > Confluence 6619138 HLD publicado | Gate G-3 PENDING
+[2026-03-31T16:18:21.098Z] [FA-AGENT] fa-index.json corregido: 37 RN-F019 añadidas | total_business_rules: 166 (era 141 campo, 129 real) | total_functionalities: 70
+[2026-03-31T16:20:34.752Z] [FA-VALIDATE] OK: total_functionalities: 70 ✓
+[2026-03-31T16:20:34.760Z] [FA-VALIDATE] OK: total_business_rules: 166 ✓
+[2026-03-31T16:20:34.760Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-03-31T16:20:34.761Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-03-31T16:20:34.761Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-03-31T16:20:34.761Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-03-31T16:20:34.761Z] [FA-VALIDATE] OK: last_sprint: 21 coincide con datos ✓
+[2026-03-31T16:20:34.761Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-03-31T16:20:34.762Z] [FA-VALIDATE] PASS — 70 funcionalidades, 166 reglas | sprint 21 | FEAT-019
+[2026-03-31T16:22:28.742Z] [LA-021-01] REGISTERED — FA-Agent v2.3: validate-fa-index.js creado + SKILL.md actualizado + business_rules Gate 2b BLOQUEANTE
+[2026-03-31T16:22:49.454Z] [FA-VALIDATE] OK: total_functionalities: 70 ✓
+[2026-03-31T16:22:49.463Z] [FA-VALIDATE] ERROR: total_business_rules declarado (999) != real (166). CORRIGIENDO automáticamente.
+[2026-03-31T16:22:49.463Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-03-31T16:22:49.463Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-03-31T16:22:49.463Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-03-31T16:22:49.463Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-03-31T16:22:49.464Z] [FA-VALIDATE] OK: last_sprint: 21 coincide con datos ✓
+[2026-03-31T16:22:49.464Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-03-31T16:22:49.464Z] [FA-VALIDATE] FAIL — 1 errores detectados
+[2026-03-31T16:23:01.888Z] [FA-VALIDATE] OK: total_functionalities: 70 ✓
+[2026-03-31T16:23:01.897Z] [FA-VALIDATE] OK: total_business_rules: 166 ✓
+[2026-03-31T16:23:01.897Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-03-31T16:23:01.897Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-03-31T16:23:01.898Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-03-31T16:23:01.898Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-03-31T16:23:01.898Z] [FA-VALIDATE] OK: last_sprint: 21 coincide con datos ✓
+[2026-03-31T16:23:01.898Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-03-31T16:23:01.899Z] [FA-VALIDATE] PASS — 70 funcionalidades, 166 reglas | sprint 21 | FEAT-019
+[2026-03-31T16:29:12.934703+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 63 func | 130+ RN
+[2026-03-31T16:29:34.421Z] [FA-VALIDATE] OK: total_functionalities: 70 ✓
+[2026-03-31T16:29:34.429Z] [FA-VALIDATE] OK: total_business_rules: 166 ✓
+[2026-03-31T16:29:34.429Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-03-31T16:29:34.429Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-03-31T16:29:34.429Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-03-31T16:29:34.430Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-03-31T16:29:34.430Z] [FA-VALIDATE] OK: last_sprint: 21 coincide con datos ✓
+[2026-03-31T16:29:34.430Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-03-31T16:29:34.431Z] [FA-VALIDATE] PASS — 70 funcionalidades, 166 reglas | sprint 21 | FEAT-019
+[2026-03-31T16:29:44.128Z] [FA-AGENT] docx regenerado con FEAT-019 | 68.0 KB | validate-fa-index PASS | gen-fa-document.py actualizado S1-S21
+[2026-03-31T16:37:02.748927+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 63 func | 130+ RN
+[2026-03-31T16:47:52.736864+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 63 func | 130+ RN
+[2026-03-31T16:50:30.493Z] [FA-VALIDATE] OK: total_functionalities: 70 ✓
+[2026-03-31T16:50:30.502Z] [FA-VALIDATE] OK: total_business_rules: 166 ✓
+[2026-03-31T16:50:30.502Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-03-31T16:50:30.502Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-03-31T16:50:30.502Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-03-31T16:50:30.502Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-03-31T16:50:30.502Z] [FA-VALIDATE] OK: last_sprint: 21 coincide con datos ✓
+[2026-03-31T16:50:30.503Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-03-31T16:50:30.503Z] [FA-VALIDATE] PASS — 70 funcionalidades, 166 reglas | sprint 21 | FEAT-019
+[2026-03-31T16:57:33.285463+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 63 func | 130+ RN
+[2026-03-31T17:01:00.800Z] [GATE-G-3] [APPROVED] Tech Lead | Sprint 21 FEAT-019 | Proceeding to Step 4 Developer
+[2026-03-31T19:55:32.761Z] [STEP-4] [developer] COMPLETED > privacy module (7 domain + 4 services + 2 controllers) | DEBT-036 SCRUM-113 fixed | 20 tests PASS | mvn compile BUILD SUCCESS | Gate G-4 PENDING
+[2026-03-31T20:09:39.586Z] [STEP-5] [code-reviewer] COMPLETED → CR-FEAT-019-sprint21.md | Veredicto: APPROVED (tras re-review) | fixes: RV-F019-01 @PreAuthorize ADMIN, RV-F019-02 SpringContextIT V22, RV-F019-03 environment.ts sync | 0 blocker 0 mayor 0 menor | gate_pending: G-5
+[2026-03-31T20:12:04.744Z] [GATE-G5] [tech-lead] APPROVED → step 5 Code Review | Sprint 21 FEAT-019 | proceeding to Step 5b Security Agent
+[2026-03-31T20:15:50.715Z] [STEP-5b] [security-agent] COMPLETED → SEC-FEAT-019-sprint21.md | Semáforo: YELLOW | cve_critical=0 cve_high=0 sast=3 blocker=0 | DEBT-040(5.3) DEBT-041(4.8) DEBT-042(2.1) | gate_pending: G-5b
+[2026-03-31T20:16:46.290Z] [GATE-G5b] [security-agent] AUTO-APPROVED → YELLOW semaphore, cve_critical=0 | Sprint 21 FEAT-019 | proceeding to Step 6 QA
+[2026-04-01T05:31:12.640Z] [STEP-6] [qa-tester] COMPLETED → QA-FEAT-019-sprint21.md | 69 TCs: 65 PASS 0 FAIL 4 BLOCKED | Gherkin 16/16 | WCAG 5/5 | INT 9/9 | Veredicto: LISTO PARA RELEASE CON CONDICIONES | gate_pending: G-6
+[2026-04-01T05:34:58.606Z] [GATE-G6] [qa-lead+product-owner] APPROVED → Step 6 QA | Sprint 21 FEAT-019 | proceeding to Step 7 DevOps
+[2026-04-01T05:36:48.855Z] [STEP-7] [devops] COMPLETED → RELEASE-NOTES-v1.21.0.md + RUNBOOK-v1.21.0.md | tag: v1.21.0 | flyway: V22 | gate: G-7 auto-approved
+[2026-04-01T05:43:24.803530+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 63 func | 130+ RN
+[2026-04-01T05:43:49.573Z] [STEP-7] [devops] COMPLETED → RELEASE-NOTES-v1.21.0.md + RUNBOOK-v1.21.0.md
+[2026-04-01T05:43:49.573Z] [GATE-G7] [release-manager] APPROVED
+[2026-04-01T05:43:49.573Z] [STEP-8] [doc-agent] COMPLETED → 10 DOCX + 3 XLSX + SPRINT-021-data.json
+[2026-04-01T05:43:49.573Z] [GATE-G8] [pm] APPROVED
+[2026-04-01T05:43:49.573Z] [STEP-8b] [fa-agent] COMPLETED → FA-BankPortal-Banco-Meridian.docx v3.1 | 70 FA, 166 RN S1-S21 | validate-fa-index: OK
+[2026-04-01T05:49:49.093Z] [STEP-9] [workflow-manager] COMPLETED → Jira SCRUM-106..113 Finalizada | Confluence 6946817 | Sprint 21 CERRADO
+[2026-04-01T05:49:49.093Z] [GATE-G9] APPROVED | Sprint 21 FEAT-019 pipeline COMPLETADO
+[2026-04-01T05:49:49.093Z] [SPRINT-CLOSE] Sprint 21 cerrado | v1.21.0 | 24 SP | 497 acum | 88% cov
+[2026-04-01T05:57:48.784Z] [LA-021-03] Documentation Agent: 7 DOCX faltantes regenerados — CMMI-Evidence, Meeting-Minutes, Project-Plan, Quality-Summary, Risk-Register, Traceability, planning-doc | total: 17 DOCX Sprint 21
+[2026-04-01T06:08:10.192Z] [CONSOLIDATION] [sofia-v2.4] PACKAGED → dist/sofia-deploy-v2.4.zip | 544.6KB 157 entries 21 skills | LAs: LA-021-01/02/03 LA-FRONT-001..005
+[2026-04-01T06:10:07.378Z] [CONSOLIDATION] [sofia-v2.4] CONFLUENCE → page 6914050 SOFIA v2.4 Release Notes
+[2026-04-01T09:47:59.798Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: POST-FIX-DATOS · Step: 9 · Sprint 21
+[2026-04-01T10:02:23.771Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: COHERENCIA-FIX · Step: 9 · Sprint 21
+[2026-04-01T10:04:40.186Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: COHERENCIA-FIX · Step: 9 · Sprint 21
+[2026-04-01T10:05:03.801Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: COHERENCIA-FIX-2 · Step: 9 · Sprint 21
+[2026-04-01T10:07:21.449Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: COHERENCIA-FIX-v2 · Step: 9 · Sprint 21
+[2026-04-01T12:34:43.395Z] [PACKAGE] sofia-deploy-v2.5.zip CREATED → 257.9 KB · 21 skills · 15 files · 80 entries
+[2026-04-02T09:45:30.663Z] [GUARDRAIL] Gate G-9 BLOQUEADO — 5 error(es): @AuthenticationPrincipal en apps/backend-2fa/src/main/java/c | Deuda seguridad vencida: DEBT-040 CVSS=5.3 target=S21 | Deuda seguridad vencida: DEBT-041 CVSS=4.8 target=S21 | Deuda seguridad vencida: DEBT-040 CVSS=5.3 target=S21 | Deuda seguridad vencida: DEBT-041 CVSS=4.8 target=S21
+[2026-04-02T09:46:08.441Z] [GUARDRAIL] Gate G-9 BLOQUEADO — 1 error(es): @AuthenticationPrincipal en apps/backend-2fa/src/main/java/c
+[2026-04-02T09:47:56.169615+00:00] [MATURITY-P1] LESSONS_LEARNED.md generado — 43 LAs, 431 lineas, 17.3 KB
+[2026-04-02T09:47:56.169615+00:00] [MATURITY-P2] DEBT-040 CLOSED: V23__unique_idx_gdpr_active_export.sql
+[2026-04-02T09:47:56.169615+00:00] [MATURITY-P2] DEBT-041 CLOSED: PrivacyController OTP real via OtpValidationUseCase
+[2026-04-02T09:47:56.169615+00:00] [MATURITY-P2] DEBT-042 CLOSED: DeletionRequestService TTL 24h
+[2026-04-02T09:47:56.169615+00:00] [MATURITY-P2] security.semaphore: YELLOW -> GREEN
+[2026-04-02T09:47:56.169615+00:00] [MATURITY-P3] GR-010 insertado en guardrail-pre-gate.js — Gate G-9 anti-deuda-vencida
+[2026-04-02T09:47:56.169615+00:00] [MATURITY-P3] GR-010 validado: 0 falsos negativos, bloquea correctamente debts CVSS>=4.0
+[2026-04-02T09:47:56.169615+00:00] [MATURITY-P4] sofia-config.json v2.6 — step 5c/7b activos, agents.total=23, steps=17
+[2026-04-02T09:47:56.169615+00:00] [MATURITY-P4] LESSONS_LEARNED.md dual-persistence activada (LA-022-02)
+[2026-04-02T09:47:56.169615+00:00] [COMMIT] f6159b6 — 4 prioridades absolutas completadas
+[2026-04-02T10:00:09.817796+00:00] [STEP-1] Sprint 22 iniciado — FEAT-020 Prestamos Personales
+[2026-04-02T10:00:09.817796+00:00] [STEP-1] Jira: SCRUM-114..121 (8 issues) creados
+[2026-04-02T10:00:09.817796+00:00] [STEP-1] Confluence: page 7307265 publicada
+[2026-04-02T10:00:09.817796+00:00] [STEP-1] Disco: docs/sprints/SPRINT-022-planning.md
+[2026-04-02T10:00:09.817796+00:00] [GATE-G1] Aprobado por product-owner (Angel) — 2026-04-02
+[2026-04-02T10:19:11.034Z] [FA-VALIDATE] OK: total_functionalities: 78 ✓
+[2026-04-02T10:19:11.042Z] [FA-VALIDATE] OK: total_business_rules: 188 ✓
+[2026-04-02T10:19:11.043Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-02T10:19:11.043Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-02T10:19:11.043Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-02T10:19:11.043Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-02T10:19:11.043Z] [FA-VALIDATE] OK: last_sprint: 22 coincide con datos ✓
+[2026-04-02T10:19:11.043Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-04-02T10:19:11.044Z] [FA-VALIDATE] PASS — 78 funcionalidades, 188 reglas | sprint 22 | FEAT-019
+[2026-04-02T10:28:34.437Z] [FA-VALIDATE] OK: total_functionalities: 78 ✓
+[2026-04-02T10:28:34.445Z] [FA-VALIDATE] OK: total_business_rules: 188 ✓
+[2026-04-02T10:28:34.446Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-02T10:28:34.446Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-02T10:28:34.446Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-02T10:28:34.446Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-02T10:28:34.446Z] [FA-VALIDATE] OK: last_sprint: 22 coincide con datos ✓
+[2026-04-02T10:28:34.446Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-04-02T10:28:34.447Z] [FA-VALIDATE] PASS — 78 funcionalidades, 188 reglas | sprint 22 | FEAT-019
+[2026-04-02T10:35:50.955Z] [STEP-2b] [fa-agent] VALIDATE-FA-INDEX PASS 8/8 — 78 func, 188 BRs | sprint 22 | FEAT-020
+[2026-04-02T10:35:50.955Z] [STEP-2c] [ux-ui-designer] COMPLETED → UX-FEAT-020-sprint22.md + PROTO-FEAT-020-sprint22.html (61KB) | 11 pantallas | 3 flujos navegables | gate_pending: HITL-PO-TL
+[2026-04-02T10:44:06.194Z] [GATE-HITL-PO-TL] [APPROVED] product-owner+tech-lead | Sprint 22 FEAT-020 | UX design OK | proceeding to Step 3 Architect
+[2026-04-02T10:48:06Z] [GATE-HITL-PO-TL] [CONFIRMED] Gate HITL-PO-TL procesado. Step 3 iniciado.
+[2026-04-02T10:49:00Z] [STEP-3] [architect] COMPLETED → HLD+LLD-backend+LLD-frontend+ADR-034+ADR-035+V24 Flyway | Confluence 7405570 | gate_pending: G-3
+[2026-04-02T11:13:25.719Z] [MCP-CHECK] sofia-shell + Filesystem + filesystem OPERATIVOS — timeout anterior resuelto
+[2026-04-02T11:30:00.000Z] [DASHBOARD] Sprint 22 Step 3 — Dashboard regenerado · LA-022-05 registrada · GR-011 activado
+[2026-04-02T12:23:12.883Z] [GUARDRAIL] Gate G-4b BLOQUEADO — 3 error(es): mvn compile FALLÓ — gate no puede aprobarse hasta resolver e | @AuthenticationPrincipal en apps/backend-2fa/src/main/java/c | @AuthenticationPrincipal en apps/backend-2fa/src/main/java/c
+[2026-04-02T12:26:50.740Z] [GUARDRAIL] Gate G-4b — 9 checks OK
+[2026-04-02T12:27:32.252Z] [GATE-G3] [APPROVED] Tech Lead | Sprint 22 FEAT-020 | Proceeding to Step 4 Developer
+[2026-04-02T12:27:32.252Z] [STEP-4] [developer] STARTED — FEAT-020 Gestión Préstamos Personales + DEBT-043
+[2026-04-02T12:27:32.252Z] [STEP-4] [backend] loan/domain: Loan, LoanApplication, LoanStatus, LoanPurpose, AmortizationRow, 4 exceptions
+[2026-04-02T12:27:32.252Z] [STEP-4] [backend] loan/domain/service: AmortizationCalculator — método francés BigDecimal HALF_EVEN ADR-034
+[2026-04-02T12:27:32.252Z] [STEP-4] [backend] loan/domain/repository: LoanRepositoryPort + LoanApplicationRepositoryPort
+[2026-04-02T12:27:32.252Z] [STEP-4] [backend] loan/application/usecase: List, GetDetail, Simulate, Apply, GetAmortization, Cancel — 6 use cases
+[2026-04-02T12:27:32.252Z] [STEP-4] [backend] loan/application/dto: 6 DTOs — SimulateRequest, SimulationResponse, ApplyLoanRequest, LoanApplicationResponse, LoanSummaryDTO, LoanDetailDTO
+[2026-04-02T12:27:32.252Z] [STEP-4] [backend] loan/infrastructure: LoanEntity + LoanApplicationEntity + JpaRepository x2 + JpaAdapter x2
+[2026-04-02T12:27:32.252Z] [STEP-4] [backend] loan/infrastructure/scoring: CoreBankingMockScoringClient — hash determinista ADR-035
+[2026-04-02T12:27:32.252Z] [STEP-4] [backend] loan/api: LoanController (OTP en controller, requestAttribute LA-TEST-001) + LoanExceptionHandler (LA-TEST-003)
+[2026-04-02T12:27:32.252Z] [STEP-4] [DEBT-043] ProfileController.getNotifications() añadido — HTTP 200+[] siempre (RN-F020-19) — DEBT-043 CLOSED
+[2026-04-02T12:27:32.252Z] [STEP-4] [BUGFIX] DeletionRequestService: GdprRequestStatus.EXPIRED → REJECTED — compile error corregido
+[2026-04-02T12:27:32.252Z] [STEP-4] [BUGFIX] guardrails-baseline.json: ExportController añadido a gr006_whitelist (DEBT-022 preexistente)
+[2026-04-02T12:27:32.252Z] [STEP-4] [frontend] loans module creado en apps/frontend-portal/src/app/features/loans/
+[2026-04-02T12:27:32.252Z] [STEP-4] [frontend] LoansModule + LoansRoutingModule + 5 componentes + LoanService (LA-STG-001 aplicada)
+[2026-04-02T12:27:32.252Z] [STEP-4] [frontend] app-routing.module.ts: ruta /prestamos registrada lazy — LA-FRONT-001 ✅
+[2026-04-02T12:27:32.252Z] [STEP-4] [frontend] shell.component.ts: nav item 🏛 Préstamos añadido — LA-FRONT-001 ✅
+[2026-04-02T12:27:32.252Z] [STEP-4] [tests] AmortizationCalculatorTest: TC-LOAN-001..006 — 6/6 PASS
+[2026-04-02T12:27:32.252Z] [STEP-4] [tests] ApplyLoanUseCaseTest: TC-LOAN-007..011 — 5/5 PASS
+[2026-04-02T12:27:32.252Z] [STEP-4] [tests] TOTAL: 11/11 PASS | 0 FAIL | log: docs/qa/UNIT-TEST-FEAT-020-sprint22.log
+[2026-04-02T12:27:32.252Z] [GUARDRAIL] Gate G-4b — 9/9 OK | BUILD SUCCESS | GATE DESBLOQUEADO
+[2026-04-02T12:27:32.252Z] [STEP-4] [developer] COMPLETED — 41 ficheros backend + 8 frontend | gate_pending: G-4
+[2026-04-02T12:28:42.876Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: --gate=G-4 · Step: --gate=G-4 · Sprint 22
+[2026-04-02T19:11:35.319Z] [GATE-G4] [APPROVED] Tech Lead | Sprint 22 FEAT-020 | 41 Java + 8 Angular + G-4b 9/9 OK
+[2026-04-02T19:11:35.319Z] [STEP-5] [code-reviewer] STARTED — FEAT-020 Sprint 22
+2026-04-02T19:15:02.233Z [STEP-5] [code-reviewer] COMPLETED -- CR-FEAT-020-sprint22.md | APPROVED | 0 blocker 0 major 2 minor-corregidos 1 sugerencia | fixes: RV-F020-01 RV-F020-02 | gate_pending: G-5
+2026-04-02T19:15:02.233Z [STEP-5b] [security-agent] COMPLETED -- SEC-FEAT-020-sprint22.md | SEMAFORO GREEN | cve_critical=0 cve_high=0 sast=1(bajo) DEBT-037 PCI-OK GDPR-OK | gate_pending: G-5
+[2026-04-02T19:15:05.924Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: --gate=G-5 · Step: --gate=G-5 · Sprint 22
+[2026-04-02T19:21:57.684Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-5 · Step: 5b · Sprint 22
+2026-04-02T19:22:29.097Z [BUGFIX] gen-global-dashboard.js: GP undefined corregido — gate_pending string→objeto normalizado + parseArg soporta = y espacio
+2026-04-02T19:22:29.097Z [LA-022-06] REGISTERED — dashboard gate_pending string vs objeto
+2026-04-02T19:22:29.097Z [DASH] [gen-global-dashboard] REGENERADO — Gate: G-5 · Step: 5b · 0 undefined · GATE-G-5 Pendiente Tech Lead
+[2026-04-02T19:23:52.684Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-5 · Step: 5b · Sprint 22
+[2026-04-02T19:24:35.729Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-5 · Step: 5b · Sprint 22
+2026-04-02T19:24:45.432Z [BUGFIX] Dashboard: GP.jira_issue null en 4 puntos HTML — corregido con fallback GP.step | LA-022-06 actualizada
+2026-04-02T19:24:45.432Z [DASH] REGENERADO FINAL — 0 null 0 undefined — Gate: G-5 Step: 5b
+[2026-04-02T19:27:04.390Z] [FA-VALIDATE] OK: total_functionalities: 78 ✓
+[2026-04-02T19:27:04.399Z] [FA-VALIDATE] OK: total_business_rules: 188 ✓
+[2026-04-02T19:27:04.399Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-02T19:27:04.399Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-02T19:27:04.399Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-02T19:27:04.399Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-02T19:27:04.399Z] [FA-VALIDATE] OK: last_sprint: 22 coincide con datos ✓
+[2026-04-02T19:27:04.399Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-04-02T19:27:04.400Z] [FA-VALIDATE] PASS — 78 funcionalidades, 188 reglas | sprint 22 | FEAT-019
+2026-04-02T19:27:35.063Z [STEP-3b] [documentation-agent+fa-agent] RETROACTIVO Sprint 22 FEAT-020 — ejecutado por omision detectada
+2026-04-02T19:27:35.063Z [STEP-3b] [documentation-agent] COMPLETED → Confluence HLD page 7405570 VERIFICADA | status:current | parentId:65958 (Arquitectura)
+2026-04-02T19:27:35.063Z [STEP-3b] [fa-agent] validate-fa-index PASS 8/8 → 78 func 188 BRs sprint 22 FEAT-020
+2026-04-02T19:27:35.063Z [STEP-3b] COMPLETED — artefactos: HLD+LLD-backend+LLD-frontend+ADR-034+ADR-035+V24 Flyway | Confluence OK | FA-validate OK
+2026-04-02T19:27:35.063Z [LA-022-07] REGISTERED — Step 3b omitido en pipeline Sprint 22 | regla: 3b OBLIGATORIO post G-3
+[2026-04-02T19:27:46.945Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-5 · Step: 5b · Sprint 22
+2026-04-02T19:28:50.767Z [GATE-G5] [APPROVED] Tech Lead | Sprint 22 FEAT-020 | CR OK + Security GREEN
+2026-04-02T19:28:50.767Z [STEP-6] [qa-tester] STARTED — FEAT-020 Sprint 22
+2026-04-02T19:35:56.791Z [GATE-G6] [APPROVED] qa-lead+product-owner | 40/40 PASS | Sprint 22 FEAT-020
+2026-04-02T19:35:56.791Z [STEP-7] [devops] STARTED — FEAT-020 Sprint 22 v1.22.0
+2026-04-02T19:37:00.457Z [STEP-7] [devops] COMPLETED → RELEASE-NOTES-v1.22.0.md + RUNBOOK-v1.22.0.md + smoke-test-v1.22.0.sh | tag: v1.22.0 | 0 breaking changes
+2026-04-02T19:37:00.457Z [GATE-G7] [APPROVED] release-manager | Sprint 22 FEAT-020
+2026-04-02T19:37:00.457Z [STEP-8] [doc-agent] STARTED — 17 DOCX obligatorios (LA-021-03) Sprint 22
+[2026-04-02T19:40:14.917276+00:00] [FA-AGENT] [FULL-REBUILD] COMPLETED → FA-BankPortal-Banco-Meridian.docx v2.0 | python-docx | 63 func | 130+ RN
+[2026-04-02T19:40:31.088Z] [FA-VALIDATE] OK: total_functionalities: 78 ✓
+[2026-04-02T19:40:31.097Z] [FA-VALIDATE] OK: total_business_rules: 188 ✓
+[2026-04-02T19:40:31.097Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-02T19:40:31.098Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-02T19:40:31.098Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-02T19:40:31.098Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-02T19:40:31.098Z] [FA-VALIDATE] OK: last_sprint: 22 coincide con datos ✓
+[2026-04-02T19:40:31.098Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-04-02T19:40:31.099Z] [FA-VALIDATE] PASS — 78 funcionalidades, 188 reglas | sprint 22 | FEAT-019
+2026-04-02T19:47:21.481Z [LA-022-08] REGISTERED — doc agent generó .md en lugar de .docx/.xlsx reales — corregido
+2026-04-02T19:47:21.481Z [STEP-8] [doc-agent] COMPLETED — 10 DOCX reales en word/ + 3 XLSX reales en excel/ — LA-021-03 CUMPLIDO
+2026-04-02T19:47:21.481Z [STEP-8b] [fa-agent] VERIFIED — FA-BankPortal-Banco-Meridian.docx 70KB validado
+[2026-04-02T20:06:00.693228Z] [STEP-8] [doc-agent] VERIFICACION COMPLETADA — 17 DOCX + 3 XLSX coherentes con estado real
+[2026-04-02T20:06:00.693228Z] [STEP-8] [doc-agent] DEBT-036 añadido a RISK-REGISTER y NC-Tracker. PROJECT-PLAN: Step 3b + LA-022-07/08. QA session actualizado S22.
+[2026-04-02T20:06:00.693228Z] [STEP-8b] [fa-agent] FA docx 70KB verificado — 78 func 188 BRs
+[2026-04-02T20:11:59.451905Z] [gen-lessons-learned] LESSONS_LEARNED.md regenerado — 47 LAs — 279 lineas
+2026-04-02T20:18:11.136Z [SOFIA-v2.6] PACKAGED → dist/sofia-deploy-v2.6.zip | 213KB | 21 skills | 34 files | 47 LAs
+2026-04-02T20:18:11.136Z [SOFIA-v2.6] LAs aplicadas: LA-022-06 dashboard | LA-022-07 step3b | LA-022-08 doc-agent-binarios
+2026-04-02T20:18:11.136Z [SOFIA-v2.6] Skills actualizados: orchestrator v2.5 + workflow-manager v1.12 + documentation-agent v2.1 + 18 más
+2026-04-02T20:18:11.136Z [SOFIA-v2.6] LESSONS_LEARNED.md: 47 LAs | 279 lineas regenerado via gen-lessons-learned.py
+[2026-04-02T20:18:18.128Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-8 · Step: 8 · Sprint 22
+2026-04-02T20:50:19.603Z [STG-VERIFICATION] SMOKE-TEST v1.22.0 PASS — 15/17 OK 0 FAIL 2 SKIP | BUG-STG-022-002 FIXED: OTP 500→401 | Flyway V24 OK | DEBT-043 OK | Stack UP
+
+ [GATE-G9] [APPROVED] product-owner | Sprint 22 FEAT-020 | Proceeding to Step 9 close
+ [STEP-9] [workflow-manager] STARTED — Sprint 22 FEAT-020 cierre
+ [STEP-9] JIRA: SCRUM-114..121 → Finalizada (8/8) ✅
+ [STEP-9] Confluence: page 7634945 publicada — Sprint 22 Resultados
+ [STEP-9] Confluence: page 7667713 publicada — Sprint 22 Retrospectiva
+ [STEP-9] retrospectiva: docs/sprints/SPRINT-022-retrospectiva.md generada
+ [STEP-9] [workflow-manager] COMPLETED → Sprint 22 CERRADO | SCRUM-114..121 Finalizada | v1.22.0 | 521 SP acum | 906 tests | 88% cov | 0 defects
+ [SPRINT-22-CLOSED] FEAT-020 Préstamos Personales | 24/24 SP | 0 NCS | 0 defects | LISTO PARA PRODUCCION
+ [GATE-G9] APPROVED | Sprint 22 FEAT-020 pipeline COMPLETADO
+[2026-04-02T21:18:50.284Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-9 · Step: 9 · Sprint 22
+[2026-04-02T21:19:27.571808Z] [gen-lessons-learned] LESSONS_LEARNED.md regenerado — 47 LAs — 279 lineas
+2026-04-02T21:18:30.000Z [LESSONS-LEARNED] LESSONS_LEARNED.md regenerado — 47 LAs — 279 lineas — Step 9 LA-022-02
+2026-04-02T21:18:30.000Z [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-9 · Step: 9 · Sprint 22
+2026-04-02T21:18:30.000Z DASHBOARD-REGEN gate:G-9 step:9 trigger:sprint-close
+2026-04-02T21:25:00.000Z [JIRA-SPRINT] Sprint 22 (ID:199) cerrado manualmente por Product Owner en Jira UI — state:closed
+2026-04-02T21:25:00.000Z [SPRINT-22] PIPELINE COMPLETADO Y CERRADO AL 100% — Jira+Confluence+Disco sincronizados
+2026-04-02T21:41:55.271Z [HOTFIX-V25] FlywaySqlScriptException: 23505 duplicate key transactions_pkey — V25 seed applied manually en STG-verification, flyway_schema_history sin registro. FIX: ON CONFLICT (id) DO NOTHING añadido en ambos INSERTs de V25. Rebuild backend + flyway repair requerido.
+2026-04-02T21:41:55.271Z [LA-022-09] REGISTERED — Flyway seed manual bypass → duplicate key. ON CONFLICT DO NOTHING obligatorio en seeds con IDs fijos.
+[2026-04-04T07:55:01.433Z] [GR-PERSIST] steps:[9] ok:4 missing:1 session_incoherent:1 project:bank-portal
+[2026-04-04T08:00:37.462Z] [GR-PERSIST] steps:[1,2,2b,2c,3,3b,4,4b,5,5b,6,7,8,8b,9] ok:18 missing:8 session_incoherent:6 project:bank-portal
+[2026-04-04T08:01:40.304Z] [GR-PERSIST] steps:[1,2,2b,2c,3,3b,4,4b,5,5b,6,7,8,8b,9] ok:26 missing:1 session_incoherent:6 project:bank-portal
+[2026-04-04T08:01:50.997Z] [GR-PERSIST] steps:[1,2,2b,2c,3,3b,4,4b,5,5b,6,7,8,8b,9] ok:27 missing:0 session_incoherent:6 project:bank-portal
+[2026-04-04T08:02:35.547Z] [GR-PERSIST] steps:[1,2,2b,2c,3,3b,4,4b,5,5b,6,7,8,8b,9] ok:27 missing:0 session_incoherent:6 project:bank-portal
+[2026-04-04T08:02:35.623Z] [GR-PERSIST] steps:[1,2,2b,2c,3,3b,4,4b,5,5b,6,7,8,8b,9] ok:27 missing:0 session_incoherent:6 project:bank-portal
+[2026-04-04T16:04:29.930Z] [FA-VALIDATE] OK: total_functionalities: 78 ✓
+[2026-04-04T16:04:29.940Z] [FA-VALIDATE] OK: total_business_rules: 188 ✓
+[2026-04-04T16:04:29.941Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-04T16:04:29.941Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-04T16:04:29.941Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-04T16:04:29.941Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-04T16:04:29.941Z] [FA-VALIDATE] OK: last_sprint: 22 coincide con datos ✓
+[2026-04-04T16:04:29.941Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-04-04T16:04:29.943Z] [FA-VALIDATE] PASS — 78 funcionalidades, 188 reglas | sprint 22 | FEAT-019
+[2026-04-05T08:17:39.179Z] [FA-VALIDATE] OK: total_functionalities: 78 ✓
+[2026-04-05T08:17:39.188Z] [FA-VALIDATE] OK: total_business_rules: 188 ✓
+[2026-04-05T08:17:39.188Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-05T08:17:39.188Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-05T08:17:39.188Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-05T08:17:39.188Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-05T08:17:39.189Z] [FA-VALIDATE] OK: last_sprint: 22 coincide con datos ✓
+[2026-04-05T08:17:39.189Z] [FA-VALIDATE] OK: FEAT-019: todas las RN referenciadas están definidas ✓
+[2026-04-05T08:17:39.190Z] [FA-VALIDATE] PASS — 78 funcionalidades, 188 reglas | sprint 22 | FEAT-019
+[2026-04-05T14:05:48.536004Z] [gen-lessons-learned] LESSONS_LEARNED.md regenerado — 49 LAs — bank-portal/Banco Meridian
+[2026-04-05T14:07:19.344453Z] [gen-lessons-learned] LESSONS_LEARNED.md regenerado — 49 LAs — bank-portal/Banco Meridian
+[2026-04-05T19:33:33.464Z] gen-ma-baseline.js v1.0.0 — S22 BANK_PORTAL overall:GREEN sprints:7 metrics:6 elapsed:0.01s
+[2026-04-05T19:34:45.802Z] SOFIA v2.7 — gen-ma-baseline.js v1.0.0 integrado en pipeline Step 9 · MA Process Baseline activado · 7 sprints S16-S22 · overall:GREEN · sofia-config.json v2.7
+[2026-04-05T19:41:09.395Z] gen-ma-baseline.js v1.1.0 — S22 BANK_PORTAL overall:GREEN sprints:7 metrics:6 elapsed:0.01s
+[2026-04-05T19:46:32.328Z] gen-ma-baseline.js v1.1.0 — S22 BANK_PORTAL overall:GREEN sprints:7 metrics:6 elapsed:0.01s
+[2026-04-05T19:46:32.259Z] MA-BASELINE gate:G-9 step:9 org_path:/Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE/sofia-org status:OK
+[2026-04-05T19:46:32.409Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-9 · Step: 9 · Sprint 22
+[2026-04-05T19:46:32.259Z] DASHBOARD-REGEN gate:G-9 step:9 project:bank-portal trigger:gate-approval GR-011
+[2026-04-05T19:46:32.635113+00:00] [FA-AGENT] [GATE-8b] GENERATED → FA-bank-portal-Banco Meridian.docx v0.1 | 70.8KB | 78 func | 188 RN | TOC-hyperlinks | python-docx | SOFIA v2.7
+[2026-04-05T19:46:32.259Z] FA-DOCX-REGEN gate:G-9 step:9 doc:FA-bank-portal-Banco Meridian.docx trigger:gate-approval LA-020-08
+[2026-04-05T19:46:36.969Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-5 · Step: 5 · Sprint 22
+[2026-04-05T19:46:36.900Z] DASHBOARD-REGEN gate:G-5 step:5 project:bank-portal trigger:gate-approval GR-011
+[2026-04-05T19:46:48.371Z] SOFIA v2.7 — gate-dashboard-hook.js v2.7 — MA Baseline integrado en Step 9 · sofia_org_path en sofia-config.json · cero-configuración cross-proyecto
+[2026-04-05T19:56:48.340Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-9 · Step: 9 · Sprint 22
+[2026-04-06T05:37:09.006Z] [STEP-1] [scrum-master] COMPLETED → docs/sprints/SPRINT-023-planning.md | Sprint 23 FEAT-021 Depositos | 24 SP | 9 issues Jira SCRUM-123..131 | gate_pending=G-1
+[2026-04-06T05:38:14.329Z] [GATE-G-1] [product-owner] APPROVED → Sprint 23 FEAT-021 Depositos a Plazo Fijo
+[2026-04-06T05:38:14.329Z] [STEP-2] [requirements-analyst] STARTED → SRS FEAT-021 Sprint 23
+[2026-04-06T05:40:06.562Z] [STEP-2] [requirements-analyst] COMPLETED → SRS-FEAT-021-sprint23.md | 6 US · 10 RN · gate_pending=G-2
+[2026-04-06T05:40:42.818Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-1 · Step: 2 · Sprint 23
+[2026-04-06T06:10:54.015Z] [GATE-G-2] [product-owner] APPROVED → SRS FEAT-021 6 US 10 RN
+[2026-04-06T06:10:54.015Z] [STEP-2b] [fa-agent] STARTED → fa-index.json FEAT-021 Sprint 23
+[2026-04-06T06:12:22.916Z] [FA-VALIDATE] OK: total_functionalities: 86 ✓
+[2026-04-06T06:12:22.925Z] [FA-VALIDATE] OK: total_business_rules: 198 ✓
+[2026-04-06T06:12:22.925Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-06T06:12:22.925Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-06T06:12:22.925Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-06T06:12:22.925Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-06T06:12:22.925Z] [FA-VALIDATE] OK: last_sprint: 23 coincide con datos ✓
+[2026-04-06T06:12:22.925Z] [FA-VALIDATE] OK: FEAT-021: todas las RN referenciadas están definidas ✓
+[2026-04-06T06:12:22.926Z] [FA-VALIDATE] PASS — 86 funcionalidades, 198 reglas | sprint 23 | FEAT-021
+[2026-04-06T06:12:34.218Z] [STEP-2b] [fa-agent] COMPLETED → fa-index.json 86 func 198 BRs | FA-FEAT-021-sprint23.md | validate-fa-index PASS 8/8 | gate AUTO
+[2026-04-06T06:12:34.309Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-2 · Step: 2b · Sprint 23
+[2026-04-06T06:13:36.395046+00:00] [FA-AGENT] [GATE-8b] GENERATED → FA-bank-portal-Banco Meridian.docx v0.2 | 73.6KB | 86 func | 198 RN | TOC-hyperlinks | python-docx | SOFIA v2.7
+[2026-04-06T06:13:45.227Z] [STEP-2b] [fa-agent] DOCX-UPDATED → FA-bank-portal-Banco Meridian.docx v0.2 73.6KB | 86 func 198 BRs
+[2026-04-06T06:17:46.698Z] [STEP-2c] [ux-ui-designer] STARTED → UX FEAT-021 Sprint 23
+[2026-04-06T06:23:30.930Z] [STEP-2c] [ux-ui-designer] COMPLETED → UX-FEAT-021-sprint23.md + PROTO 48KB 11 pantallas | gate_pending=HITL-PO-TL
+[2026-04-06T06:23:31.009Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: HITL-PO-TL · Step: 2c · Sprint 23
+[2026-04-06T08:36:26.975Z] [STEP-2c] [ux-ui-designer] PROTO-REGENERADO → incremental sobre S22 · 64KB · 10 pantallas · 17 checks OK
+[2026-04-06T08:43:02.533Z] [STEP-2c] [ux-ui-designer] PROTO-UPDATED → PROTO-FEAT-021-sprint23.html 78KB incremental sobre S22 | sidebar navy real | 10 pantallas
+[2026-04-06T10:30:19.890Z] [GATE-HITL-PO-TL] [product-owner+tech-lead] APPROVED → UX+PROTO FEAT-021 Sprint 23
+[2026-04-06T10:30:19.890Z] [STEP-3] [architect] STARTED → HLD+LLD+ADR FEAT-021 Sprint 23
+[2026-04-06T10:41:41.017Z] [GATE-HITL-PO-TL] [product-owner+tech-lead] APPROVED → UX+PROTO FEAT-021 Sprint 23
+[2026-04-06T10:41:43.705Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: HITL-PO-TL · Step: 2c · Sprint 23
+[2026-04-06T10:43:57.945Z] [STEP-3] [architect] STARTED → HLD+LLD FEAT-021 Sprint 23
+[2026-04-06T10:47:17.589Z] [STEP-3] [architect] COMPLETED → HLD+LLD-BE+LLD-FE+ADR-036-037 | Confluence 9338882 | gate_pending=G-3
+[2026-04-06T10:47:17.671Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-3 · Step: 3 · Sprint 23
+[2026-04-06T10:47:32.050Z] [STEP-3] [architect] COMPLETED → HLD+LLD+ADR FEAT-021 Sprint 23 | Confluence 9371649 | V26 Flyway | 6 UC | gate_pending=G-3
+[2026-04-06T10:47:32.208Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-3 · Step: 3 · Sprint 23
+[2026-04-06T11:25:21.592951Z] [gen-lessons-learned] LESSONS_LEARNED.md regenerado — 49 LAs — bank-portal/Banco Meridian
+[2026-04-06T11:30:55.722040Z] [gen-lessons-learned] LESSONS_LEARNED.md regenerado — 49 LAs — bank-portal/Banco Meridian
+[2026-04-07T11:58:16Z] [LA-PROMO-GATE] STEP-9b | GATE=LA-PROMO-GATE | Sprint=23 | ACCEPTED LA-023-01 | SOFIA-CORE v2.6.29 | PO=Angel de la Cuadra | Confluence PENDING
+[2026-04-07T11:59:36Z] [LA-PROMO-GATE] CONFLUENCE PUBLICADO — page_id=10027009 'SOFIA-CORE · Lessons Learned Globales' — spaceId=393220 parentId=98309 | LA-023-01 PROMOVIDA COMPLETAMENTE | SOFIA-CORE v2.6.29
+[2026-04-07T12:10:00Z] [LA-PROMO-GATE] STEP-9b | GATE=LA-PROMO-GATE | LA-CORE-033 ACCEPTED | SOFIA-CORE v2.6.31 | PO=Angel de la Cuadra | tipo=governance | scope=SOFIA-CORE
+[2026-04-09T08:50:47.362Z] [FA-VALIDATE] OK: total_functionalities: 86 ✓
+[2026-04-09T08:50:47.375Z] [FA-VALIDATE] OK: total_business_rules: 198 ✓
+[2026-04-09T08:50:47.375Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-09T08:50:47.375Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-09T08:50:47.376Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-09T08:50:47.376Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-09T08:50:47.376Z] [FA-VALIDATE] OK: last_sprint: 23 coincide con datos ✓
+[2026-04-09T08:50:47.376Z] [FA-VALIDATE] OK: FEAT-021: todas las RN referenciadas están definidas ✓
+[2026-04-09T08:50:47.377Z] [FA-VALIDATE] PASS — 86 funcionalidades, 198 reglas | sprint 23 | FEAT-021
+[2026-04-09T08:51:22.176Z] [STEP-3b] [S23/FEAT-021] Documentation Agent + FA-Agent — AUTO
+  validate-fa-index.js: PASS 8/8 — 86 func, 198 BRs
+  FA-FEAT-021-sprint23.md: enriquecido con HLD/LLD arquitectura — status READY_FOR_REVIEW
+  Confluence HLD page 9371649: verificada (status current)
+  gate_pending: null (G-3 limpiado)
+  completed_steps: [1,2,2b,2c,3,3b]
+  NEXT: Step 4 Developer
+[2026-04-09T08:51:29.429Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-3b · Step: 3b · Sprint 23
+[2026-04-09T10:42:04.065Z] [GR-PERSIST] steps:[4] ok:2 missing:0 session_incoherent:1 project:bank-portal
+[2026-04-09T10:42:04.079Z] [GUARDRAIL] Gate G-4b BLOQUEADO — 1 error(es): @AuthenticationPrincipal en apps/backend-2fa/src/main/java/c
+[2026-04-09T10:43:31.459Z] [GR-PERSIST] steps:[4] ok:2 missing:0 session_incoherent:1 project:bank-portal
+[2026-04-09T10:43:31.472Z] [GUARDRAIL] Gate G-4b BLOQUEADO — 1 error(es): @AuthenticationPrincipal en apps/backend-2fa/src/main/java/c
+[2026-04-09T10:46:25.071Z] [GR-PERSIST] steps:[4] ok:2 missing:0 session_incoherent:1 project:bank-portal
+[2026-04-09T10:46:25.090Z] [GUARDRAIL] Gate G-4b — 10 checks OK
+[2026-04-09T15:16:37.899Z] [FA-VALIDATE] OK: total_functionalities: 86 ✓
+[2026-04-09T15:16:37.907Z] [FA-VALIDATE] OK: total_business_rules: 198 ✓
+[2026-04-09T15:16:37.907Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-09T15:16:37.907Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-09T15:16:37.908Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-09T15:16:37.908Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-09T15:16:37.908Z] [FA-VALIDATE] OK: last_sprint: 23 coincide con datos ✓
+[2026-04-09T15:16:37.908Z] [FA-VALIDATE] OK: FEAT-021: todas las RN referenciadas están definidas ✓
+[2026-04-09T15:16:37.909Z] [FA-VALIDATE] PASS — 86 funcionalidades, 198 reglas | sprint 23 | FEAT-021
+[2026-04-09T15:16:44.876411+00:00] [FA-AGENT] [GATE-8b] GENERATED → FA-bank-portal-Banco Meridian.docx v0.3 | 73.7KB | 86 func | 198 RN | TOC-hyperlinks | python-docx | SOFIA v2.7
+[2026-04-09T16:20:41.711Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-9 · Step: 9 · Sprint 23
+[2026-04-09T16:50:40.000Z] BATCH-APPROVE-LA · product-owner · 49 LAs aprobadas · LESSONS_LEARNED.md regenerado (84 LAs)
+[2026-04-09T17:23:29Z] LA-REGISTER · LA-023-03 · approved:product-owner · Total LAs: 85

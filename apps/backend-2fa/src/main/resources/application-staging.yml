@@ -1,5 +1,6 @@
 # application-staging.yml — BankPortal STG local
-# Sprint 10: MailHog activo como SMTP real
+# Perfil activado con SPRING_PROFILES_ACTIVE=staging
+# Relaja restricciones de producción para entorno STG local
 
 spring:
   datasource:
@@ -8,20 +9,22 @@ spring:
     password: ${DB_PASSWORD:bankportal_stg_2026}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: false
   flyway:
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0
+  cache:
+    type: none
   data:
     redis:
       url: ${REDIS_URL:redis://:redis_stg_2026@redis:6379}
   mail:
-    host: ${SMTP_HOST:mailhog}      # MailHog en STG, SendGrid/SES en PROD
+    host: ${SMTP_HOST:localhost}
     port: ${SMTP_PORT:1025}
     username: ${SMTP_USERNAME:}
-    password: ${EMAIL_API_KEY:}
+    password: ${EMAIL_API_KEY:stub}
     properties:
       mail.smtp.auth: false
       mail.smtp.starttls.enable: false
@@ -33,15 +36,19 @@ jwt:
   pre-auth-ttl-seconds: 300
   session-ttl-seconds: 28800
 
-# TOTP — Base64 de "stg-totp-aes-key-exactly-32bytes" = 32 bytes exactos (AES-256)
+# TOTP — clave AES-256 stub para STG
+# Base64 de "stg-totp-aes-key-exactly-32bytes" = 32 bytes exactos (AES-256)
 totp:
   aes-key: ${TOTP_AES_KEY:c3RnLXRvdHAtYWVzLWtleS1leGFjdGx5LTMyYnl0ZXM=}
+  stg-bypass-code: "123456"   # STG only — vacío en producción
 
+# Session deny-link HMAC
 session:
   deny-link:
     hmac-key: ${SESSION_DENY_LINK_HMAC_KEY:stg-deny-link-hmac-key-32-bytes!!}
     ttl-hours: 24
 
+# Trusted devices HMAC
 trusted-device:
   hmac-key: ${TRUSTED_DEVICE_HMAC_KEY:stg-trusted-device-hmac-key-32b!!}
   ttl-days: 30
@@ -55,7 +62,7 @@ management:
         include: health,info,flyway
   health:
     mail:
-      enabled: true     # MailHog disponible en STG — health activo
+      enabled: false    # Sin SMTP real en STG — evita health DOWN por Connection refused
     redis:
       enabled: true
     db:
@@ -64,5 +71,15 @@ management:
 logging:
   level:
     root: INFO
-    com.experis.sofia.bankportal: INFO
+    org.springframework.security: TRACE
+    com.experis.sofia.bankportal: DEBUG
     org.flywaydb: INFO
+
+bank:
+  core:
+    base-url: http://localhost:9999
+    api-key: stub-key-stg
+
+kyc:
+  storage-path: /tmp/kyc-documents
+  encryption-key: dGhpcnR5LXR3by1ieXRlLWtleS1mb3ItYWVzLTI1NiE=

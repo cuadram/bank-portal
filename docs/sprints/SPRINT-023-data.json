@@ -1,0 +1,61 @@
+{
+  "sprint": 23,
+  "feature": "FEAT-021",
+  "release": "v1.23.0",
+  "goal": "Permitir al cliente de Banco Meridian consultar, simular y contratar depósitos a plazo fijo con retención IRPF en origen y garantía FGD, cumpliendo Ley 44/2002. Cerrar DEBT-036/037/044.",
+  "sp_completed": 24,
+  "sp_capacity": 24,
+  "sp_acum": 545,
+  "avg_velocity": 24,
+  "tests_new": 47,
+  "tests_unit": 11,
+  "tests_qa": 36,
+  "coverage_estimated": 89,
+  "defects": 0,
+  "ncs": 0,
+  "smoke_tests": "9/9",
+  "wcag_checks": "2/2",
+  "security_semaphore": "GREEN",
+  "cve_critical": 0,
+  "open_debts": [],
+  "closed_debts": [
+    "DEBT-036",
+    "DEBT-037",
+    "DEBT-044"
+  ],
+  "closed_at": "09/04/2026",
+  "jira_issues": [
+    "SCRUM-123",
+    "SCRUM-124",
+    "SCRUM-125",
+    "SCRUM-126",
+    "SCRUM-127",
+    "SCRUM-128",
+    "SCRUM-129",
+    "SCRUM-130",
+    "SCRUM-131"
+  ],
+  "lessons_learned_sprint": [
+    "LA-023-01",
+    "LA-CORE-018",
+    "LA-CORE-033"
+  ],
+  "flyway": "V26",
+  "confluence_hld": "9371649",
+  "repositorio_activo": "JPA-REAL",
+  "otp_stg_bypass": "123456",
+  "fa_functionalities": 86,
+  "fa_business_rules": 198,
+  "components_angular": 6,
+  "endpoints_new": 6,
+  "adr": [
+    "ADR-036",
+    "ADR-037"
+  ],
+  "regulatory": [
+    "Ley 44/2002",
+    "RDL 16/2011",
+    "Ley 35/2006 Art.25",
+    "PSD2 SCA"
+  ]
+}

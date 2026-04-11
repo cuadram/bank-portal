@@ -1,0 +1,166 @@
+# CI Pipeline — BankPortal CMMI L3
+# DEBT-030: Integration tests con Testcontainers
+# Ejecuta en cada PR y push a main/develop
+
+name: CI — BankPortal
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  JAVA_VERSION: '21'
+  NODE_VERSION: '22'
+
+jobs:
+
+  # ── JOB 1: Unit Tests ──────────────────────────────────────────────────────
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+          cache: maven
+
+      - name: Run unit tests
+        working-directory: apps/backend-2fa
+        run: |
+          mvn test \
+            -Dtest="**/*Test.java" \
+            -Dsurefire.excludes="**/*IT.java" \
+            --no-transfer-progress \
+            -q
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: apps/backend-2fa/target/surefire-reports/
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: apps/backend-2fa/target/site/jacoco/
+
+  # ── JOB 2: Integration Tests (Testcontainers + PostgreSQL real) ─────────────
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+          cache: maven
+
+      - name: Run integration tests
+        working-directory: apps/backend-2fa
+        run: |
+          mvn test \
+            -Dtest="**/*IT.java" \
+            -Dspring.profiles.active=test \
+            --no-transfer-progress \
+            -q
+
+      - name: Upload integration test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results
+          path: apps/backend-2fa/target/surefire-reports/
+
+  # ── JOB 3: Frontend Build ──────────────────────────────────────────────────
+  frontend-build:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: apps/frontend-portal/package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/frontend-portal
+        run: npm ci --legacy-peer-deps
+
+      - name: Build Angular
+        working-directory: apps/frontend-portal
+        run: npm run build -- --configuration production
+
+  # ── JOB 4: Stack STG Smoke Test ───────────────────────────────────────────
+  # Solo en merge a main — levanta el stack completo y ejecuta smoke tests
+  smoke-tests:
+    name: Smoke Tests (Stack Completo)
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests, frontend-build]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+          cache: maven
+
+      - name: Build backend JAR
+        working-directory: apps/backend-2fa
+        run: mvn package -DskipTests --no-transfer-progress -q
+
+      - name: Start stack with Docker Compose
+        working-directory: infra/compose
+        env:
+          DB_PASSWORD: ci_test_password
+          REDIS_PASSWORD: ci_redis_password
+          DB_URL: jdbc:postgresql://postgres:5432/bankportal
+        run: |
+          docker compose up -d
+          echo "Waiting for backend to be healthy..."
+          timeout 120 sh -c 'until docker inspect bankportal-backend | grep -q "\"healthy\""; do sleep 5; done'
+
+      - name: Run smoke tests
+        run: |
+          # Health check
+          curl -f http://localhost:8081/actuator/health
+
+          # Login smoke test
+          TOKEN=$(curl -sf -X POST http://localhost:8081/auth/login \
+            -H "Content-Type: application/json" \
+            -d '{"email":"a.delacuadra@nemtec.es","password":"Angel@123"}' | python3 -c "import sys,json; print(json.load(sys.stdin)['accessToken'])")
+
+          # API endpoints smoke
+          curl -sf -H "Authorization: Bearer $TOKEN" http://localhost:8081/api/v1/accounts
+          curl -sf -H "Authorization: Bearer $TOKEN" http://localhost:8081/api/v1/dashboard/summary
+          curl -sf -H "Authorization: Bearer $TOKEN" http://localhost:8081/api/v1/notifications
+
+          echo "Smoke tests passed ✅"
+
+      - name: Stop stack
+        if: always()
+        working-directory: infra/compose
+        run: docker compose down -v
