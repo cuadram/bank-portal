@@ -550,7 +550,7 @@
     "report": "docs/code-review/CR-FEAT-021-sprint23.md",
     "reviewed_at": "2026-04-09T10:49:03.114Z"
   },
-  "updated_at": "2026-04-09T16:20:59.754Z",
+  "updated_at": "2026-04-12T17:47:26.364Z",
   "resume_next": "Sprint 24 — pendiente definición PO · FEAT-022 por determinar",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -2068,6 +2068,26 @@
       "registered_at": "2026-04-11T14:19:28.899Z",
       "sprint": 23,
       "title": "Branching model SOFIA no aplicado desde inicio — deuda git acumulada y saneada"
+    },
+    {
+      "id": "LA-CORE-035",
+      "type": "governance/git",
+      "description": "branching model SOFIA no aplicado desde inicio de proyecto -- deuda acumulada en BankPortal (11 ramas huerfanas), ExperisTracker (main directo 3 sprints), TakeOverSintetico (sin git init). REGLA: git init + main+develop + remote en Gate 1 obligatorio. Merge feature→develop por sprint, develop→main por release + tag.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.37",
+      "imported_at": "2026-04-12T17:47:26.356Z"
+    },
+    {
+      "id": "LA-CORE-037",
+      "type": "dashboard",
+      "description": "datos del dashboard SIEMPRE desde session.json en disco de cada proyecto registrado; nunca desde memoria o conversación anterior",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.37",
+      "imported_at": "2026-04-12T17:47:26.356Z"
     }
   ],
   "unit_test_verification": {
