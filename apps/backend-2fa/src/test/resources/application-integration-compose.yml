@@ -43,6 +43,12 @@ bank:
   core:
     base-url: http://localhost:9999
     api-key: dummy-key-for-integration-tests
+  products:
+    loan:
+      tae: 5.00
+    deposit:
+      tin: 3.50
+      tae: 3.57
   bizum:
     limit:
       per-operation: 500
@@ -54,6 +60,9 @@ notifications:
   push:
     vapid-public-key: BDummyVapidPublicKeyForIntegrationTestsOnlyNotRealKey12345678
     vapid-private-key: DummyVapidPrivateKeyForIntegrationTestsOnlyNotRealKey1234
+
+trusted-device:
+  hmac-key: dummy-hmac-key-for-integration-tests-only-not-real
 
 server:
   port: 0
