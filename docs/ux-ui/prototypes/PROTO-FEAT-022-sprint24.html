@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🎨 PROTO — Bizum P2P · BankPortal Sprint 24</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Design tokens heredados PROTO-FEAT-021 ── */
+:root{
+  --navy:#1e3a5f;--navy-dark:#162d4a;--navy-light:#2a4d75;
+  --primary:#1B5E99;--primary-dark:#0D3E6E;--primary-light:#E3F0FB;
+  --success:#00897B;--success-light:#E0F2F1;
+  --error:#E53935;--error-light:#FFEBEE;
+  --warning:#F57F17;--warning-light:#FFF8E1;
+  --bg:#F5F7FA;--card:#FFFFFF;--border:#E8ECF0;
+  --text:#1A2332;--text2:#4A5568;--text3:#9CA3AF;
+  --bizum:#003087;--bizum2:#FF6B00;
+  --radius:8px;--radius-lg:12px;--shadow:0 1px 4px rgba(0,0,0,.08);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.16);--t:200ms cubic-bezier(.4,0,.2,1);
+  --font:'Inter','Roboto',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:#1a1a2e;min-height:100vh}
+
+/* ── Proto shell ── */
+.proto-toolbar{background:#12122a;border-bottom:1px solid #2a2a4a;padding:10px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:1000;flex-wrap:wrap}
+.proto-title{color:#fff;font-size:12px;font-weight:600;letter-spacing:.5px}
+.proto-badge{background:#C84A14;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;letter-spacing:.8px}
+.proto-nav{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.proto-nav-btn{background:transparent;border:1px solid #3a3a5a;color:#aaa;font-size:12px;padding:4px 12px;border-radius:4px;cursor:pointer;transition:var(--t);font-family:var(--font)}
+.proto-nav-btn:hover,.proto-nav-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.proto-canvas{display:flex;align-items:flex-start;justify-content:center;padding:32px;overflow-x:auto;min-height:calc(100vh - 56px)}
+.proto-screen{display:none;width:100%;max-width:1280px}
+.proto-screen.active{display:block}
+
+/* ── App shell — producción real ── */
+.app{background:var(--bg);border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4);min-height:680px;display:flex;flex-direction:column}
+.app-header{background:var(--card);border-bottom:1px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center}
+.app-logo{font-size:18px;font-weight:700;color:var(--primary);letter-spacing:-.5px}
+.app-logo span{color:var(--text2);font-weight:400}
+.app-user{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--text2)}
+.app-avatar{width:34px;height:34px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.app-body{display:flex;flex:1}
+
+/* ── Sidebar navy producción ── */
+.sidebar{width:232px;background:var(--navy);flex-shrink:0;padding:20px 0}
+.sidebar-group{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1.2px;padding:12px 20px 6px}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:rgba(255,255,255,.65);cursor:pointer;transition:var(--t);border-left:3px solid transparent}
+.sidebar-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.sidebar-item.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:#fff;font-weight:600}
+.sidebar-icon{width:18px;text-align:center;font-size:15px}
+
+/* ── Content area ── */
+.content{flex:1;padding:28px 32px;overflow-y:auto}
+.page-header{margin-bottom:24px}
+.breadcrumb{font-size:12px;color:var(--text3);margin-bottom:6px}
+.breadcrumb a{color:var(--primary);cursor:pointer}
+.page-title{font-size:22px;font-weight:700;color:var(--text)}
+.page-sub{font-size:13px;color:var(--text2);margin-top:4px}
+
+/* ── Cards ── */
+.card{background:var(--card);border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow)}
+.card-p{padding:20px}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:14px;font-weight:600;color:var(--text)}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 20px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;transition:var(--t);border:none;font-family:var(--font);line-height:1.5}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover{background:var(--navy-dark)}
+.btn-secondary{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}
+.btn-secondary:hover{background:var(--primary-light)}
+.btn-ghost{background:transparent;color:var(--text2)}
+.btn-ghost:hover{background:var(--bg)}
+.btn-danger{background:var(--error);color:#fff}
+.btn-sm{padding:6px 14px;font-size:12px}
+.btn-lg{padding:12px 28px;font-size:15px;font-weight:600;width:100%;justify-content:center}
+.btn-icon{width:36px;height:36px;padding:0;justify-content:center;border-radius:50%}
+
+/* ── Form ── */
+.form-group{margin-bottom:16px}
+.form-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;display:block}
+.form-input{width:100%;border:1.5px solid var(--border);border-radius:var(--radius);padding:10px 14px;font-size:14px;font-family:var(--font);color:var(--text);outline:none;transition:var(--t);background:var(--card)}
+.form-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(27,94,153,.1)}
+.form-input.error{border-color:var(--error)}
+.form-hint{font-size:11px;color:var(--text3);margin-top:4px}
+.form-error{font-size:11px;color:var(--error);margin-top:4px}
+.input-prefix{position:relative}
+.input-prefix .form-input{padding-left:36px}
+.input-prefix-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px}
+
+/* ── Bizum specific ── */
+.bizum-hero{background:linear-gradient(135deg,var(--navy) 0%,#2a5298 100%);border-radius:var(--radius-lg);padding:24px;color:#fff;margin-bottom:20px}
+.bizum-logo-line{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.bizum-badge{background:rgba(255,255,255,.15);border-radius:4px;padding:3px 10px;font-size:11px;font-weight:700;letter-spacing:.5px}
+.bizum-balance{font-size:13px;opacity:.7;margin-bottom:4px}
+.bizum-amount-big{font-size:32px;font-weight:700;letter-spacing:-.5px}
+.bizum-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.bizum-action-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius);padding:14px;text-align:center;cursor:pointer;transition:var(--t);color:#fff}
+.bizum-action-btn:hover{background:rgba(255,255,255,.2)}
+.bizum-action-icon{font-size:22px;margin-bottom:6px}
+.bizum-action-label{font-size:12px;font-weight:600}
+
+/* ── Operation items ── */
+.op-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+.op-item:last-child{border-bottom:none}
+.op-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.op-icon.sent{background:#FFEBEE}
+.op-icon.received{background:#E0F2F1}
+.op-icon.pending{background:#FFF8E1}
+.op-icon.expired{background:#F3F4F6}
+.op-info{flex:1}
+.op-name{font-size:14px;font-weight:500;color:var(--text)}
+.op-detail{font-size:12px;color:var(--text3);margin-top:2px}
+.op-amount{text-align:right}
+.op-value{font-size:14px;font-weight:600}
+.op-value.positive{color:var(--success)}
+.op-value.negative{color:var(--text)}
+.op-status{font-size:11px;margin-top:2px}
+
+/* ── Badge / Pill ── */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600}
+.badge-success{background:var(--success-light);color:var(--success)}
+.badge-warning{background:var(--warning-light);color:var(--warning)}
+.badge-error{background:var(--error-light);color:var(--error)}
+.badge-neutral{background:#F3F4F6;color:var(--text2)}
+
+/* ── Stepper OTP ── */
+.stepper{display:flex;align-items:center;gap:0;margin-bottom:28px}
+.step-item{display:flex;align-items:center;gap:8px;flex:1}
+.step-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.step-circle.done{background:var(--success);color:#fff}
+.step-circle.active{background:var(--navy);color:#fff}
+.step-circle.pending{background:var(--border);color:var(--text3)}
+.step-label{font-size:12px;color:var(--text2);font-weight:500}
+.step-line{flex:1;height:2px;background:var(--border);margin:0 4px}
+.step-line.done{background:var(--success)}
+
+/* ── OTP boxes ── */
+.otp-boxes{display:flex;gap:10px;justify-content:center;margin:24px 0}
+.otp-box{width:48px;height:56px;border:2px solid var(--border);border-radius:var(--radius);text-align:center;font-size:22px;font-weight:700;color:var(--text);background:var(--bg);outline:none}
+.otp-box.filled{border-color:var(--navy);background:var(--card)}
+.otp-box.active{border-color:var(--primary);box-shadow:0 0 0 3px rgba(27,94,153,.1)}
+
+/* ── Limit bar ── */
+.limit-bar-wrap{margin:12px 0}
+.limit-bar-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:6px}
+.limit-bar{height:6px;background:var(--bg);border-radius:999px;overflow:hidden;border:1px solid var(--border)}
+.limit-bar-fill{height:100%;background:var(--navy);border-radius:999px;transition:width .5s}
+
+/* ── Filter tabs ── */
+.filter-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.filter-tab{padding:6px 14px;border-radius:999px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--text2);transition:var(--t)}
+.filter-tab.active{background:var(--navy);border-color:var(--navy);color:#fff}
+
+/* ── Toggle ── */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-info{flex:1}
+.toggle-label{font-size:14px;font-weight:500;color:var(--text)}
+.toggle-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.toggle{position:relative;width:44px;height:24px;background:var(--border);border-radius:999px;cursor:pointer;transition:var(--t);flex-shrink:0}
+.toggle.on{background:var(--navy)}
+.toggle::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:3px;left:3px;transition:var(--t);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on::after{left:23px}
+
+/* ── Alert confirm ── */
+.confirm-box{background:var(--warning-light);border:1px solid var(--warning);border-radius:var(--radius);padding:14px 16px;font-size:13px;color:#7c4a00;margin:16px 0}
+.confirm-summary{background:var(--bg);border-radius:var(--radius);padding:16px;margin:16px 0}
+.confirm-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.confirm-row:last-child{border-bottom:none;font-weight:700;font-size:15px;color:var(--text)}
+.confirm-label{color:var(--text2)}
+
+/* ── Utilities ── */
+.flex{display:flex}.items-center{align-items:center}.justify-between{justify-content:space-between}
+.gap-3{gap:12px}.gap-4{gap:16px}.mt-4{margin-top:16px}.mt-6{margin-top:24px}.mb-4{margin-bottom:16px}.mb-6{margin-bottom:24px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.text-center{text-align:center}.text-right{text-align:right}
+.w-full{width:100%}.hidden{display:none}
+.divider{height:1px;background:var(--border);margin:20px 0}
+.tag{background:var(--bg);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--text3)}
+.amount-label{font-size:11px;color:var(--text3)}
+.amount-value{font-size:15px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+.amount-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0}
+</style>
+</head>
+<body>
+
+<!-- ── PROTO TOOLBAR ── -->
+<div class="proto-toolbar">
+  <div class="proto-title">🎨 PROTO — FEAT-022 Bizum P2P · Sprint 24</div>
+  <div class="proto-badge">HITL PO+TL</div>
+  <nav class="proto-nav">
+    <button class="proto-nav-btn active" onclick="showScreen('s0')">Activación</button>
+    <button class="proto-nav-btn" onclick="showScreen('s1')">Inicio Bizum</button>
+    <button class="proto-nav-btn" onclick="showScreen('s2')">Enviar pago</button>
+    <button class="proto-nav-btn" onclick="showScreen('s2b')">Confirmar OTP</button>
+    <button class="proto-nav-btn" onclick="showScreen('s3')">Solicitar dinero</button>
+    <button class="proto-nav-btn" onclick="showScreen('s4')">Historial</button>
+    <button class="proto-nav-btn" onclick="showScreen('s5')">Configuración</button>
+  </nav>
+</div>
+
+<div class="proto-canvas">
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SCREEN 0 — Activación Bizum                            -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="proto-screen active" id="s0">
+<div class="app">
+  <div class="app-header">
+    <div class="app-logo">Bank<span>Portal</span></div>
+    <div class="app-user"><span>Angel García</span><div class="app-avatar">AG</div></div>
+  </div>
+  <div class="app-body">
+    <nav class="sidebar">
+      <div class="sidebar-group">Principal</div>
+      <div class="sidebar-item"><span class="sidebar-icon">📊</span>Dashboard</div>
+      <div class="sidebar-item"><span class="sidebar-icon">🏦</span>Cuentas</div>
+      <div class="sidebar-item"><span class="sidebar-icon">↔️</span>Transferencias</div>
+      <div class="sidebar-group">Productos</div>
+      <div class="sidebar-item"><span class="sidebar-icon">💳</span>Tarjetas</div>
+      <div class="sidebar-item"><span class="sidebar-icon">📋</span>Préstamos</div>
+      <div class="sidebar-item"><span class="sidebar-icon">🏛</span>Depósitos</div>
+      <div class="sidebar-item active"><span class="sidebar-icon">💸</span>Bizum</div>
+      <div class="sidebar-group">Otros</div>
+      <div class="sidebar-item"><span class="sidebar-icon">👤</span>Mi perfil</div>
+    </nav>
+    <main class="content">
+      <div class="page-header">
+        <div class="breadcrumb"><a>Inicio</a> › Bizum</div>
+        <div class="page-title">Activar Bizum</div>
+        <div class="page-sub">Vincula tu número de teléfono para enviar y recibir pagos al instante</div>
+      </div>
+      <div style="max-width:480px">
+        <div class="bizum-hero" style="text-align:center;padding:32px 24px">
+          <div style="font-size:48px;margin-bottom:12px">💸</div>
+          <div style="font-size:20px;font-weight:700;margin-bottom:8px">Bizum en BankPortal</div>
+          <div style="font-size:13px;opacity:.8">Pagos instantáneos entre particulares mediante número de móvil. Gratis, disponible 24/7.</div>
+          <div style="display:flex;gap:16px;justify-content:center;margin-top:20px;font-size:12px;opacity:.7">
+            <span>✓ Hasta €500 por operación</span>
+            <span>✓ Hasta €2.000/día</span>
+          </div>
+        </div>
+        <div class="card card-p" style="margin-top:20px">
+          <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:16px">Datos de activación</div>
+          <div class="form-group">
+            <label class="form-label">Número de teléfono móvil</label>
+            <div class="input-prefix">
+              <span class="input-prefix-icon">📱</span>
+              <input class="form-input" type="tel" value="+34 612 345 678" placeholder="+34 6XX XXX XXX">
+            </div>
+            <div class="form-hint">Formato E.164 · Solo se usará para Bizum. Consentimiento GDPR Art.6</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cuenta principal vinculada</label>
+            <input class="form-input" value="ES12 0049 1234 9812 3456 7890 — Cuenta Nómina" readonly style="background:var(--bg);color:var(--text2)">
+          </div>
+          <div style="background:var(--primary-light);border-radius:var(--radius);padding:12px 14px;font-size:12px;color:var(--primary);margin-bottom:16px">
+            ℹ️ Al activar Bizum, consientes que BankPortal vincule tu número a esta cuenta según el RGPD Art.6 para la prestación del servicio de pagos inmediatos.
+          </div>
+          <button class="btn btn-primary btn-lg" onclick="showScreen('s1')">Activar Bizum →</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SCREEN 1 — Inicio Bizum                                -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="proto-screen" id="s1">
+<div class="app">
+  <div class="app-header">
+    <div class="app-logo">Bank<span>Portal</span></div>
+    <div class="app-user"><span>Angel García</span><div class="app-avatar">AG</div></div>
+  </div>
+  <div class="app-body">
+    <nav class="sidebar">
+      <div class="sidebar-group">Principal</div>
+      <div class="sidebar-item"><span class="sidebar-icon">📊</span>Dashboard</div>
+      <div class="sidebar-item"><span class="sidebar-icon">🏦</span>Cuentas</div>
+      <div class="sidebar-item"><span class="sidebar-icon">↔️</span>Transferencias</div>
+      <div class="sidebar-group">Productos</div>
+      <div class="sidebar-item"><span class="sidebar-icon">💳</span>Tarjetas</div>
+      <div class="sidebar-item"><span class="sidebar-icon">📋</span>Préstamos</div>
+      <div class="sidebar-item"><span class="sidebar-icon">🏛</span>Depósitos</div>
+      <div class="sidebar-item active"><span class="sidebar-icon">💸</span>Bizum</div>
+      <div class="sidebar-group">Otros</div>
+      <div class="sidebar-item"><span class="sidebar-icon">👤</span>Mi perfil</div>
+    </nav>
+    <main class="content">
+      <div class="page-header">
+        <div class="breadcrumb"><a>Inicio</a> › Bizum</div>
+        <div class="page-title">Bizum</div>
+        <div class="page-sub">Pagos P2P instantáneos · +34 *** 5678</div>
+      </div>
+
+      <div class="bizum-hero">
+        <div class="bizum-logo-line">
+          <span style="font-size:20px">💸</span>
+          <span style="font-size:16px;font-weight:700">Bizum</span>
+          <span class="bizum-badge">ACTIVO</span>
+        </div>
+        <div class="bizum-balance">Saldo disponible hoy</div>
+        <div class="bizum-amount-big">€2.000,00</div>
+        <div style="font-size:11px;opacity:.6;margin-top:4px">Límite diario restante</div>
+        <div class="limit-bar-wrap" style="margin-top:8px">
+          <div class="limit-bar-labels"><span>€0</span><span>€2.000</span></div>
+          <div class="limit-bar"><div class="limit-bar-fill" style="width:0%"></div></div>
+        </div>
+        <div class="bizum-actions">
+          <div class="bizum-action-btn" onclick="showScreen('s2')">
+            <div class="bizum-action-icon">📤</div>
+            <div class="bizum-action-label">Enviar</div>
+          </div>
+          <div class="bizum-action-btn" onclick="showScreen('s3')">
+            <div class="bizum-action-icon">📥</div>
+            <div class="bizum-action-label">Solicitar</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between mb-4">
+        <div style="font-size:15px;font-weight:600;color:var(--text)">Últimas operaciones</div>
+        <button class="btn btn-ghost btn-sm" onclick="showScreen('s4')">Ver todo →</button>
+      </div>
+      <div class="card card-p">
+        <div class="op-item">
+          <div class="op-icon received">📥</div>
+          <div class="op-info"><div class="op-name">María López</div><div class="op-detail">+34 *** 2345 · Cena del viernes</div></div>
+          <div class="op-amount"><div class="op-value positive">+€24,50</div><div class="op-status"><span class="badge badge-success">Recibido</span></div></div>
+        </div>
+        <div class="op-item">
+          <div class="op-icon sent">📤</div>
+          <div class="op-info"><div class="op-name">Carlos Ruiz</div><div class="op-detail">+34 *** 8901 · Alquiler piso</div></div>
+          <div class="op-amount"><div class="op-value negative">−€350,00</div><div class="op-status"><span class="badge badge-neutral">Enviado</span></div></div>
+        </div>
+        <div class="op-item">
+          <div class="op-icon pending">⏳</div>
+          <div class="op-info"><div class="op-name">Solicitud enviada</div><div class="op-detail">+34 *** 5678 · Split cena · Vence en 18h</div></div>
+          <div class="op-amount"><div class="op-value" style="color:var(--warning)">€15,00</div><div class="op-status"><span class="badge badge-warning">Pendiente</span></div></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SCREEN 2 — Enviar pago                                 -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="proto-screen" id="s2">
+<div class="app">
+  <div class="app-header">
+    <div class="app-logo">Bank<span>Portal</span></div>
+    <div class="app-user"><span>Angel García</span><div class="app-avatar">AG</div></div>
+  </div>
+  <div class="app-body">
+    <nav class="sidebar">
+      <div class="sidebar-group">Principal</div>
+      <div class="sidebar-item"><span class="sidebar-icon">📊</span>Dashboard</div>
+      <div class="sidebar-item"><span class="sidebar-icon">🏦</span>Cuentas</div>
+      <div class="sidebar-item"><span class="sidebar-icon">↔️</span>Transferencias</div>
+      <div class="sidebar-group">Productos</div>
+      <div class="sidebar-item"><span class="sidebar-icon">💳</span>Tarjetas</div>
+      <div class="sidebar-item"><span class="sidebar-icon">📋</span>Préstamos</div>
+      <div class="sidebar-item"><span class="sidebar-icon">🏛</span>Depósitos</div>
+      <div class="sidebar-item active"><span class="sidebar-icon">💸</span>Bizum</div>
+      <div class="sidebar-group">Otros</div>
+      <div class="sidebar-item"><span class="sidebar-icon">👤</span>Mi perfil</div>
+    </nav>
+    <main class="content">
+      <div class="page-header">
+        <div class="breadcrumb"><a onclick="showScreen('s1')">Bizum</a> › Enviar pago</div>
+        <div class="page-title">Enviar Bizum</div>
+      </div>
+      <div style="max-width:520px">
+        <div class="stepper">
+          <div class="step-item"><div class="step-circle active">1</div><div class="step-label">Datos</div></div>
+          <div class="step-line"></div>
+          <div class="step-item"><div class="step-circle pending">2</div><div class="step-label">Confirmar</div></div>
+          <div class="step-line"></div>
+          <div class="step-item"><div class="step-circle pending">3</div><div class="step-label">OTP</div></div>
+        </div>
+        <div class="card card-p">
+          <div class="form-group">
+            <label class="form-label">Número de teléfono destinatario</label>
+            <div class="input-prefix">
+              <span class="input-prefix-icon">📱</span>
+              <input class="form-input" placeholder="+34 6XX XXX XXX" value="+34 612 111 222">
+            </div>
+            <div class="form-hint">El destinatario debe tener Bizum activo en su banco</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Importe</label>
+            <div class="input-prefix">
+              <span class="input-prefix-icon">€</span>
+              <input class="form-input" type="number" placeholder="0,00" value="45.00" style="padding-left:36px;font-size:20px;font-weight:700">
+            </div>
+            <div class="limit-bar-wrap">
+              <div class="limit-bar-labels"><span>Usado hoy: €0</span><span>Límite: €500/op · €2.000/día</span></div>
+              <div class="limit-bar"><div class="limit-bar-fill" style="width:9%"></div></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Concepto</label>
+            <input class="form-input" placeholder="Descripción del pago..." value="Cena del sábado">
+            <div class="form-hint">Opcional · Máx. 35 caracteres · Visible para el destinatario</div>
+          </div>
+          <div class="divider"></div>
+          <div class="confirm-summary">
+            <div class="amount-row"><span class="amount-label">Destinatario</span><span class="amount-value">+34 *** 1222</span></div>
+            <div class="amount-row"><span class="amount-label">Importe</span><span class="amount-value" style="color:var(--navy)">€45,00</span></div>
+            <div class="amount-row"><span class="amount-label">Concepto</span><span class="amount-value">Cena del sábado</span></div>
+            <div class="amount-row"><span class="amount-label">Cuenta cargo</span><span class="amount-value">ES12 ··· 7890</span></div>
+          </div>
+          <div class="flex gap-3">
+            <button class="btn btn-ghost" onclick="showScreen('s1')" style="flex:1">Cancelar</button>
+            <button class="btn btn-primary" onclick="showScreen('s2b')" style="flex:2">Continuar → Confirmar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SCREEN 2b — Confirmar + OTP                            -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="proto-screen" id="s2b">
+<div class="app">
+  <div class="app-header">
+    <div class="app-logo">Bank<span>Portal</span></div>
+    <div class="app-user"><span>Angel García</span><div class="app-avatar">AG</div></div>
+  </div>
+  <div class="app-body">
+    <nav class="sidebar">
+      <div class="sidebar-group">Principal</div>
+      <div class="sidebar-item"><span class="sidebar-icon">📊</span>Dashboard</div>
+      <div class="sidebar-item"><span class="sidebar-icon">🏦</span>Cuentas</div>
+      <div class="sidebar-item"><span class="sidebar-icon">↔️</span>Transferencias</div>
+      <div class="sidebar-group">Productos</div>
+      <div class="sidebar-item"><span class="sidebar-icon">💳</span>Tarjetas</div>
+      <div class="sidebar-item"><span class="sidebar-icon">📋</span>Préstamos</div>
+      <div class="sidebar-item"><span class="sidebar-icon">🏛</span>Depósitos</div>
+      <div class="sidebar-item active"><span class="sidebar-icon">💸</span>Bizum</div>
+      <div class="sidebar-group">Otros</div>
+      <div class="sidebar-item"><span class="sidebar-icon">👤</span>Mi perfil</div>
+    </nav>
+    <main class="content">
+      <div class="page-header">
+        <div class="breadcrumb"><a onclick="showScreen('s1')">Bizum</a> › <a onclick="showScreen('s2')">Enviar</a> › Confirmar</div>
+        <div class="page-title">Confirmar envío</div>
+        <div class="page-sub">Verifica los datos e introduce el código OTP</div>
+      </div>
+      <div style="max-width:480px">
+        <div class="stepper">
+          <div class="step-item"><div class="step-circle done">✓</div><div class="step-label">Datos</div></div>
+          <div class="step-line done"></div>
+          <div class="step-item"><div class="step-circle done">✓</div><div class="step-label">Confirmar</div></div>
+          <div class="step-line done"></div>
+          <div class="step-item"><div class="step-circle active">3</div><div class="step-label">OTP</div></div>
+        </div>
+        <div class="card card-p">
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">Resumen del pago</div>
+          <div class="confirm-summary">
+            <div class="confirm-row"><span class="confirm-label">A</span><span style="font-weight:600">+34 *** 1222</span></div>
+            <div class="confirm-row"><span class="confirm-label">Concepto</span><span>Cena del sábado</span></div>
+            <div class="confirm-row"><span class="confirm-label">Cuenta cargo</span><span>ES12 ··· 7890</span></div>
+            <div class="confirm-row"><span class="confirm-label">Importe total</span><span style="font-size:18px;font-weight:700;color:var(--navy)">€45,00</span></div>
+          </div>
+          <div class="divider"></div>
+          <div class="text-center">
+            <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px">Código de verificación OTP</div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:20px">Hemos enviado un código de 6 dígitos a +34 *** 5678</div>
+            <div class="otp-boxes">
+              <input class="otp-box filled" maxlength="1" value="1">
+              <input class="otp-box filled" maxlength="1" value="2">
+              <input class="otp-box filled" maxlength="1" value="3">
+              <input class="otp-box active" maxlength="1" value="">
+              <input class="otp-box" maxlength="1" value="">
+              <input class="otp-box" maxlength="1" value="">
+            </div>
+            <div style="font-size:12px;color:var(--text3)">STG bypass: <strong>123456</strong> · Válido 5 min</div>
+          </div>
+          <div class="confirm-box">⚠️ Este pago es inmediato e irreversible. Verifica que el número de teléfono es correcto antes de confirmar.</div>
+          <div class="flex gap-3 mt-4">
+            <button class="btn btn-ghost" onclick="showScreen('s2')" style="flex:1">← Volver</button>
+            <button class="btn btn-primary" onclick="showSuccessToast()" style="flex:2">✓ Confirmar envío €45,00</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SCREEN 3 — Solicitar dinero                            -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="proto-screen" id="s3">
+<div class="app">
+  <div class="app-header">
+    <div class="app-logo">Bank<span>Portal</span></div>
+    <div class="app-user"><span>Angel García</span><div class="app-avatar">AG</div></div>
+  </div>
+  <div class="app-body">
+    <nav class="sidebar">
+      <div class="sidebar-group">Principal</div>
+      <div class="sidebar-item"><span class="sidebar-icon">📊</span>Dashboard</div>
+      <div class="sidebar-item"><span class="sidebar-icon">🏦</span>Cuentas</div>
+      <div class="sidebar-item"><span class="sidebar-icon">↔️</span>Transferencias</div>
+      <div class="sidebar-group">Productos</div>
+      <div class="sidebar-item"><span class="sidebar-icon">💳</span>Tarjetas</div>
+      <div class="sidebar-item"><span class="sidebar-icon">📋</span>Préstamos</div>
+      <div class="sidebar-item"><span class="sidebar-icon">🏛</span>Depósitos</div>
+      <div class="sidebar-item active"><span class="sidebar-icon">💸</span>Bizum</div>
+      <div class="sidebar-group">Otros</div>
+      <div class="sidebar-item"><span class="sidebar-icon">👤</span>Mi perfil</div>
+    </nav>
+    <main class="content">
+      <div class="page-header">
+        <div class="breadcrumb"><a onclick="showScreen('s1')">Bizum</a> › Solicitar dinero</div>
+        <div class="page-title">Solicitar dinero</div>
+        <div class="page-sub">El destinatario recibirá una notificación para aceptar o rechazar</div>
+      </div>
+      <div style="max-width:480px">
+        <div class="card card-p">
+          <div class="form-group">
+            <label class="form-label">¿A quién le pides?</label>
+            <div class="input-prefix">
+              <span class="input-prefix-icon">📱</span>
+              <input class="form-input" placeholder="+34 6XX XXX XXX" value="+34 678 999 000">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">¿Cuánto quieres pedir?</label>
+            <div class="input-prefix">
+              <span class="input-prefix-icon">€</span>
+              <input class="form-input" type="number" value="30.00" style="padding-left:36px;font-size:20px;font-weight:700">
+            </div>
+            <div class="form-hint">Máximo €500 por solicitud (RN-F022-04)</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Concepto (opcional)</label>
+            <input class="form-input" value="Split almuerzo" placeholder="¿Para qué es?">
+          </div>
+          <div class="divider"></div>
+          <div style="background:var(--bg);border-radius:var(--radius);padding:14px;font-size:12px;color:var(--text3);margin-bottom:16px">
+            📋 La solicitud expirará automáticamente a las <strong>24 horas</strong> si el destinatario no responde (RN-F022-07). Recibirás una notificación del resultado.
+          </div>
+          <div class="flex gap-3">
+            <button class="btn btn-ghost" onclick="showScreen('s1')" style="flex:1">Cancelar</button>
+            <button class="btn btn-primary" onclick="showScreen('s4')" style="flex:2">Enviar solicitud →</button>
+          </div>
+        </div>
+
+        <div class="card card-p mt-4">
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px">Solicitudes pendientes recibidas</div>
+          <div class="op-item">
+            <div class="op-icon pending">📥</div>
+            <div class="op-info"><div class="op-name">Pedro Martínez solicita</div><div class="op-detail">+34 *** 7890 · "Gasolina viaje" · Vence en 6h</div></div>
+            <div class="op-amount">
+              <div class="op-value" style="color:var(--warning)">€20,00</div>
+              <div style="display:flex;gap:4px;margin-top:4px">
+                <button class="btn btn-sm btn-primary" style="padding:3px 10px;font-size:11px">Aceptar</button>
+                <button class="btn btn-sm" style="padding:3px 10px;font-size:11px;background:var(--error-light);color:var(--error);border:none">Rechazar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SCREEN 4 — Historial                                   -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="proto-screen" id="s4">
+<div class="app">
+  <div class="app-header">
+    <div class="app-logo">Bank<span>Portal</span></div>
+    <div class="app-user"><span>Angel García</span><div class="app-avatar">AG</div></div>
+  </div>
+  <div class="app-body">
+    <nav class="sidebar">
+      <div class="sidebar-group">Principal</div>
+      <div class="sidebar-item"><span class="sidebar-icon">📊</span>Dashboard</div>
+      <div class="sidebar-item"><span class="sidebar-icon">🏦</span>Cuentas</div>
+      <div class="sidebar-item"><span class="sidebar-icon">↔️</span>Transferencias</div>
+      <div class="sidebar-group">Productos</div>
+      <div class="sidebar-item"><span class="sidebar-icon">💳</span>Tarjetas</div>
+      <div class="sidebar-item"><span class="sidebar-icon">📋</span>Préstamos</div>
+      <div class="sidebar-item"><span class="sidebar-icon">🏛</span>Depósitos</div>
+      <div class="sidebar-item active"><span class="sidebar-icon">💸</span>Bizum</div>
+      <div class="sidebar-group">Otros</div>
+      <div class="sidebar-item"><span class="sidebar-icon">👤</span>Mi perfil</div>
+    </nav>
+    <main class="content">
+      <div class="page-header">
+        <div class="flex items-center justify-between">
+          <div><div class="breadcrumb"><a onclick="showScreen('s1')">Bizum</a> › Historial</div><div class="page-title">Historial Bizum</div></div>
+          <div class="flex gap-3">
+            <button class="btn btn-secondary btn-sm">⬇ Exportar</button>
+            <button class="btn btn-primary btn-sm" onclick="showScreen('s2')">+ Enviar</button>
+          </div>
+        </div>
+      </div>
+      <div class="filter-tabs">
+        <div class="filter-tab active">Todos</div>
+        <div class="filter-tab">Enviados</div>
+        <div class="filter-tab">Recibidos</div>
+        <div class="filter-tab">Solicitudes</div>
+        <div class="filter-tab">Pendientes</div>
+      </div>
+      <div class="card card-p">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px">Hoy — 14 abril 2026</div>
+        <div class="op-item">
+          <div class="op-icon received">📥</div>
+          <div class="op-info"><div class="op-name">María López</div><div class="op-detail">+34 *** 2345 · Cena del viernes · 14:32</div></div>
+          <div class="op-amount"><div class="op-value positive">+€24,50</div><div class="op-status"><span class="badge badge-success">Recibido</span></div></div>
+        </div>
+        <div class="op-item">
+          <div class="op-icon pending">⏳</div>
+          <div class="op-info"><div class="op-name">Solicitud enviada — Carlos Ruiz</div><div class="op-detail">+34 *** 5678 · Split cena · Vence 14/04 22:00</div></div>
+          <div class="op-amount"><div class="op-value" style="color:var(--warning)">€15,00</div><div class="op-status"><span class="badge badge-warning">Pendiente</span></div></div>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin:16px 0 12px">13 abril 2026</div>
+        <div class="op-item">
+          <div class="op-icon sent">📤</div>
+          <div class="op-info"><div class="op-name">Carlos Ruiz</div><div class="op-detail">+34 *** 8901 · Alquiler piso · 10:15</div></div>
+          <div class="op-amount"><div class="op-value negative">−€350,00</div><div class="op-status"><span class="badge badge-neutral">Enviado</span></div></div>
+        </div>
+        <div class="op-item">
+          <div class="op-icon received">📥</div>
+          <div class="op-info"><div class="op-name">Ana Fernández</div><div class="op-detail">+34 *** 4321 · Compra supermercado · 09:42</div></div>
+          <div class="op-amount"><div class="op-value positive">+€18,75</div><div class="op-status"><span class="badge badge-success">Recibido</span></div></div>
+        </div>
+        <div class="op-item">
+          <div class="op-icon expired">❌</div>
+          <div class="op-info"><div class="op-name">Solicitud expirada — Luis García</div><div class="op-detail">+34 *** 0011 · Café · Expiró sin respuesta</div></div>
+          <div class="op-amount"><div class="op-value" style="color:var(--text3)">€3,50</div><div class="op-status"><span class="badge badge-neutral">Expirada</span></div></div>
+        </div>
+        <div style="text-align:center;padding:16px 0;color:var(--text3);font-size:13px">↓ Cargando más operaciones...</div>
+      </div>
+    </main>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SCREEN 5 — Configuración                               -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div class="proto-screen" id="s5">
+<div class="app">
+  <div class="app-header">
+    <div class="app-logo">Bank<span>Portal</span></div>
+    <div class="app-user"><span>Angel García</span><div class="app-avatar">AG</div></div>
+  </div>
+  <div class="app-body">
+    <nav class="sidebar">
+      <div class="sidebar-group">Principal</div>
+      <div class="sidebar-item"><span class="sidebar-icon">📊</span>Dashboard</div>
+      <div class="sidebar-item"><span class="sidebar-icon">🏦</span>Cuentas</div>
+      <div class="sidebar-item"><span class="sidebar-icon">↔️</span>Transferencias</div>
+      <div class="sidebar-group">Productos</div>
+      <div class="sidebar-item"><span class="sidebar-icon">💳</span>Tarjetas</div>
+      <div class="sidebar-item"><span class="sidebar-icon">📋</span>Préstamos</div>
+      <div class="sidebar-item"><span class="sidebar-icon">🏛</span>Depósitos</div>
+      <div class="sidebar-item active"><span class="sidebar-icon">💸</span>Bizum</div>
+      <div class="sidebar-group">Otros</div>
+      <div class="sidebar-item"><span class="sidebar-icon">👤</span>Mi perfil</div>
+    </nav>
+    <main class="content">
+      <div class="page-header">
+        <div class="breadcrumb"><a onclick="showScreen('s1')">Bizum</a> › Configuración</div>
+        <div class="page-title">Configuración Bizum</div>
+      </div>
+      <div style="max-width:560px">
+        <div class="card card-p mb-4">
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px">Cuenta y número vinculado</div>
+          <div style="background:var(--bg);border-radius:var(--radius);padding:14px;display:flex;justify-content:space-between;align-items:center">
+            <div><div style="font-size:13px;font-weight:600">+34 *** 5678</div><div style="font-size:12px;color:var(--text3);margin-top:2px">ES12 ··· 7890 — Cuenta Nómina · Activo desde 14/04/2026</div></div>
+            <span class="badge badge-success">ACTIVO</span>
+          </div>
+        </div>
+
+        <div class="card card-p mb-4">
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px">Límites operativos</div>
+          <div class="amount-row"><span class="amount-label">Límite por operación</span><span class="amount-value">€500,00</span></div>
+          <div class="amount-row"><span class="amount-label">Límite diario</span><span class="amount-value">€2.000,00</span></div>
+          <div class="limit-bar-wrap">
+            <div class="limit-bar-labels"><span>Usado hoy: €0</span><span>€2.000 disponibles</span></div>
+            <div class="limit-bar"><div class="limit-bar-fill" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:11px;color:var(--text3);margin-top:8px">Límites regulatorios Banco de España · Circular 4/2019 · RN-F022-04/05</div>
+        </div>
+
+        <div class="card card-p mb-4">
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px">Preferencias y notificaciones</div>
+          <div class="toggle-row">
+            <div class="toggle-info"><div class="toggle-label">Bizum activo</div><div class="toggle-sub">Permite enviar y recibir pagos</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info"><div class="toggle-label">Notificaciones al recibir</div><div class="toggle-sub">Push cuando recibes un pago Bizum</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info"><div class="toggle-label">Notificaciones de solicitudes</div><div class="toggle-sub">Push cuando alguien te solicita dinero</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info"><div class="toggle-label">Aviso de expiración</div><div class="toggle-sub">Push cuando una solicitud tuya expira sin respuesta</div></div>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+
+        <button class="btn btn-danger btn-sm">Desactivar Bizum</button>
+        <div style="font-size:11px;color:var(--text3);margin-top:8px">La desactivación elimina la vinculación del número. Podrás reactivarlo en cualquier momento.</div>
+      </div>
+    </main>
+  </div>
+</div>
+</div>
+
+</div><!-- /proto-canvas -->
+
+<!-- Toast de éxito -->
+<div id="toast" style="display:none;position:fixed;bottom:32px;right:32px;background:#00897B;color:#fff;padding:14px 24px;border-radius:12px;font-size:14px;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,.3);z-index:9999">
+  ✓ Bizum de €45,00 enviado correctamente
+</div>
+
+<script>
+function showScreen(id){
+  document.querySelectorAll('.proto-screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.proto-nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const map={'s0':0,'s1':1,'s2':2,'s2b':3,'s3':4,'s4':5,'s5':6};
+  document.querySelectorAll('.proto-nav-btn')[map[id]]?.classList.add('active');
+  window.scrollTo(0,0);
+}
+function showSuccessToast(){
+  const t=document.getElementById('toast');
+  t.style.display='block';
+  setTimeout(()=>{t.style.display='none';showScreen('s1');},2500);
+}
+</script>
+</body>
+</html>

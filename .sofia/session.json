@@ -1,14 +1,14 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "in_progress",
+  "status": "gate_pending",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 24,
   "current_feature": "FEAT-022",
-  "current_step": "2b",
-  "pipeline_step": "2b",
-  "pipeline_step_name": "fa-agent",
+  "current_step": "2c",
+  "pipeline_step": "2c",
+  "pipeline_step_name": "ux-ui-designer",
   "completed_steps": [
     "1",
     "2",
@@ -42,9 +42,9 @@
     "8b",
     "9"
   ],
-  "last_skill": "fa-agent",
+  "last_skill": "ux-ui-designer",
   "last_skill_output_path": "docs/deliverables/sprint-24-FEAT-022/",
-  "gate_pending": null,
+  "gate_pending": "HITL-PO-TL",
   "sprint_goal": "Permitir al cliente de Banco Meridian enviar y recibir pagos P2P inmediatos mediante número de teléfono registrado en Bizum, con autenticación SCA OTP, verificación de límites regulatorios y notificaciones push en tiempo real, cumpliendo PSD2 Art.97 SCA y SEPA Instant Credit Transfer.",
   "sprint_capacity_sp": 24,
   "artifacts": {
@@ -252,6 +252,9 @@
     "2b_s24": [
       "validate-fa-index PASS 8/8 — 93 func, 209 BRs — 2026-04-14T14:15:58.449Z",
       "FA-bank-portal-Banco Meridian.docx v0.5 — 76.9KB — docs/functional-analysis/"
+    ],
+    "2c_s24": [
+      "docs/ux-ui/prototypes/PROTO-FEAT-022-sprint24.html (45KB · 6 pantallas · sidebar navy #1e3a5f · CSS heredado PROTO-FEAT-021)"
     ]
   },
   "gates": {
@@ -576,7 +579,7 @@
     "report": "docs/code-review/CR-FEAT-021-sprint23.md",
     "reviewed_at": "2026-04-09T10:49:03.114Z"
   },
-  "updated_at": "2026-04-14T14:15:58.449Z",
+  "updated_at": "2026-04-14T14:22:36.599Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": false,
   "gate8_approved_by": "release-manager",
