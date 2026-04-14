@@ -1,5 +1,6 @@
 package com.experis.sofia.bankportal.bizum.integration;
 import com.experis.sofia.bankportal.integration.config.IntegrationTestBase;
+import com.experis.sofia.bankportal.twofa.BackendTwoFactorApplication;
 import com.experis.sofia.bankportal.bizum.domain.model.*;
 import com.experis.sofia.bankportal.bizum.infrastructure.persistence.JpaBizumAdapter;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Verifica que el mapping JPA funciona contra la BD real de Testcontainers
  */
 @Transactional
+@SpringBootTest(classes = BackendTwoFactorApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BizumAdapterIT extends IntegrationTestBase {
     @Autowired JpaBizumAdapter adapter;
 

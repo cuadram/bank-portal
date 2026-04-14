@@ -1,5 +1,6 @@
 package com.experis.sofia.bankportal.bizum.integration;
 import com.experis.sofia.bankportal.integration.config.IntegrationTestBase;
+import com.experis.sofia.bankportal.twofa.BackendTwoFactorApplication;
 import com.experis.sofia.bankportal.bizum.domain.model.*;
 import com.experis.sofia.bankportal.bizum.infrastructure.persistence.JpaBizumAdapter;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Verifica RN-F022-07: solicitudes expiradas se marcan automáticamente
  */
 @Transactional
+@SpringBootTest(classes = BackendTwoFactorApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BizumExpireIT extends IntegrationTestBase {
     @Autowired JpaBizumAdapter adapter;
 
