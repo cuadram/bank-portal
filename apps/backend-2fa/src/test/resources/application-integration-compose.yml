@@ -61,11 +61,19 @@ notifications:
     vapid-public-key: BDummyVapidPublicKeyForIntegrationTestsOnlyNotRealKey12345678
     vapid-private-key: DummyVapidPrivateKeyForIntegrationTestsOnlyNotRealKey1234
 
+notification:
+  email:
+    deny-base-url: http://localhost:8080/session/deny
+
 trusted-device:
   hmac-key: dummy-hmac-key-for-integration-tests-only-not-real
 
 kyc:
   encryption-key: MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=
+
+session:
+  deny-link:
+    hmac-key: dummy-session-deny-link-hmac-key-for-integration-tests
 
 server:
   port: 0
