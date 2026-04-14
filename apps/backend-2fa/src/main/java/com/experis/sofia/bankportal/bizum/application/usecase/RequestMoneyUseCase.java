@@ -5,6 +5,7 @@ import com.experis.sofia.bankportal.bizum.domain.model.*;
 import com.experis.sofia.bankportal.bizum.domain.repository.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.UUID;
@@ -21,6 +22,7 @@ public class RequestMoneyUseCase {
         this.activationRepo = a; this.requestRepo = r;
     }
 
+    @Transactional
     public RequestMoneyResponse execute(UUID userId, RequestMoneyRequest req) {
         activationRepo.findByUserId(userId).orElseThrow(BizumNotActiveException::new);
         BizumRequest request = new BizumRequest();

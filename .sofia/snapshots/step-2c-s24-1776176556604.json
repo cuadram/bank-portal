@@ -1,14 +1,14 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "in_progress",
+  "status": "gate_pending",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 24,
   "current_feature": "FEAT-022",
-  "current_step": "6",
-  "pipeline_step": "6",
-  "pipeline_step_name": "qa-tester",
+  "current_step": "2c",
+  "pipeline_step": "2c",
+  "pipeline_step_name": "ux-ui-designer",
   "completed_steps": [
     "1",
     "2",
@@ -42,10 +42,10 @@
     "8b",
     "9"
   ],
-  "last_skill": "developer",
-  "last_skill_output_path": "docs/architecture/",
-  "gate_pending": null,
-  "sprint_goal": "Permitir al cliente de Banco Meridian enviar y recibir pagos P2P inmediatos mediante n\u00famero de tel\u00e9fono registrado en Bizum, con autenticaci\u00f3n SCA OTP, verificaci\u00f3n de l\u00edmites regulatorios y notificaciones push en tiempo real, cumpliendo PSD2 Art.97 SCA y SEPA Instant Credit Transfer.",
+  "last_skill": "ux-ui-designer",
+  "last_skill_output_path": "docs/deliverables/sprint-24-FEAT-022/",
+  "gate_pending": "HITL-PO-TL",
+  "sprint_goal": "Permitir al cliente de Banco Meridian enviar y recibir pagos P2P inmediatos mediante número de teléfono registrado en Bizum, con autenticación SCA OTP, verificación de límites regulatorios y notificaciones push en tiempo real, cumpliendo PSD2 Art.97 SCA y SEPA Instant Credit Transfer.",
   "sprint_capacity_sp": 24,
   "artifacts": {
     "1": [
@@ -54,14 +54,14 @@
     ],
     "2": [
       "docs/deliverables/sprint-23-FEAT-021/SRS-FEAT-021-sprint23.md",
-      "6 US + 10 RN + 9 RNF-delta + RTM completa \u2014 gate_pending G-2"
+      "6 US + 10 RN + 9 RNF-delta + RTM completa — gate_pending G-2"
     ],
     "3": [
       "docs/architecture/HLD-FEAT-021-sprint23.md",
       "docs/architecture/LLD-backend-FEAT-021-sprint23.md",
       "docs/architecture/LLD-frontend-FEAT-021-sprint23.md",
       "docs/architecture/ADR-036-037-FEAT-021-sprint23.md",
-      "Confluence page 9371649 \u2014 Sprint 23 HLD FEAT-021 Dep\u00f3sitos"
+      "Confluence page 9371649 — Sprint 23 HLD FEAT-021 Depósitos"
     ],
     "4": [
       "loan/domain/model: Loan, LoanApplication, LoanStatus, LoanPurpose, AmortizationRow",
@@ -73,22 +73,22 @@
       "loan/infrastructure/persistence: LoanEntity, LoanApplicationEntity, JpaLoanJpaRepository x2, JpaAdapter x2",
       "loan/infrastructure/scoring: CoreBankingMockScoringClient (ADR-035)",
       "loan/api: LoanController + LoanExceptionHandler (LA-TEST-003)",
-      "DEBT-043 CLOSED: ProfileController.getNotifications() \u2192 HTTP 200 siempre",
-      "BUG-FIX: DeletionRequestService GdprRequestStatus.EXPIRED \u2192 REJECTED (compile error)",
+      "DEBT-043 CLOSED: ProfileController.getNotifications() → HTTP 200 siempre",
+      "BUG-FIX: DeletionRequestService GdprRequestStatus.EXPIRED → REJECTED (compile error)",
       "BUG-FIX: guardrails-baseline.json ExportController whitelist GR-006",
       "frontend-portal/features/loans: LoansModule + LoansRoutingModule",
       "frontend-portal/features/loans/models: loan.model.ts",
       "frontend-portal/features/loans/services: loan.service.ts (LA-STG-001)",
       "frontend-portal/features/loans/components: LoanList, LoanDetail, LoanSimulator, LoanApplicationForm, AmortizationTable",
       "app-routing.module.ts: ruta /prestamos registrada (LA-FRONT-001)",
-      "shell.component.ts: nav item Pr\u00e9stamos \ud83c\udfdb a\u00f1adido (LA-FRONT-001)",
+      "shell.component.ts: nav item Préstamos 🏛 añadido (LA-FRONT-001)",
       "test/loan/domain/service: AmortizationCalculatorTest (TC-LOAN-001..006)",
       "test/loan/application/usecase: ApplyLoanUseCaseTest (TC-LOAN-007..011)",
       "docs/qa/UNIT-TEST-FEAT-020-sprint22.log: 11/11 PASS",
-      "guardrail-pre-gate G-4b: 9/9 OK \u2014 BUILD SUCCESS \u2014 GATE DESBLOQUEADO"
+      "guardrail-pre-gate G-4b: 9/9 OK — BUILD SUCCESS — GATE DESBLOQUEADO"
     ],
     "5": [
-      "docs/code-review/CR-FEAT-020-sprint22.md \u2014 APPROVED 0 blocker 0 major 2 minor corregidos 1 sugerencia"
+      "docs/code-review/CR-FEAT-020-sprint22.md — APPROVED 0 blocker 0 major 2 minor corregidos 1 sugerencia"
     ],
     "6": [
       "docs/qa/QA-FEAT-020-sprint22.md",
@@ -122,26 +122,26 @@
       "excel/Decision-Log-Sprint22.xlsx",
       "excel/Quality-Dashboard-Sprint22.xlsx",
       "docs/sprints/SPRINT-022-data.json",
-      "gen-docs-sprint22.js (75KB) \u2014 generador reproducible",
-      "VERIFICACION: 17/17 DOCX correctos + 3/3 XLSX correctos \u2014 contenido coherente con estado real"
+      "gen-docs-sprint22.js (75KB) — generador reproducible",
+      "VERIFICACION: 17/17 DOCX correctos + 3/3 XLSX correctos — contenido coherente con estado real"
     ],
     "9": [
-      "JIRA: SCRUM-114..121 \u2192 Finalizada (8/8)",
-      "Confluence page 7634945 \u2014 Sprint 22 Resultados",
-      "Confluence page 7667713 \u2014 Sprint 22 Retrospectiva",
+      "JIRA: SCRUM-114..121 → Finalizada (8/8)",
+      "Confluence page 7634945 — Sprint 22 Resultados",
+      "Confluence page 7667713 — Sprint 22 Retrospectiva",
       "LESSONS_LEARNED.md regenerado (47 LAs)",
-      "Dashboard global regenerado \u00b7 Gate G-9",
+      "Dashboard global regenerado · Gate G-9",
       "session.json cerrado: sprint_closed=true, acum=521SP",
-      ".sofia/ma-baseline.json \u2014 MA Process Baseline generado \u00b7 7 sprints \u00b7 6 m\u00e9tricas \u00b7 overall:GREEN",
-      ".sofia/org-baseline.json \u2014 ORG Baseline local (1 proyecto \u00b7 BANK_PORTAL)"
+      ".sofia/ma-baseline.json — MA Process Baseline generado · 7 sprints · 6 métricas · overall:GREEN",
+      ".sofia/org-baseline.json — ORG Baseline local (1 proyecto · BANK_PORTAL)"
     ],
     "2b": [
-      "validate-fa-index PASS 8/8 \u2014 86 func, 198 BRs \u2014 2026-04-06T06:13:45.227Z",
-      "FA-bank-portal-Banco Meridian.docx v0.2 \u2014 73.6KB \u2014 docs/functional-analysis/"
+      "validate-fa-index PASS 8/8 — 86 func, 198 BRs — 2026-04-06T06:13:45.227Z",
+      "FA-bank-portal-Banco Meridian.docx v0.2 — 73.6KB — docs/functional-analysis/"
     ],
     "2c": [
       "docs/ux-ui/UX-FEAT-021-sprint23.md",
-      "docs/ux-ui/prototypes/PROTO-FEAT-021-sprint23.html (78KB \u00b7 10 pantallas \u00b7 CSS/JS heredado PROTO-FEAT-020-sprint22 \u00b7 sidebar navy real de produccion)"
+      "docs/ux-ui/prototypes/PROTO-FEAT-021-sprint23.html (78KB · 10 pantallas · CSS/JS heredado PROTO-FEAT-020-sprint22 · sidebar navy real de produccion)"
     ],
     "3b": [
       "docs/architecture/HLD-FEAT-020-sprint22.md",
@@ -149,22 +149,22 @@
       "docs/architecture/LLD-frontend-FEAT-020-sprint22.md",
       "docs/architecture/ADR-034-035-FEAT-020-sprint22.md",
       "apps/backend-2fa/src/main/resources/db/migration/V24__loans_and_applications.sql",
-      "Confluence HLD page 7405570 \u2014 VERIFICADA status:current parentId:65958 (Arquitectura)",
-      "validate-fa-index PASS 8/8 \u2014 78 func 188 BRs \u2014 2026-04-02T19:27:35.063Z"
+      "Confluence HLD page 7405570 — VERIFICADA status:current parentId:65958 (Arquitectura)",
+      "validate-fa-index PASS 8/8 — 78 func 188 BRs — 2026-04-02T19:27:35.063Z"
     ],
     "4b": [
-      "GUARDRAIL G-4b PASS 9/9 \u2014 2026-04-02T12:23Z \u2014 BUILD SUCCESS"
+      "GUARDRAIL G-4b PASS 9/9 — 2026-04-02T12:23Z — BUILD SUCCESS"
     ],
     "5b": [
-      "docs/deliverables/sprint-22-FEAT-020/SEC-FEAT-020-sprint22.md \u2014 GREEN 0 CVE_CRITICAL 0 CVE_HIGH 1 SAST_LOW"
+      "docs/deliverables/sprint-22-FEAT-020/SEC-FEAT-020-sprint22.md — GREEN 0 CVE_CRITICAL 0 CVE_HIGH 1 SAST_LOW"
     ],
     "8b": [
-      "FA-BankPortal-Banco-Meridian.docx \u2014 70KB \u2014 78 func 188 BRs \u2014 validate-fa-index PASS 8/8"
+      "FA-BankPortal-Banco-Meridian.docx — 70KB — 78 func 188 BRs — validate-fa-index PASS 8/8"
     ],
     "3b_s23": [
-      "validate-fa-index PASS 8/8 \u2014 86 func, 198 BRs \u2014 2026-04-09T08:51:16.807Z",
-      "FA-FEAT-021-sprint23.md enriquecido con arquitectura HLD/LLD \u2014 status READY_FOR_REVIEW",
-      "Confluence HLD page 9371649 \u2014 verificada (publicada en step 3)"
+      "validate-fa-index PASS 8/8 — 86 func, 198 BRs — 2026-04-09T08:51:16.807Z",
+      "FA-FEAT-021-sprint23.md enriquecido con arquitectura HLD/LLD — status READY_FOR_REVIEW",
+      "Confluence HLD page 9371649 — verificada (publicada en step 3)"
     ],
     "4_s23": [
       "deposit/domain/model: Deposit, DepositApplication, DepositStatus, RenewalInstruction",
@@ -176,7 +176,7 @@
       "deposit/infrastructure/persistence: DepositEntity, JpaDepositRepository, JpaDepositAdapter",
       "deposit/infrastructure/corebanking: CoreBankingMockDepositClient (ADR-037)",
       "deposit/api: DepositController (getAttribute LA-TEST-001) + DepositExceptionHandler (LA-TEST-003)",
-      "V26__deposits.sql \u2014 Flyway migration",
+      "V26__deposits.sql — Flyway migration",
       "application.yml: bank.products.deposit.* + loan.tae (DEBT-044)",
       "DEBT-044 CLOSED: SimulateLoanUseCase @Value taeAnual",
       "DEBT-037 CLOSED: CardPanValidator regex PAN 13-19 + Luhn",
@@ -185,13 +185,13 @@
       "app-routing.module.ts: /depositos lazy registrada (LA-FRONT-001)",
       "shell.component.ts: nav item Depositos (LA-FRONT-001)",
       "tests: IrpfRetentionCalculatorTest TC-001..006 + OpenDepositUseCaseTest TC-007..011",
-      "guardrail G-4b: 10/10 OK \u2014 BUILD DESBLOQUEADO"
+      "guardrail G-4b: 10/10 OK — BUILD DESBLOQUEADO"
     ],
     "5_s23": [
-      "docs/code-review/CR-FEAT-021-sprint23.md \u2014 APPROVED 0 blocker 0 major 2 minor 1 sugerencia"
+      "docs/code-review/CR-FEAT-021-sprint23.md — APPROVED 0 blocker 0 major 2 minor 1 sugerencia"
     ],
     "5b_s23": [
-      "docs/deliverables/sprint-23-FEAT-021/SEC-FEAT-021-sprint23.md \u2014 GREEN 0 CVE_CRITICAL 0 CVE_HIGH 1 SAST_MENOR"
+      "docs/deliverables/sprint-23-FEAT-021/SEC-FEAT-021-sprint23.md — GREEN 0 CVE_CRITICAL 0 CVE_HIGH 1 SAST_MENOR"
     ],
     "6_s23": [
       "docs/qa/QA-FEAT-021-sprint23.md",
@@ -225,21 +225,21 @@
       "excel/Decision-Log-Sprint23.xlsx",
       "excel/Quality-Dashboard-Sprint23.xlsx",
       "docs/sprints/SPRINT-023-data.json",
-      "gen-docs-sprint23.js \u2014 generador reproducible",
-      "VERIFICACION: 17/17 DOCX + 3/3 XLSX + 1 JSON \u2014 contenido coherente con estado real S23"
+      "gen-docs-sprint23.js — generador reproducible",
+      "VERIFICACION: 17/17 DOCX + 3/3 XLSX + 1 JSON — contenido coherente con estado real S23"
     ],
     "8b_s23": [
-      "validate-fa-index PASS 8/8 \u2014 86 func, 198 BRs \u2014 2026-04-09T15:16:57.055Z",
-      "FA-bank-portal-Banco Meridian.docx v0.3 \u2014 73.7KB \u2014 docs/functional-analysis/",
-      "Sprints cubiertos: S1-S23 \u2014 FEAT-021 Dep\u00f3sitos a Plazo Fijo consolidado"
+      "validate-fa-index PASS 8/8 — 86 func, 198 BRs — 2026-04-09T15:16:57.055Z",
+      "FA-bank-portal-Banco Meridian.docx v0.3 — 73.7KB — docs/functional-analysis/",
+      "Sprints cubiertos: S1-S23 — FEAT-021 Depósitos a Plazo Fijo consolidado"
     ],
     "9_s23": [
-      "JIRA: SCRUM-122..131 \u2192 Finalizada (10/10)",
-      "Confluence page 11272193 \u2014 Sprint 23 Resultados",
-      "Confluence page 11304961 \u2014 Sprint 23 Retrospectiva",
-      "LESSONS_LEARNED.md regenerado (83 LAs \u00b7 29KB)",
-      "Dashboard global regenerado \u00b7 Gate G-9",
-      "session.json cerrado: sprint_closed=true \u00b7 acum=545SP"
+      "JIRA: SCRUM-122..131 → Finalizada (10/10)",
+      "Confluence page 11272193 — Sprint 23 Resultados",
+      "Confluence page 11304961 — Sprint 23 Retrospectiva",
+      "LESSONS_LEARNED.md regenerado (83 LAs · 29KB)",
+      "Dashboard global regenerado · Gate G-9",
+      "session.json cerrado: sprint_closed=true · acum=545SP"
     ],
     "1_s24": [
       "docs/sprints/SPRINT-024-planning.md",
@@ -247,54 +247,14 @@
     ],
     "2_s24": [
       "docs/deliverables/sprint-24-FEAT-022/SRS-FEAT-022-sprint24.md",
-      "7 US + 2 DEBT con criterios Gherkin + RTM completa \u2014 gate_pending G-2"
+      "7 US + 2 DEBT con criterios Gherkin + RTM completa — gate_pending G-2"
     ],
     "2b_s24": [
-      "validate-fa-index PASS 8/8 \u2014 93 func, 209 BRs \u2014 2026-04-14T14:15:58.449Z",
-      "FA-bank-portal-Banco Meridian.docx v0.5 \u2014 76.9KB \u2014 docs/functional-analysis/"
+      "validate-fa-index PASS 8/8 — 93 func, 209 BRs — 2026-04-14T14:15:58.449Z",
+      "FA-bank-portal-Banco Meridian.docx v0.5 — 76.9KB — docs/functional-analysis/"
     ],
     "2c_s24": [
-      "docs/ux-ui/prototypes/PROTO-FEAT-022-sprint24.html (72KB \u00b7 7 pantallas \u00b7 CSS/JS heredado PROTO-FEAT-021-sprint23 \u00b7 sidebar navy #1e3a5f real de producci\u00f3n)"
-    ],
-    "3_s24": [
-      "docs/architecture/HLD-FEAT-022-sprint24.md",
-      "docs/architecture/LLD-backend-FEAT-022-sprint24.md",
-      "docs/architecture/LLD-frontend-FEAT-022-sprint24.md",
-      "docs/architecture/ADR-038-039-FEAT-022-sprint24.md",
-      "Confluence page 12779521 \u2014 Sprint 24 HLD FEAT-022 Bizum"
-    ],
-    "3b_s24": [
-      "validate-fa-index PASS 8/8 \u2014 93 func, 209 BRs \u2014 2026-04-14T14:59:02.741Z",
-      "FA-FEAT-022-sprint24.md enriquecido con arquitectura HLD/LLD \u2014 status READY_FOR_REVIEW",
-      "Confluence HLD page 12779521 \u2014 verificada (publicada en step 3)"
-    ],
-    "4_s24": [
-      "bizum/domain/model: BizumActivation, BizumPayment, BizumRequest, BizumStatus",
-      "bizum/domain/exception: 6 excepciones de dominio",
-      "bizum/domain/service: BizumLimitService (@Value properties), PhoneValidationService (E.164 + mask)",
-      "bizum/domain/repository: 3 ports (Activation, Payment, Request)",
-      "bizum/application/usecase: 6 UC (Activate, SendPayment, RequestMoney, Accept, Reject, ListTransactions)",
-      "bizum/application/dto: 8 DTOs (records)",
-      "bizum/infrastructure/persistence: 3 entities + 3 JPA repos + JpaBizumAdapter (@Primary)",
-      "bizum/infrastructure/corebanking: SepaInstantPort + SepaInstantResult + CoreBankingMockBizumClient (ADR-038/DEBT-045)",
-      "bizum/infrastructure/redis: BizumRateLimitAdapter ratelimit:{userId}:bizum:{date} (ADR-039/DEBT-046)",
-      "bizum/api: BizumController + BizumExceptionHandler (LA-TEST-003)",
-      "V27__bizum.sql \u2014 Flyway migration 3 tablas",
-      "application.yml: bank.bizum.limit.* a\u00f1adido",
-      "app-routing.module.ts: /bizum lazy registrada (LA-FRONT-001)",
-      "shell.component.ts: nav Bizum \ud83d\udcb8 a\u00f1adido (LA-FRONT-001)",
-      "features/bizum: module + routing + model + service + 5 components",
-      "tests: BizumLimitServiceTest TC001-005 + SendPaymentUseCaseTest TC006-010 + RequestMoneyUseCaseTest TC011-014",
-      "guardrail G-4b: 72/72 OK \u2014 BUILD DESBLOQUEADO"
-    ],
-    "4b_s24": [
-      "GUARDRAIL G-4b PASS 72/72 \u2014 2026-04-14T15:17:56.837Z \u2014 BUILD DESBLOQUEADO"
-    ],
-    "5_s24": [
-      "docs/code-review/CR-FEAT-022-sprint24.md \u2014 APPROVED 0 blocker 0 major 0 minor 2 sugerencias aplicadas"
-    ],
-    "5b_s24": [
-      "docs/deliverables/sprint-24-FEAT-022/SEC-FEAT-022-sprint24.md \u2014 GREEN 0 CVE_CRITICAL 0 CVE_HIGH 0 SAST"
+      "docs/ux-ui/prototypes/PROTO-FEAT-022-sprint24.html (45KB · 6 pantallas · sidebar navy #1e3a5f · CSS heredado PROTO-FEAT-021)"
     ]
   },
   "gates": {
@@ -316,33 +276,26 @@
     },
     "HITL-PO-TL": {
       "approved_by": "product-owner+tech-lead",
-      "approved_at": "2026-04-14T14:32:29.266Z",
-      "step": "2c",
-      "sprint": 24,
-      "feature": "FEAT-022",
-      "note": "UX-FEAT-022-sprint24 + PROTO-FEAT-022-sprint24.html (72KB) aprobados. 7 pantallas, 3 flujos."
+      "approved_at": "2026-04-06T10:41:41.017Z",
+      "step": "2c"
     },
     "G-4": {
       "approved_by": "tech-lead",
-      "approved_at": "2026-04-14T15:26:06.416Z",
+      "approved_at": "2026-04-09T10:46:48.478Z",
       "step": "4",
-      "sprint": 24,
-      "feature": "FEAT-022",
-      "note": "Developer FEAT-022 Bizum. DEBT-045/046 CLOSED. 95/95 verificaci\u00f3n."
+      "note": "Step 4 Developer: 35 Java + 9 Angular + 11 tests TC-001..011 + G-4b 10/10 OK. DEBT-036/037/044 CLOSED."
     },
     "G-5": {
       "approved_by": "tech-lead",
-      "approved_at": "2026-04-14T15:27:18.000Z",
+      "approved_at": "2026-04-09T10:49:03.114Z",
       "step": "5",
-      "sprint": 24,
-      "feature": "FEAT-022",
-      "note": "CR APPROVED 0 blocker 0 major 0 minor 2 sugerencias aplicadas"
+      "note": "CR APPROVED 0 blocker + Security GREEN 0 CVE + DEBT-036/037 CLOSED"
     },
     "G-6": {
       "approved_by": "qa-lead+product-owner",
       "approved_at": "2026-04-09T10:49:50.862Z",
       "step": "6",
-      "note": "47/47 PASS 0 FAIL 0 BLOCKED \u2014 LISTO PARA RELEASE SIN CONDICIONES"
+      "note": "47/47 PASS 0 FAIL 0 BLOCKED — LISTO PARA RELEASE SIN CONDICIONES"
     },
     "G-7": {
       "approved_by": "release-manager",
@@ -352,11 +305,9 @@
     },
     "G-5b": {
       "approved_by": "auto",
-      "approved_at": "2026-04-14T15:27:18.000Z",
+      "approved_at": "2026-04-09T10:49:03.114Z",
       "step": "5b",
-      "sprint": 24,
-      "feature": "FEAT-022",
-      "note": "GREEN 0 CVE_CRITICAL 0 CVE_HIGH \u2014 auto-avanza a QA"
+      "note": "GREEN 0 cve_critical — auto-avanza a QA"
     },
     "G-8": {
       "approved_by": "pm",
@@ -372,7 +323,7 @@
       "step": "8b",
       "sprint": 23,
       "feature": "FEAT-021",
-      "note": "validate-fa-index PASS 8/8 \u00b7 FA-bank-portal v0.3 73.7KB \u00b7 86 func 198 BRs"
+      "note": "validate-fa-index PASS 8/8 · FA-bank-portal v0.3 73.7KB · 86 func 198 BRs"
     },
     "G-9": {
       "approved_by": "product-owner",
@@ -380,7 +331,7 @@
       "step": "9",
       "sprint": 23,
       "feature": "FEAT-021",
-      "note": "Sprint 23 CERRADO \u2014 SCRUM-122..131 Finalizada \u2014 Confluence 11272193 + Retro 11304961 \u2014 17 DOCX + 3 XLSX \u2014 FA v0.3 86/198 \u2014 Dashboard G-9"
+      "note": "Sprint 23 CERRADO — SCRUM-122..131 Finalizada — Confluence 11272193 + Retro 11304961 — 17 DOCX + 3 XLSX — FA v0.3 86/198 — Dashboard G-9"
     },
     "G-2b": {
       "approved_by": "auto",
@@ -388,31 +339,7 @@
       "step": "2b",
       "sprint": 24,
       "feature": "FEAT-022",
-      "note": "validate-fa-index PASS 8/8 \u00b7 FA v0.5 76.9KB \u00b7 93 func 209 BRs"
-    },
-    "G-3": {
-      "approved_by": "tech-lead",
-      "approved_at": "2026-04-14T14:58:44.314Z",
-      "step": "3",
-      "sprint": 24,
-      "feature": "FEAT-022",
-      "note": "HLD + LLD Backend + LLD Frontend + ADR-038/039 aprobados. 112/112 checks trazabilidad."
-    },
-    "G-3b": {
-      "approved_by": "auto",
-      "approved_at": "2026-04-14T14:59:02.741Z",
-      "step": "3b",
-      "sprint": 24,
-      "feature": "FEAT-022",
-      "note": "Step 3b AUTO: validate-fa-index PASS 8/8 \u00b7 FA enriquecido \u00b7 HLD Confluence 12779521 OK"
-    },
-    "G-4b": {
-      "approved_by": "auto",
-      "approved_at": "2026-04-14T15:17:56.837Z",
-      "step": "4b",
-      "sprint": 24,
-      "feature": "FEAT-022",
-      "note": "Guardrail 72/72 OK"
+      "note": "validate-fa-index PASS 8/8 · FA v0.5 76.9KB · 93 func 209 BRs"
     }
   },
   "fa_agent": {
@@ -471,11 +398,11 @@
     ]
   },
   "security": {
-    "last_audit": "2026-04-14",
+    "last_audit": "2026-04-09",
     "semaphore": "GREEN",
     "cve_critical": 0,
     "cve_high": 0,
-    "sast_findings": 0,
+    "sast_findings": 1,
     "sast_blocker": 0,
     "open_debts": [],
     "pci_dss_compliant": true,
@@ -642,17 +569,18 @@
     "verdict": "APPROVED",
     "findings_blocker": 0,
     "findings_major": 0,
-    "findings_minor": 0,
-    "findings_suggestion": 2,
+    "findings_minor": 2,
+    "findings_suggestion": 1,
     "fixes_applied": [
-      "CR-SG-001",
-      "CR-SG-002"
+      "RV-F021-01",
+      "RV-F021-02"
     ],
-    "report": "docs/code-review/CR-FEAT-022-sprint24.md",
-    "reviewed_at": "2026-04-14T15:27:18.000Z"
+    "tests_added": 11,
+    "report": "docs/code-review/CR-FEAT-021-sprint23.md",
+    "reviewed_at": "2026-04-09T10:49:03.114Z"
   },
-  "updated_at": "2026-04-14T15:27:18.000Z",
-  "resume_next": "Sprint 24 \u00b7 FEAT-022 Bizum P2P \u00b7 Gate G-1 pendiente aprobaci\u00f3n PO",
+  "updated_at": "2026-04-14T14:22:36.599Z",
+  "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": false,
   "gate8_approved_by": "release-manager",
   "gate8_approved_at": "2026-03-25T17:00:00Z",
@@ -927,7 +855,7 @@
       "approved_at": "2026-03-31T20:16:46.290Z",
       "sprint": 21,
       "feature": "FEAT-019",
-      "note": "Sem\u00e1foro YELLOW \u2014 cve_critical=0, pipeline auto-avanza a QA"
+      "note": "Semáforo YELLOW — cve_critical=0, pipeline auto-avanza a QA"
     },
     {
       "gate": "G-5b",
@@ -936,7 +864,7 @@
       "approved_at": "2026-04-01T05:31:12.640Z",
       "sprint": 21,
       "feature": "FEAT-019",
-      "note": "YELLOW \u2014 auto por 0 cve_critical"
+      "note": "YELLOW — auto por 0 cve_critical"
     },
     {
       "gate": "G-6",
@@ -1029,7 +957,7 @@
       "approved_at": "2026-04-02T09:56:24.454768+00:00",
       "sprint": 22,
       "feature": "FEAT-020",
-      "note": "FEAT-020 Gesti\u00f3n de Pr\u00e9stamos Personales aprobado. 24 SP. 19 feature + 5 deuda."
+      "note": "FEAT-020 Gestión de Préstamos Personales aprobado. 24 SP. 19 feature + 5 deuda."
     },
     {
       "gate": "G-2",
@@ -1105,7 +1033,7 @@
       "approved_at": "2026-04-02T21:18:00.000Z",
       "sprint": 22,
       "feature": "FEAT-020",
-      "note": "Sprint 22 CERRADO \u2014 SCRUM-114..121 Finalizada \u2014 Confluence 7634945 + Retro 7667713"
+      "note": "Sprint 22 CERRADO — SCRUM-114..121 Finalizada — Confluence 7634945 + Retro 7667713"
     },
     {
       "gate": "G-9",
@@ -1220,7 +1148,7 @@
       "approved_at": "2026-04-09T08:51:16.807Z",
       "sprint": 23,
       "feature": "FEAT-021",
-      "note": "Step 3b AUTO: validate-fa-index PASS 8/8 \u00b7 FA enriquecido \u00b7 HLD Confluence 9371649 OK"
+      "note": "Step 3b AUTO: validate-fa-index PASS 8/8 · FA enriquecido · HLD Confluence 9371649 OK"
     },
     {
       "gate": "G-3b",
@@ -1310,7 +1238,7 @@
       "approved_at": "2026-04-09T16:20:59.754Z",
       "sprint": 23,
       "feature": "FEAT-021",
-      "note": "Sprint 23 CERRADO \u00b7 Jira 10/10 \u00b7 Confluence OK \u00b7 LESSONS_LEARNED 83 LAs \u00b7 Dashboard G-9"
+      "note": "Sprint 23 CERRADO · Jira 10/10 · Confluence OK · LESSONS_LEARNED 83 LAs · Dashboard G-9"
     },
     {
       "gate": "G-1",
@@ -1337,76 +1265,7 @@
       "approved_at": "2026-04-14T14:15:58.449Z",
       "sprint": 24,
       "feature": "FEAT-022",
-      "note": "AUTO: validate-fa-index PASS 8/8 \u00b7 FA v0.5"
-    },
-    {
-      "gate": "HITL-PO-TL",
-      "step": "2c",
-      "approved_by": "product-owner+tech-lead",
-      "approved_at": "2026-04-14T14:32:29.266Z",
-      "sprint": 24,
-      "feature": "FEAT-022",
-      "note": "7 pantallas, 3 flujos, herencia CSS S23."
-    },
-    {
-      "gate": "G-3",
-      "step": "3",
-      "approved_at": "2026-04-14T14:36:00.747Z",
-      "sprint": 24,
-      "feature": "FEAT-022",
-      "note": "HLD + LLD Backend + LLD Frontend + ADR-038/039 generados. Confluence 12779521."
-    },
-    {
-      "gate": "G-3",
-      "step": "3",
-      "approved_by": "tech-lead",
-      "approved_at": "2026-04-14T14:58:44.314Z",
-      "sprint": 24,
-      "feature": "FEAT-022",
-      "note": "112/112 trazabilidad."
-    },
-    {
-      "gate": "G-3b",
-      "step": "3b",
-      "approved_by": "auto",
-      "approved_at": "2026-04-14T14:59:02.741Z",
-      "sprint": 24,
-      "feature": "FEAT-022",
-      "note": "AUTO: validate-fa-index PASS 8/8 \u00b7 FA enriquecido"
-    },
-    {
-      "gate": "G-4b",
-      "step": "4b",
-      "approved_by": "auto",
-      "approved_at": "2026-04-14T15:17:56.837Z",
-      "sprint": 24,
-      "feature": "FEAT-022",
-      "note": "72/72 OK"
-    },
-    {
-      "gate": "G-4",
-      "step": "4",
-      "approved_by": "tech-lead",
-      "approved_at": "2026-04-14T15:26:06.416Z",
-      "sprint": 24,
-      "feature": "FEAT-022"
-    },
-    {
-      "gate": "G-5",
-      "step": "5",
-      "approved_by": "tech-lead",
-      "approved_at": "2026-04-14T15:27:18.000Z",
-      "sprint": 24,
-      "feature": "FEAT-022"
-    },
-    {
-      "gate": "G-5b",
-      "step": "5b",
-      "approved_by": "auto",
-      "approved_at": "2026-04-14T15:27:18.000Z",
-      "sprint": 24,
-      "feature": "FEAT-022",
-      "note": "GREEN auto"
+      "note": "AUTO: validate-fa-index PASS 8/8 · FA v0.5"
     }
   ],
   "lessons_learned": [
@@ -1414,7 +1273,7 @@
       "id": "LA-019-03",
       "sprint": 19,
       "type": "process",
-      "description": "Gates G-6..G-9 auto-aprobados incorrectamente. Correcci\u00f3n: cada gate HITL requiere parada expl\u00edcita individual.",
+      "description": "Gates G-6..G-9 auto-aprobados incorrectamente. Corrección: cada gate HITL requiere parada explícita individual.",
       "correction": "Desde Sprint 20: parada obligatoria en cada gate HITL con pregunta al rol definido.",
       "registered_at": "2026-03-27T14:06:00.285397Z",
       "approved_by": "product-owner",
@@ -1424,7 +1283,7 @@
       "id": "LA-019-04",
       "sprint": 19,
       "type": "testing",
-      "description": "Tests unitarios no detectan conflictos de beans Spring \u2014 requieren @SpringBootTest completo",
+      "description": "Tests unitarios no detectan conflictos de beans Spring — requieren @SpringBootTest completo",
       "correction": "G-4 requiere IT smoke test por feature nueva",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1442,7 +1301,7 @@
       "id": "LA-019-06",
       "sprint": 19,
       "type": "process",
-      "description": "Patr\u00f3n DEBT-022 no verificable autom\u00e1ticamente en Code Review",
+      "description": "Patrón DEBT-022 no verificable automáticamente en Code Review",
       "correction": "Script grep DEBT-022 obligatorio en G-5",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1451,7 +1310,7 @@
       "id": "LA-019-07",
       "sprint": 19,
       "type": "testing",
-      "description": "Smoke test desactualizado \u2014 no cubre endpoints del sprint corriente",
+      "description": "Smoke test desactualizado — no cubre endpoints del sprint corriente",
       "correction": "smoke-test actualizado obligatorio como artefacto de G-4",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1460,7 +1319,7 @@
       "id": "LA-019-08",
       "sprint": 19,
       "type": "architecture",
-      "description": "@Profile(!production) activa Mock en STG \u2014 BD real nunca consultada",
+      "description": "@Profile(!production) activa Mock en STG — BD real nunca consultada",
       "correction": "Mocks solo con @Profile(mock) o @Profile(test). @Primary en adaptador real.",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1470,7 +1329,7 @@
       "sprint": 19,
       "type": "config",
       "description": "environment.prod.ts desincronizado con environment.ts",
-      "correction": "Validaci\u00f3n autom\u00e1tica de campos en CI",
+      "correction": "Validación automática de campos en CI",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
     },
@@ -1478,8 +1337,8 @@
       "id": "LA-019-10",
       "sprint": 19,
       "type": "frontend",
-      "description": "M\u00f3dulos Angular nuevos no registrados en router",
-      "correction": "Checklist G-4 incluye verificaci\u00f3n de registro en app-routing.module.ts",
+      "description": "Módulos Angular nuevos no registrados en router",
+      "correction": "Checklist G-4 incluye verificación de registro en app-routing.module.ts",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
     },
@@ -1487,7 +1346,7 @@
       "id": "LA-019-11",
       "sprint": 19,
       "type": "frontend",
-      "description": "Componentes de ruta usan @Input para params \u2014 nunca se populan",
+      "description": "Componentes de ruta usan @Input para params — nunca se populan",
       "correction": "Usar siempre ActivatedRoute.paramMap en componentes de ruta",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1496,7 +1355,7 @@
       "id": "LA-019-12",
       "sprint": 19,
       "type": "data",
-      "description": "UUIDs inv\u00e1lidos en seeds SQL (caracteres no hex)",
+      "description": "UUIDs inválidos en seeds SQL (caracteres no hex)",
       "correction": "Validar UUIDs con regex antes de ejecutar seeds",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1505,8 +1364,8 @@
       "id": "LA-019-13",
       "sprint": 19,
       "type": "database",
-      "description": "timestamp without time zone vs Instant Java \u2014 incompatibilidad de tipos",
-      "correction": "LLD incluye mapa de tipos BD\u2192Java. Usar LocalDateTime para columnas sin timezone.",
+      "description": "timestamp without time zone vs Instant Java — incompatibilidad de tipos",
+      "correction": "LLD incluye mapa de tipos BD→Java. Usar LocalDateTime para columnas sin timezone.",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
     },
@@ -1523,8 +1382,8 @@
       "id": "LA-019-15",
       "sprint": 19,
       "type": "backend",
-      "description": "Named params JdbcClient contaminados por concatenaci\u00f3n de text blocks",
-      "correction": "SQL din\u00e1mico siempre usa par\u00e1metros posicionales (?)",
+      "description": "Named params JdbcClient contaminados por concatenación de text blocks",
+      "correction": "SQL dinámico siempre usa parámetros posicionales (?)",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
     },
@@ -1559,7 +1418,7 @@
       "id": "LA-020-03",
       "sprint": 20,
       "type": "architecture",
-      "description": "Audit log con datos derivados crea inconsistencia \u2014 enriquecer en momento de escritura",
+      "description": "Audit log con datos derivados crea inconsistencia — enriquecer en momento de escritura",
       "correction": "DEBT-036: inyectar AccountRepository en ExportAuditService",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1577,7 +1436,7 @@
       "id": "LA-020-05",
       "sprint": 20,
       "type": "process",
-      "description": "Documentation Agent (10 DOCX + 3 XLSX + dashboard) no ejecutado en Step 8 \u2014 error detectado post-cierre",
+      "description": "Documentation Agent (10 DOCX + 3 XLSX + dashboard) no ejecutado en Step 8 — error detectado post-cierre",
       "correction": "Desde Sprint 21: Documentation Agent es BLOQUEANTE para Gate G-9. No se cierra sprint sin estos artefactos.",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1586,7 +1445,7 @@
       "id": "LA-020-06",
       "sprint": 20,
       "type": "process",
-      "description": "sprint-NN-planning-doc.docx es obligatorio en word/ de cada sprint \u2014 faltaba S18, S19, S20",
+      "description": "sprint-NN-planning-doc.docx es obligatorio en word/ de cada sprint — faltaba S18, S19, S20",
       "correction": "Checklist deliverables: planning-doc.docx bloqueante para Gate G-8 desde Sprint 21",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1604,7 +1463,7 @@
       "id": "LA-020-08",
       "sprint": 20,
       "type": "process",
-      "description": "gen-fa-document.py no se invocaba automaticamente en Step 8b \u2014 FA-BankPortal-Banco-Meridian.docx no se actualizaba en S19 ni S20. Script solo cubria hasta FEAT-016.",
+      "description": "gen-fa-document.py no se invocaba automaticamente en Step 8b — FA-BankPortal-Banco-Meridian.docx no se actualizaba en S19 ni S20. Script solo cubria hasta FEAT-016.",
       "correction": "gen-fa-document.py debe ejecutarse en Step 8b de cada sprint. Anadir llamada al gate-dashboard-hook como paso obligatorio. Script actualizado con FEAT-017 y FEAT-018.",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1613,8 +1472,8 @@
       "id": "LA-020-09",
       "sprint": 20,
       "type": "process",
-      "description": "Developer Agent gener\u00f3 ficheros bajo paquete incorrecto (es.meridian) inferido de documentaci\u00f3n, sin verificar paquete ra\u00edz real del proyecto.",
-      "correction": "REGLA PERMANENTE: antes de crear cualquier fichero Java en un sprint, el Developer Agent DEBE ejecutar: (1) cat BankPortalApplication.java | head -1 para obtener el package ra\u00edz real, (2) ls src/main/java/ para confirmar estructura. Sin esta verificaci\u00f3n el fichero no se escribe.",
+      "description": "Developer Agent generó ficheros bajo paquete incorrecto (es.meridian) inferido de documentación, sin verificar paquete raíz real del proyecto.",
+      "correction": "REGLA PERMANENTE: antes de crear cualquier fichero Java en un sprint, el Developer Agent DEBE ejecutar: (1) cat BankPortalApplication.java | head -1 para obtener el package raíz real, (2) ls src/main/java/ para confirmar estructura. Sin esta verificación el fichero no se escribe.",
       "registered_at": "2026-03-30T18:42:40.685Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1623,8 +1482,8 @@
       "id": "LA-020-10",
       "sprint": 20,
       "type": "code-review",
-      "description": "Code Reviewer valid\u00f3 consistencia interna entre ficheros nuevos pero no contra el codebase real. Marc\u00f3 paquete incorrecto como correcto porque era uniforme entre los nuevos ficheros.",
-      "correction": "REGLA PERMANENTE: el Code Reviewer DEBE ejecutar grep del package ra\u00edz contra los nuevos ficheros y contrastar con el package del proyecto. Checklist G-5 a\u00f1ade: grep -r \"^package\" src/main/java/com/ | head -1 vs package de cada fichero nuevo. Discrepancia = bloqueante.",
+      "description": "Code Reviewer validó consistencia interna entre ficheros nuevos pero no contra el codebase real. Marcó paquete incorrecto como correcto porque era uniforme entre los nuevos ficheros.",
+      "correction": "REGLA PERMANENTE: el Code Reviewer DEBE ejecutar grep del package raíz contra los nuevos ficheros y contrastar con el package del proyecto. Checklist G-5 añade: grep -r \"^package\" src/main/java/com/ | head -1 vs package de cada fichero nuevo. Discrepancia = bloqueante.",
       "registered_at": "2026-03-30T18:42:40.686Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1633,7 +1492,7 @@
       "id": "LA-020-11",
       "sprint": 20,
       "type": "testing",
-      "description": "Sprint 20 cerrado sin SpringContextIT ni integrations tests. 446 unit tests pasando ocultaron que la build no compilar\u00eda. Gate G-4b aprobado sin mvn compile real.",
+      "description": "Sprint 20 cerrado sin SpringContextIT ni integrations tests. 446 unit tests pasando ocultaron que la build no compilaría. Gate G-4b aprobado sin mvn compile real.",
       "correction": "REGLA PERMANENTE: SpringContextIT es BLOQUEANTE para Gate G-4b. Si no existe en el proyecto, el Developer Agent lo crea en el mismo step. mvn compile (no mvn test) debe ejecutarse via sofia-shell antes de declarar G-4b OK. Sin BUILD SUCCESS en consola el gate no se aprueba.",
       "registered_at": "2026-03-30T18:42:40.686Z",
       "approved_by": "product-owner",
@@ -1643,8 +1502,8 @@
       "id": "LA-TEST-001",
       "sprint": 20,
       "type": "backend",
-      "description": "ExportController usaba getAttribute(\"userId\") pero JwtAuthenticationFilter escribe \"authenticatedUserId\". Discrepancia de nombre de atributo de request invisible en compilacion y en Code Review \u2014 causa HTTP 500 en produccion.",
-      "correction": "REGLA PERMANENTE: al usar HttpServletRequest.getAttribute() para propagar claims JWT, el nombre del atributo debe verificarse contra el filtro que lo escribe en el mismo PR. Checklist G-5 a\u00f1ade: grep authenticatedUserId en controladores que extraigan userId del request.",
+      "description": "ExportController usaba getAttribute(\"userId\") pero JwtAuthenticationFilter escribe \"authenticatedUserId\". Discrepancia de nombre de atributo de request invisible en compilacion y en Code Review — causa HTTP 500 en produccion.",
+      "correction": "REGLA PERMANENTE: al usar HttpServletRequest.getAttribute() para propagar claims JWT, el nombre del atributo debe verificarse contra el filtro que lo escribe en el mismo PR. Checklist G-5 añade: grep authenticatedUserId en controladores que extraigan userId del request.",
       "registered_at": "2026-03-31T07:54:00.000Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1653,7 +1512,7 @@
       "id": "LA-TEST-002",
       "sprint": 20,
       "type": "backend",
-      "description": "TransactionExportRepository filtraba t.type (CARGO|ABONO \u2014 direction financiera) cuando el ExportRequest.tipoMovimiento contiene valores de categoria de negocio (DOMICILIACION, PAGO_TARJETA, INGRESO...). Compilacion correcta, tests unitarios pasaban, fallo silencioso en runtime: filtro nunca coincide.",
+      "description": "TransactionExportRepository filtraba t.type (CARGO|ABONO — direction financiera) cuando el ExportRequest.tipoMovimiento contiene valores de categoria de negocio (DOMICILIACION, PAGO_TARJETA, INGRESO...). Compilacion correcta, tests unitarios pasaban, fallo silencioso en runtime: filtro nunca coincide.",
       "correction": "REGLA PERMANENTE: distinguir siempre entre type (direccion financiera: CARGO/ABONO) y category (tipo negocio: DOMICILIACION/PAGO_TARJETA/INGRESO/COMISION/TRANSFERENCIA_*). Tests de integracion deben verificar que el filtro devuelve registros, no solo HTTP 200.",
       "registered_at": "2026-03-31T07:54:00.000Z",
       "approved_by": "product-owner",
@@ -1663,8 +1522,8 @@
       "id": "LA-TEST-003",
       "sprint": 20,
       "type": "backend",
-      "description": "Excepciones de dominio (ExportRangeException, ExportLimitExceededException) sin @ResponseStatus ni @ControllerAdvice mapeo \u2192 Spring devuelve HTTP 500 en lugar de 400/422. La suite de tests detecto que TC-014 (rango invertido) retornaba 500 en lugar de 400.",
-      "correction": "REGLA PERMANENTE: toda excepcion de dominio custom debe tener @ResponseStatus o estar mapeada en un @ControllerAdvice. Developer Agent debe crear ExceptionHandler en el mismo step que crea las excepciones. Checklist G-4 a\u00f1ade: verificar que todas las RuntimeException del modulo tienen handler HTTP explicito.",
+      "description": "Excepciones de dominio (ExportRangeException, ExportLimitExceededException) sin @ResponseStatus ni @ControllerAdvice mapeo → Spring devuelve HTTP 500 en lugar de 400/422. La suite de tests detecto que TC-014 (rango invertido) retornaba 500 en lugar de 400.",
+      "correction": "REGLA PERMANENTE: toda excepcion de dominio custom debe tener @ResponseStatus o estar mapeada en un @ControllerAdvice. Developer Agent debe crear ExceptionHandler en el mismo step que crea las excepciones. Checklist G-4 añade: verificar que todas las RuntimeException del modulo tienen handler HTTP explicito.",
       "registered_at": "2026-03-31T07:54:00.000Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1673,7 +1532,7 @@
       "id": "LA-TEST-004",
       "sprint": 20,
       "type": "backend",
-      "description": "JdbcClient (Spring 6) no convierte java.time.Instant automaticamente para columnas TIMESTAMP without time zone de PostgreSQL. Pasar Instant directo en params() lanza DataAccessException en runtime \u2014 invisible en compilacion y en tests unitarios con mocks.",
+      "description": "JdbcClient (Spring 6) no convierte java.time.Instant automaticamente para columnas TIMESTAMP without time zone de PostgreSQL. Pasar Instant directo en params() lanza DataAccessException en runtime — invisible en compilacion y en tests unitarios con mocks.",
       "correction": "REGLA PERMANENTE: para columnas TIMESTAMP (sin timezone) en PostgreSQL via JdbcClient, usar siempre Timestamp.from(instant) o LocalDateTime. Para columnas TIMESTAMPTZ usar OffsetDateTime. Developer Agent debe incluir este mapeo en el LLD y verificarlo en el IT smoke test antes de G-4b.",
       "registered_at": "2026-03-31T07:54:00.000Z",
       "approved_by": "product-owner",
@@ -1683,8 +1542,8 @@
       "id": "LA-FRONT-001",
       "sprint": 21,
       "type": "frontend",
-      "description": "M\u00f3dulos Angular implementados en features/ no registrados en app-routing.module.ts ni en el sidebar (shell.component.ts). El m\u00f3dulo existe y compila pero es inaccesible para el usuario.",
-      "correction": "REGLA PERMANENTE: al crear cualquier m\u00f3dulo Angular en features/, el Developer Agent debe en el mismo step: (1) a\u00f1adir la ruta lazy en app-routing.module.ts, (2) a\u00f1adir el nav item en shell.component.ts. Checklist G-4 a\u00f1ade: verificar que todo m\u00f3dulo en features/ tiene ruta y nav item.",
+      "description": "Módulos Angular implementados en features/ no registrados en app-routing.module.ts ni en el sidebar (shell.component.ts). El módulo existe y compila pero es inaccesible para el usuario.",
+      "correction": "REGLA PERMANENTE: al crear cualquier módulo Angular en features/, el Developer Agent debe en el mismo step: (1) añadir la ruta lazy en app-routing.module.ts, (2) añadir el nav item en shell.component.ts. Checklist G-4 añade: verificar que todo módulo en features/ tiene ruta y nav item.",
       "registered_at": "2026-03-31T07:12:44.461Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1693,8 +1552,8 @@
       "id": "LA-FRONT-002",
       "sprint": 21,
       "type": "frontend",
-      "description": "Componente placeholder creado para resolver error de build (export.module.ts sin componente) pero qued\u00f3 en producci\u00f3n con botones \"Pr\u00f3ximamente\", ocultando funcionalidad backend ya implementada.",
-      "correction": "REGLA PERMANENTE: antes de crear un componente placeholder, verificar si el backend tiene el endpoint implementado. Si existe, implementar el componente real directamente. Un placeholder nunca debe llegar a una imagen Docker de producci\u00f3n.",
+      "description": "Componente placeholder creado para resolver error de build (export.module.ts sin componente) pero quedó en producción con botones \"Próximamente\", ocultando funcionalidad backend ya implementada.",
+      "correction": "REGLA PERMANENTE: antes de crear un componente placeholder, verificar si el backend tiene el endpoint implementado. Si existe, implementar el componente real directamente. Un placeholder nunca debe llegar a una imagen Docker de producción.",
       "registered_at": "2026-03-31T07:12:44.463Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1703,8 +1562,8 @@
       "id": "LA-FRONT-003",
       "sprint": 21,
       "type": "frontend",
-      "description": "Import path incorrecto en componente anidado: desde components/export-panel/ se us\u00f3 ../services/ (1 nivel) cuando el servicio est\u00e1 en ../../services/ (2 niveles). Error invisible hasta docker build.",
-      "correction": "REGLA PERMANENTE: al crear componentes en subdirectorios anidados (components/nombre/), calcular el path relativo desde la ubicaci\u00f3n real del fichero. Verificar siempre: profundidad del componente vs profundidad del m\u00f3dulo al que pertenece el servicio.",
+      "description": "Import path incorrecto en componente anidado: desde components/export-panel/ se usó ../services/ (1 nivel) cuando el servicio está en ../../services/ (2 niveles). Error invisible hasta docker build.",
+      "correction": "REGLA PERMANENTE: al crear componentes en subdirectorios anidados (components/nombre/), calcular el path relativo desde la ubicación real del fichero. Verificar siempre: profundidad del componente vs profundidad del módulo al que pertenece el servicio.",
       "registered_at": "2026-03-31T07:12:44.463Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1713,8 +1572,8 @@
       "id": "LA-FRONT-004",
       "sprint": 21,
       "type": "frontend",
-      "description": "Backend ProfileController no implementado (FEAT-012 S14) pero el m\u00f3dulo Angular de perfil estaba registrado en el router. El componente cargaba, hac\u00eda forkJoin a /api/v1/profile, obten\u00eda EMPTY y no renderizaba nada \u2014 sin error visible para el usuario.",
-      "correction": "REGLA PERMANENTE: antes de registrar una ruta Angular, verificar que el endpoint backend correspondiente existe. Si no existe, registrar deuda t\u00e9cnica (DEBT-XXX) y mantener la ruta comentada hasta implementaci\u00f3n. No exponer rutas con endpoints inexistentes.",
+      "description": "Backend ProfileController no implementado (FEAT-012 S14) pero el módulo Angular de perfil estaba registrado en el router. El componente cargaba, hacía forkJoin a /api/v1/profile, obtenía EMPTY y no renderizaba nada — sin error visible para el usuario.",
+      "correction": "REGLA PERMANENTE: antes de registrar una ruta Angular, verificar que el endpoint backend correspondiente existe. Si no existe, registrar deuda técnica (DEBT-XXX) y mantener la ruta comentada hasta implementación. No exponer rutas con endpoints inexistentes.",
       "registered_at": "2026-03-31T07:12:44.463Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1723,8 +1582,8 @@
       "id": "LA-FRONT-005",
       "sprint": 21,
       "type": "frontend",
-      "description": "docker compose up sirve la imagen preconstruida \u2014 cambios en source code no se reflejan sin docker compose build. Confusi\u00f3n recurrente: el fichero en disco estaba correcto pero el contenedor segu\u00eda mostrando la versi\u00f3n anterior.",
-      "correction": "REGLA PERMANENTE: cualquier cambio en frontend Angular requiere docker compose build frontend + docker compose up -d --no-deps frontend. Documentar este flujo en el runbook del proyecto. A\u00f1adir al checklist de G-4b.",
+      "description": "docker compose up sirve la imagen preconstruida — cambios en source code no se reflejan sin docker compose build. Confusión recurrente: el fichero en disco estaba correcto pero el contenedor seguía mostrando la versión anterior.",
+      "correction": "REGLA PERMANENTE: cualquier cambio en frontend Angular requiere docker compose build frontend + docker compose up -d --no-deps frontend. Documentar este flujo en el runbook del proyecto. Añadir al checklist de G-4b.",
       "registered_at": "2026-03-31T07:12:44.463Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1733,8 +1592,8 @@
       "id": "LA-021-01",
       "sprint": 21,
       "type": "process",
-      "description": "FA-Agent actualizaba functionalities en Gate 2b pero NO el array business_rules. total_business_rules estaba hardcodeado y desincronizado del array real (141 declarado vs 129 real en S20). Detectado al verificar el estado del an\u00e1lisis funcional antes de Gate G-3.",
-      "correction": "REGLA PERMANENTE: (1) En Gate 2b, a\u00f1adir business_rules de la feature nueva junto a functionalities \u2014 nunca uno sin el otro. (2) total_business_rules = len(business_rules) \u2014 NUNCA hardcodeado. (3) validate-fa-index.js bloqueante en Gate 2b, 3b y 8b. Script creado: .sofia/scripts/validate-fa-index.js. FA-Agent SKILL.md bumped a v2.3.",
+      "description": "FA-Agent actualizaba functionalities en Gate 2b pero NO el array business_rules. total_business_rules estaba hardcodeado y desincronizado del array real (141 declarado vs 129 real en S20). Detectado al verificar el estado del análisis funcional antes de Gate G-3.",
+      "correction": "REGLA PERMANENTE: (1) En Gate 2b, añadir business_rules de la feature nueva junto a functionalities — nunca uno sin el otro. (2) total_business_rules = len(business_rules) — NUNCA hardcodeado. (3) validate-fa-index.js bloqueante en Gate 2b, 3b y 8b. Script creado: .sofia/scripts/validate-fa-index.js. FA-Agent SKILL.md bumped a v2.3.",
       "registered_at": "2026-03-31T16:22:28.742Z",
       "script": ".sofia/scripts/validate-fa-index.js",
       "checks": [
@@ -1753,8 +1612,8 @@
       "id": "LA-021-02",
       "sprint": 21,
       "type": "testing",
-      "description": "IntegrationTestBase no declaraba campos testUserId/testAccountId que DashboardJpaAdapterIT usaba, causando error de compilaci\u00f3n de tests y bloqueando mvn test.",
-      "correction": "REGLA: IntegrationTestBase debe declarar todos los fixtures UUID comunes usados por los tests hijos. Cualquier campo usado en m\u00faltiples ITs debe estar en la clase base, no en la hija.",
+      "description": "IntegrationTestBase no declaraba campos testUserId/testAccountId que DashboardJpaAdapterIT usaba, causando error de compilación de tests y bloqueando mvn test.",
+      "correction": "REGLA: IntegrationTestBase debe declarar todos los fixtures UUID comunes usados por los tests hijos. Cualquier campo usado en múltiples ITs debe estar en la clase base, no en la hija.",
       "registered_at": "2026-03-31T19:55:32.761Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1763,8 +1622,8 @@
       "id": "LA-021-03",
       "sprint": 21,
       "type": "process",
-      "description": "Documentation Agent gener\u00f3 solo 10 DOCX en Sprint 21 vs los 12+ obligatorios. Faltaban: CMMI-Evidence, Meeting-Minutes, Project-Plan, Quality-Summary, Risk-Register, Traceability, planning-doc.",
-      "correction": "REGLA PERMANENTE: Documentation Agent DEBE generar siempre los 17 documentos est\u00e1ndar (10 t\u00e9cnicos + 7 CMMI/Gesti\u00f3n). Los 7 adicionales son BLOQUEANTES para Gate G-8 desde Sprint 22. Actualizar SKILL.md doc-agent y checklist G-8.",
+      "description": "Documentation Agent generó solo 10 DOCX en Sprint 21 vs los 12+ obligatorios. Faltaban: CMMI-Evidence, Meeting-Minutes, Project-Plan, Quality-Summary, Risk-Register, Traceability, planning-doc.",
+      "correction": "REGLA PERMANENTE: Documentation Agent DEBE generar siempre los 17 documentos estándar (10 técnicos + 7 CMMI/Gestión). Los 7 adicionales son BLOQUEANTES para Gate G-8 desde Sprint 22. Actualizar SKILL.md doc-agent y checklist G-8.",
       "registered_at": "2026-04-01T05:57:48.784Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1783,7 +1642,7 @@
       "id": "LA-STG-002",
       "sprint": 21,
       "type": "frontend",
-      "description": "LoginComponent tenia version/sprint hardcodeados Sprint 13 v1.13.0 \u2014 no se actualizaba en cada sprint. Detectado en verificacion STG v1.21.0.",
+      "description": "LoginComponent tenia version/sprint hardcodeados Sprint 13 v1.13.0 — no se actualizaba en cada sprint. Detectado en verificacion STG v1.21.0.",
       "correction": "REGLA: version/sprint/envLabel SIEMPRE desde environment.ts. Campos obligatorios en ambos environment files. stg-pre-check.js detecta patron automaticamente en G-4/G-5.",
       "registered_at": "2026-04-01T12:26:12.393Z",
       "commit": "bc367a8",
@@ -1804,7 +1663,7 @@
       "id": "LA-022-02",
       "sprint": 22,
       "type": "process",
-      "description": "LESSONS_LEARNED.md tenia 0 lineas en disco. 38 LAs vivian solo en session.json \u2014 perdida total si el fichero se corrompe.",
+      "description": "LESSONS_LEARNED.md tenia 0 lineas en disco. 38 LAs vivian solo en session.json — perdida total si el fichero se corrompe.",
       "correction": "REGLA PERMANENTE: Step 9 (Workflow Manager) regenera LESSONS_LEARNED.md desde session.json como paso obligatorio. workflow_directives.lessons_learned_mandatory=true en sofia-config.json.",
       "registered_at": "2026-04-02T09:45:57.730731+00:00",
       "approved_by": "product-owner",
@@ -1824,7 +1683,7 @@
       "id": "LA-022-04",
       "sprint": 22,
       "type": "security",
-      "description": "GR-010 evidencio que open_debts y security.open_debts estaban duplicados en session.json \u2014 mismos debts en dos arrays separados, causando deteccion doble en el guardrail.",
+      "description": "GR-010 evidencio que open_debts y security.open_debts estaban duplicados en session.json — mismos debts en dos arrays separados, causando deteccion doble en el guardrail.",
       "correction": "REGLA: usar solo session.open_debts como fuente unica de verdad. security.open_debts se mantiene como referencia pero GR-010 deduplica por id antes de evaluar.",
       "registered_at": "2026-04-02T09:46:44.873701+00:00",
       "approved_by": "product-owner",
@@ -1834,8 +1693,8 @@
       "id": "LA-022-05",
       "sprint": 22,
       "type": "dashboard",
-      "description": "Dashboard global no regenerado en los gates G-1, G-2 y HITL-PO-TL de Sprint 22 (2026-04-02). El fichero en disco segu\u00eda mostrando Sprint 21 / FEAT-019 mientras el pipeline ya estaba en Sprint 22 Step 3. Violacion de LA-020-07.",
-      "correction": "REGLA PERMANENTE: GR-011 a\u00f1adido a guardrail-pre-gate.js \u2014 verifica que dashboard_global.last_generated >= ultimo gate aprobado. Dashboard desactualizado = gate BLOQUEADO. Sin excepcion.",
+      "description": "Dashboard global no regenerado en los gates G-1, G-2 y HITL-PO-TL de Sprint 22 (2026-04-02). El fichero en disco seguía mostrando Sprint 21 / FEAT-019 mientras el pipeline ya estaba en Sprint 22 Step 3. Violacion de LA-020-07.",
+      "correction": "REGLA PERMANENTE: GR-011 añadido a guardrail-pre-gate.js — verifica que dashboard_global.last_generated >= ultimo gate aprobado. Dashboard desactualizado = gate BLOQUEADO. Sin excepcion.",
       "registered_at": "2026-04-02T11:30:00.000Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1845,7 +1704,7 @@
       "sprint": 22,
       "type": "dashboard",
       "description": "gen-global-dashboard.js trataba gate_pending como objeto ({step,waiting_for}) cuando en session.json es un string (\"G-5\"). Resultado: GP.step=undefined y GP.waiting_for=undefined en el HTML generado. Segundo bug: args parser solo soportaba --gate G-5 (espacio) no --gate=G-5 (igual). | SEGUNDO BUG: GP.jira_issue=null (sin Jira issue asignado al gate) aparecia literalmente en 4 puntos del HTML sin fallback.",
-      "correction": "REGLA PERMANENTE: (1) Normalizar gate_pending al leer session.json: si es string, convertir a {step, waiting_for, jira_issue} usando GATE_ROLES map. (2) parseArg() soporta ambas sintaxis --name=value y --name value. Sin excepcion. (2) Todos los usos de GP.jira_issue en plantillas HTML deben tener fallback: GP.jira_issue||GP.step. Sin excepcion \u2014 jira_issue es opcional.",
+      "correction": "REGLA PERMANENTE: (1) Normalizar gate_pending al leer session.json: si es string, convertir a {step, waiting_for, jira_issue} usando GATE_ROLES map. (2) parseArg() soporta ambas sintaxis --name=value y --name value. Sin excepcion. (2) Todos los usos de GP.jira_issue en plantillas HTML deben tener fallback: GP.jira_issue||GP.step. Sin excepcion — jira_issue es opcional.",
       "registered_at": "2026-04-02T19:22:29.097Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1864,8 +1723,8 @@
       "id": "LA-022-08",
       "sprint": 22,
       "type": "process",
-      "description": "Documentation Agent gener\u00f3 ficheros .md y los report\u00f3 como documentos Word/Excel reales. El directorio word/ conten\u00eda .md en lugar de .docx. El directorio excel/ estaba vac\u00edo. Detectado por Product Owner al revisar el directorio.",
-      "correction": "REGLA PERMANENTE: Documentation Agent DEBE generar binarios reales: .docx con librer\u00eda docx (npm) y .xlsx con librer\u00eda xlsx. NUNCA reportar .md como equivalente a .docx. Verificaci\u00f3n obligatoria: listar directorio con extensiones antes de reportar entrega. Archivos .md son borradores internos, no entregables al cliente.",
+      "description": "Documentation Agent generó ficheros .md y los reportó como documentos Word/Excel reales. El directorio word/ contenía .md en lugar de .docx. El directorio excel/ estaba vacío. Detectado por Product Owner al revisar el directorio.",
+      "correction": "REGLA PERMANENTE: Documentation Agent DEBE generar binarios reales: .docx con librería docx (npm) y .xlsx con librería xlsx. NUNCA reportar .md como equivalente a .docx. Verificación obligatoria: listar directorio con extensiones antes de reportar entrega. Archivos .md son borradores internos, no entregables al cliente.",
       "registered_at": "2026-04-02T19:47:21.481Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1874,8 +1733,8 @@
       "id": "LA-022-09",
       "sprint": 22,
       "type": "devops",
-      "description": "Seeds Flyway aplicados manualmente via psql durante verificaci\u00f3n STG no quedan registrados en flyway_schema_history. Al reiniciar el stack, Flyway intenta aplicar la migraci\u00f3n desde cero \u2192 23505 duplicate key en el primer INSERT.",
-      "correction": "REGLA PERMANENTE: los seeds de STG SIEMPRE deben aplicarse a trav\u00e9s del stack completo (docker compose up) nunca via psql directo. Todos los INSERTs de migrations con IDs fijos deben usar ON CONFLICT (id) DO NOTHING para ser idempotentes. Flyway no es idempotente por defecto.",
+      "description": "Seeds Flyway aplicados manualmente via psql durante verificación STG no quedan registrados en flyway_schema_history. Al reiniciar el stack, Flyway intenta aplicar la migración desde cero → 23505 duplicate key en el primer INSERT.",
+      "correction": "REGLA PERMANENTE: los seeds de STG SIEMPRE deben aplicarse a través del stack completo (docker compose up) nunca via psql directo. Todos los INSERTs de migrations con IDs fijos deben usar ON CONFLICT (id) DO NOTHING para ser idempotentes. Flyway no es idempotente por defecto.",
       "registered_at": "2026-04-02T21:41:55.271Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1906,8 +1765,8 @@
       "id": "LA-023-01",
       "sprint": 23,
       "type": "frontend",
-      "description": "En componentes Angular, usar [href] nativo en enlaces internos causa full page reload \u2014 el ShellComponent desaparece y la pantalla queda en blanco sin men\u00fa. Detectado en Mi Perfil inbox al pulsar Ver\u2192 sobre notif.actionUrl. SEGUNDO HALLAZGO: actionUrl en seeds con rutas inexistentes (/bills /transfers) \u2014 navigateByUrl() silencia el error y no navega. Fix: ROUTE_MAP de aliases + fallback /dashboard + correcci\u00f3n de seeds en BD.",
-      "correction": "REGLA PERMANENTE: nunca usar [href] para navegaci\u00f3n interna en Angular. Usar siempre (click)+router.navigateByUrl() para URLs din\u00e1micas con posibles query params, o [routerLink] para rutas est\u00e1ticas. Checklist G-4 y G-5 a\u00f1aden: grep -r \"[href]\" src/app/features/ \u2014 cualquier resultado con path interno es bloqueante. Adicionalmente: los seeds de notificaciones deben usar SOLO rutas registradas en app-routing.module.ts. Verificar con: SELECT DISTINCT action_url FROM user_notifications \u2014 cada valor debe existir en la tabla de rutas del router.",
+      "description": "En componentes Angular, usar [href] nativo en enlaces internos causa full page reload — el ShellComponent desaparece y la pantalla queda en blanco sin menú. Detectado en Mi Perfil inbox al pulsar Ver→ sobre notif.actionUrl. SEGUNDO HALLAZGO: actionUrl en seeds con rutas inexistentes (/bills /transfers) — navigateByUrl() silencia el error y no navega. Fix: ROUTE_MAP de aliases + fallback /dashboard + corrección de seeds en BD.",
+      "correction": "REGLA PERMANENTE: nunca usar [href] para navegación interna en Angular. Usar siempre (click)+router.navigateByUrl() para URLs dinámicas con posibles query params, o [routerLink] para rutas estáticas. Checklist G-4 y G-5 añaden: grep -r \"[href]\" src/app/features/ — cualquier resultado con path interno es bloqueante. Adicionalmente: los seeds de notificaciones deben usar SOLO rutas registradas en app-routing.module.ts. Verificar con: SELECT DISTINCT action_url FROM user_notifications — cada valor debe existir en la tabla de rutas del router.",
       "registered_at": "2026-04-03T11:38:02.377Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:50:40.000Z"
@@ -1916,7 +1775,7 @@
       "id": "LA-CORE-001",
       "type": "process",
       "description": "MCP config merge sin sobreescribir claude_desktop_config.json",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -1926,7 +1785,7 @@
       "id": "LA-CORE-002",
       "type": "devops",
       "description": "realpath() en paths MCP, nunca aliases macOS",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -1936,7 +1795,7 @@
       "id": "LA-CORE-003",
       "type": "process",
       "description": "SOFIA_REPO en CLAUDE.md + GR-CORE-003",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -1945,8 +1804,8 @@
     {
       "id": "LA-CORE-004",
       "type": "process",
-      "description": "repo-template estructura can\u00f3nica docs/ en onboarding",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "description": "repo-template estructura canónica docs/ en onboarding",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -1956,7 +1815,7 @@
       "id": "LA-CORE-005",
       "type": "process",
       "description": "verify-persistence.js BLOQUEANTE, GR-013",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -1965,8 +1824,8 @@
     {
       "id": "LA-CORE-006",
       "type": "process",
-      "description": "FA documento \u00fanico incremental, LA-FA-INCR",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "description": "FA documento único incremental, LA-FA-INCR",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -1976,7 +1835,7 @@
       "id": "LA-CORE-007",
       "type": "ux",
       "description": "TOC clickable con w:hyperlink+w:anchor, LA-TOC-CLICK",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -1985,8 +1844,8 @@
     {
       "id": "LA-CORE-008",
       "type": "onboarding",
-      "description": "wizard v2.6.11 verifica scripts cr\u00edticos + inicializa FA-Agent",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "description": "wizard v2.6.11 verifica scripts críticos + inicializa FA-Agent",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -1996,7 +1855,7 @@
       "id": "LA-CORE-009",
       "type": "ux",
       "description": "Prototipo incremental, GR-014",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2006,7 +1865,7 @@
       "id": "LA-CORE-010",
       "type": "process",
       "description": "Patch First ante correcciones, GR-015",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2015,8 +1874,8 @@
     {
       "id": "LA-CORE-011",
       "type": "ux",
-      "description": "Verificar matriz de roles antes de construir navegaci\u00f3n",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "description": "Verificar matriz de roles antes de construir navegación",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2025,8 +1884,8 @@
     {
       "id": "LA-CORE-012",
       "type": "infrastructure",
-      "description": "sofia-shell PROJECT_ROOT din\u00e1mico por llamada (v2.0)",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "description": "sofia-shell PROJECT_ROOT dinámico por llamada (v2.0)",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2036,7 +1895,7 @@
       "id": "LA-CORE-013",
       "type": "architecture",
       "description": "Application handlers NO importan Infrastructure, GR-016",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2046,7 +1905,7 @@
       "id": "LA-CORE-014",
       "type": "infrastructure",
       "description": "MCP SDK en SOFIA-CORE, no en proyectos cliente (setup-shell-mcp.js)",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2056,7 +1915,7 @@
       "id": "LA-CORE-015",
       "type": "infrastructure",
       "description": "sofia-shell aislamiento: registrar SOFIA-CORE como entry especial en projects.json",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2066,7 +1925,7 @@
       "id": "LA-CORE-016",
       "type": "dashboard",
       "description": "org-baseline.json invisible en command center: leer en runtime, no hardcodear",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2076,7 +1935,7 @@
       "id": "LA-CORE-019",
       "type": "governance",
       "description": "COMPAT-001: clasificacion PATCH/MINOR/MAJOR obligatoria antes de aplicar cualquier cambio SOFIA-CORE",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2086,7 +1945,7 @@
       "id": "LA-CORE-020",
       "type": "governance",
       "description": "COMPAT-002: session.json append-only; sin eliminacion ni cambio de tipo en campos existentes",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2096,7 +1955,7 @@
       "id": "LA-CORE-021",
       "type": "governance",
       "description": "COMPAT-003: nuevos guardrails NO se activan en proyectos existentes sin upgrade explicito",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2106,7 +1965,7 @@
       "id": "LA-CORE-022",
       "type": "governance",
       "description": "COMPAT-004: org-baseline.json con schema_version versionado; lector backward-compatible",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2116,7 +1975,7 @@
       "id": "LA-CORE-023",
       "type": "governance/takeover",
       "description": "DTS obligatorio para toda documentacion cliente antes de T-3 FA Reverse; GR-CORE-023",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2126,7 +1985,7 @@
       "id": "LA-CORE-024",
       "type": "governance/takeover",
       "description": "triangulacion obligatoria contra codigo para afirmaciones con DTS < 0.8; GR-CORE-024",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2136,7 +1995,7 @@
       "id": "LA-CORE-025",
       "type": "governance/takeover",
       "description": "Gate GT-3 BLOQUEANTE hasta resolucion documentada de todos los flags DISCREPANCY; GR-CORE-025",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2146,7 +2005,7 @@
       "id": "LA-CORE-026",
       "type": "governance",
       "description": "CONTEXT-ISOLATION: sesion SOFIA-CORE vs proyectos gobernados son contextos mutuamente excluyentes. GR-CORE-026",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2156,7 +2015,7 @@
       "id": "LA-CORE-027",
       "type": "takeover/planning",
       "description": "T-5 reconcilia con T-4: items S1 postpuestos documentados explicitamente con justificacion antes de cerrar GT-5",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2166,7 +2025,7 @@
       "id": "LA-CORE-028",
       "type": "takeover/process",
       "description": "NEEDS-VALIDATION de T-3 generan entradas estructuradas en session.json.needs_validation[] con sprint_target y assignee",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2176,7 +2035,7 @@
       "id": "LA-CORE-029",
       "type": "takeover/process",
       "description": "BUILD_UNKNOWN en T-2 genera DEBT-TK automatico verify-build-day1 (0.5 SP, sprint S1, mandatory:true)",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2185,8 +2044,8 @@
     {
       "id": "LA-CORE-030",
       "type": "takeover/process",
-      "description": "T-5 cierre Sprint 0 sigue checklist BLOQUEANTE: sprint_closed \u2192 log \u2192 dashboard. GR-CORE-027",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "description": "T-5 cierre Sprint 0 sigue checklist BLOQUEANTE: sprint_closed → log → dashboard. GR-CORE-027",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2196,7 +2055,7 @@
       "id": "LA-CORE-031",
       "type": "takeover/governance",
       "description": "cmmi_l3_sprint_estimated calculado mecanicamente desde PA_scores de T-4; T-5 consume el valor, nunca lo recalcula independientemente",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2206,7 +2065,7 @@
       "id": "LA-CORE-032",
       "type": "takeover/governance",
       "description": "open_debts incluye campo compliance:true para deudas legales/regulatorias (AEAT, GDPR, PCI-DSS); activa logica diferente en guardrails",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.29",
@@ -2217,8 +2076,8 @@
       "sprint": 23,
       "type": "governance",
       "scope": "SOFIA-CORE",
-      "description": "Al ejecutar la-sync.js (GR-CORE-029), el Orchestrator aplic\u00f3 el sync solo en los proyectos de la sesi\u00f3n activa omitiendo proyectos registrados en MANIFEST.projects_registered no presentes en la sesi\u00f3n. La obligaci\u00f3n del sync aplica a TODOS los proyectos registrados, no solo al proyecto de sesi\u00f3n corriente.",
-      "correction": "REGLA PERMANENTE: cuando la-sync.js se ejecuta en contexto de distribuci\u00f3n global (cierre de sprint o nueva LA promovida), el Orchestrator debe iterar TODOS los proyectos listados en MANIFEST.projects_registered y ejecutar el sync en cada uno. No es v\u00e1lido ejecutarlo solo en el proyecto activo. Checklist GR-CORE-029 a\u00f1ade: verificar la-sync-state.last_sync_at en TODOS los proyectos registrados antes de declarar la distribuci\u00f3n completada.",
+      "description": "Al ejecutar la-sync.js (GR-CORE-029), el Orchestrator aplicó el sync solo en los proyectos de la sesión activa omitiendo proyectos registrados en MANIFEST.projects_registered no presentes en la sesión. La obligación del sync aplica a TODOS los proyectos registrados, no solo al proyecto de sesión corriente.",
+      "correction": "REGLA PERMANENTE: cuando la-sync.js se ejecuta en contexto de distribución global (cierre de sprint o nueva LA promovida), el Orchestrator debe iterar TODOS los proyectos listados en MANIFEST.projects_registered y ejecutar el sync en cada uno. No es válido ejecutarlo solo en el proyecto activo. Checklist GR-CORE-029 añade: verificar la-sync-state.last_sync_at en TODOS los proyectos registrados antes de declarar la distribución completada.",
       "registered_at": "2026-04-07T12:10:00.000Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-07T12:10:00.000Z"
@@ -2227,7 +2086,7 @@
       "id": "LA-CORE-034",
       "type": "governance",
       "description": "CONTEXT-ISOLATION enforcement: en sesion SOFIA-CORE Continuar=framework; NUNCA leer session.json proyectos; contexto ambiguo=PREGUNTAR (refuerza GR-CORE-026)",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.33",
@@ -2237,8 +2096,8 @@
       "id": "LA-023-02",
       "sprint": 23,
       "type": "ux-fidelity",
-      "description": "El Developer Agent implement\u00f3 los componentes Angular de FEAT-021 sin contrastar sistem\u00e1ticamente contra el prototipo aprobado en el gate HITL PO+TL. Las diferencias detectadas afectaron a shell (logo, colores sidebar), estructura de grid en la lista, comportamiento del stepper OTP, panel IRPF en detalle y los dos componentes de renovaci\u00f3n y cancelaci\u00f3n. Las correcciones se aplicaron manualmente en sesi\u00f3n antes de pasar a QA, consumiendo tiempo no planificado.",
-      "correction": "REGLA PERMANENTE: el Developer Agent DEBE, al finalizar cada componente Angular, verificar expl\u00edcitamente contra el prototipo aprobado antes de declarar step 4 completo. Checklist G-4: para cada componente nuevo verificar (1) estructura HTML fiel a la screen del prototipo, (2) clases CSS/tokens coinciden, (3) textos y etiquetas id\u00e9nticos, (4) flujo de navegaci\u00f3n coherente. El Code Reviewer (G-5) debe contrastar HTML renderizado contra el prototipo \u2014 no solo revisar c\u00f3digo. Sin esta verificaci\u00f3n el gate no se aprueba.",
+      "description": "El Developer Agent implementó los componentes Angular de FEAT-021 sin contrastar sistemáticamente contra el prototipo aprobado en el gate HITL PO+TL. Las diferencias detectadas afectaron a shell (logo, colores sidebar), estructura de grid en la lista, comportamiento del stepper OTP, panel IRPF en detalle y los dos componentes de renovación y cancelación. Las correcciones se aplicaron manualmente en sesión antes de pasar a QA, consumiendo tiempo no planificado.",
+      "correction": "REGLA PERMANENTE: el Developer Agent DEBE, al finalizar cada componente Angular, verificar explícitamente contra el prototipo aprobado antes de declarar step 4 completo. Checklist G-4: para cada componente nuevo verificar (1) estructura HTML fiel a la screen del prototipo, (2) clases CSS/tokens coinciden, (3) textos y etiquetas idénticos, (4) flujo de navegación coherente. El Code Reviewer (G-5) debe contrastar HTML renderizado contra el prototipo — no solo revisar código. Sin esta verificación el gate no se aprueba.",
       "registered_at": "2026-04-09T16:33:33.023Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T16:33:33.023Z"
@@ -2248,8 +2107,8 @@
       "sprint": 23,
       "type": "infra/governance",
       "scope": "SOFIA-CORE",
-      "description": "Al corregir un MCP server en claude_desktop_config.json (ej. sofia-shell-experis sin SOFIA_REPO), la verificacion del fix se realizo en la misma conversacion activa donde se aplico el cambio. Los tools MCP se registran al iniciar la conversacion y no se actualizan en caliente. Resultado: el fix parecio no funcionar cuando en realidad era correcto \u2014 sofia-shell-experis seguia sin aparecer en la sesion pre-reinicio.",
-      "correction": "REGLA PERMANENTE: toda modificacion de claude_desktop_config.json que a\u00f1ada, corrija o elimine un MCP server debe verificarse SIEMPRE en una conversacion nueva tras el reinicio de Claude Desktop. Nunca en la sesion activa donde se aplico el cambio. La ausencia del tool en la sesion activa no implica que el fix sea incorrecto.",
+      "description": "Al corregir un MCP server en claude_desktop_config.json (ej. sofia-shell-experis sin SOFIA_REPO), la verificacion del fix se realizo en la misma conversacion activa donde se aplico el cambio. Los tools MCP se registran al iniciar la conversacion y no se actualizan en caliente. Resultado: el fix parecio no funcionar cuando en realidad era correcto — sofia-shell-experis seguia sin aparecer en la sesion pre-reinicio.",
+      "correction": "REGLA PERMANENTE: toda modificacion de claude_desktop_config.json que añada, corrija o elimine un MCP server debe verificarse SIEMPRE en una conversacion nueva tras el reinicio de Claude Desktop. Nunca en la sesion activa donde se aplico el cambio. La ausencia del tool en la sesion activa no implica que el fix sea incorrecto.",
       "registered_at": "2026-04-09T17:23:29Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T17:23:29Z"
@@ -2258,19 +2117,19 @@
       "id": "LA-023-04",
       "type": "governance/git",
       "scope": "project",
-      "description": "Los tres proyectos gobernados (BankPortal, ExperisTracker, TakeOverSintetico) iniciaron sin un modelo de ramas git definido ni repositorios remotos configurados. BankPortal acumul\u00f3 11 ramas feature hu\u00e9rfanas nunca mergeadas a develop ni main; Sprint 23 se ejecut\u00f3 sobre rama de Sprint 15. ExperisTracker trabaj\u00f3 directamente en main durante 3 sprints sin rama feature. TakeOverSintetico careci\u00f3 de git init durante toda la fase de Takeover Sprint 0. Resultado: main y develop desactualizados en todos los proyectos, trazabilidad remota nula y commits de sprints activos sobre ramas incorrectas.",
-      "correction": "REGLA PERMANENTE: al inicializar cualquier proyecto SOFIA, el primer paso obligatorio es (1) git init, (2) crear estructura main+develop, (3) push a remote. Cada sprint crea rama feature/FEAT-XXX-sprintYY desde develop. Al cerrar sprint: merge --no-ff feature \u2192 develop \u2192 push. Al crear release: merge --no-ff develop \u2192 main + tag vX.Y.0 \u2192 push. El branching model debe verificarse en Gate 1 (Setup) como precondici\u00f3n bloqueante.",
+      "description": "Los tres proyectos gobernados (BankPortal, ExperisTracker, TakeOverSintetico) iniciaron sin un modelo de ramas git definido ni repositorios remotos configurados. BankPortal acumuló 11 ramas feature huérfanas nunca mergeadas a develop ni main; Sprint 23 se ejecutó sobre rama de Sprint 15. ExperisTracker trabajó directamente en main durante 3 sprints sin rama feature. TakeOverSintetico careció de git init durante toda la fase de Takeover Sprint 0. Resultado: main y develop desactualizados en todos los proyectos, trazabilidad remota nula y commits de sprints activos sobre ramas incorrectas.",
+      "correction": "REGLA PERMANENTE: al inicializar cualquier proyecto SOFIA, el primer paso obligatorio es (1) git init, (2) crear estructura main+develop, (3) push a remote. Cada sprint crea rama feature/FEAT-XXX-sprintYY desde develop. Al cerrar sprint: merge --no-ff feature → develop → push. Al crear release: merge --no-ff develop → main + tag vX.Y.0 → push. El branching model debe verificarse en Gate 1 (Setup) como precondición bloqueante.",
       "approved_by": "product-owner",
       "approved_at": "2026-04-11T14:19:28.899Z",
       "registered_at": "2026-04-11T14:19:28.899Z",
       "sprint": 23,
-      "title": "Branching model SOFIA no aplicado desde inicio \u2014 deuda git acumulada y saneada"
+      "title": "Branching model SOFIA no aplicado desde inicio — deuda git acumulada y saneada"
     },
     {
       "id": "LA-CORE-035",
       "type": "governance/git",
-      "description": "branching model SOFIA no aplicado desde inicio de proyecto -- deuda acumulada en BankPortal (11 ramas huerfanas), ExperisTracker (main directo 3 sprints), TakeOverSintetico (sin git init). REGLA: git init + main+develop + remote en Gate 1 obligatorio. Merge feature\u2192develop por sprint, develop\u2192main por release + tag.",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "description": "branching model SOFIA no aplicado desde inicio de proyecto -- deuda acumulada en BankPortal (11 ramas huerfanas), ExperisTracker (main directo 3 sprints), TakeOverSintetico (sin git init). REGLA: git init + main+develop + remote en Gate 1 obligatorio. Merge feature→develop por sprint, develop→main por release + tag.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.37",
@@ -2279,8 +2138,8 @@
     {
       "id": "LA-CORE-037",
       "type": "dashboard",
-      "description": "datos del dashboard SIEMPRE desde session.json en disco de cada proyecto registrado; nunca desde memoria o conversaci\u00f3n anterior",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para correcci\u00f3n completa.",
+      "description": "datos del dashboard SIEMPRE desde session.json en disco de cada proyecto registrado; nunca desde memoria o conversación anterior",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.37",
@@ -2309,8 +2168,8 @@
       "id": "BUG-S19-001",
       "severity": "HIGH",
       "class": "TransactionCategorizationService",
-      "description": "RECIBO DOMICILIADO AGUA categorizado como RECIBO_UTIL en lugar de DOMICILIACION \u2014 prioridad de reglas incorrecta",
-      "impact": "Categorizaci\u00f3n err\u00f3nea de domiciliaciones SEPA DD",
+      "description": "RECIBO DOMICILIADO AGUA categorizado como RECIBO_UTIL en lugar de DOMICILIACION — prioridad de reglas incorrecta",
+      "impact": "Categorización errónea de domiciliaciones SEPA DD",
       "fixed": true,
       "fixed_at": "2026-03-27T14:57:17.000Z"
     },
@@ -2318,8 +2177,8 @@
       "id": "BUG-S19-002",
       "severity": "HIGH",
       "class": "NextExecutionDateCalculator",
-      "description": "Transferencias programadas d\u00eda-31: siguiente ejecuci\u00f3n cae en Feb-28 en lugar de Mar-31 \u2014 violaci\u00f3n PSD2/SEPA",
-      "impact": "Transferencias programadas d\u00eda-31 ejecutadas en fecha incorrecta",
+      "description": "Transferencias programadas día-31: siguiente ejecución cae en Feb-28 en lugar de Mar-31 — violación PSD2/SEPA",
+      "impact": "Transferencias programadas día-31 ejecutadas en fecha incorrecta",
       "fixed": true,
       "fixed_at": "2026-03-27T14:57:17.000Z"
     }
@@ -2335,17 +2194,17 @@
   "hotfix_stack_startup": {
     "date": "2026-04-01",
     "commit": "e744da0",
-    "trigger": "Levantamiento stack local STG \u2014 smoke test fallaba 5/17",
+    "trigger": "Levantamiento stack local STG — smoke test fallaba 5/17",
     "fixes": [
-      "F1: PATCH /profile rechaza campo email \u2192 400 (RN-F019-01) \u2014 UpdateProfileRequest + UpdateProfileUseCase",
-      "F2: GET /profile/sessions \u2192 200 \u2014 endpoint a\u00f1adido a ProfileController delegando en ListActiveSessionsUseCase",
-      "F3: POST /data-export 2a vez \u2192 409 cooldown 24h (RN-F019-12) \u2014 query findRecentByUserIdAndTipo",
-      "F4: GET /data-export/status \u2192 200 incluyendo COMPLETED \u2014 query findLatestByUserIdAndTipo",
-      "INFRA: V22__profile_gdpr.sql \u2014 ADD CONSTRAINT IF NOT EXISTS \u2192 DO $body$ block (PostgreSQL syntax fix)"
+      "F1: PATCH /profile rechaza campo email → 400 (RN-F019-01) — UpdateProfileRequest + UpdateProfileUseCase",
+      "F2: GET /profile/sessions → 200 — endpoint añadido a ProfileController delegando en ListActiveSessionsUseCase",
+      "F3: POST /data-export 2a vez → 409 cooldown 24h (RN-F019-12) — query findRecentByUserIdAndTipo",
+      "F4: GET /data-export/status → 200 incluyendo COMPLETED — query findLatestByUserIdAndTipo",
+      "INFRA: V22__profile_gdpr.sql — ADD CONSTRAINT IF NOT EXISTS → DO $body$ block (PostgreSQL syntax fix)"
     ],
     "smoke_test_result": "17/17 PASS",
     "smoke_test_log": "docs/qa/SMOKE-TEST-v1.21.0-FIXES-20260401.log",
-    "stack_status": "UP \u2014 backend:8081 frontend:4201 postgres:5433 redis:6380 mailhog:8025"
+    "stack_status": "UP — backend:8081 frontend:4201 postgres:5433 redis:6380 mailhog:8025"
   },
   "smoke_test": {
     "executed_at": "2026-03-27T20:51:05+01:00",
@@ -2363,7 +2222,7 @@
       "BUG-POST-S19-001: ConflictingBeanDefinitionException ibanValidator",
       "BUG-POST-S19-002: HTTP 403 en lugar de 401 sin JWT",
       "BUG-POST-S19-003: HTTP 500 DirectDebitController AuthenticationPrincipal",
-      "BUG-POST-S19-004: Flyway V20 ENUM\u2192VARCHAR migration fix"
+      "BUG-POST-S19-004: Flyway V20 ENUM→VARCHAR migration fix"
     ],
     "migrations_added": [
       "V20__fix_mandate_enum_varchar.sql"
@@ -2481,16 +2340,16 @@
     "packaged_at": "2026-04-02T20:18:11.136Z",
     "notes": [
       "LA-022-06: Dashboard gate_pending normalizado + parseArg()",
-      "LA-022-07: Step 3b OBLIGATORIO post G-3 \u2014 GR-012 bloqueante",
-      "LA-022-08: Doc Agent binarios reales \u2014 nunca .md como entregable",
+      "LA-022-07: Step 3b OBLIGATORIO post G-3 — GR-012 bloqueante",
+      "LA-022-08: Doc Agent binarios reales — nunca .md como entregable",
       "gen-lessons-learned.py: script dedicado Step 9",
-      "guardrail-pre-gate.js v1.3: GR-012 a\u00f1adido",
+      "guardrail-pre-gate.js v1.3: GR-012 añadido",
       "sofia-config.json v1.3: dashboard + doc_agent + GR-010/011/012",
       "21 skills actualizados sofia_version 2.6",
       "47 LAs consolidadas",
       "gate-dashboard-hook.js v2.7: MA Baseline integrado en Step 9",
       "gen-ma-baseline.js v1.1.0: cross-proyecto con sofia_org_path en config",
-      "sofia-config.json v2.7: ma_baseline.sofia_org_path a\u00f1adido"
+      "sofia-config.json v2.7: ma_baseline.sofia_org_path añadido"
     ]
   },
   "hotfix_s20": {
@@ -2499,7 +2358,7 @@
     "date": "2026-03-30T15:17:10.367Z",
     "scope": "export/** + directdebit/webhook/ + transaction/processor/ + pom.xml",
     "issues_fixed": [
-      "PACK-001: paquete es.meridian.bankportal \u2192 com.experis.sofia.bankportal (16 ficheros)",
+      "PACK-001: paquete es.meridian.bankportal → com.experis.sofia.bankportal (16 ficheros)",
       "API-001: PdfDocumentGenerator usa getTransactionDate/getConcept/getBalanceAfter",
       "API-002: CsvDocumentGenerator sin getCurrency/getAccountingDate (no existen en Transaction)",
       "API-003: CoreBankingReturnedHandler usa DebitMandateRepository + NotificationService reales",
@@ -2507,7 +2366,7 @@
       "NEW-001: TransactionExportRepository creado (JdbcClient, queries posicionales LA-019-15)",
       "NEW-002: ExportAuditLogRepository creado",
       "NEW-003: ExportLimitExceededException + ExportRangeException creadas",
-      "POM-001: pdfbox 3.0.2 + spring-retry a\u00f1adidos",
+      "POM-001: pdfbox 3.0.2 + spring-retry añadidos",
       "CLEAN-001: arbol es/meridian/bankportal eliminado"
     ],
     "status": "APPLIED"
@@ -2534,7 +2393,7 @@
     ],
     "sofia_config_updated": true,
     "gr011_added_at": "2026-04-02T11:30:00.000Z",
-    "gr011": "dashboard_freshness \u2014 last_generated >= last_gate_approved_at"
+    "gr011": "dashboard_freshness — last_generated >= last_gate_approved_at"
   },
   "open_debts": [
     {
@@ -2583,20 +2442,6 @@
       "status": "CLOSED",
       "closed_at": "2026-04-09T10:46:48.478Z",
       "closed_sprint": 23
-    },
-    {
-      "id": "DEBT-045",
-      "status": "CLOSED",
-      "closed_at": "2026-04-14T15:17:56.837Z",
-      "closed_sprint": 24,
-      "desc": "CoreBankingMockBizumClient SEPA Instant \u2014 ADR-038"
-    },
-    {
-      "id": "DEBT-046",
-      "status": "CLOSED",
-      "closed_at": "2026-04-14T15:17:56.837Z",
-      "closed_sprint": 24,
-      "desc": "Redis rate-limit key pattern ratelimit:{userId}:bizum:{date} \u2014 ADR-039"
     }
   ],
   "skills_updated_s21": [
@@ -2608,13 +2453,13 @@
     "sprint": 21,
     "feature": "FEAT-019",
     "report": "docs/qa/STG-VERIFICATION-v1.21.0-20260401.md",
-    "result": "COMPLETADA \u2014 9 secciones OK, 2 bugs corregidos (BUG-VER-001/002), 1 pendiente dise\u00f1o (BUG-VER-003)",
+    "result": "COMPLETADA — 9 secciones OK, 2 bugs corregidos (BUG-VER-001/002), 1 pendiente diseño (BUG-VER-003)",
     "bugs": [
       {
         "id": "BUG-VER-001",
         "status": "FIXED",
         "commit": "5207961",
-        "desc": "Mi Perfil skeleton infinito \u2014 catchError EMPTY en forkJoin"
+        "desc": "Mi Perfil skeleton infinito — catchError EMPTY en forkJoin"
       },
       {
         "id": "BUG-VER-002",
@@ -2622,7 +2467,7 @@
         "desc": "Footer version hardcodeada Sprint 13 v1.13.0 en LoginComponent",
         "commit": "bc367a8",
         "fixed_at": "2026-04-01T12:26:12.391Z",
-        "note": "Footer interpolado desde environment.ts \u2014 verificado en browser STG"
+        "note": "Footer interpolado desde environment.ts — verificado en browser STG"
       },
       {
         "id": "BUG-VER-003",
@@ -2678,17 +2523,17 @@
     "fixes": [
       {
         "id": "DEBT-040",
-        "fix": "V23__unique_idx_gdpr_active_export.sql \u2014 unique index parcial CWE-362",
+        "fix": "V23__unique_idx_gdpr_active_export.sql — unique index parcial CWE-362",
         "status": "CLOSED"
       },
       {
         "id": "DEBT-041",
-        "fix": "PrivacyController.requestDeletion() \u2014 OtpValidationUseCase.validate() antes de initiateDeletion() CWE-287",
+        "fix": "PrivacyController.requestDeletion() — OtpValidationUseCase.validate() antes de initiateDeletion() CWE-287",
         "status": "CLOSED"
       },
       {
         "id": "DEBT-042",
-        "fix": "DeletionRequestService.confirmDeletion() \u2014 TTL 24h check CWE-613",
+        "fix": "DeletionRequestService.confirmDeletion() — TTL 24h check CWE-613",
         "status": "CLOSED"
       }
     ]
@@ -2727,13 +2572,13 @@
       "frontend": "localhost:4201",
       "mailhog": "localhost:8025"
     },
-    "flyway_v24": "SUCCESS \u2014 24/24 migrations OK",
-    "debt_043": "CLOSED \u2014 /profile/notifications \u2192 200 OK (8 notificaciones)",
+    "flyway_v24": "SUCCESS — 24/24 migrations OK",
+    "debt_043": "CLOSED — /profile/notifications → 200 OK (8 notificaciones)",
     "bug_found_and_fixed": {
       "id": "BUG-STG-022-002",
       "severity": "HIGH",
-      "desc": "LoanExceptionHandler scope=loan no cubr\u00eda InvalidOtpException (paquete twofa) \u2192 HTTP 500 en POST /loans/applications con OTP inv\u00e1lido",
-      "fix": "Handler expl\u00edcito @ExceptionHandler(InvalidOtpException.class) \u2192 401 Unauthorized (OWASP A07)",
+      "desc": "LoanExceptionHandler scope=loan no cubría InvalidOtpException (paquete twofa) → HTTP 500 en POST /loans/applications con OTP inválido",
+      "fix": "Handler explícito @ExceptionHandler(InvalidOtpException.class) → 401 Unauthorized (OWASP A07)",
       "file": "loan/api/LoanExceptionHandler.java",
       "status": "FIXED",
       "fixed_at": "2026-04-02T20:50:19.603Z"
@@ -2742,18 +2587,18 @@
       "ST-01 Health backend UP (200)",
       "ST-02 Frontend Angular accesible (200)",
       "ST-03 MailHog UI (200)",
-      "ST-04 Login body vac\u00edo \u2192 400 (validaci\u00f3n @Valid)",
-      "ST-05 Login creds incorrectas \u2192 401",
-      "ST-06 GET /loans sin JWT \u2192 401",
-      "ST-07 POST /simulate sin JWT \u2192 401",
-      "ST-08 POST /applications sin JWT \u2192 401",
-      "ST-09 GET /profile/notifications sin JWT \u2192 401",
-      "ST-10 GET /loans JWT \u2192 200 (paginaci\u00f3n correcta, 0 pr\u00e9stamos adelacuadra)",
-      "ST-11 POST /simulate \u2192 200 \u2014 cuota:459.74 EUR TAE:6.5% total:16550.64 EUR coherencia:OK",
-      "ST-12 POST /applications sin OTP \u2192 400 (RN-F020-08)",
-      "ST-13 POST /applications OTP inv\u00e1lido \u2192 401 OTP_INVALID (BUG-STG-022-002 fix)",
-      "ST-16 GET /profile/notifications \u2192 200 (DEBT-043 cerrado, 8 notificaciones)",
-      "ST-17 Flyway V24__loans_and_applications.sql \u2192 SUCCESS (24/24)"
+      "ST-04 Login body vacío → 400 (validación @Valid)",
+      "ST-05 Login creds incorrectas → 401",
+      "ST-06 GET /loans sin JWT → 401",
+      "ST-07 POST /simulate sin JWT → 401",
+      "ST-08 POST /applications sin JWT → 401",
+      "ST-09 GET /profile/notifications sin JWT → 401",
+      "ST-10 GET /loans JWT → 200 (paginación correcta, 0 préstamos adelacuadra)",
+      "ST-11 POST /simulate → 200 — cuota:459.74 EUR TAE:6.5% total:16550.64 EUR coherencia:OK",
+      "ST-12 POST /applications sin OTP → 400 (RN-F020-08)",
+      "ST-13 POST /applications OTP inválido → 401 OTP_INVALID (BUG-STG-022-002 fix)",
+      "ST-16 GET /profile/notifications → 200 (DEBT-043 cerrado, 8 notificaciones)",
+      "ST-17 Flyway V24__loans_and_applications.sql → SUCCESS (24/24)"
     ],
     "evidence_log": "docs/qa/SMOKE-TEST-v1.22.0-DEFINITIVO-2026-04-02T20-49-58.log"
   },
@@ -2761,16 +2606,16 @@
     {
       "id": "BUG-STG-022-002",
       "severity": "HIGH",
-      "desc": "POST /loans/applications OTP inv\u00e1lido \u2192 HTTP 500 (InvalidOtpException sin handler en LoanExceptionHandler)",
-      "fix": "LoanExceptionHandler + handler InvalidOtpException \u2192 401",
+      "desc": "POST /loans/applications OTP inválido → HTTP 500 (InvalidOtpException sin handler en LoanExceptionHandler)",
+      "fix": "LoanExceptionHandler + handler InvalidOtpException → 401",
       "fixed_at": "2026-04-02T20:50:19.603Z",
       "status": "FIXED"
     },
     {
       "id": "BUG-STG-023-001",
       "severity": "HIGH",
-      "desc": "Mi Perfil inbox: [href] en acci\u00f3n Ver\u2192 causaba full page reload \u2192 pantalla en blanco sin men\u00fa de navegaci\u00f3n",
-      "root_cause": "[href] nativo en <a> bypasea Angular router \u2014 ShellComponent no se monta",
+      "desc": "Mi Perfil inbox: [href] en acción Ver→ causaba full page reload → pantalla en blanco sin menú de navegación",
+      "root_cause": "[href] nativo en <a> bypasea Angular router — ShellComponent no se monta",
       "fix": "Sustituido <a [href]> por <button (click)=\"navigateTo()\"> + router.navigateByUrl() en ProfilePageComponent",
       "files": [
         "profile-page.component.ts",
@@ -2798,7 +2643,7 @@
     "visibility": "public",
     "default_branch": "main",
     "develop_branch": "develop",
-    "active_branch": "feature/FEAT-022-sprint24",
+    "active_branch": "feature/FEAT-021-sprint23",
     "branching_model": "feature/FEAT-XXX-sprintYY",
     "guardrail": "GR-CORE-030"
   }

@@ -2,6 +2,7 @@ package com.experis.sofia.bankportal.bizum.infrastructure.persistence;
 import com.experis.sofia.bankportal.bizum.domain.model.*;
 import com.experis.sofia.bankportal.bizum.domain.repository.*;
 import org.springframework.context.annotation.Primary;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 import java.time.Instant;
@@ -44,6 +45,7 @@ public class JpaBizumAdapter implements BizumActivationRepositoryPort, BizumPaym
         return reqRepo.findByRequesterUserIdOrderByCreatedAtDesc(userId, PageRequest.of(page, size))
             .stream().map(this::toDomain).toList();
     }
+    @Scheduled(cron = "0 0 * * * *")  // cada hora
     @Override public void expireOldRequests() { reqRepo.expirePendingRequests(Instant.now()); }
 
     private BizumActivation toDomain(BizumActivationEntity e) {
