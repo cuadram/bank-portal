@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.time.Instant;
 import java.util.*;
 
-/** @Primary — activo en todos los entornos (LA-019-08: NUNCA @Profile("!production")) */
+/** @Primary activo en todos los entornos sin restriccion de perfil (LA-019-08) */
 @Primary @Repository
 public class JpaBizumAdapter implements BizumActivationRepositoryPort, BizumPaymentRepositoryPort, BizumRequestRepositoryPort {
     private final JpaBizumActivationRepository actRepo;

@@ -31,7 +31,8 @@ public class RequestMoneyUseCase {
         request.setConcept(req.concept());
         request.setStatus(BizumStatus.PENDING);
         request.setCreatedAt(Instant.now());
-        request.setExpiresAt(Instant.now().plusSeconds(ttlHours * 3600L)); // RN-F022-07
+        Instant expiresAt = Instant.now().plusSeconds(ttlHours * 3600L); // RN-F022-07: TTL 24h
+        request.setExpiresAt(expiresAt);
         requestRepo.save(request);
         return new RequestMoneyResponse(request.getId(), "PENDING", request.getExpiresAt());
     }
