@@ -50,6 +50,11 @@ bank:
     request:
       ttl-hours: 24
 
+notifications:
+  push:
+    vapid-public-key: BDummyVapidPublicKeyForIntegrationTestsOnlyNotRealKey12345678
+    vapid-private-key: DummyVapidPrivateKeyForIntegrationTestsOnlyNotRealKey1234
+
 server:
   port: 0
   error:
