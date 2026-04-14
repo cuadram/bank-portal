@@ -176,3 +176,49 @@ class SpringContextIT {
 `mvn compile` con BUILD SUCCESS es **bloqueante** para Gate G-4b. Sin esta verificación el gate no se aprueba (GR-003 + GR-004).
 
 Los DEBT-045/046 planificados en este sprint no tienen CVSS asignado (deudas técnicas de arquitectura, no CVEs). GR-010 evaluará `open_debts` en G-9 — en S24 no hay deudas de seguridad pendientes.
+
+---
+
+## Mapa de tipos BD → Java — FEAT-022 (LA-019-13)
+
+Fuente de verdad para Developer y QA. Referencia: V27__bizum.sql
+
+### bizum_activations
+
+| Columna | Tipo PostgreSQL | Tipo Java | Notas |
+|---|---|---|---|
+| id | uuid | UUID | `rs.getObject("id", UUID.class)` |
+| user_id | uuid | UUID | FK a users |
+| account_id | uuid | UUID | FK a accounts |
+| phone | varchar(20) | String | Validar E.164 en dominio |
+| status | varchar(20) | BizumActivationStatus | ACTIVE / INACTIVE |
+| gdpr_consent_at | timestamptz | Instant | OffsetDateTime en JdbcClient |
+| activated_at | timestamptz | Instant | OffsetDateTime en JdbcClient |
+| deactivated_at | timestamptz | Instant | Nullable |
+
+### bizum_payments — Flyway V27__bizum.sql
+
+| Columna | Tipo PostgreSQL | Tipo Java | Notas |
+|---|---|---|---|
+| id | uuid | UUID | `rs.getObject("id", UUID.class)` |
+| sender_user_id | uuid | UUID | FK a users |
+| recipient_phone | varchar(20) | String | Enmascarar en DTO (RN-F022-09) |
+| amount | numeric(12,2) | BigDecimal | HALF_EVEN (ADR-034) |
+| concept | varchar(35) | String | Nullable |
+| status | varchar(20) | BizumStatus | PENDING/COMPLETED/REJECTED/EXPIRED |
+| sepa_ref | varchar(50) | String | BIZUM-{uuid} — Nullable hasta COMPLETED |
+| created_at | timestamptz | Instant | OffsetDateTime en JdbcClient |
+| completed_at | timestamptz | Instant | Nullable |
+
+### bizum_requests
+
+| Columna | Tipo PostgreSQL | Tipo Java | Notas |
+|---|---|---|---|
+| id | uuid | UUID | `rs.getObject("id", UUID.class)` |
+| requester_user_id | uuid | UUID | FK a users |
+| recipient_phone | varchar(20) | String | Enmascarar en DTO |
+| amount | numeric(12,2) | BigDecimal | HALF_EVEN (ADR-034) |
+| status | varchar(20) | BizumStatus | PENDING/ACCEPTED/REJECTED/EXPIRED |
+| expires_at | timestamptz | Instant | created_at + 24h — TTL obligatorio (RN-F022-07) |
+| resolved_at | timestamptz | Instant | Nullable |
+| payment_id | uuid | UUID | FK a bizum_payments — Nullable |

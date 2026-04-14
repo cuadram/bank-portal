@@ -589,7 +589,7 @@
     "report": "docs/code-review/CR-FEAT-021-sprint23.md",
     "reviewed_at": "2026-04-09T10:49:03.114Z"
   },
-  "updated_at": "2026-04-14T14:36:00.747Z",
+  "updated_at": "2026-04-14T14:55:14.826Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": false,
   "gate8_approved_by": "release-manager",
@@ -2670,7 +2670,7 @@
     "visibility": "public",
     "default_branch": "main",
     "develop_branch": "develop",
-    "active_branch": "feature/FEAT-021-sprint23",
+    "active_branch": "feature/FEAT-022-sprint24",
     "branching_model": "feature/FEAT-XXX-sprintYY",
     "guardrail": "GR-CORE-030"
   }

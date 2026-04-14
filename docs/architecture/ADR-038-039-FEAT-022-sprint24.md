@@ -71,6 +71,7 @@ public class BizumRateLimitAdapter {
 
     public BigDecimal getDailyUsed(UUID userId) {
         String key = String.format(KEY_PATTERN, userId, LocalDate.now(ZoneOffset.UTC));
+        // Ejemplo real: "ratelimit:{userId}:bizum:2026-04-14"
         String val = redisTemplate.opsForValue().get(key);
         return val == null ? BigDecimal.ZERO : new BigDecimal(val);
     }
