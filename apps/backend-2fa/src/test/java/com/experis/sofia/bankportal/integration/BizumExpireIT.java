@@ -1,28 +1,33 @@
 package com.experis.sofia.bankportal.integration;
-import com.experis.sofia.bankportal.integration.config.IntegrationTestBase;
+
 import com.experis.sofia.bankportal.bizum.domain.model.*;
 import com.experis.sofia.bankportal.bizum.infrastructure.persistence.JpaBizumAdapter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * TC-F022-024 — expireOldRequests() actualiza status PENDING→EXPIRED en BD real
- * Verifica RN-F022-07: solicitudes expiradas se marcan automáticamente
+ * Verifica RN-F022-07: solicitudes expiradas se marcan automáticamente.
+ * Usa TEST_USER_ID del fixture idempotente para satisfacer FK → users(id).
  */
 @Transactional
 class BizumExpireIT extends BizumIntegrationTestBase {
-    @Autowired JpaBizumAdapter adapter;
+
+    @Autowired
+    JpaBizumAdapter adapter;
 
     @Test
     void expiresPendingRequestsPastDeadline() {
         BizumRequest req = new BizumRequest();
         req.setId(UUID.randomUUID());
-        req.setRequesterUserId(UUID.randomUUID());
+        req.setRequesterUserId(TEST_USER_ID); // FK → users(id) del fixture
         req.setRecipientPhone("+34699000002");
         req.setAmount(new BigDecimal("10.00"));
         req.setConcept("Test expirado");
@@ -36,14 +41,14 @@ class BizumExpireIT extends BizumIntegrationTestBase {
         var found = adapter.findById(req.getId());
         assertTrue(found.isPresent());
         assertEquals(BizumStatus.EXPIRED, found.get().getStatus(),
-            "Solicitud expirada debe tener status EXPIRED");
+                "Solicitud expirada debe tener status EXPIRED");
     }
 
     @Test
     void doesNotExpireActivePending() {
         BizumRequest req = new BizumRequest();
         req.setId(UUID.randomUUID());
-        req.setRequesterUserId(UUID.randomUUID());
+        req.setRequesterUserId(TEST_USER_ID); // FK → users(id) del fixture
         req.setRecipientPhone("+34699000003");
         req.setAmount(new BigDecimal("20.00"));
         req.setStatus(BizumStatus.PENDING);
@@ -56,6 +61,6 @@ class BizumExpireIT extends BizumIntegrationTestBase {
         var found = adapter.findById(req.getId());
         assertTrue(found.isPresent());
         assertEquals(BizumStatus.PENDING, found.get().getStatus(),
-            "Solicitud vigente NO debe ser expirada");
+                "Solicitud vigente NO debe ser expirada");
     }
 }
