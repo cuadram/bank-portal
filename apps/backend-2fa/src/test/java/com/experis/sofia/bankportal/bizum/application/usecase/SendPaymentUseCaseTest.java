@@ -6,7 +6,7 @@ import com.experis.sofia.bankportal.bizum.domain.repository.*;
 import com.experis.sofia.bankportal.bizum.domain.service.*;
 import com.experis.sofia.bankportal.bizum.infrastructure.corebanking.*;
 import com.experis.sofia.bankportal.bizum.infrastructure.redis.BizumRateLimitAdapter;
-import com.experis.sofia.bankportal.twofa.application.service.OtpValidationUseCase;
+import com.experis.sofia.bankportal.twofa.application.OtpValidationUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
