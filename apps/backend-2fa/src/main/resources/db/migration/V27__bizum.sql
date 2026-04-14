@@ -45,6 +45,6 @@ CREATE INDEX idx_bizum_requests_recipient ON bizum_requests(recipient_phone, sta
 INSERT INTO bizum_activations (id, user_id, account_id, phone, status, gdpr_consent_at, activated_at)
 SELECT gen_random_uuid(), u.id, a.id, '+34612345678', 'ACTIVE', NOW(), NOW()
 FROM users u JOIN accounts a ON a.user_id = u.id
-WHERE u.email = 'a.delacuadra@nemtec.es' AND a.tipo = 'CORRIENTE'
+WHERE u.email = 'a.delacuadra@nemtec.es' AND a.type = 'CORRIENTE'
 LIMIT 1
 ON CONFLICT (phone) DO NOTHING;
