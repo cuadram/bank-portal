@@ -52,3 +52,8 @@ logging:
     root: WARN
     com.experis.sofia.bankportal: INFO
     org.flywaydb: INFO
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
