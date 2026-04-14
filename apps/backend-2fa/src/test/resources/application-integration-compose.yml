@@ -40,6 +40,8 @@ jwt:
   pre-auth-ttl-seconds: 300
 
 bank:
+  core:
+    base-url: http://localhost:9999
   bizum:
     limit:
       per-operation: 500
