@@ -3,7 +3,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5433/bankportal
     username: bankportal
-    password: ${DB_PASSWORD:bankportal_dev}
+    password: ${DB_PASSWORD:bankportal_stg_2026}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
