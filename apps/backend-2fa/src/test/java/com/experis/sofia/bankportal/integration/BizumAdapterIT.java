@@ -8,12 +8,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.boot.test.context.SpringBootTest;
+import com.experis.sofia.bankportal.twofa.BackendTwoFactorApplication;
 
 /**
  * TC-F022-023 — JpaBizumAdapter save + findByUserId (schema real PostgreSQL)
  * Verifica que el mapping JPA funciona contra la BD real de Testcontainers
  */
 @Transactional
+@SpringBootTest(classes = BackendTwoFactorApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BizumAdapterIT extends IntegrationTestBase {
     @Autowired JpaBizumAdapter adapter;
 
