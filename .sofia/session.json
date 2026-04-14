@@ -6,9 +6,9 @@
   "client": "Banco Meridian",
   "current_sprint": 24,
   "current_feature": "FEAT-022",
-  "current_step": "2c",
-  "pipeline_step": "2c",
-  "pipeline_step_name": "ux-ui-designer",
+  "current_step": "3",
+  "pipeline_step": "3",
+  "pipeline_step_name": "architect",
   "completed_steps": [
     "1",
     "2",
@@ -42,9 +42,9 @@
     "8b",
     "9"
   ],
-  "last_skill": "ux-ui-designer",
-  "last_skill_output_path": "docs/deliverables/sprint-24-FEAT-022/",
-  "gate_pending": "HITL-PO-TL",
+  "last_skill": "architect",
+  "last_skill_output_path": "docs/architecture/",
+  "gate_pending": "G-3",
   "sprint_goal": "Permitir al cliente de Banco Meridian enviar y recibir pagos P2P inmediatos mediante número de teléfono registrado en Bizum, con autenticación SCA OTP, verificación de límites regulatorios y notificaciones push en tiempo real, cumpliendo PSD2 Art.97 SCA y SEPA Instant Credit Transfer.",
   "sprint_capacity_sp": 24,
   "artifacts": {
@@ -255,6 +255,13 @@
     ],
     "2c_s24": [
       "docs/ux-ui/prototypes/PROTO-FEAT-022-sprint24.html (72KB · 7 pantallas · CSS/JS heredado PROTO-FEAT-021-sprint23 · sidebar navy #1e3a5f real de producción)"
+    ],
+    "3_s24": [
+      "docs/architecture/HLD-FEAT-022-sprint24.md",
+      "docs/architecture/LLD-backend-FEAT-022-sprint24.md",
+      "docs/architecture/LLD-frontend-FEAT-022-sprint24.md",
+      "docs/architecture/ADR-038-039-FEAT-022-sprint24.md",
+      "Confluence page 12779521 — Sprint 24 HLD FEAT-022 Bizum"
     ]
   },
   "gates": {
@@ -276,8 +283,11 @@
     },
     "HITL-PO-TL": {
       "approved_by": "product-owner+tech-lead",
-      "approved_at": "2026-04-06T10:41:41.017Z",
-      "step": "2c"
+      "approved_at": "2026-04-14T14:32:29.266Z",
+      "step": "2c",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "UX-FEAT-022-sprint24 + PROTO-FEAT-022-sprint24.html (72KB) aprobados. 7 pantallas, 3 flujos."
     },
     "G-4": {
       "approved_by": "tech-lead",
@@ -579,7 +589,7 @@
     "report": "docs/code-review/CR-FEAT-021-sprint23.md",
     "reviewed_at": "2026-04-09T10:49:03.114Z"
   },
-  "updated_at": "2026-04-14T14:31:24.065Z",
+  "updated_at": "2026-04-14T14:36:00.747Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": false,
   "gate8_approved_by": "release-manager",
@@ -1266,6 +1276,23 @@
       "sprint": 24,
       "feature": "FEAT-022",
       "note": "AUTO: validate-fa-index PASS 8/8 · FA v0.5"
+    },
+    {
+      "gate": "HITL-PO-TL",
+      "step": "2c",
+      "approved_by": "product-owner+tech-lead",
+      "approved_at": "2026-04-14T14:32:29.266Z",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "7 pantallas, 3 flujos, herencia CSS S23."
+    },
+    {
+      "gate": "G-3",
+      "step": "3",
+      "approved_at": "2026-04-14T14:36:00.747Z",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "HLD + LLD Backend + LLD Frontend + ADR-038/039 generados. Confluence 12779521."
     }
   ],
   "lessons_learned": [
