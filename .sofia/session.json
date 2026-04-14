@@ -6,9 +6,9 @@
   "client": "Banco Meridian",
   "current_sprint": 24,
   "current_feature": "FEAT-022",
-  "current_step": "1",
-  "pipeline_step": "1",
-  "pipeline_step_name": "scrum-master",
+  "current_step": "2",
+  "pipeline_step": "2",
+  "pipeline_step_name": "requirements-analyst",
   "completed_steps": [
     "1",
     "2",
@@ -42,9 +42,9 @@
     "8b",
     "9"
   ],
-  "last_skill": "scrum-master",
-  "last_skill_output_path": "docs/sprints/",
-  "gate_pending": "G-1",
+  "last_skill": "requirements-analyst",
+  "last_skill_output_path": "docs/deliverables/sprint-24-FEAT-022/",
+  "gate_pending": "G-2",
   "sprint_goal": "Permitir al cliente de Banco Meridian enviar y recibir pagos P2P inmediatos mediante número de teléfono registrado en Bizum, con autenticación SCA OTP, verificación de límites regulatorios y notificaciones push en tiempo real, cumpliendo PSD2 Art.97 SCA y SEPA Instant Credit Transfer.",
   "sprint_capacity_sp": 24,
   "artifacts": {
@@ -244,13 +244,20 @@
     "1_s24": [
       "docs/sprints/SPRINT-024-planning.md",
       "Jira SCRUM-143..152 (10 issues creados, Por hacer)"
+    ],
+    "2_s24": [
+      "docs/deliverables/sprint-24-FEAT-022/SRS-FEAT-022-sprint24.md",
+      "7 US + 2 DEBT con criterios Gherkin + RTM completa — gate_pending G-2"
     ]
   },
   "gates": {
     "G-1": {
       "approved_by": "product-owner",
-      "approved_at": "2026-04-06T05:38:14.329Z",
-      "step": "1"
+      "approved_at": "2026-04-14T14:08:23.522Z",
+      "step": "1",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "FEAT-022 Bizum P2P aprobado. 24 SP. 19 feature + 5 deuda."
     },
     "G-2": {
       "approved_by": "product-owner",
@@ -554,7 +561,7 @@
     "report": "docs/code-review/CR-FEAT-021-sprint23.md",
     "reviewed_at": "2026-04-09T10:49:03.114Z"
   },
-  "updated_at": "2026-04-14T14:02:43.707Z",
+  "updated_at": "2026-04-14T14:10:40.010Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": false,
   "gate8_approved_by": "release-manager",
@@ -1214,6 +1221,15 @@
       "sprint": 23,
       "feature": "FEAT-021",
       "note": "Sprint 23 CERRADO · Jira 10/10 · Confluence OK · LESSONS_LEARNED 83 LAs · Dashboard G-9"
+    },
+    {
+      "gate": "G-1",
+      "step": "1",
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-14T14:08:23.522Z",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "FEAT-022 Bizum P2P aprobado. 24 SP. 19 feature + 5 deuda."
     }
   ],
   "lessons_learned": [

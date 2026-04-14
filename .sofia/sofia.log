@@ -486,3 +486,5 @@
 [2026-04-09T16:50:40.000Z] BATCH-APPROVE-LA · product-owner · 49 LAs aprobadas · LESSONS_LEARNED.md regenerado (84 LAs)
 [2026-04-09T17:23:29Z] LA-REGISTER · LA-023-03 · approved:product-owner · Total LAs: 85
 [2026-04-14T14:02:43.707Z] [STEP-1] [scrum-master] COMPLETED → docs/sprints/SPRINT-024-planning.md | Sprint 24 FEAT-022 Bizum P2P | 10 issues Jira SCRUM-143..152 | 24 SP (19 feature + 5 deuda) | gate_pending G-1
+[2026-04-14T14:08:23.522Z] [GATE-G1] [product-owner] APPROVED → Sprint 24 FEAT-022 Bizum P2P · avanzando a Step 2 Requirements Analyst
+[2026-04-14T14:10:40.010Z] [STEP-2] [requirements-analyst] COMPLETED → docs/deliverables/sprint-24-FEAT-022/SRS-FEAT-022-sprint24.md | 7 US + 10 RN + 5 RNF-delta + RTM — gate_pending G-2
