@@ -158,3 +158,21 @@ bank.bizum.request.ttl-hours=24
 ---
 
 *LLD Backend generado por Architect Agent — SOFIA v2.7 — Step 3 — Sprint 24*
+
+---
+
+## Requisito G-4b — SpringContextIT (LA-020-11 / GR-003)
+
+El Developer Agent **debe verificar** que `SpringContextIT` existe y compila antes de declarar G-4b:
+
+```java
+// apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/integration/SpringContextIT.java
+@SpringBootTest
+class SpringContextIT {
+    @Test void contextLoads() { }
+}
+```
+
+`mvn compile` con BUILD SUCCESS es **bloqueante** para Gate G-4b. Sin esta verificación el gate no se aprueba (GR-003 + GR-004).
+
+Los DEBT-045/046 planificados en este sprint no tienen CVSS asignado (deudas técnicas de arquitectura, no CVEs). GR-010 evaluará `open_debts` en G-9 — en S24 no hay deudas de seguridad pendientes.
