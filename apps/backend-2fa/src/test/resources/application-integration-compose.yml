@@ -64,6 +64,9 @@ notifications:
 trusted-device:
   hmac-key: dummy-hmac-key-for-integration-tests-only-not-real
 
+kyc:
+  encryption-key: MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=
+
 server:
   port: 0
   error:
