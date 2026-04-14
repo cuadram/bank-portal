@@ -63,6 +63,7 @@ notifications:
 
 notification:
   email:
+    from: no-reply@integration-test.local
     deny-base-url: http://localhost:8080/session/deny
 
 trusted-device:
