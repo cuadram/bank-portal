@@ -254,7 +254,7 @@
       "FA-bank-portal-Banco Meridian.docx v0.5 — 76.9KB — docs/functional-analysis/"
     ],
     "2c_s24": [
-      "docs/ux-ui/prototypes/PROTO-FEAT-022-sprint24.html (45KB · 6 pantallas · sidebar navy #1e3a5f · CSS heredado PROTO-FEAT-021)"
+      "docs/ux-ui/prototypes/PROTO-FEAT-022-sprint24.html (72KB · 7 pantallas · CSS/JS heredado PROTO-FEAT-021-sprint23 · sidebar navy #1e3a5f real de producción)"
     ]
   },
   "gates": {
@@ -579,7 +579,7 @@
     "report": "docs/code-review/CR-FEAT-021-sprint23.md",
     "reviewed_at": "2026-04-09T10:49:03.114Z"
   },
-  "updated_at": "2026-04-14T14:22:36.599Z",
+  "updated_at": "2026-04-14T14:31:24.065Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": false,
   "gate8_approved_by": "release-manager",
