@@ -1,14 +1,14 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "idle",
+  "status": "in_progress",
   "project": "bank-portal",
   "client": "Banco Meridian",
-  "current_sprint": 23,
-  "current_feature": "FEAT-021",
+  "current_sprint": 24,
+  "current_feature": "FEAT-022",
   "current_step": "9",
-  "pipeline_step": "8",
-  "pipeline_step_name": "documentation-agent",
+  "pipeline_step": "1",
+  "pipeline_step_name": "scrum-master",
   "completed_steps": [
     "1",
     "2",
@@ -42,10 +42,10 @@
     "8b",
     "9"
   ],
-  "last_skill": "architect",
-  "last_skill_output_path": "docs/architecture/",
-  "gate_pending": null,
-  "sprint_goal": "Permitir al cliente de Banco Meridian consultar, simular y contratar depósitos a plazo fijo con retención IRPF en origen y garantía FGD, cumpliendo Ley 44/2002. Cerrar DEBT-036/037/044.",
+  "last_skill": "scrum-master",
+  "last_skill_output_path": "docs/sprints/",
+  "gate_pending": "G-1",
+  "sprint_goal": "Permitir al cliente de Banco Meridian enviar y solicitar pagos inmediatos entre particulares mediante Bizum, con SCA OTP, límites configurables y notificaciones en tiempo real, cumpliendo PSD2 Art.97.",
   "sprint_capacity_sp": 24,
   "artifacts": {
     "1": [
@@ -240,6 +240,10 @@
       "LESSONS_LEARNED.md regenerado (83 LAs · 29KB)",
       "Dashboard global regenerado · Gate G-9",
       "session.json cerrado: sprint_closed=true · acum=545SP"
+    ],
+    "1_s24": [
+      "docs/sprints/SPRINT-024-planning.md",
+      "Jira SCRUM-132..142 (11 issues, pendientes de creación)"
     ]
   },
   "gates": {
@@ -550,9 +554,9 @@
     "report": "docs/code-review/CR-FEAT-021-sprint23.md",
     "reviewed_at": "2026-04-09T10:49:03.114Z"
   },
-  "updated_at": "2026-04-09T16:20:59.754Z",
-  "resume_next": "Sprint 24 — pendiente definición PO · FEAT-022 por determinar",
-  "sprint_closed": true,
+  "updated_at": "2026-04-14T13:45:42.716Z",
+  "resume_next": "Sprint 24 — FEAT-022 Bizum P2P — Step 1 completado, pendiente G-1",
+  "sprint_closed": false,
   "gate8_approved_by": "release-manager",
   "gate8_approved_at": "2026-03-25T17:00:00Z",
   "retrospective": "docs/sprints/SPRINT-022-retrospectiva.md",
@@ -2056,6 +2060,38 @@
       "registered_at": "2026-04-09T17:23:29Z",
       "approved_by": "product-owner",
       "approved_at": "2026-04-09T17:23:29Z"
+    },
+    {
+      "id": "LA-023-04",
+      "type": "governance/git",
+      "scope": "project",
+      "description": "Los tres proyectos gobernados (BankPortal, ExperisTracker, TakeOverSintetico) iniciaron sin un modelo de ramas git definido ni repositorios remotos configurados. BankPortal acumuló 11 ramas feature huérfanas nunca mergeadas a develop ni main; Sprint 23 se ejecutó sobre rama de Sprint 15. ExperisTracker trabajó directamente en main durante 3 sprints sin rama feature. TakeOverSintetico careció de git init durante toda la fase de Takeover Sprint 0. Resultado: main y develop desactualizados en todos los proyectos, trazabilidad remota nula y commits de sprints activos sobre ramas incorrectas.",
+      "correction": "REGLA PERMANENTE: al inicializar cualquier proyecto SOFIA, el primer paso obligatorio es (1) git init, (2) crear estructura main+develop, (3) push a remote. Cada sprint crea rama feature/FEAT-XXX-sprintYY desde develop. Al cerrar sprint: merge --no-ff feature → develop → push. Al crear release: merge --no-ff develop → main + tag vX.Y.0 → push. El branching model debe verificarse en Gate 1 (Setup) como precondición bloqueante.",
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-11T14:19:28.899Z",
+      "registered_at": "2026-04-11T14:19:28.899Z",
+      "sprint": 23,
+      "title": "Branching model SOFIA no aplicado desde inicio — deuda git acumulada y saneada"
+    },
+    {
+      "id": "LA-CORE-035",
+      "type": "governance/git",
+      "description": "branching model SOFIA no aplicado desde inicio de proyecto -- deuda acumulada en BankPortal (11 ramas huerfanas), ExperisTracker (main directo 3 sprints), TakeOverSintetico (sin git init). REGLA: git init + main+develop + remote en Gate 1 obligatorio. Merge feature→develop por sprint, develop→main por release + tag.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.37",
+      "imported_at": "2026-04-12T17:47:26.356Z"
+    },
+    {
+      "id": "LA-CORE-037",
+      "type": "dashboard",
+      "description": "datos del dashboard SIEMPRE desde session.json en disco de cada proyecto registrado; nunca desde memoria o conversación anterior",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.37",
+      "imported_at": "2026-04-12T17:47:26.356Z"
     }
   ],
   "unit_test_verification": {
@@ -2547,5 +2583,15 @@
     "overall_status": "GREEN",
     "script_version": "1.0.0",
     "sofia_version": "2.7"
+  },
+  "repository": {
+    "remote": "https://github.com/cuadram/bank-portal.git",
+    "provider": "github",
+    "visibility": "public",
+    "default_branch": "main",
+    "develop_branch": "develop",
+    "active_branch": "feature/FEAT-021-sprint23",
+    "branching_model": "feature/FEAT-XXX-sprintYY",
+    "guardrail": "GR-CORE-030"
   }
 }
