@@ -1,6 +1,5 @@
-package com.experis.sofia.bankportal.bizum.integration;
+package com.experis.sofia.bankportal.integration;
 import com.experis.sofia.bankportal.integration.config.IntegrationTestBase;
-import com.experis.sofia.bankportal.twofa.BackendTwoFactorApplication;
 import org.junit.jupiter.api.Test;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * TC-F022-022 — Flyway V27__bizum.sql ejecuta sin errores
  * Verifica que las 3 tablas bizum_* existen en PostgreSQL real
  */
-@SpringBootTest(classes = BackendTwoFactorApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BizumFlywayIT extends IntegrationTestBase {
     @Autowired DataSource ds;
 
