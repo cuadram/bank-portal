@@ -20,6 +20,12 @@ spring:
     redis:
       host: localhost
       port: 6379
+  mail:
+    host: localhost
+    port: 25
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: false
 
 totp:
   aes-key: MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=
