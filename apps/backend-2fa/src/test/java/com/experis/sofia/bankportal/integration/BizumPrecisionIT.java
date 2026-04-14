@@ -9,16 +9,13 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
-import org.springframework.boot.test.context.SpringBootTest;
-import com.experis.sofia.bankportal.twofa.BackendTwoFactorApplication;
 
 /**
  * TC-F022-025 — NUMERIC(12,2) preserva escala en PostgreSQL real
  * Verifica ADR-034: BigDecimal HALF_EVEN persiste correctamente
  */
 @Transactional
-@SpringBootTest(classes = BackendTwoFactorApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class BizumPrecisionIT extends IntegrationTestBase {
+class BizumPrecisionIT extends BizumIntegrationTestBase {
     @Autowired JpaBizumAdapter adapter;
 
     @Test

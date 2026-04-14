@@ -9,16 +9,13 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
-import org.springframework.boot.test.context.SpringBootTest;
-import com.experis.sofia.bankportal.twofa.BackendTwoFactorApplication;
 
 /**
  * TC-F022-024 — expireOldRequests() actualiza status PENDING→EXPIRED en BD real
  * Verifica RN-F022-07: solicitudes expiradas se marcan automáticamente
  */
 @Transactional
-@SpringBootTest(classes = BackendTwoFactorApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class BizumExpireIT extends IntegrationTestBase {
+class BizumExpireIT extends BizumIntegrationTestBase {
     @Autowired JpaBizumAdapter adapter;
 
     @Test
