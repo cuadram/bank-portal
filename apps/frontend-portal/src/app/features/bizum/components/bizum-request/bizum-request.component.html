@@ -1,0 +1,25 @@
+<div class="breadcrumb"><a (click)="back()">Bizum</a> › Solicitar dinero</div>
+<h1 class="page-title">Solicitar dinero</h1>
+<p class="page-sub">El destinatario tiene 24h para aceptar o rechazar</p>
+<div class="card card-body" style="max-width:560px">
+  <div class="form-group">
+    <label class="form-label">¿A quién le pides? *</label>
+    <input class="form-input" type="tel" [formControl]="form.get('recipientPhone')!" placeholder="+34 6XX XXX XXX">
+  </div>
+  <div class="form-group">
+    <label class="form-label">Importe * (máx. €500)</label>
+    <input class="form-input" type="number" [formControl]="form.get('amount')!" placeholder="0,00">
+  </div>
+  <div class="form-group">
+    <label class="form-label">Concepto (opcional)</label>
+    <input class="form-input" [formControl]="form.get('concept')!" placeholder="¿Para qué es?">
+  </div>
+  <div class="alert alert-info">📋 La solicitud expira automáticamente a las 24 horas si no hay respuesta.</div>
+  <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+  <div class="card-footer">
+    <button class="btn btn-ghost" (click)="back()">Cancelar</button>
+    <button class="btn btn-primary" (click)="send()" [disabled]="loading || form.invalid">
+      {{ loading ? 'Enviando...' : 'Enviar solicitud →' }}
+    </button>
+  </div>
+</div>

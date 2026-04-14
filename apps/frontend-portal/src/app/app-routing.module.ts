@@ -10,7 +10,11 @@ const routes: Routes = [
     loadChildren: () => import('./features/login/login.module').then(m => m.LoginModule)
   },
   // Rutas autenticadas — con shell (sidebar visible)
-  {
+    {
+    path: 'bizum',
+    loadChildren: () => import('./features/bizum/bizum.module').then(m => m.BizumModule)
+  },
+{
     path: '',
     component: ShellComponent,
     canActivate: [AuthGuard],

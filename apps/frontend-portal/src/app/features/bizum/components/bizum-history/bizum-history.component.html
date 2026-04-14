@@ -1,0 +1,30 @@
+<div class="breadcrumb"><span>Bizum</span> › Historial</div>
+<h1 class="page-title">Historial Bizum</h1>
+
+<div class="filter-chips">
+  <button class="chip" [class.active]="filter==='ALL'" (click)="setFilter('ALL')">Todos</button>
+  <button class="chip" [class.active]="filter==='SENT'" (click)="setFilter('SENT')">Enviados</button>
+  <button class="chip" [class.active]="filter==='RECEIVED'" (click)="setFilter('RECEIVED')">Recibidos</button>
+  <button class="chip" [class.active]="filter==='PENDING'" (click)="setFilter('PENDING')">Pendientes</button>
+</div>
+
+<div class="card" *ngIf="!loading && filtered.length > 0">
+  <div class="op-item" *ngFor="let t of filtered">
+    <div class="op-avatar" [class]="t.type === 'SENT' ? 'sent' : t.status === 'PENDING' ? 'pending' : 'received'">
+      {{ t.type === 'SENT' ? '📤' : t.status === 'PENDING' ? '⏳' : '📥' }}
+    </div>
+    <div class="op-info">
+      <div class="op-name">{{ t.phoneMasked }}</div>
+      <div class="op-meta">{{ t.concept }} · {{ t.timestamp | date:'d MMM, HH:mm' }}</div>
+    </div>
+    <div class="op-right">
+      <span [class]="t.type === 'SENT' ? 'op-neg' : t.status === 'PENDING' ? 'op-pend' : 'op-pos'">
+        {{ t.amount | currency:'EUR':'symbol':'1.2-2' }}
+      </span>
+    </div>
+  </div>
+</div>
+<div class="empty-state" *ngIf="!loading && filtered.length === 0">
+  <div class="empty-icon">💸</div>
+  <div class="empty-title">Sin operaciones</div>
+</div>

@@ -1,0 +1,35 @@
+<div class="page-header">
+  <div class="breadcrumb"><span>Bizum</span></div>
+  <div class="page-actions">
+    <button class="btn btn-ghost btn-sm" (click)="navigateTo('/bizum/configuracion')">Configuración</button>
+  </div>
+</div>
+
+<div class="bizum-hero" *ngIf="status.active">
+  <div class="hero-top"><span class="hero-title">💸 Bizum</span><span class="status-pill">ACTIVO</span></div>
+  <div class="bal-label">Límite diario disponible</div>
+  <div class="bal-amount">{{ status.dailyLimit - status.dailyUsed | currency:'EUR':'symbol':'1.2-2' }}</div>
+  <div class="limit-bar"><div class="limit-fill" [style.width.%]="limitPct"></div></div>
+  <div class="actions-grid">
+    <button class="action-btn" (click)="navigateTo('/bizum/enviar')">📤 Enviar</button>
+    <button class="action-btn" (click)="navigateTo('/bizum/solicitar')">📥 Solicitar</button>
+  </div>
+</div>
+
+<div class="transactions-header">
+  <span class="section-title">Últimas operaciones</span>
+  <button class="btn btn-ghost btn-sm" (click)="navigateTo('/bizum/historial')">Ver todo →</button>
+</div>
+<div class="card" *ngIf="transactions.length > 0">
+  <div class="op-item" *ngFor="let t of transactions">
+    <div class="op-info">
+      <div class="op-name">{{ t.phoneMasked }}</div>
+      <div class="op-meta">{{ t.concept }} · {{ t.timestamp | date:'d MMM, HH:mm' }}</div>
+    </div>
+    <div class="op-right">
+      <span [class]="t.type === 'SENT' ? 'amount-neg' : 'amount-pos'">
+        {{ t.type === 'SENT' ? '-' : '+' }}{{ t.amount | currency:'EUR':'symbol':'1.2-2' }}
+      </span>
+    </div>
+  </div>
+</div>

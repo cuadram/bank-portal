@@ -131,5 +131,11 @@ bank:
       penalty-rate: 0.25
       min-amount: 1000
       max-plazo-meses: 60
+    bizum:
+      limit:
+        per-operation: 500
+        per-day: 2000
+      request:
+        ttl-hours: 24
     loan:
       tae: 6.95

@@ -1,0 +1,32 @@
+<div class="breadcrumb"><span>Bizum</span> › Configuración</div>
+<h1 class="page-title">Configuración Bizum</h1>
+<div style="max-width:580px">
+  <div class="card card-body" style="margin-bottom:12px">
+    <div class="card-title">Número vinculado</div>
+    <div class="info-row">
+      <span>{{ status.phoneMasked }}</span>
+      <span class="badge badge-success">ACTIVO</span>
+    </div>
+  </div>
+  <div class="card card-body" style="margin-bottom:12px">
+    <div class="card-title">Límites operativos</div>
+    <div class="dl-row"><span class="dl-label">Por operación</span><span>{{ status.perOperationLimit | currency:'EUR' }}</span></div>
+    <div class="dl-row"><span class="dl-label">Diario</span><span>{{ status.dailyLimit | currency:'EUR' }}</span></div>
+    <div class="dl-row"><span class="dl-label">Usado hoy</span><span>{{ status.dailyUsed | currency:'EUR' }}</span></div>
+  </div>
+  <div class="card card-body">
+    <div class="card-title">Notificaciones</div>
+    <div class="toggle-row">
+      <div class="toggle-info"><div>Push al recibir pago</div></div>
+      <div class="toggle-sw" [class.on]="pushPayments" (click)="pushPayments=!pushPayments"></div>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-info"><div>Push al recibir solicitud</div></div>
+      <div class="toggle-sw" [class.on]="pushRequests" (click)="pushRequests=!pushRequests"></div>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-info"><div>Aviso de expiración</div></div>
+      <div class="toggle-sw" [class.on]="pushExpiry" (click)="pushExpiry=!pushExpiry"></div>
+    </div>
+  </div>
+</div>

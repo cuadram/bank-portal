@@ -1,7 +1,7 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "in_progress",
+  "status": "gate_pending",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 24,
@@ -42,9 +42,9 @@
     "8b",
     "9"
   ],
-  "last_skill": "documentation-agent+fa-agent",
+  "last_skill": "developer",
   "last_skill_output_path": "docs/architecture/",
-  "gate_pending": null,
+  "gate_pending": "G-4",
   "sprint_goal": "Permitir al cliente de Banco Meridian enviar y recibir pagos P2P inmediatos mediante número de teléfono registrado en Bizum, con autenticación SCA OTP, verificación de límites regulatorios y notificaciones push en tiempo real, cumpliendo PSD2 Art.97 SCA y SEPA Instant Credit Transfer.",
   "sprint_capacity_sp": 24,
   "artifacts": {
@@ -267,6 +267,28 @@
       "validate-fa-index PASS 8/8 — 93 func, 209 BRs — 2026-04-14T14:59:02.741Z",
       "FA-FEAT-022-sprint24.md enriquecido con arquitectura HLD/LLD — status READY_FOR_REVIEW",
       "Confluence HLD page 12779521 — verificada (publicada en step 3)"
+    ],
+    "4_s24": [
+      "bizum/domain/model: BizumActivation, BizumPayment, BizumRequest, BizumStatus",
+      "bizum/domain/exception: 6 excepciones de dominio",
+      "bizum/domain/service: BizumLimitService (@Value properties), PhoneValidationService (E.164 + mask)",
+      "bizum/domain/repository: 3 ports (Activation, Payment, Request)",
+      "bizum/application/usecase: 6 UC (Activate, SendPayment, RequestMoney, Accept, Reject, ListTransactions)",
+      "bizum/application/dto: 8 DTOs (records)",
+      "bizum/infrastructure/persistence: 3 entities + 3 JPA repos + JpaBizumAdapter (@Primary)",
+      "bizum/infrastructure/corebanking: SepaInstantPort + SepaInstantResult + CoreBankingMockBizumClient (ADR-038/DEBT-045)",
+      "bizum/infrastructure/redis: BizumRateLimitAdapter ratelimit:{userId}:bizum:{date} (ADR-039/DEBT-046)",
+      "bizum/api: BizumController + BizumExceptionHandler (LA-TEST-003)",
+      "V27__bizum.sql — Flyway migration 3 tablas",
+      "application.yml: bank.bizum.limit.* añadido",
+      "app-routing.module.ts: /bizum lazy registrada (LA-FRONT-001)",
+      "shell.component.ts: nav Bizum 💸 añadido (LA-FRONT-001)",
+      "features/bizum: module + routing + model + service + 5 components",
+      "tests: BizumLimitServiceTest TC001-005 + SendPaymentUseCaseTest TC006-010 + RequestMoneyUseCaseTest TC011-014",
+      "guardrail G-4b: 72/72 OK — BUILD DESBLOQUEADO"
+    ],
+    "4b_s24": [
+      "GUARDRAIL G-4b PASS 72/72 — 2026-04-14T15:17:56.837Z — BUILD DESBLOQUEADO"
     ]
   },
   "gates": {
@@ -371,6 +393,14 @@
       "sprint": 24,
       "feature": "FEAT-022",
       "note": "Step 3b AUTO: validate-fa-index PASS 8/8 · FA enriquecido · HLD Confluence 12779521 OK"
+    },
+    "G-4b": {
+      "approved_by": "auto",
+      "approved_at": "2026-04-14T15:17:56.837Z",
+      "step": "4b",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "Guardrail 72/72 OK"
     }
   },
   "fa_agent": {
@@ -610,7 +640,7 @@
     "report": "docs/code-review/CR-FEAT-021-sprint23.md",
     "reviewed_at": "2026-04-09T10:49:03.114Z"
   },
-  "updated_at": "2026-04-14T14:59:02.741Z",
+  "updated_at": "2026-04-14T15:17:56.837Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": false,
   "gate8_approved_by": "release-manager",
@@ -1332,6 +1362,15 @@
       "sprint": 24,
       "feature": "FEAT-022",
       "note": "AUTO: validate-fa-index PASS 8/8 · FA enriquecido"
+    },
+    {
+      "gate": "G-4b",
+      "step": "4b",
+      "approved_by": "auto",
+      "approved_at": "2026-04-14T15:17:56.837Z",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "72/72 OK"
     }
   ],
   "lessons_learned": [
@@ -2508,6 +2547,20 @@
       "status": "CLOSED",
       "closed_at": "2026-04-09T10:46:48.478Z",
       "closed_sprint": 23
+    },
+    {
+      "id": "DEBT-045",
+      "status": "CLOSED",
+      "closed_at": "2026-04-14T15:17:56.837Z",
+      "closed_sprint": 24,
+      "desc": "CoreBankingMockBizumClient SEPA Instant — ADR-038"
+    },
+    {
+      "id": "DEBT-046",
+      "status": "CLOSED",
+      "closed_at": "2026-04-14T15:17:56.837Z",
+      "closed_sprint": 24,
+      "desc": "Redis rate-limit key pattern ratelimit:{userId}:bizum:{date} — ADR-039"
     }
   ],
   "skills_updated_s21": [
