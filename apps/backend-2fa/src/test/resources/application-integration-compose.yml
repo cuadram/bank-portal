@@ -1,4 +1,4 @@
-# Perfil para ITs Bizum usando PostgreSQL del Docker Compose existente (sin Testcontainers)
+# Perfil para ITs Bizum usando PostgreSQL/Redis del Docker Compose existente (sin Testcontainers)
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5433/bankportal
@@ -20,6 +20,7 @@ spring:
     redis:
       host: localhost
       port: 6380
+      password: redis_stg_2026
   mail:
     host: localhost
     port: 25
