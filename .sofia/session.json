@@ -1,12 +1,12 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "in_progress",
+  "status": "gate_pending",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 24,
   "current_feature": "FEAT-022",
-  "current_step": "9",
+  "current_step": "1",
   "pipeline_step": "1",
   "pipeline_step_name": "scrum-master",
   "completed_steps": [
@@ -45,7 +45,7 @@
   "last_skill": "scrum-master",
   "last_skill_output_path": "docs/sprints/",
   "gate_pending": "G-1",
-  "sprint_goal": "Permitir al cliente de Banco Meridian enviar y solicitar pagos inmediatos entre particulares mediante Bizum, con SCA OTP, límites configurables y notificaciones en tiempo real, cumpliendo PSD2 Art.97.",
+  "sprint_goal": "Permitir al cliente de Banco Meridian enviar y recibir pagos P2P inmediatos mediante número de teléfono registrado en Bizum, con autenticación SCA OTP, verificación de límites regulatorios y notificaciones push en tiempo real, cumpliendo PSD2 Art.97 SCA y SEPA Instant Credit Transfer.",
   "sprint_capacity_sp": 24,
   "artifacts": {
     "1": [
@@ -243,7 +243,7 @@
     ],
     "1_s24": [
       "docs/sprints/SPRINT-024-planning.md",
-      "Jira SCRUM-132..142 (11 issues, pendientes de creación)"
+      "Jira SCRUM-143..152 (10 issues creados, Por hacer)"
     ]
   },
   "gates": {
@@ -554,8 +554,8 @@
     "report": "docs/code-review/CR-FEAT-021-sprint23.md",
     "reviewed_at": "2026-04-09T10:49:03.114Z"
   },
-  "updated_at": "2026-04-14T13:45:42.716Z",
-  "resume_next": "Sprint 24 — FEAT-022 Bizum P2P — Step 1 completado, pendiente G-1",
+  "updated_at": "2026-04-14T14:02:43.707Z",
+  "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": false,
   "gate8_approved_by": "release-manager",
   "gate8_approved_at": "2026-03-25T17:00:00Z",
@@ -2487,21 +2487,22 @@
     ]
   },
   "jira_sprint": {
-    "sprint_name": "Tablero Sprint 23",
+    "sprint_name": "Tablero Sprint 24",
     "board_id": 1,
     "state": "active",
     "issues": [
-      "SCRUM-123",
-      "SCRUM-124",
-      "SCRUM-125",
-      "SCRUM-126",
-      "SCRUM-127",
-      "SCRUM-128",
-      "SCRUM-129",
-      "SCRUM-130",
-      "SCRUM-131"
+      "SCRUM-143",
+      "SCRUM-144",
+      "SCRUM-145",
+      "SCRUM-146",
+      "SCRUM-147",
+      "SCRUM-148",
+      "SCRUM-149",
+      "SCRUM-150",
+      "SCRUM-151",
+      "SCRUM-152"
     ],
-    "started_at": "2026-04-06T05:37:09.006Z"
+    "started_at": "2026-04-14T14:02:43.707Z"
   },
   "stg_verification_sprint22": {
     "executed_at": "2026-04-02T20:50:19.603Z",
