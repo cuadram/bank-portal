@@ -1,12 +1,9 @@
-# LESSONS LEARNED — BankPortal · Banco Meridian
+# LESSONS LEARNED — bank-portal
 
-> Generado por SOFIA v2.7 · Batch Approval PO · 2026-04-09
+> Generado: 2026-04-12T17:47:26.366Z | Total: 88 LAs
+> LAs proyecto: 51 | LAs SOFIA-CORE integradas: 37
 
-**Total Lessons Learned:** 84
-
----
-
-## Sprint 19
+## LAs del Proyecto
 
 ### LA-019-03 · process
 
@@ -14,9 +11,7 @@
 
 **Corrección:** Desde Sprint 20: parada obligatoria en cada gate HITL con pregunta al rol definido.
 
-_Registrado: 2026-03-27T14:06:00.285397Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-03-27T14:06:00.285397Z_
 
 ---
 
@@ -26,8 +21,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 
 **Corrección:** G-4 requiere IT smoke test por feature nueva
 
-**Aprobado por:** product-owner · 2026-04-09
-
 ---
 
 ### LA-019-05 · devops
@@ -35,8 +28,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 **Descripción:** Build Angular sin --configuration=production no activa budget CSS ni environment.prod.ts
 
 **Corrección:** CI y Dockerfile usan siempre ng build --configuration=production
-
-**Aprobado por:** product-owner · 2026-04-09
 
 ---
 
@@ -46,8 +37,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 
 **Corrección:** Script grep DEBT-022 obligatorio en G-5
 
-**Aprobado por:** product-owner · 2026-04-09
-
 ---
 
 ### LA-019-07 · testing
@@ -55,8 +44,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 **Descripción:** Smoke test desactualizado — no cubre endpoints del sprint corriente
 
 **Corrección:** smoke-test actualizado obligatorio como artefacto de G-4
-
-**Aprobado por:** product-owner · 2026-04-09
 
 ---
 
@@ -66,8 +53,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 
 **Corrección:** Mocks solo con @Profile(mock) o @Profile(test). @Primary en adaptador real.
 
-**Aprobado por:** product-owner · 2026-04-09
-
 ---
 
 ### LA-019-09 · config
@@ -75,8 +60,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 **Descripción:** environment.prod.ts desincronizado con environment.ts
 
 **Corrección:** Validación automática de campos en CI
-
-**Aprobado por:** product-owner · 2026-04-09
 
 ---
 
@@ -86,8 +69,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 
 **Corrección:** Checklist G-4 incluye verificación de registro en app-routing.module.ts
 
-**Aprobado por:** product-owner · 2026-04-09
-
 ---
 
 ### LA-019-11 · frontend
@@ -95,8 +76,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 **Descripción:** Componentes de ruta usan @Input para params — nunca se populan
 
 **Corrección:** Usar siempre ActivatedRoute.paramMap en componentes de ruta
-
-**Aprobado por:** product-owner · 2026-04-09
 
 ---
 
@@ -106,8 +85,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 
 **Corrección:** Validar UUIDs con regex antes de ejecutar seeds
 
-**Aprobado por:** product-owner · 2026-04-09
-
 ---
 
 ### LA-019-13 · database
@@ -115,8 +92,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 **Descripción:** timestamp without time zone vs Instant Java — incompatibilidad de tipos
 
 **Corrección:** LLD incluye mapa de tipos BD→Java. Usar LocalDateTime para columnas sin timezone.
-
-**Aprobado por:** product-owner · 2026-04-09
 
 ---
 
@@ -126,8 +101,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 
 **Corrección:** OnPush solo cuando se garantiza inmutabilidad y markForCheck() en todos los observables
 
-**Aprobado por:** product-owner · 2026-04-09
-
 ---
 
 ### LA-019-15 · backend
@@ -135,8 +108,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 **Descripción:** Named params JdbcClient contaminados por concatenación de text blocks
 
 **Corrección:** SQL dinámico siempre usa parámetros posicionales (?)
-
-**Aprobado por:** product-owner · 2026-04-09
 
 ---
 
@@ -146,19 +117,13 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 
 **Corrección:** Informe QA obliga campo: Repositorio activo: MOCK|JPA-REAL
 
-**Aprobado por:** product-owner · 2026-04-09
-
 ---
-
-## Sprint 20
 
 ### LA-020-01 · process
 
 **Descripción:** Jira debe actualizarse en cada step del pipeline sin instruccion explicita
 
 **Corrección:** Regla permanente: transicion automatica en cada gate
-
-**Aprobado por:** product-owner · 2026-04-09
 
 ---
 
@@ -168,8 +133,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 
 **Corrección:** No diferir si CVSS >= 4.0
 
-**Aprobado por:** product-owner · 2026-04-09
-
 ---
 
 ### LA-020-03 · architecture
@@ -177,8 +140,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 **Descripción:** Audit log con datos derivados crea inconsistencia — enriquecer en momento de escritura
 
 **Corrección:** DEBT-036: inyectar AccountRepository en ExportAuditService
-
-**Aprobado por:** product-owner · 2026-04-09
 
 ---
 
@@ -188,8 +149,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 
 **Corrección:** Checklist onboarding incluye configuracion workflow
 
-**Aprobado por:** product-owner · 2026-04-09
-
 ---
 
 ### LA-020-05 · process
@@ -197,8 +156,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 **Descripción:** Documentation Agent (10 DOCX + 3 XLSX + dashboard) no ejecutado en Step 8 — error detectado post-cierre
 
 **Corrección:** Desde Sprint 21: Documentation Agent es BLOQUEANTE para Gate G-9. No se cierra sprint sin estos artefactos.
-
-**Aprobado por:** product-owner · 2026-04-09
 
 ---
 
@@ -208,8 +165,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 
 **Corrección:** Checklist deliverables: planning-doc.docx bloqueante para Gate G-8 desde Sprint 21
 
-**Aprobado por:** product-owner · 2026-04-09
-
 ---
 
 ### LA-020-07 · dashboard
@@ -217,8 +172,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 **Descripción:** Dashboard no se regeneraba en cada aprobacion de gate, solo al cerrar sprint
 
 **Corrección:** gate-dashboard-hook.js invocado en cada gate. dashboard_on_every_gate:true en sofia-config.json
-
-**Aprobado por:** product-owner · 2026-04-09
 
 ---
 
@@ -228,8 +181,6 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 
 **Corrección:** gen-fa-document.py debe ejecutarse en Step 8b de cada sprint. Anadir llamada al gate-dashboard-hook como paso obligatorio. Script actualizado con FEAT-017 y FEAT-018.
 
-**Aprobado por:** product-owner · 2026-04-09
-
 ---
 
 ### LA-020-09 · process
@@ -238,9 +189,7 @@ _Registrado: 2026-03-27T14:06:00.285397Z_
 
 **Corrección:** REGLA PERMANENTE: antes de crear cualquier fichero Java en un sprint, el Developer Agent DEBE ejecutar: (1) cat BankPortalApplication.java | head -1 para obtener el package raíz real, (2) ls src/main/java/ para confirmar estructura. Sin esta verificación el fichero no se escribe.
 
-_Registrado: 2026-03-30T18:42:40.685Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-03-30T18:42:40.685Z_
 
 ---
 
@@ -250,9 +199,7 @@ _Registrado: 2026-03-30T18:42:40.685Z_
 
 **Corrección:** REGLA PERMANENTE: el Code Reviewer DEBE ejecutar grep del package raíz contra los nuevos ficheros y contrastar con el package del proyecto. Checklist G-5 añade: grep -r "^package" src/main/java/com/ | head -1 vs package de cada fichero nuevo. Discrepancia = bloqueante.
 
-_Registrado: 2026-03-30T18:42:40.686Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-03-30T18:42:40.686Z_
 
 ---
 
@@ -262,9 +209,7 @@ _Registrado: 2026-03-30T18:42:40.686Z_
 
 **Corrección:** REGLA PERMANENTE: SpringContextIT es BLOQUEANTE para Gate G-4b. Si no existe en el proyecto, el Developer Agent lo crea en el mismo step. mvn compile (no mvn test) debe ejecutarse via sofia-shell antes de declarar G-4b OK. Sin BUILD SUCCESS en consola el gate no se aprueba.
 
-_Registrado: 2026-03-30T18:42:40.686Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-03-30T18:42:40.686Z_
 
 ---
 
@@ -274,9 +219,7 @@ _Registrado: 2026-03-30T18:42:40.686Z_
 
 **Corrección:** REGLA PERMANENTE: al usar HttpServletRequest.getAttribute() para propagar claims JWT, el nombre del atributo debe verificarse contra el filtro que lo escribe en el mismo PR. Checklist G-5 añade: grep authenticatedUserId en controladores que extraigan userId del request.
 
-_Registrado: 2026-03-31T07:54:00.000Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-03-31T07:54:00.000Z_
 
 ---
 
@@ -286,9 +229,7 @@ _Registrado: 2026-03-31T07:54:00.000Z_
 
 **Corrección:** REGLA PERMANENTE: distinguir siempre entre type (direccion financiera: CARGO/ABONO) y category (tipo negocio: DOMICILIACION/PAGO_TARJETA/INGRESO/COMISION/TRANSFERENCIA_*). Tests de integracion deben verificar que el filtro devuelve registros, no solo HTTP 200.
 
-_Registrado: 2026-03-31T07:54:00.000Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-03-31T07:54:00.000Z_
 
 ---
 
@@ -298,9 +239,7 @@ _Registrado: 2026-03-31T07:54:00.000Z_
 
 **Corrección:** REGLA PERMANENTE: toda excepcion de dominio custom debe tener @ResponseStatus o estar mapeada en un @ControllerAdvice. Developer Agent debe crear ExceptionHandler en el mismo step que crea las excepciones. Checklist G-4 añade: verificar que todas las RuntimeException del modulo tienen handler HTTP explicito.
 
-_Registrado: 2026-03-31T07:54:00.000Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-03-31T07:54:00.000Z_
 
 ---
 
@@ -310,13 +249,9 @@ _Registrado: 2026-03-31T07:54:00.000Z_
 
 **Corrección:** REGLA PERMANENTE: para columnas TIMESTAMP (sin timezone) en PostgreSQL via JdbcClient, usar siempre Timestamp.from(instant) o LocalDateTime. Para columnas TIMESTAMPTZ usar OffsetDateTime. Developer Agent debe incluir este mapeo en el LLD y verificarlo en el IT smoke test antes de G-4b.
 
-_Registrado: 2026-03-31T07:54:00.000Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-03-31T07:54:00.000Z_
 
 ---
-
-## Sprint 21
 
 ### LA-FRONT-001 · frontend
 
@@ -324,9 +259,7 @@ _Registrado: 2026-03-31T07:54:00.000Z_
 
 **Corrección:** REGLA PERMANENTE: al crear cualquier módulo Angular en features/, el Developer Agent debe en el mismo step: (1) añadir la ruta lazy en app-routing.module.ts, (2) añadir el nav item en shell.component.ts. Checklist G-4 añade: verificar que todo módulo en features/ tiene ruta y nav item.
 
-_Registrado: 2026-03-31T07:12:44.461Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-03-31T07:12:44.461Z_
 
 ---
 
@@ -336,9 +269,7 @@ _Registrado: 2026-03-31T07:12:44.461Z_
 
 **Corrección:** REGLA PERMANENTE: antes de crear un componente placeholder, verificar si el backend tiene el endpoint implementado. Si existe, implementar el componente real directamente. Un placeholder nunca debe llegar a una imagen Docker de producción.
 
-_Registrado: 2026-03-31T07:12:44.463Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-03-31T07:12:44.463Z_
 
 ---
 
@@ -348,9 +279,7 @@ _Registrado: 2026-03-31T07:12:44.463Z_
 
 **Corrección:** REGLA PERMANENTE: al crear componentes en subdirectorios anidados (components/nombre/), calcular el path relativo desde la ubicación real del fichero. Verificar siempre: profundidad del componente vs profundidad del módulo al que pertenece el servicio.
 
-_Registrado: 2026-03-31T07:12:44.463Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-03-31T07:12:44.463Z_
 
 ---
 
@@ -360,9 +289,7 @@ _Registrado: 2026-03-31T07:12:44.463Z_
 
 **Corrección:** REGLA PERMANENTE: antes de registrar una ruta Angular, verificar que el endpoint backend correspondiente existe. Si no existe, registrar deuda técnica (DEBT-XXX) y mantener la ruta comentada hasta implementación. No exponer rutas con endpoints inexistentes.
 
-_Registrado: 2026-03-31T07:12:44.463Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-03-31T07:12:44.463Z_
 
 ---
 
@@ -372,9 +299,7 @@ _Registrado: 2026-03-31T07:12:44.463Z_
 
 **Corrección:** REGLA PERMANENTE: cualquier cambio en frontend Angular requiere docker compose build frontend + docker compose up -d --no-deps frontend. Documentar este flujo en el runbook del proyecto. Añadir al checklist de G-4b.
 
-_Registrado: 2026-03-31T07:12:44.463Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-03-31T07:12:44.463Z_
 
 ---
 
@@ -384,9 +309,7 @@ _Registrado: 2026-03-31T07:12:44.463Z_
 
 **Corrección:** REGLA PERMANENTE: (1) En Gate 2b, añadir business_rules de la feature nueva junto a functionalities — nunca uno sin el otro. (2) total_business_rules = len(business_rules) — NUNCA hardcodeado. (3) validate-fa-index.js bloqueante en Gate 2b, 3b y 8b. Script creado: .sofia/scripts/validate-fa-index.js. FA-Agent SKILL.md bumped a v2.3.
 
-_Registrado: 2026-03-31T16:22:28.742Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-03-31T16:22:28.742Z_
 
 ---
 
@@ -396,9 +319,7 @@ _Registrado: 2026-03-31T16:22:28.742Z_
 
 **Corrección:** REGLA: IntegrationTestBase debe declarar todos los fixtures UUID comunes usados por los tests hijos. Cualquier campo usado en múltiples ITs debe estar en la clase base, no en la hija.
 
-_Registrado: 2026-03-31T19:55:32.761Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-03-31T19:55:32.761Z_
 
 ---
 
@@ -408,9 +329,7 @@ _Registrado: 2026-03-31T19:55:32.761Z_
 
 **Corrección:** REGLA PERMANENTE: Documentation Agent DEBE generar siempre los 17 documentos estándar (10 técnicos + 7 CMMI/Gestión). Los 7 adicionales son BLOQUEANTES para Gate G-8 desde Sprint 22. Actualizar SKILL.md doc-agent y checklist G-8.
 
-_Registrado: 2026-04-01T05:57:48.784Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-04-01T05:57:48.784Z_
 
 ---
 
@@ -420,9 +339,7 @@ _Registrado: 2026-04-01T05:57:48.784Z_
 
 **Corrección:** REGLA: catchError en observables usados en forkJoin DEBE retornar of(valorDefecto) nunca EMPTY. EMPTY en forkJoin = deadlock silencioso.
 
-_Registrado: 2026-04-01T12:06:02.622Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-04-01T12:06:02.622Z_
 
 ---
 
@@ -432,13 +349,9 @@ _Registrado: 2026-04-01T12:06:02.622Z_
 
 **Corrección:** REGLA: version/sprint/envLabel SIEMPRE desde environment.ts. Campos obligatorios en ambos environment files. stg-pre-check.js detecta patron automaticamente en G-4/G-5.
 
-_Registrado: 2026-04-01T12:26:12.393Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-04-01T12:26:12.393Z_
 
 ---
-
-## Sprint 22
 
 ### LA-022-01 · security
 
@@ -446,9 +359,7 @@ _Registrado: 2026-04-01T12:26:12.393Z_
 
 **Corrección:** REGLA PERMANENTE: GR-010 en guardrail-pre-gate.js bloquea Gate G-9 si open_debts tiene items con cvss >= 4.0 y sprint_target <= current_sprint. Sin excepcion.
 
-_Registrado: 2026-04-02T09:45:57.730729+00:00_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-04-02T09:45:57.730729+00:00_
 
 ---
 
@@ -458,9 +369,7 @@ _Registrado: 2026-04-02T09:45:57.730729+00:00_
 
 **Corrección:** REGLA PERMANENTE: Step 9 (Workflow Manager) regenera LESSONS_LEARNED.md desde session.json como paso obligatorio. workflow_directives.lessons_learned_mandatory=true en sofia-config.json.
 
-_Registrado: 2026-04-02T09:45:57.730731+00:00_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-04-02T09:45:57.730731+00:00_
 
 ---
 
@@ -470,9 +379,7 @@ _Registrado: 2026-04-02T09:45:57.730731+00:00_
 
 **Corrección:** REGLA PERMANENTE: todo agente con SKILL.md debe estar asociado a un step y gate. Agentes durmientes se formalizan o se archivan. sofia-config.pipeline_steps_total debe coincidir con active_steps.
 
-_Registrado: 2026-04-02T09:46:44.873697+00:00_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-04-02T09:46:44.873697+00:00_
 
 ---
 
@@ -482,9 +389,7 @@ _Registrado: 2026-04-02T09:46:44.873697+00:00_
 
 **Corrección:** REGLA: usar solo session.open_debts como fuente unica de verdad. security.open_debts se mantiene como referencia pero GR-010 deduplica por id antes de evaluar.
 
-_Registrado: 2026-04-02T09:46:44.873701+00:00_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-04-02T09:46:44.873701+00:00_
 
 ---
 
@@ -494,9 +399,7 @@ _Registrado: 2026-04-02T09:46:44.873701+00:00_
 
 **Corrección:** REGLA PERMANENTE: GR-011 añadido a guardrail-pre-gate.js — verifica que dashboard_global.last_generated >= ultimo gate aprobado. Dashboard desactualizado = gate BLOQUEADO. Sin excepcion.
 
-_Registrado: 2026-04-02T11:30:00.000Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-04-02T11:30:00.000Z_
 
 ---
 
@@ -506,9 +409,7 @@ _Registrado: 2026-04-02T11:30:00.000Z_
 
 **Corrección:** REGLA PERMANENTE: (1) Normalizar gate_pending al leer session.json: si es string, convertir a {step, waiting_for, jira_issue} usando GATE_ROLES map. (2) parseArg() soporta ambas sintaxis --name=value y --name value. Sin excepcion. (2) Todos los usos de GP.jira_issue en plantillas HTML deben tener fallback: GP.jira_issue||GP.step. Sin excepcion — jira_issue es opcional.
 
-_Registrado: 2026-04-02T19:22:29.097Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-04-02T19:22:29.097Z_
 
 ---
 
@@ -518,9 +419,7 @@ _Registrado: 2026-04-02T19:22:29.097Z_
 
 **Corrección:** REGLA PERMANENTE: Step 3b es OBLIGATORIO inmediatamente despues de aprobacion G-3. El Workflow Manager debe verificar que 3b esta en completed_steps antes de pasar a Step 4. Si falta, ejecutar retroactivamente antes de continuar el pipeline. Gate G-3 no cierra hasta que 3b esta logueado.
 
-_Registrado: 2026-04-02T19:27:35.063Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-04-02T19:27:35.063Z_
 
 ---
 
@@ -530,9 +429,7 @@ _Registrado: 2026-04-02T19:27:35.063Z_
 
 **Corrección:** REGLA PERMANENTE: Documentation Agent DEBE generar binarios reales: .docx con librería docx (npm) y .xlsx con librería xlsx. NUNCA reportar .md como equivalente a .docx. Verificación obligatoria: listar directorio con extensiones antes de reportar entrega. Archivos .md son borradores internos, no entregables al cliente.
 
-_Registrado: 2026-04-02T19:47:21.481Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-04-02T19:47:21.481Z_
 
 ---
 
@@ -542,13 +439,9 @@ _Registrado: 2026-04-02T19:47:21.481Z_
 
 **Corrección:** REGLA PERMANENTE: los seeds de STG SIEMPRE deben aplicarse a través del stack completo (docker compose up) nunca via psql directo. Todos los INSERTs de migrations con IDs fijos deben usar ON CONFLICT (id) DO NOTHING para ser idempotentes. Flyway no es idempotente por defecto.
 
-_Registrado: 2026-04-02T21:41:55.271Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-04-02T21:41:55.271Z_
 
 ---
-
-## Sprint 23
 
 ### LA-023-01 · frontend
 
@@ -556,9 +449,7 @@ _Registrado: 2026-04-02T21:41:55.271Z_
 
 **Corrección:** REGLA PERMANENTE: nunca usar [href] para navegación interna en Angular. Usar siempre (click)+router.navigateByUrl() para URLs dinámicas con posibles query params, o [routerLink] para rutas estáticas. Checklist G-4 y G-5 añaden: grep -r "[href]" src/app/features/ — cualquier resultado con path interno es bloqueante. Adicionalmente: los seeds de notificaciones deben usar SOLO rutas registradas en app-routing.module.ts. Verificar con: SELECT DISTINCT action_url FROM user_notifications — cada valor debe existir en la tabla de rutas del router.
 
-_Registrado: 2026-04-03T11:38:02.377Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-04-03T11:38:02.377Z_
 
 ---
 
@@ -568,309 +459,392 @@ _Registrado: 2026-04-03T11:38:02.377Z_
 
 **Corrección:** REGLA PERMANENTE: el Developer Agent DEBE, al finalizar cada componente Angular, verificar explícitamente contra el prototipo aprobado antes de declarar step 4 completo. Checklist G-4: para cada componente nuevo verificar (1) estructura HTML fiel a la screen del prototipo, (2) clases CSS/tokens coinciden, (3) textos y etiquetas idénticos, (4) flujo de navegación coherente. El Code Reviewer (G-5) debe contrastar HTML renderizado contra el prototipo — no solo revisar código. Sin esta verificación el gate no se aprueba.
 
-_Registrado: 2026-04-09T16:33:33.023Z_
-
-**Aprobado por:** product-owner · 2026-04-09
+_Registrada: 2026-04-09T16:33:33.023Z_
 
 ---
 
-## SOFIA-CORE
+### LA-023-04 · governance/git
 
-### LA-CORE-018 · governance
+**Descripción:** Los tres proyectos gobernados (BankPortal, ExperisTracker, TakeOverSintetico) iniciaron sin un modelo de ramas git definido ni repositorios remotos configurados. BankPortal acumuló 11 ramas feature huérfanas nunca mergeadas a develop ni main; Sprint 23 se ejecutó sobre rama de Sprint 15. ExperisTracker trabajó directamente en main durante 3 sprints sin rama feature. TakeOverSintetico careció de git init durante toda la fase de Takeover Sprint 0. Resultado: main y develop desactualizados en todos los proyectos, trazabilidad remota nula y commits de sprints activos sobre ramas incorrectas.
+
+**Corrección:** REGLA PERMANENTE: al inicializar cualquier proyecto SOFIA, el primer paso obligatorio es (1) git init, (2) crear estructura main+develop, (3) push a remote. Cada sprint crea rama feature/FEAT-XXX-sprintYY desde develop. Al cerrar sprint: merge --no-ff feature → develop → push. Al crear release: merge --no-ff develop → main + tag vX.Y.0 → push. El branching model debe verificarse en Gate 1 (Setup) como precondición bloqueante.
+
+_Registrada: 2026-04-11T14:19:28.899Z_
+
+---
+
+## LAs SOFIA-CORE Integradas
+
+> Estas LAs han sido promovidas desde otros proyectos y aprobadas por el PO.
+> Son de aplicación obligatoria en todos los proyectos SOFIA.
+
+### LA-CORE-018 · governance ⭐ CORE
 
 **Descripción:** El Orchestrator incorporo una LA directamente a los ficheros del framework sin presentarla previamente al PO para aprobacion. Las LAs son conocimiento canonico con impacto en todos los proyectos futuros. Persistencia sin validacion humana viola el principio HITL.
 
 **Corrección:** REGLA PERMANENTE: HITL obligatorio antes de persistir cualquier LA. (1) Presentar LA propuesta al PO. (2) Esperar confirmacion explicita. (3) Solo tras confirmacion: persistir en los 4 ficheros canonicos. Sin aprobacion PO = LA no se escribe. Aplica a LAs de proyecto y de SOFIA-CORE.
 
-_Registrado: 2026-04-06_
-
-**Aprobado por:** product-owner · 2026-04-06
+_SOFIA-CORE v? · Importada: ?_
 
 ---
 
-### LA-CORE-017 · analysis
+### LA-CORE-017 · analysis ⭐ CORE
 
 **Descripción:** Al analizar metricas ORG (org-baseline multi-proyecto), SOFIA leyo el fichero local del proyecto (.sofia/org-baseline.json) en lugar del canonico en SOFIA_ORG_PATH. El local contenia projects_count=1 (solo BANK_PORTAL) mientras el canonico ya tenia 2 proyectos (BANK_PORTAL + EXPERIS_TRACKER). Resultado: gap declarado incorrectamente.
 
 **Corrección:** REGLA PERMANENTE: para analisis ORG, SIEMPRE leer sofia-config.json.ma_baseline.sofia_org_path y cargar org-baseline.json desde esa ruta. El .sofia/org-baseline.json local es snapshot y NO es fuente canonica ORG. Verificar projects_count >= 2 antes de afirmar estado multi-proyecto.
 
-_Registrado: 2026-04-06_
-
-**Aprobado por:** product-owner · 2026-04-09
+_SOFIA-CORE v? · Importada: ?_
 
 ---
 
-### LA-CORE-001 · process
+### LA-CORE-001 · process ⭐ CORE
 
 **Descripción:** MCP config merge sin sobreescribir claude_desktop_config.json
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.871Z_
+
 ---
 
-### LA-CORE-002 · devops
+### LA-CORE-002 · devops ⭐ CORE
 
 **Descripción:** realpath() en paths MCP, nunca aliases macOS
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-003 · process
+### LA-CORE-003 · process ⭐ CORE
 
 **Descripción:** SOFIA_REPO en CLAUDE.md + GR-CORE-003
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-004 · process
+### LA-CORE-004 · process ⭐ CORE
 
 **Descripción:** repo-template estructura canónica docs/ en onboarding
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-005 · process
+### LA-CORE-005 · process ⭐ CORE
 
 **Descripción:** verify-persistence.js BLOQUEANTE, GR-013
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-006 · process
+### LA-CORE-006 · process ⭐ CORE
 
 **Descripción:** FA documento único incremental, LA-FA-INCR
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-007 · ux
+### LA-CORE-007 · ux ⭐ CORE
 
 **Descripción:** TOC clickable con w:hyperlink+w:anchor, LA-TOC-CLICK
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-008 · onboarding
+### LA-CORE-008 · onboarding ⭐ CORE
 
 **Descripción:** wizard v2.6.11 verifica scripts críticos + inicializa FA-Agent
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-009 · ux
+### LA-CORE-009 · ux ⭐ CORE
 
 **Descripción:** Prototipo incremental, GR-014
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-010 · process
+### LA-CORE-010 · process ⭐ CORE
 
 **Descripción:** Patch First ante correcciones, GR-015
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-011 · ux
+### LA-CORE-011 · ux ⭐ CORE
 
 **Descripción:** Verificar matriz de roles antes de construir navegación
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-012 · infrastructure
+### LA-CORE-012 · infrastructure ⭐ CORE
 
 **Descripción:** sofia-shell PROJECT_ROOT dinámico por llamada (v2.0)
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-013 · architecture
+### LA-CORE-013 · architecture ⭐ CORE
 
 **Descripción:** Application handlers NO importan Infrastructure, GR-016
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-014 · infrastructure
+### LA-CORE-014 · infrastructure ⭐ CORE
 
 **Descripción:** MCP SDK en SOFIA-CORE, no en proyectos cliente (setup-shell-mcp.js)
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-015 · infrastructure
+### LA-CORE-015 · infrastructure ⭐ CORE
 
 **Descripción:** sofia-shell aislamiento: registrar SOFIA-CORE como entry especial en projects.json
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-016 · dashboard
+### LA-CORE-016 · dashboard ⭐ CORE
 
 **Descripción:** org-baseline.json invisible en command center: leer en runtime, no hardcodear
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-019 · governance
+### LA-CORE-019 · governance ⭐ CORE
 
 **Descripción:** COMPAT-001: clasificacion PATCH/MINOR/MAJOR obligatoria antes de aplicar cualquier cambio SOFIA-CORE
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-020 · governance
+### LA-CORE-020 · governance ⭐ CORE
 
 **Descripción:** COMPAT-002: session.json append-only; sin eliminacion ni cambio de tipo en campos existentes
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-021 · governance
+### LA-CORE-021 · governance ⭐ CORE
 
 **Descripción:** COMPAT-003: nuevos guardrails NO se activan en proyectos existentes sin upgrade explicito
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-022 · governance
+### LA-CORE-022 · governance ⭐ CORE
 
 **Descripción:** COMPAT-004: org-baseline.json con schema_version versionado; lector backward-compatible
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-023 · governance/takeover
+### LA-CORE-023 · governance/takeover ⭐ CORE
 
 **Descripción:** DTS obligatorio para toda documentacion cliente antes de T-3 FA Reverse; GR-CORE-023
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-024 · governance/takeover
+### LA-CORE-024 · governance/takeover ⭐ CORE
 
 **Descripción:** triangulacion obligatoria contra codigo para afirmaciones con DTS < 0.8; GR-CORE-024
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-025 · governance/takeover
+### LA-CORE-025 · governance/takeover ⭐ CORE
 
 **Descripción:** Gate GT-3 BLOQUEANTE hasta resolucion documentada de todos los flags DISCREPANCY; GR-CORE-025
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-026 · governance
+### LA-CORE-026 · governance ⭐ CORE
 
 **Descripción:** CONTEXT-ISOLATION: sesion SOFIA-CORE vs proyectos gobernados son contextos mutuamente excluyentes. GR-CORE-026
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-027 · takeover/planning
+### LA-CORE-027 · takeover/planning ⭐ CORE
 
 **Descripción:** T-5 reconcilia con T-4: items S1 postpuestos documentados explicitamente con justificacion antes de cerrar GT-5
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-028 · takeover/process
+### LA-CORE-028 · takeover/process ⭐ CORE
 
 **Descripción:** NEEDS-VALIDATION de T-3 generan entradas estructuradas en session.json.needs_validation[] con sprint_target y assignee
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-029 · takeover/process
+### LA-CORE-029 · takeover/process ⭐ CORE
 
 **Descripción:** BUILD_UNKNOWN en T-2 genera DEBT-TK automatico verify-build-day1 (0.5 SP, sprint S1, mandatory:true)
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-030 · takeover/process
+### LA-CORE-030 · takeover/process ⭐ CORE
 
 **Descripción:** T-5 cierre Sprint 0 sigue checklist BLOQUEANTE: sprint_closed → log → dashboard. GR-CORE-027
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-031 · takeover/governance
+### LA-CORE-031 · takeover/governance ⭐ CORE
 
 **Descripción:** cmmi_l3_sprint_estimated calculado mecanicamente desde PA_scores de T-4; T-5 consume el valor, nunca lo recalcula independientemente
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-032 · takeover/governance
+### LA-CORE-032 · takeover/governance ⭐ CORE
 
 **Descripción:** open_debts incluye campo compliance:true para deudas legales/regulatorias (AEAT, GDPR, PCI-DSS); activa logica diferente en guardrails
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.29 · Importada: 2026-04-07T12:02:48.872Z_
+
 ---
 
-### LA-CORE-033 · governance
+### LA-CORE-033 · governance ⭐ CORE
 
 **Descripción:** Al ejecutar la-sync.js (GR-CORE-029), el Orchestrator aplicó el sync solo en los proyectos de la sesión activa omitiendo proyectos registrados en MANIFEST.projects_registered no presentes en la sesión. La obligación del sync aplica a TODOS los proyectos registrados, no solo al proyecto de sesión corriente.
 
 **Corrección:** REGLA PERMANENTE: cuando la-sync.js se ejecuta en contexto de distribución global (cierre de sprint o nueva LA promovida), el Orchestrator debe iterar TODOS los proyectos listados en MANIFEST.projects_registered y ejecutar el sync en cada uno. No es válido ejecutarlo solo en el proyecto activo. Checklist GR-CORE-029 añade: verificar la-sync-state.last_sync_at en TODOS los proyectos registrados antes de declarar la distribución completada.
 
-_Registrado: 2026-04-07T12:10:00.000Z_
-
-**Aprobado por:** product-owner · 2026-04-07
+_SOFIA-CORE v? · Importada: ?_
 
 ---
 
-### LA-CORE-034 · governance
+### LA-CORE-034 · governance ⭐ CORE
 
 **Descripción:** CONTEXT-ISOLATION enforcement: en sesion SOFIA-CORE Continuar=framework; NUNCA leer session.json proyectos; contexto ambiguo=PREGUNTAR (refuerza GR-CORE-026)
 
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
+_SOFIA-CORE v2.6.33 · Importada: 2026-04-07T13:33:39.470Z_
+
 ---
 
-## Sprint 23 (addendum)
+### LA-023-03 · infra/governance ⭐ CORE
 
-### LA-023-03 · infra/governance
+**Descripción:** Al corregir un MCP server en claude_desktop_config.json (ej. sofia-shell-experis sin SOFIA_REPO), la verificacion del fix se realizo en la misma conversacion activa donde se aplico el cambio. Los tools MCP se registran al iniciar la conversacion y no se actualizan en caliente. Resultado: el fix parecio no funcionar cuando en realidad era correcto — sofia-shell-experis seguia sin aparecer en la sesion pre-reinicio.
 
-**Descripcion:** Al corregir un MCP server en claude_desktop_config.json (ej. sofia-shell-experis sin SOFIA_REPO), la verificacion del fix se realizo en la misma conversacion activa donde se aplico el cambio. Los tools MCP se registran al iniciar la conversacion y no se actualizan en caliente. Resultado: el fix parecio no funcionar cuando en realidad era correcto — sofia-shell-experis seguia sin aparecer en la sesion pre-reinicio.
+**Corrección:** REGLA PERMANENTE: toda modificacion de claude_desktop_config.json que añada, corrija o elimine un MCP server debe verificarse SIEMPRE en una conversacion nueva tras el reinicio de Claude Desktop. Nunca en la sesion activa donde se aplico el cambio. La ausencia del tool en la sesion activa no implica que el fix sea incorrecto.
 
-**Correccion:** REGLA PERMANENTE: toda modificacion de claude_desktop_config.json que añada, corrija o elimine un MCP server debe verificarse SIEMPRE en una conversacion nueva tras el reinicio de Claude Desktop. Nunca en la sesion activa donde se aplico el cambio. La ausencia del tool en la sesion activa no implica que el fix sea incorrecto.
+_SOFIA-CORE v? · Importada: ?_
 
-_Registrado: 2026-04-09T17:23:29Z_
+---
 
-**Aprobado por:** product-owner · 2026-04-09
+### LA-CORE-035 · governance/git ⭐ CORE
+
+**Descripción:** branching model SOFIA no aplicado desde inicio de proyecto -- deuda acumulada en BankPortal (11 ramas huerfanas), ExperisTracker (main directo 3 sprints), TakeOverSintetico (sin git init). REGLA: git init + main+develop + remote en Gate 1 obligatorio. Merge feature→develop por sprint, develop→main por release + tag.
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.6.37 · Importada: 2026-04-12T17:47:26.356Z_
+
+---
+
+### LA-CORE-037 · dashboard ⭐ CORE
+
+**Descripción:** datos del dashboard SIEMPRE desde session.json en disco de cada proyecto registrado; nunca desde memoria o conversación anterior
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.6.37 · Importada: 2026-04-12T17:47:26.356Z_
 
 ---
 
