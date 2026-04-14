@@ -179,3 +179,15 @@ CREATE INDEX idx_bizum_requests_requester ON bizum_requests(requester_user_id, s
 ---
 
 *HLD generado por Architect Agent — SOFIA v2.7 — Step 3 — Sprint 24*
+
+---
+
+## 8. Marco regulatorio explícito
+
+| Referencia | Requisito | Implementación |
+|---|---|---|
+| PSD2 Art.97 SCA | OTP obligatorio en pagos | `TwoFactorService.validate()` — SendPayment + AcceptRequest |
+| SEPA Instant SCT Inst | Liquidación ≤ 10s · disponible **24/7**/365 | `CoreBankingMockBizumClient` — síncrono STG |
+| **Circular BdE 4/2019** | Información previa + comprobante operación | `SendPaymentResponse` incluye ref, status, timestamp |
+| **GDPR Art.6** | Consentimiento explícito vinculación teléfono | Campo `gdprConsentAt` en `BizumActivation` — timestamp persistido |
+| Límites Bizum España | €500/op · €2.000/día | `BizumLimitService` + `bank.bizum.limit.*` en application.properties |
