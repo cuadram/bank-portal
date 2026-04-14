@@ -1,14 +1,14 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "gate_pending",
+  "status": "in_progress",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 24,
   "current_feature": "FEAT-022",
-  "current_step": "3",
-  "pipeline_step": "3",
-  "pipeline_step_name": "architect",
+  "current_step": "4",
+  "pipeline_step": "4",
+  "pipeline_step_name": "developer",
   "completed_steps": [
     "1",
     "2",
@@ -42,9 +42,9 @@
     "8b",
     "9"
   ],
-  "last_skill": "architect",
+  "last_skill": "documentation-agent+fa-agent",
   "last_skill_output_path": "docs/architecture/",
-  "gate_pending": "G-3",
+  "gate_pending": null,
   "sprint_goal": "Permitir al cliente de Banco Meridian enviar y recibir pagos P2P inmediatos mediante número de teléfono registrado en Bizum, con autenticación SCA OTP, verificación de límites regulatorios y notificaciones push en tiempo real, cumpliendo PSD2 Art.97 SCA y SEPA Instant Credit Transfer.",
   "sprint_capacity_sp": 24,
   "artifacts": {
@@ -262,6 +262,11 @@
       "docs/architecture/LLD-frontend-FEAT-022-sprint24.md",
       "docs/architecture/ADR-038-039-FEAT-022-sprint24.md",
       "Confluence page 12779521 — Sprint 24 HLD FEAT-022 Bizum"
+    ],
+    "3b_s24": [
+      "validate-fa-index PASS 8/8 — 93 func, 209 BRs — 2026-04-14T14:59:02.741Z",
+      "FA-FEAT-022-sprint24.md enriquecido con arquitectura HLD/LLD — status READY_FOR_REVIEW",
+      "Confluence HLD page 12779521 — verificada (publicada en step 3)"
     ]
   },
   "gates": {
@@ -350,6 +355,22 @@
       "sprint": 24,
       "feature": "FEAT-022",
       "note": "validate-fa-index PASS 8/8 · FA v0.5 76.9KB · 93 func 209 BRs"
+    },
+    "G-3": {
+      "approved_by": "tech-lead",
+      "approved_at": "2026-04-14T14:58:44.314Z",
+      "step": "3",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "HLD + LLD Backend + LLD Frontend + ADR-038/039 aprobados. 112/112 checks trazabilidad."
+    },
+    "G-3b": {
+      "approved_by": "auto",
+      "approved_at": "2026-04-14T14:59:02.741Z",
+      "step": "3b",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "Step 3b AUTO: validate-fa-index PASS 8/8 · FA enriquecido · HLD Confluence 12779521 OK"
     }
   },
   "fa_agent": {
@@ -589,7 +610,7 @@
     "report": "docs/code-review/CR-FEAT-021-sprint23.md",
     "reviewed_at": "2026-04-09T10:49:03.114Z"
   },
-  "updated_at": "2026-04-14T14:55:14.826Z",
+  "updated_at": "2026-04-14T14:59:02.741Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": false,
   "gate8_approved_by": "release-manager",
@@ -1293,6 +1314,24 @@
       "sprint": 24,
       "feature": "FEAT-022",
       "note": "HLD + LLD Backend + LLD Frontend + ADR-038/039 generados. Confluence 12779521."
+    },
+    {
+      "gate": "G-3",
+      "step": "3",
+      "approved_by": "tech-lead",
+      "approved_at": "2026-04-14T14:58:44.314Z",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "112/112 trazabilidad."
+    },
+    {
+      "gate": "G-3b",
+      "step": "3b",
+      "approved_by": "auto",
+      "approved_at": "2026-04-14T14:59:02.741Z",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "AUTO: validate-fa-index PASS 8/8 · FA enriquecido"
     }
   ],
   "lessons_learned": [
