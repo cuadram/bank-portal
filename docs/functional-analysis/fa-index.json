@@ -4,8 +4,8 @@
   "client": "Banco Meridian",
   "generated_by": "FA-Agent — SOFIA v2.3",
   "last_updated": "2026-03-31",
-  "last_sprint": 23,
-  "total_functionalities": 86,
+  "last_sprint": 24,
+  "total_functionalities": 93,
   "notes": "S1-S15 RECONSTRUIDO. S16-S21 documentadas con evidencias directas.",
   "functionalities": [
     {
@@ -1542,6 +1542,87 @@
         "CWE-20 (DEBT-037)"
       ],
       "source": "DEBT-036 + DEBT-037 + DEBT-044"
+    },
+    {
+      "id": "FA-022-A",
+      "name": "Activación Bizum y vinculación de número de teléfono",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "status": "IN_PROGRESS",
+      "description": "El cliente activa Bizum vinculando su número de móvil (E.164) a su cuenta principal, con consentimiento GDPR explícito y validación de unicidad del número.",
+      "business_rules": [
+        "RN-F022-01",
+        "RN-F022-02"
+      ]
+    },
+    {
+      "id": "FA-022-B",
+      "name": "Envío de pago Bizum P2P con SCA OTP",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "status": "IN_PROGRESS",
+      "description": "El cliente envía dinero a otro usuario mediante su número de teléfono. Requiere OTP (SCA PSD2 Art.97), valida límites €500/op y €2.000/día, y liquida vía SEPA Instant en <10s.",
+      "business_rules": [
+        "RN-F022-03",
+        "RN-F022-04",
+        "RN-F022-05",
+        "RN-F022-06"
+      ]
+    },
+    {
+      "id": "FA-022-C",
+      "name": "Solicitud de cobro Bizum a contacto",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "status": "IN_PROGRESS",
+      "description": "El cliente envía una solicitud de cobro a otro usuario Bizum. La solicitud expira en 24h si no se atiende y genera notificación push al destinatario.",
+      "business_rules": [
+        "RN-F022-07"
+      ]
+    },
+    {
+      "id": "FA-022-D",
+      "name": "Aceptación y rechazo de solicitud de dinero Bizum",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "status": "IN_PROGRESS",
+      "description": "El cliente acepta (ejecuta el pago con SCA OTP) o rechaza una solicitud Bizum recibida. En ambos casos el solicitante recibe notificación push del resultado.",
+      "business_rules": [
+        "RN-F022-08"
+      ]
+    },
+    {
+      "id": "FA-022-E",
+      "name": "Historial paginado de operaciones Bizum",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "status": "IN_PROGRESS",
+      "description": "El cliente consulta todas sus operaciones Bizum (enviadas, recibidas, solicitudes emitidas y recibidas) con filtros por tipo y estado, paginadas de 20 en 20.",
+      "business_rules": [
+        "RN-F022-09"
+      ]
+    },
+    {
+      "id": "FA-022-F",
+      "name": "Notificaciones push para eventos Bizum",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "status": "IN_PROGRESS",
+      "description": "El sistema emite notificaciones push VAPID en todos los eventos relevantes: recepción de pago, solicitud entrante, solicitud aceptada, solicitud rechazada y solicitud expirada.",
+      "business_rules": [
+        "RN-F022-10"
+      ]
+    },
+    {
+      "id": "FA-022-G",
+      "name": "Módulo Angular Bizum con 5 pantallas",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "status": "IN_PROGRESS",
+      "description": "Interfaz Angular con acceso lazy desde el sidebar del shell. Pantallas: Inicio Bizum, Enviar, Solicitar, Historial y Configuración. Fidelidad al prototipo HITL aprobado.",
+      "business_rules": [
+        "RN-F022-11"
+      ]
     }
   ],
   "business_rules": [
@@ -2586,6 +2667,72 @@
       "description": "Aislamiento total entre clientes: un cliente no puede consultar, modificar ni cancelar depósitos de otro. Violación → 403 ACCESS_DENIED.",
       "category": "security",
       "source": "US-F021-01..06"
+    },
+    {
+      "id": "RN-F022-01",
+      "description": "Un número de móvil solo puede vincularse a una cuenta Bizum activa simultáneamente. Si el número ya está registrado, la activación se rechaza con error 409.",
+      "feature": "FEAT-022",
+      "func_ref": "FA-022-A"
+    },
+    {
+      "id": "RN-F022-02",
+      "description": "El consentimiento GDPR (Art.6) para la vinculación del número de teléfono debe quedar registrado con timestamp en el momento de la activación.",
+      "feature": "FEAT-022",
+      "func_ref": "FA-022-A"
+    },
+    {
+      "id": "RN-F022-03",
+      "description": "Todo pago Bizum iniciado por el pagador requiere SCA mediante OTP (PSD2 Art.97). Sin OTP válido no se procesa ningún cargo.",
+      "feature": "FEAT-022",
+      "func_ref": "FA-022-B"
+    },
+    {
+      "id": "RN-F022-04",
+      "description": "Límite máximo por operación Bizum: €500. Configurable en application.properties (bank.bizum.limit.per-operation). No es bypasseable por ningún rol.",
+      "feature": "FEAT-022",
+      "func_ref": "FA-022-B"
+    },
+    {
+      "id": "RN-F022-05",
+      "description": "Límite diario Bizum: €2.000 acumulados en el día natural (00:00–23:59 UTC). Se resetea automáticamente a medianoche. Configurable en application.properties.",
+      "feature": "FEAT-022",
+      "func_ref": "FA-022-B"
+    },
+    {
+      "id": "RN-F022-06",
+      "description": "Los pagos Bizum se liquidan vía SEPA Instant Credit Transfer (SCT Inst). El sistema debe confirmar el estado COMPLETED en un máximo de 10 segundos.",
+      "feature": "FEAT-022",
+      "func_ref": "FA-022-B"
+    },
+    {
+      "id": "RN-F022-07",
+      "description": "Una solicitud de cobro Bizum expira automáticamente a las 24 horas de su creación si no es aceptada ni rechazada. El sistema actualiza el estado a EXPIRED y notifica al solicitante.",
+      "feature": "FEAT-022",
+      "func_ref": "FA-022-C"
+    },
+    {
+      "id": "RN-F022-08",
+      "description": "La aceptación de una solicitud Bizum requiere SCA OTP del aceptante y valida sus límites diarios restantes en el momento de la aceptación.",
+      "feature": "FEAT-022",
+      "func_ref": "FA-022-D"
+    },
+    {
+      "id": "RN-F022-09",
+      "description": "Los números de teléfono de terceros se muestran siempre enmascarados en todas las vistas del portal: +34 *** XXXX (últimos 4 dígitos visibles).",
+      "feature": "FEAT-022",
+      "func_ref": "FA-022-E"
+    },
+    {
+      "id": "RN-F022-10",
+      "description": "Las actionUrl de las notificaciones push Bizum deben corresponder a rutas registradas en app-routing.module.ts. No se permiten rutas inexistentes (LA-023-01).",
+      "feature": "FEAT-022",
+      "func_ref": "FA-022-F"
+    },
+    {
+      "id": "RN-F022-11",
+      "description": "El módulo Angular Bizum debe verificarse componente a componente contra el prototipo HITL aprobado antes de pasar a QA. El diseño respeta el sistema de producción: sidebar navy #1e3a5f, fondo #F5F7FA, cards blancas, botones primarios navy (LA-023-02).",
+      "feature": "FEAT-022",
+      "func_ref": "FA-022-G"
     }
   ],
   "modules": [
@@ -2613,11 +2760,11 @@
     "SEPA-DD",
     "AML-KYC"
   ],
-  "total_business_rules": 198,
-  "last_sprint_consolidated": 21,
+  "total_business_rules": 209,
+  "last_sprint_consolidated": 24,
   "last_feat": "FEAT-021",
-  "updated_at": "2026-04-09T15:16:44.876411+00:00",
-  "doc_version": "0.3",
+  "updated_at": "2026-04-14T14:15:43.310931+00:00",
+  "doc_version": "0.5",
   "doc_path": "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx",
   "doc_history": [
     {
@@ -2637,6 +2784,12 @@
       "date": "2026-04-09",
       "sprint": "S1–S23 / FEAT-021",
       "desc": "Actualización automática gate-8b. 86 func, 198 RN. Indice clickable v2.6. SOFIA v2.7."
+    },
+    {
+      "version": "0.5",
+      "date": "2026-04-14",
+      "sprint": "S1–S24 / FEAT-021",
+      "desc": "Actualización automática gate-8b. 93 func, 209 RN. Indice clickable v2.6. SOFIA v2.7."
     }
   ],
   "markdowns": [

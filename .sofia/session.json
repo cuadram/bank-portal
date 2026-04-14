@@ -1,14 +1,14 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "gate_pending",
+  "status": "in_progress",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 24,
   "current_feature": "FEAT-022",
-  "current_step": "2",
-  "pipeline_step": "2",
-  "pipeline_step_name": "requirements-analyst",
+  "current_step": "2b",
+  "pipeline_step": "2b",
+  "pipeline_step_name": "fa-agent",
   "completed_steps": [
     "1",
     "2",
@@ -42,9 +42,9 @@
     "8b",
     "9"
   ],
-  "last_skill": "requirements-analyst",
+  "last_skill": "fa-agent",
   "last_skill_output_path": "docs/deliverables/sprint-24-FEAT-022/",
-  "gate_pending": "G-2",
+  "gate_pending": null,
   "sprint_goal": "Permitir al cliente de Banco Meridian enviar y recibir pagos P2P inmediatos mediante número de teléfono registrado en Bizum, con autenticación SCA OTP, verificación de límites regulatorios y notificaciones push en tiempo real, cumpliendo PSD2 Art.97 SCA y SEPA Instant Credit Transfer.",
   "sprint_capacity_sp": 24,
   "artifacts": {
@@ -248,6 +248,10 @@
     "2_s24": [
       "docs/deliverables/sprint-24-FEAT-022/SRS-FEAT-022-sprint24.md",
       "7 US + 2 DEBT con criterios Gherkin + RTM completa — gate_pending G-2"
+    ],
+    "2b_s24": [
+      "validate-fa-index PASS 8/8 — 93 func, 209 BRs — 2026-04-14T14:15:58.449Z",
+      "FA-bank-portal-Banco Meridian.docx v0.5 — 76.9KB — docs/functional-analysis/"
     ]
   },
   "gates": {
@@ -261,8 +265,11 @@
     },
     "G-2": {
       "approved_by": "product-owner",
-      "approved_at": "2026-04-06T06:10:54.015Z",
-      "step": "2"
+      "approved_at": "2026-04-14T14:13:53.093Z",
+      "step": "2",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "SRS + 7 US + RTM aprobados. Gate G-2 FEAT-022."
     },
     "HITL-PO-TL": {
       "approved_by": "product-owner+tech-lead",
@@ -322,22 +329,30 @@
       "sprint": 23,
       "feature": "FEAT-021",
       "note": "Sprint 23 CERRADO — SCRUM-122..131 Finalizada — Confluence 11272193 + Retro 11304961 — 17 DOCX + 3 XLSX — FA v0.3 86/198 — Dashboard G-9"
+    },
+    "G-2b": {
+      "approved_by": "auto",
+      "approved_at": "2026-04-14T14:15:58.449Z",
+      "step": "2b",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "validate-fa-index PASS 8/8 · FA v0.5 76.9KB · 93 func 209 BRs"
     }
   },
   "fa_agent": {
-    "last_gate": "8b",
-    "last_updated": "2026-04-09T15:16:57.055Z",
-    "last_feat": "FEAT-021",
+    "last_gate": "2b",
+    "last_updated": "2026-04-14T14:15:58.449Z",
+    "last_feat": "FEAT-022",
     "doc_path": "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx",
-    "doc_version": "0.3",
+    "doc_version": "0.5",
     "index_path": "docs/functional-analysis/fa-index.json",
-    "functionalities": 86,
-    "business_rules": 198,
-    "last_sprint_consolidated": 23,
+    "functionalities": 93,
+    "business_rules": 209,
+    "last_sprint_consolidated": 24,
     "skill_version": "2.3",
     "active": true,
     "rebuild_note": "S1-S15 reconstruidos desde Flyway V1-V15, use cases y pom.xml. Sprint17 corregido: FEAT-015 = Transferencias Programadas.",
-    "sprints_covered": "S1-S23",
+    "sprints_covered": "S1-S24",
     "markdowns": [
       "docs/functional-analysis/FA-FEAT-001-sprint01-02.md",
       "docs/functional-analysis/FA-FEAT-002-sprint03.md",
@@ -361,8 +376,8 @@
     ],
     "generator": "python-docx",
     "docx_verified": true,
-    "docx_size_kb": 73.7,
-    "doc_size_kb": 73.7
+    "docx_size_kb": 76.9,
+    "doc_size_kb": 76.9
   },
   "devops": {
     "tag": "v1.23.0",
@@ -561,7 +576,7 @@
     "report": "docs/code-review/CR-FEAT-021-sprint23.md",
     "reviewed_at": "2026-04-09T10:49:03.114Z"
   },
-  "updated_at": "2026-04-14T14:10:40.010Z",
+  "updated_at": "2026-04-14T14:15:58.449Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": false,
   "gate8_approved_by": "release-manager",
@@ -1230,6 +1245,24 @@
       "sprint": 24,
       "feature": "FEAT-022",
       "note": "FEAT-022 Bizum P2P aprobado. 24 SP. 19 feature + 5 deuda."
+    },
+    {
+      "gate": "G-2",
+      "step": "2",
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-14T14:13:53.093Z",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "SRS + 7 US + RTM aprobados."
+    },
+    {
+      "gate": "G-2b",
+      "step": "2b",
+      "approved_by": "auto",
+      "approved_at": "2026-04-14T14:15:58.449Z",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "AUTO: validate-fa-index PASS 8/8 · FA v0.5"
     }
   ],
   "lessons_learned": [
