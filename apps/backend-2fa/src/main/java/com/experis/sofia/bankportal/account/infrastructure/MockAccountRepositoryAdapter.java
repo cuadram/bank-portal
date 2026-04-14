@@ -81,9 +81,10 @@ public class MockAccountRepositoryAdapter implements AccountRepositoryPort {
 
         for (int i = 0; i < count; i++) {
             String[] concept = mockConcepts[i % mockConcepts.length];
+            // fix: Locale.US para separador decimal '.' independiente del locale del SO
             BigDecimal amount = concept[1].equals("ABONO")
-                    ? new BigDecimal(String.format("%.2f", 100 + (i * 47.3 % 1900)))
-                    : new BigDecimal(String.format("%.2f", -(10 + (i * 23.7 % 500))));
+                    ? new BigDecimal(String.format(Locale.US, "%.2f", 100 + (i * 47.3 % 1900)))
+                    : new BigDecimal(String.format(Locale.US, "%.2f", -(10 + (i * 23.7 % 500))));
 
             balance = balance.add(amount);
             txs.add(new Transaction(
