@@ -14,9 +14,14 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * US-604 — Endpoint para consultar historial de cambios de configuración de seguridad.
+ * US-604 — Endpoint para consultar historial de cambios de configuración de seguridad
+ * con filtros avanzados (since/eventType).
  *
- * <p>Ruta: {@code GET /api/v1/security/config-history}
+ * <p>Ruta: {@code GET /api/v1/security/config-history/filtered}
+ *
+ * <p>NOTA: El endpoint legacy {@code GET /api/v1/security/config-history} es atendido
+ * por {@link SecurityAuditController}. Este controller expone la variante con filtros
+ * de timestamp e eventType bajo un path diferente para evitar conflicto de mapping.
  *
  * <p>Seguridad:
  * <ul>
@@ -31,7 +36,7 @@ import java.util.UUID;
  *   <li>{@code eventType} — filtro por tipo de evento (ej. "PREFERENCES_UPDATED")</li>
  * </ul>
  *
- * @author SOFIA Developer Agent — FEAT-006 US-604 Sprint 7
+ * @author SOFIA Developer Agent — FEAT-006 US-604 Sprint 7/8
  */
 @RestController
 @RequiredArgsConstructor
@@ -40,12 +45,13 @@ public class SecurityConfigHistoryController {
     private final SecurityConfigHistoryUseCase configHistoryUseCase;
 
     /**
-     * Retorna el historial de cambios de configuración del usuario autenticado.
+     * Retorna el historial de cambios de configuración del usuario autenticado,
+     * con filtros opcionales por timestamp e tipo de evento.
      *
      * <p>Respuesta 200 con lista (puede ser vacía). Nunca 404 — un historial vacío
      * es un estado válido (usuario nuevo o sin cambios en los últimos 90 días).
      */
-    @GetMapping("/api/v1/security/config-history")
+    @GetMapping("/api/v1/security/config-history/filtered")
     public ResponseEntity<ConfigHistoryResponse> getConfigHistory(
             HttpServletRequest request,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
