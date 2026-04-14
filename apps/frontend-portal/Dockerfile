@@ -11,7 +11,7 @@ WORKDIR /build
 
 # Copiar package files para cachear dependencias
 COPY package*.json ./
-RUN npm ci --quiet
+RUN npm install --quiet
 
 # Copiar código y compilar con Angular en modo producción
 COPY . .
