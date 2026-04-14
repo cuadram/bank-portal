@@ -7,7 +7,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     show-sql: false
     properties:
       hibernate:
@@ -52,8 +52,3 @@ logging:
     root: WARN
     com.experis.sofia.bankportal: INFO
     org.flywaydb: INFO
-
-spring:
-  jpa:
-    hibernate:
-      ddl-auto: none
