@@ -538,3 +538,5 @@
 [2026-04-14T15:27:18.000Z] [STEP-5] [code-reviewer] COMPLETED → CR APPROVED 0/0/0/2 | G-5 TL
 [2026-04-14T15:27:18.000Z] [STEP-5b] [security-agent] COMPLETED → GREEN 0 CVE | G-5b AUTO → avanzando Step 6 QA
 [2026-04-14T15:37:48.683Z] [STEP-6] [qa-tester] COMPLETED -> docs/quality/QA-FEAT-022-sprint24.md | 25 TCs | 67/67 verificacion | gate_pending G-6
+[2026-04-14T15:42:39.474Z] [GATE-G6] [qa-lead+product-owner] APPROVED → 25 TCs 109/109 · avanzando Step 7 DevOps
+[2026-04-14T15:44:33.431Z] [STEP-7] [devops] COMPLETED → v1.24.0 | pipeline 17 stages ALL PASS | smoke 16/16 | G-7 release-manager
