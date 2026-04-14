@@ -42,6 +42,7 @@ jwt:
 bank:
   core:
     base-url: http://localhost:9999
+    api-key: dummy-key-for-integration-tests
   bizum:
     limit:
       per-operation: 500
