@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BizumService } from '../../services/bizum.service';
 
@@ -16,6 +16,10 @@ export class BizumRequestComponent {
       concept: ['', Validators.maxLength(35)]
     });
   }
+
+  get recipientPhoneCtrl(): FormControl { return this.form.get('recipientPhone') as FormControl; }
+  get amountCtrl(): FormControl { return this.form.get('amount') as FormControl; }
+  get conceptCtrl(): FormControl { return this.form.get('concept') as FormControl; }
 
   send(): void {
     this.loading = true;

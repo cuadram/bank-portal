@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BizumService } from '../../services/bizum.service';
 
@@ -28,6 +28,11 @@ export class BizumSendComponent {
       error: (e) => { this.loading = false; this.error = e.error?.message || 'Error al enviar el pago'; }
     });
   }
+
+  get recipientPhoneCtrl(): FormControl { return this.form.get('recipientPhone') as FormControl; }
+  get amountCtrl(): FormControl { return this.form.get('amount') as FormControl; }
+  get conceptCtrl(): FormControl { return this.form.get('concept') as FormControl; }
+  get otpCtrl(): FormControl { return this.form.get('otp') as FormControl; }
 
   back(): void { this.step === 2 ? this.step = 1 : this.router.navigateByUrl('/bizum'); }
 }
