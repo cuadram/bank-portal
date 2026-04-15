@@ -5,31 +5,63 @@
   </div>
 </div>
 
+<!-- Hero activo -->
 <div class="bizum-hero" *ngIf="status.active">
-  <div class="hero-top"><span class="hero-title">💸 Bizum</span><span class="status-pill">ACTIVO</span></div>
-  <div class="bal-label">Límite diario disponible</div>
-  <div class="bal-amount">{{ status.dailyLimit - status.dailyUsed | currency:'EUR':'symbol':'1.2-2' }}</div>
-  <div class="limit-bar"><div class="limit-fill" [style.width.%]="limitPct"></div></div>
-  <div class="actions-grid">
-    <button class="action-btn" (click)="navigateTo('/bizum/enviar')">📤 Enviar</button>
-    <button class="action-btn" (click)="navigateTo('/bizum/solicitar')">📥 Solicitar</button>
+  <div class="bizum-hero-top">
+    <span style="font-size:22px">💸</span>
+    <span style="font-size:18px;font-weight:700">Bizum</span>
+    <span class="bizum-status-pill">ACTIVO</span>
+  </div>
+  <div class="bizum-bal-label">Límite diario disponible</div>
+  <div class="bizum-bal-amount">{{ status.dailyLimit - status.dailyUsed | currency:'EUR':'symbol':'1.2-2' }}</div>
+  <div class="bizum-limit-bar">
+    <div class="bizum-limit-fill" [style.width.%]="limitPct"></div>
+  </div>
+  <div class="bizum-actions-grid">
+    <div class="bizum-action-btn" (click)="navigateTo('/bizum/enviar')">
+      <div class="bizum-action-icon">📤</div>
+      <div class="bizum-action-label">Enviar</div>
+    </div>
+    <div class="bizum-action-btn" (click)="navigateTo('/bizum/solicitar')">
+      <div class="bizum-action-icon">📥</div>
+      <div class="bizum-action-label">Solicitar</div>
+    </div>
   </div>
 </div>
 
-<div class="transactions-header">
-  <span class="section-title">Últimas operaciones</span>
+<!-- Sin activar -->
+<div class="card" style="padding:24px;text-align:center;margin-bottom:24px;" *ngIf="!status.active && !loading">
+  <div style="font-size:32px;margin-bottom:8px">💸</div>
+  <div style="font-size:16px;font-weight:600;color:#1A2332;margin-bottom:4px">Bizum no activado</div>
+  <div style="font-size:14px;color:#4A5568;margin-bottom:16px">Activa Bizum para enviar y recibir dinero al instante</div>
+  <button class="btn btn-primary btn-sm" (click)="navigateTo('/bizum/configuracion')">Activar Bizum</button>
+</div>
+
+<!-- Últimas operaciones -->
+<div class="transactions-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+  <span class="section-title" style="font-size:16px;font-weight:600;color:#1A2332;">Últimas operaciones</span>
   <button class="btn btn-ghost btn-sm" (click)="navigateTo('/bizum/historial')">Ver todo →</button>
 </div>
+
 <div class="card" *ngIf="transactions.length > 0">
-  <div class="op-item" *ngFor="let t of transactions">
-    <div class="op-info">
-      <div class="op-name">{{ t.phoneMasked }}</div>
-      <div class="op-meta">{{ t.concept }} · {{ t.timestamp | date:'d MMM, HH:mm' }}</div>
-    </div>
-    <div class="op-right">
-      <span [class]="t.type === 'SENT' ? 'amount-neg' : 'amount-pos'">
-        {{ t.type === 'SENT' ? '-' : '+' }}{{ t.amount | currency:'EUR':'symbol':'1.2-2' }}
-      </span>
+  <div class="card-body" style="padding:0 24px;">
+    <div class="op-item" *ngFor="let t of transactions">
+      <div class="op-avatar" [class]="t.type === 'SENT' ? 'sent' : 'received'">
+        {{ t.type === 'SENT' ? '📤' : '📥' }}
+      </div>
+      <div class="op-info">
+        <div class="op-name">{{ t.phoneMasked }}</div>
+        <div class="op-meta">{{ t.concept }} · {{ t.timestamp | date:'d MMM, HH:mm' }}</div>
+      </div>
+      <div class="op-right">
+        <span [class]="t.type === 'SENT' ? 'op-neg' : 'op-pos'">
+          {{ t.type === 'SENT' ? '-' : '+' }}{{ t.amount | currency:'EUR':'symbol':'1.2-2' }}
+        </span>
+      </div>
     </div>
   </div>
+</div>
+
+<div class="card" *ngIf="transactions.length === 0 && !loading" style="padding:32px;text-align:center;color:#4A5568;font-size:14px;">
+  No hay operaciones recientes
 </div>
