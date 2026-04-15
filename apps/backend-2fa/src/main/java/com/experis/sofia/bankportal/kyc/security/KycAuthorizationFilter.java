@@ -82,7 +82,7 @@ public class KycAuthorizationFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         return path.equals("/auth/login")
             || path.equals("/2fa/verify")
-            || path.equals("/actuator/health")
+            || path.startsWith("/actuator/health")
             || path.startsWith("/api/v1/kyc")
             || path.startsWith("/api/v1/admin/kyc");
     }

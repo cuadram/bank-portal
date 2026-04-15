@@ -36,6 +36,10 @@ import { Router } from '@angular/router';
           <a routerLink="/depositos"    routerLinkActive="nav-active" class="nav-item">
             <span class="nav-icon">💰</span> <span class="nav-label">Depósitos</span>
           </a>
+          <!-- FEAT-022 Sprint 24 — Bizum P2P (LA-FRONT-001) -->
+          <a routerLink="/bizum" routerLinkActive="nav-active" class="nav-item">
+            <span class="nav-icon">💸</span> <span class="nav-label">Bizum</span>
+          </a>
           <div class="nav-divider"></div>
           <a routerLink="/perfil"       routerLinkActive="nav-active" class="nav-item">
             <span class="nav-icon">👤</span> <span class="nav-label">Mi Perfil</span>

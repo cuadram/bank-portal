@@ -52,3 +52,12 @@ logging:
     com.experis.sofia.bankportal: DEBUG
     org.flywaydb: INFO
     org.testcontainers: WARN
+
+# Bizum — límites para tests de integración (FEAT-022)
+bank:
+  bizum:
+    limit:
+      per-operation: 500
+      per-day: 2000
+    request:
+      ttl-hours: 24

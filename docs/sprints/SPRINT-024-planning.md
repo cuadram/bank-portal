@@ -1,110 +1,171 @@
-# SPRINT-024 — Planning Document
-## BankPortal · Banco Meridian · FEAT-022 Bizum P2P
-**Fecha:** 14/04/2026 | **SOFIA v2.7** | **Capacidad:** 24 SP
+# Sprint 24 Planning — BankPortal · Banco Meridian
+**SOFIA v2.7 · Scrum Master Agent · Step 1**
+
+---
+
+## Metadata
+
+| Campo | Valor |
+|---|---|
+| Sprint | 24 |
+| Feature | FEAT-022 — Bizum P2P |
+| Período | 2026-04-21 → 2026-05-04 (2 semanas) |
+| Capacidad | 24 SP |
+| Velocidad referencia | 24 SP (S21–S23 estable) |
+| Release objetivo | v1.24.0 |
+| SOFIA version | v2.7 |
+| Rama git | feature/FEAT-022-sprint24 |
 
 ---
 
 ## Sprint Goal
-> *Permitir al cliente de Banco Meridian enviar y solicitar pagos inmediatos entre particulares mediante Bizum, con SCA OTP, límites configurables y notificaciones en tiempo real, cumpliendo PSD2 Art.97.*
+
+> **"Permitir al cliente de Banco Meridian enviar y recibir pagos P2P inmediatos mediante número de teléfono registrado en Bizum, con autenticación SCA OTP, verificación de límites regulatorios y notificaciones push en tiempo real, cumpliendo PSD2 Art.97 SCA y SEPA Instant Credit Transfer."**
 
 ---
 
-## Capacidad del equipo
-| Concepto | Valor |
-|---|---|
-| Velocidad referencia (media S21-S23) | 24 SP |
-| Split feature / deuda | 20 SP feature + 4 SP deuda técnica |
-| Duración | 2 semanas |
-| Sprints históricos entregados | 23 |
-| Story points acumulados | 545 SP |
+## Distribución de capacidad
 
----
-
-## Backlog Sprint 24
-
-### Feature — FEAT-022 Bizum P2P (20 SP)
-
-| ID Jira | US | SP | Criterios de aceptación clave |
-|---|---|---|---|
-| SCRUM-132 | US-F022-01: Alta y vinculación Bizum | 4 | El usuario puede vincular su número de móvil a su cuenta. Solo 1 cuenta activa por número. Validación OTP al vincular. RN: unicidad de número en el sistema. |
-| SCRUM-133 | US-F022-02: Envío de pago Bizum con SCA | 5 | Envío por número de teléfono. Confirmación SCA OTP obligatoria (PSD2 Art.97). Límite diario 1.000 EUR configurable. Notificación push al emisor y receptor. |
-| SCRUM-134 | US-F022-03: Solicitud de cobro a contacto | 4 | El usuario puede solicitar dinero a un número de teléfono. El receptor acepta o rechaza. Expiración 24h. SCA en aceptación. Notificación push al receptor. |
-| SCRUM-135 | US-F022-04: Historial de transacciones Bizum | 3 | Lista paginada de envíos, cobros y solicitudes. Filtros: tipo (envío/cobro/solicitud), fecha, estado. Detalle de cada operación. |
-| SCRUM-136 | US-F022-05: Límites y configuración Bizum | 2 | Consulta y modificación de límite diario (máx. 1.000 EUR). Activar/desactivar Bizum. Cambios con SCA. Configuración en application.properties (patrón DEBT-044). |
-| SCRUM-137 | US-F022-06: Notificaciones push operaciones Bizum | 2 | Push VAPID en: envío realizado, cobro recibido, solicitud recibida, solicitud expirada/rechazada. Integración con NotificationService (FEAT-014). |
-
-**Subtotal feature: 20 SP**
-
-### Deuda técnica (4 SP)
-
-| ID Jira | DEBT | SP | Justificación |
-|---|---|---|---|
-| SCRUM-138 | DEBT-045: Índice compuesto bizum_transactions (phone_number, status, created_at) | 2 | Rendimiento queries de historial con filtros combinados. Detectado en diseño preliminar de LLD. |
-| SCRUM-139 | DEBT-046: Seeds notificaciones — rutas /bizum registradas en app-routing | 2 | LA-023-01: seeds deben referenciar solo rutas registradas en app-routing.module.ts. Corrección preventiva antes de Step 4. |
-
-**Subtotal deuda: 4 SP | TOTAL SPRINT: 24 SP**
-
-### Issues de soporte (gestión / sin SP)
-
-| ID Jira | Task | Descripción |
+| Tipo | SP | % |
 |---|---|---|
-| SCRUM-140 | TASK: HLD + LLD Bizum — Architect Step 3 | Arquitectura dominio bizum: hexagonal, ADR, Flyway V27 |
-| SCRUM-141 | TASK: QA Plan FEAT-022 — QA Step 6 | Plan de pruebas funcionales + seguridad PSD2 |
-| SCRUM-142 | TASK: Sprint 24 Closure — Workflow Manager Step 9 | Cierre Jira + Confluence + Lessons Learned + Dashboard |
+| New Feature (FEAT-022) | 19 | 79% |
+| Tech Debt (DEBT-045/046) | 5 | 21% |
+| **Total** | **24** | **100%** |
+
+Ratio deuda/feature: 0.26 — dentro del umbral saludable (< 0.30).
+
+---
+
+## Backlog del Sprint
+
+### FEAT-022 — Bizum P2P (19 SP)
+
+| ID | User Story | SP | Criterio de aceptación clave |
+|---|---|---|---|
+| US-F022-01 | Activación Bizum y vinculación número de teléfono | 2 | POST /bizum/activate → vincula número móvil a cuenta, valida formato E.164, estado ACTIVE en BD |
+| US-F022-02 | Enviar pago Bizum con SCA OTP | 5 | POST /bizum/payments → valida OTP, comprueba límite €500/op y €2.000/día, debita cuenta, estado COMPLETED en <10s |
+| US-F022-03 | Solicitar dinero a contacto Bizum | 3 | POST /bizum/requests → crea solicitud PENDING, notifica push al destinatario, expira en 24h si no se acepta |
+| US-F022-04 | Aceptar o rechazar solicitud de dinero recibida | 2 | PATCH /bizum/requests/{id} → ACCEPTED (ejecuta pago SCA) / REJECTED (notifica push al solicitante) |
+| US-F022-05 | Historial de operaciones Bizum | 3 | GET /bizum/transactions → lista paginada enviadas/recibidas/solicitadas, filtro por tipo y estado |
+| US-F022-06 | Notificaciones push Bizum | 2 | Push VAPID en: recepción pago, solicitud dinero entrante, solicitud aceptada/rechazada |
+| US-F022-07 | Interfaz Angular módulo Bizum (5 pantallas) | 2 | Module lazy /bizum, nav item en shell, pantallas: inicio, enviar, solicitar, historial, configuración |
+
+### Tech Debt (5 SP)
+
+| ID | Descripción | SP | Área |
+|---|---|---|---|
+| DEBT-045 | Adaptar CoreBanking mock con endpoint SEPA Instant Credit Transfer (ADR-038) | 3 | Backend |
+| DEBT-046 | Refactorizar key pattern Redis rate-limit (unificar patrón userId:feature:date) | 2 | Infra |
 
 ---
 
 ## Regulación aplicable
 
-| Marco | Artículo / Requisito |
+| Marco regulatorio | Aplicación en FEAT-022 |
 |---|---|
-| PSD2 RTS (EU 2018/389) | Art.97 — SCA obligatoria en pagos iniciados por usuario |
-| PSD2 RTS | Art.16 — Exención SCA importes < 30 EUR (candidato fase 2) |
-| SEPA Instant (SCT Inst) | Liquidación en < 10 segundos, disponibilidad 24/7/365 |
-| Banco de España Circular 4/2019 | Servicios de pago y autenticación reforzada de clientes |
-| GDPR Art.6 | Base legal para tratamiento del número de teléfono como dato personal |
-| LSSICE Art.21 | Consentimiento para comunicaciones comerciales por push |
+| PSD2 Art.97 (Dir. 2015/2366) | SCA obligatorio en pagos: OTP como factor posesión |
+| SEPA Instant Credit Transfer (SCT Inst) | Liquidación ≤10s, disponibilidad 24/7/365, límite €100.000/operación |
+| Circular BdE 4/2019 (servicios de pago) | Información previa, confirmación expresa, comprobante de operación |
+| Reglamento BIZUM / Sistema de Pagos Inmediatos | Límite operativo €500/operación, €2.000/día — configurable por entidad |
+| GDPR Art.6 | Consentimiento explícito para vincular número de teléfono a cuenta |
 
 ---
 
-## Dependencias y riesgos
+## Arquitectura técnica — diseño previo (input para Step 3)
 
-| ID | Riesgo | Prob. | Impacto | Mitigación |
+### Backend — módulo hexagonal `bizum/`
+
+```
+bizum/
+├── domain/
+│   ├── model/        BizumPayment, BizumRequest, BizumContact, BizumStatus
+│   ├── exception/    LimitExceededException, PhoneNotRegisteredException,
+│   │                 RequestExpiredException, BizumNotActiveException
+│   ├── service/      BizumLimitService, PhoneRegistrationService
+│   └── repository/   BizumPaymentRepositoryPort, BizumRequestRepositoryPort
+├── application/
+│   ├── usecase/      Activate, SendPayment, RequestMoney, AcceptRequest,
+│   │                 RejectRequest, ListTransactions (6 UC)
+│   └── dto/          8 DTOs (Send/RequestCmd, PaymentResponse, RequestResponse,
+│                     TransactionSummary, ActivationRequest, LimitStatus)
+├── infrastructure/
+│   ├── persistence/  BizumPaymentEntity, BizumRequestEntity, JpaAdapters x2
+│   ├── corebanking/  CoreBankingMockBizumClient — SEPA Instant (ADR-038)
+│   └── redis/        BizumRateLimitAdapter (DEBT-046)
+└── api/              BizumController + BizumExceptionHandler (LA-TEST-003)
+```
+
+**Flyway:** V27__bizum.sql (bizum_payments, bizum_requests, bizum_contacts)
+**Config:** bank.bizum.limit.per-operation=500, bank.bizum.limit.per-day=2000
+
+### Frontend — módulo Angular `features/bizum/`
+
+```
+bizum/
+├── bizum.module.ts + bizum-routing.module.ts
+├── models/          bizum.model.ts
+├── services/        bizum.service.ts
+└── components/
+    ├── bizum-home/          Panel principal — saldo + acciones rápidas
+    ├── bizum-send/          Formulario envío + stepper OTP
+    ├── bizum-request/       Formulario solicitud dinero
+    ├── bizum-history/       Historial paginado con filtros
+    └── bizum-settings/      Activar/desactivar + límites
+```
+
+### ADR-038 — CoreBanking Mock SEPA Instant
+- Mock sincrono que simula liquidación instantánea (sin delay real)
+- Responde COMPLETED en <100ms en STG
+- Genera referencia SEPA Instant: `BIZUM-{uuid}`
+
+---
+
+## Riesgos del Sprint
+
+| ID | Riesgo | Prob | Impacto | Mitigación |
 |---|---|---|---|---|
-| R-024-01 | API Bizum/Redsys no disponible en STG | M | A | CoreBankingMockBizumClient — patrón ADR-037 (mock por perfil staging) |
-| R-024-02 | Límite diario variable por perfil de cliente | B | M | Externalizar a application.properties — patrón DEBT-044 aplicado desde V27 |
-| R-024-03 | Número de teléfono ya vinculado en otra entidad | M | B | BizumPhoneConflictException controlada + mensaje de usuario |
-| R-024-04 | Concurrencia en pagos simultáneos misma cuenta | B | A | Optimistic locking en BizumTransaction + constraint DB unicidad |
+| R-024-01 | Integración SEPA Instant más compleja de lo estimado en mock | M | M | DEBT-045 en primeros 2 días — early feedback |
+| R-024-02 | Flujo OTP reutilizado pero con contexto diferente (Bizum vs Depósito) | B | M | Revisar TwoFactorService extensibilidad en Step 3 |
+| R-024-03 | Redis rate-limit con carga concurrente P2P | B | B | DEBT-046 en Step 4, smoke test carga básica |
 
 ---
 
-## Integración con features anteriores
+## Deudas técnicas identificadas para sprints futuros
 
-| Feature | Punto de integración |
+| ID | Descripción | Prioridad | Sprint target |
+|---|---|---|---|
+| DEBT-047 | Bizum — internacionalización límites por país (SCT Inst europeo) | Baja | S26 |
+
+---
+
+## Issues Jira a crear
+
+| # | Tipo | Título | SP |
+|---|---|---|---|
+| 1 | Story | US-F022-01: Activación Bizum y vinculación número de teléfono | 2 |
+| 2 | Story | US-F022-02: Enviar pago Bizum con SCA OTP | 5 |
+| 3 | Story | US-F022-03: Solicitar dinero a contacto Bizum | 3 |
+| 4 | Story | US-F022-04: Aceptar o rechazar solicitud de dinero recibida | 2 |
+| 5 | Story | US-F022-05: Historial de operaciones Bizum | 3 |
+| 6 | Story | US-F022-06: Notificaciones push Bizum | 2 |
+| 7 | Story | US-F022-07: Interfaz Angular módulo Bizum (5 pantallas) | 2 |
+| 8 | Task | DEBT-045: CoreBanking mock SEPA Instant Credit Transfer | 3 |
+| 9 | Task | DEBT-046: Refactorizar key pattern Redis rate-limit | 2 |
+| 10 | Task | SPRINT-024 Planning & Setup — Step 1 Scrum Master | — |
+
+---
+
+## Métricas acumuladas (entrada Sprint 24)
+
+| Métrica | Valor |
 |---|---|
-| FEAT-001 / FEAT-002 | OTP/SCA — reutilizar TwoFactorService y OtpValidationUseCase sin modificación |
-| FEAT-007 | Deducción de saldo de cuenta origen vía AccountRepositoryPort |
-| FEAT-014 | Notificaciones push VAPID — reutilizar NotificationService.send() |
-| FEAT-017 | Patrón SEPA — referencia para modelo de transacción instantánea |
-| FEAT-019 | Trazabilidad GDPR — registrar en audit_log con IBAN real (LA-020-03) |
-| FEAT-020/021 | Patrón CoreBankingMock y BigDecimal HALF_EVEN para importes |
+| Story Points acumulados | 545 SP (S1–S23) |
+| Tests totales | 953 |
+| Cobertura | 89% |
+| Defectos en producción | 0 |
+| Velocidad últimos 3 sprints | 24 / 24 / 24 SP |
+| NCs abiertas | 0 |
 
 ---
 
-## Definition of Done — Sprint 24
-
-- [ ] 6 US implementadas y verificadas contra prototipo HITL (LA-023-02)
-- [ ] DEBT-045 y DEBT-046 cerrados en el sprint
-- [ ] 0 CVE críticos · 0 CVE altos (Security Agent)
-- [ ] Mínimo 10 tests unitarios dominio bizum + SpringContextIT
-- [ ] Cobertura estimada >= 88%
-- [ ] Flyway V27__bizum.sql aplicada sin errores (Flyway histórico: V26 = deposits)
-- [ ] SCA OTP funcional en staging con bypass code 123456
-- [ ] Smoke test actualizado pasando 17/17+ endpoints
-- [ ] FA v0.4 generado con FEAT-022 consolidado (gen-fa-document.py)
-- [ ] 17 DOCX + 3 XLSX + 1 JSON generados (Documentation Agent Step 8)
-- [ ] LESSONS_LEARNED.md regenerado (Step 9)
-- [ ] Dashboard Global actualizado en cada gate (GR-011)
-- [ ] Jira SCRUM-132..142: todos en Finalizada
-- [ ] Confluence: página Resultados + Retrospectiva Sprint 24 publicadas
-- [ ] session.json: sprint_closed=true · acum=569SP
+*Generado por Scrum Master Agent — SOFIA v2.7 — Step 1 — Sprint 24*

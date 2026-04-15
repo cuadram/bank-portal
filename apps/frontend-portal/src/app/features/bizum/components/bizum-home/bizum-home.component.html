@@ -1,0 +1,75 @@
+<div class="breadcrumb"><span>Bizum</span></div>
+<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:var(--sp-6);">
+  <div>
+    <h1 style="font-size:var(--text-2xl);font-weight:700;color:var(--color-text-primary);margin:0 0 var(--sp-1);">💸 Bizum</h1>
+    <p style="font-size:var(--text-sm);color:var(--color-text-secondary);" *ngIf="status.active">{{ status.phoneMasked }} · Activo</p>
+  </div>
+  <button class="btn btn-ghost btn-sm" (click)="navigateTo('/bizum/configuracion')">⚙ Configuración</button>
+</div>
+
+<div class="bizum-hero" *ngIf="status.active">
+  <div class="bizum-hero-top">
+    <span style="font-size:20px">💸</span>
+    <span style="font-size:var(--text-lg);font-weight:700;">Bizum</span>
+    <span class="bizum-status-pill">ACTIVO</span>
+  </div>
+  <div class="bizum-bal-label">Límite diario disponible</div>
+  <div class="bizum-bal-amount">{{ status.dailyLimit - status.dailyUsed | currency:'EUR':'symbol':'1.2-2' }}</div>
+  <div style="font-size:var(--text-xs);opacity:.6;margin-top:var(--sp-1);">{{ status.dailyUsed | currency:'EUR':'symbol':'1.2-2' }} usado hoy · Reseteo a medianoche</div>
+  <div class="bizum-limit-bar"><div class="bizum-limit-fill" [style.width.%]="limitPct"></div></div>
+  <div class="bizum-actions-grid">
+    <div class="bizum-action-btn" (click)="navigateTo('/bizum/enviar')">
+      <div class="bizum-action-icon">📤</div>
+      <div class="bizum-action-label">Enviar</div>
+    </div>
+    <div class="bizum-action-btn" (click)="navigateTo('/bizum/solicitar')">
+      <div class="bizum-action-icon">📥</div>
+      <div class="bizum-action-label">Solicitar</div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!status.active && !loading">
+  <div class="bizum-hero" style="text-align:center;padding:var(--sp-8) var(--sp-6);">
+    <div style="font-size:48px;margin-bottom:var(--sp-4);">💸</div>
+    <div style="font-size:var(--text-xl);font-weight:700;margin-bottom:var(--sp-2);">Bizum en BankPortal</div>
+    <div style="font-size:var(--text-sm);opacity:.8;margin-bottom:var(--sp-5);">Pagos inmediatos a cualquier número de móvil. Gratis, disponible 24/7/365.</div>
+    <div style="display:flex;gap:var(--sp-6);justify-content:center;font-size:var(--text-sm);opacity:.75;">
+      <span>✓ Hasta €500/op</span><span>✓ €2.000/día</span><span>✓ SEPA Instant</span>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:var(--sp-4);">
+    <button class="btn btn-primary" (click)="navigateTo('/bizum/activar')">Activar Bizum →</button>
+  </div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-4);">
+  <span style="font-size:var(--text-md);font-weight:600;color:var(--color-text-primary);">Últimas operaciones</span>
+  <button class="btn btn-ghost btn-sm" (click)="navigateTo('/bizum/historial')">Ver todo →</button>
+</div>
+<div class="card" *ngIf="transactions.length > 0">
+  <div class="card-body">
+    <div class="op-item" *ngFor="let t of transactions">
+      <div class="op-avatar" [ngClass]="t.type === 'SENT' ? 'sent' : t.status === 'PENDING' ? 'pending' : 'received'">
+        <span *ngIf="t.type === 'SENT'">📤</span>
+        <span *ngIf="t.type !== 'SENT' && t.status === 'PENDING'">⏳</span>
+        <span *ngIf="t.type !== 'SENT' && t.status !== 'PENDING'">📥</span>
+      </div>
+      <div class="op-info">
+        <div class="op-name">{{ t.phoneMasked }}</div>
+        <div class="op-meta">{{ t.concept }} · {{ t.timestamp | date:'d MMM, HH:mm' }}</div>
+      </div>
+      <div class="op-right">
+        <div [ngClass]="t.type === 'SENT' ? 'op-neg' : t.status === 'PENDING' ? 'op-pend' : 'op-pos'">
+          {{ t.type === 'SENT' ? '−' : '+' }}{{ t.amount | currency:'EUR':'symbol':'1.2-2' }}
+        </div>
+        <span class="badge" [ngClass]="t.type === 'SENT' ? 'badge-neutral' : t.status === 'PENDING' ? 'badge-warning' : 'badge-success'">
+          {{ t.type === 'SENT' ? 'Enviado' : t.status === 'PENDING' ? 'Pendiente' : 'Recibido' }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card" *ngIf="transactions.length === 0 && !loading" style="padding:var(--sp-8);text-align:center;color:var(--color-text-secondary);">
+  No hay operaciones recientes
+</div>

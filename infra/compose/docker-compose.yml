@@ -2,13 +2,14 @@
 # STG · Sprint 9 · FEAT-007 · DEBT-011/012
 # Variables sensibles inyectadas desde .env — NUNCA commitear .env con valores reales
 
-version: '3.9'
-
 services:
 
   # ── BACKEND ──────────────────────────────────────────────────────────────────
   backend:
-    image: ${REGISTRY:-registry.meridian.internal}/bankportal-backend-2fa:${IMAGE_TAG:-latest-dev}
+    build:
+      context: ../../apps/backend-2fa
+      dockerfile: Dockerfile
+    image: bankportal-backend-2fa:local-dev
     container_name: bankportal-backend
     restart: unless-stopped
     ports:
@@ -32,26 +33,32 @@ services:
       NOTIFICATION_PURGE_CRON:     "0 0 2 * * *"
       # Actuator / observabilidad
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,metrics,prometheus
+      MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+      MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS:   always
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health/liveness"]
-      interval: 30s
+      # /actuator/health funciona sin probes habilitadas; /liveness requiere probes
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 15s
       timeout: 5s
-      retries: 5
-      start_period: 60s
+      retries: 8
+      start_period: 120s
     deploy:
       resources:
         limits:
-          memory: 512M
-          cpus: '0.5'
+          memory: 768M
+          cpus: '1.0'
 
   # ── FRONTEND ─────────────────────────────────────────────────────────────────
   frontend:
-    image: ${REGISTRY:-registry.meridian.internal}/bankportal-frontend-portal:${IMAGE_TAG:-latest-dev}
+    build:
+      context: ../../apps/frontend-portal
+      dockerfile: Dockerfile
+    image: bankportal-frontend-portal:local-dev
     container_name: bankportal-frontend
     restart: unless-stopped
     ports:
@@ -64,7 +71,7 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
-      start_period: 15s
+      start_period: 30s
     deploy:
       resources:
         limits:
@@ -109,6 +116,26 @@ services:
       resources:
         limits:
           memory: 128M
+
+  # ── MAILHOG — SMTP mock para notificaciones email ─────────────────────────────
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    platform: linux/amd64
+    container_name: bankportal-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8025"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          memory: 64M
 
 volumes:
   postgres_data:

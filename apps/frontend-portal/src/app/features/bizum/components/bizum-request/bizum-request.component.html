@@ -1,0 +1,53 @@
+<div class="breadcrumb"><a (click)="back()">Bizum</a> &rsaquo; Solicitar dinero</div>
+<h1 class="page-title">Solicitar dinero</h1>
+<p style="font-size:var(--text-base);color:var(--color-text-secondary);margin-bottom:var(--sp-6);">El destinatario recibira una notificacion para aceptar o rechazar en 24h</p>
+<div style="max-width:560px;">
+  <div class="card" style="margin-bottom:var(--sp-4);">
+    <div class="card-header"><span class="card-title">Nueva solicitud</span></div>
+    <div class="card-body">
+      <div class="form-group">
+        <label class="form-label">A quien le pides *</label>
+        <input class="form-input" type="tel" [formControl]="recipientPhoneCtrl" placeholder="+34 6XX XXX XXX">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Importe *</label>
+          <input class="form-input" type="number" [formControl]="amountCtrl" style="font-size:var(--text-xl);font-weight:700;">
+          <div class="form-hint">Max 500 por solicitud</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Concepto (opcional)</label>
+          <input class="form-input" [formControl]="conceptCtrl" placeholder="Para que es?">
+        </div>
+      </div>
+      <div class="alert alert-info" style="font-size:var(--text-sm);">La solicitud expira a las 24 horas si no hay respuesta (RN-F022-07)</div>
+      <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-ghost" (click)="back()">Cancelar</button>
+      <button class="btn btn-primary" (click)="send()" [disabled]="loading || form.invalid">{{ loading ? 'Enviando...' : 'Enviar solicitud' }}</button>
+    </div>
+  </div>
+  <div class="card" *ngIf="incomingRequests.length > 0">
+    <div class="card-header">
+      <span class="card-title">Solicitudes pendientes recibidas</span>
+      <span class="badge badge-warning" style="margin-left:var(--sp-2);">{{ incomingRequests.length }}</span>
+    </div>
+    <div class="card-body">
+      <div class="op-item" *ngFor="let req of incomingRequests">
+        <div class="op-avatar pending">P</div>
+        <div class="op-info">
+          <div class="op-name">{{ req.phoneMasked }} te pide</div>
+          <div class="op-meta">{{ req.concept }}</div>
+        </div>
+        <div class="op-right">
+          <div class="op-pend" style="margin-bottom:var(--sp-2);">{{ req.amount | currency:'EUR':'symbol':'1.2-2' }}</div>
+          <div style="display:flex;gap:var(--sp-2);">
+            <button class="btn btn-danger btn-sm" (click)="rejectRequest(req.id)">Rechazar</button>
+            <button class="btn btn-primary btn-sm" (click)="acceptRequest(req)">Aceptar + OTP</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
