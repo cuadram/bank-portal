@@ -1,48 +1,73 @@
-<div class="breadcrumb"><a (click)="back()">Bizum</a> › Enviar pago</div>
+<div class="breadcrumb"><a (click)="back()">Bizum</a> &#8250; Enviar pago</div>
 <h1 class="page-title">Enviar Bizum</h1>
-
 <div class="stepper">
-  <span [class]="step >= 1 ? 'step active' : 'step'">1 Datos</span>
-  <span class="step-line" [class.done]="step >= 2"></span>
-  <span [class]="step >= 2 ? 'step active' : 'step pending'">2 Confirmar OTP</span>
+  <div [ngClass]="step >= 1 ? 'step active' : 'step'">
+    <div class="step-circle">{{ step > 1 ? '&#10003;' : '1' }}</div>
+    <div class="step-label">Datos del pago</div>
+  </div>
+  <div class="step-line" [class.done]="step >= 2"></div>
+  <div [ngClass]="step >= 2 ? 'step active' : 'step'">
+    <div class="step-circle">2</div>
+    <div class="step-label">Confirmar + OTP</div>
+  </div>
 </div>
 
-<div class="card card-body" *ngIf="step === 1">
-  <div class="form-group">
-    <label class="form-label">Teléfono destinatario *</label>
-    <input class="form-input" type="tel" [formControl]="recipientPhoneCtrl" placeholder="+34 6XX XXX XXX">
-  </div>
-  <div class="form-group">
-    <label class="form-label">Importe * (máx. €500)</label>
-    <input class="form-input" type="number" [formControl]="amountCtrl" placeholder="0,00">
-  </div>
-  <div class="form-group">
-    <label class="form-label">Concepto (opcional)</label>
-    <input class="form-input" [formControl]="conceptCtrl" placeholder="Máx. 35 caracteres">
+<div class="card" style="max-width:560px;" *ngIf="step === 1">
+  <div class="card-header"><span class="card-title">Paso 1 &mdash; Datos del pago</span></div>
+  <div class="card-body">
+    <div class="form-group">
+      <label class="form-label">Telefono destinatario <span class="req">*</span></label>
+      <input class="form-input" type="tel" [formControl]="recipientPhoneCtrl" placeholder="+34 6XX XXX XXX">
+      <div class="form-hint">El destinatario debe tener Bizum activo en su entidad</div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Importe <span class="req">*</span></label>
+        <input class="form-input" type="number" [formControl]="amountCtrl" style="font-size:var(--text-xl);font-weight:700;" placeholder="0,00">
+        <div class="form-hint">Max. 500/op &middot; 2.000/dia (RN-F022-04/05)</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Concepto</label>
+        <input class="form-input" [formControl]="conceptCtrl" placeholder="Opcional, max. 35 car.">
+      </div>
+    </div>
+    <div class="limit-track"><div class="limit-fill" [style.width.%]="dailyUsedPct"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:var(--sp-5);">
+      <span>Usado hoy: {{ dailyUsed | currency:'EUR':'symbol':'1.2-2' }}</span>
+      <span>Disponible: {{ dailyAvailable | currency:'EUR':'symbol':'1.2-2' }}</span>
+    </div>
+    <div class="bizum-confirm-panel" *ngIf="recipientPhoneCtrl.value && amountCtrl.value">
+      <div style="font-size:var(--text-sm);font-weight:700;color:var(--color-primary);margin-bottom:var(--sp-3);">Resumen del pago</div>
+      <div class="bcp-row"><span>A</span><span style="font-weight:600;">{{ recipientPhoneCtrl.value }}</span></div>
+      <div class="bcp-row"><span>Concepto</span><span>{{ conceptCtrl.value || '&mdash;' }}</span></div>
+      <div class="bcp-row"><span>Importe</span><span>{{ amountCtrl.value | currency:'EUR':'symbol':'1.2-2' }}</span></div>
+    </div>
   </div>
   <div class="card-footer">
     <button class="btn btn-ghost" (click)="back()">Cancelar</button>
-    <button class="btn btn-primary" (click)="goToConfirm()">Continuar →</button>
+    <button class="btn btn-primary" (click)="goToConfirm()" [disabled]="!recipientPhoneCtrl.value || !amountCtrl.value">Continuar &#8594;</button>
   </div>
 </div>
 
-<div class="card card-body" *ngIf="step === 2">
-  <div class="confirm-summary">
-    <div class="confirm-row"><span>A</span><span>{{ form.get('recipientPhone')?.value }}</span></div>
-    <div class="confirm-row"><span>Importe</span><span>{{ form.get('amount')?.value | currency:'EUR' }}</span></div>
-    <div class="confirm-row"><span>Concepto</span><span>{{ form.get('concept')?.value || '—' }}</span></div>
+<div class="card" style="max-width:520px;" *ngIf="step === 2">
+  <div class="card-header"><span class="card-title">&#128272; Verificacion SCA/PSD2</span></div>
+  <div class="card-body">
+    <div class="bizum-confirm-panel" style="margin-bottom:var(--sp-5);">
+      <div class="bcp-row"><span>A</span><span style="font-weight:600;">{{ recipientPhoneCtrl.value }}</span></div>
+      <div class="bcp-row"><span>Concepto</span><span>{{ conceptCtrl.value || '&mdash;' }}</span></div>
+      <div class="bcp-row"><span>Importe total</span><span>{{ amountCtrl.value | currency:'EUR':'symbol':'1.2-2' }}</span></div>
+    </div>
+    <div style="text-align:center;">
+      <p style="font-size:var(--text-base);color:var(--color-text-secondary);margin-bottom:var(--sp-4);">Introduce el codigo de 6 digitos de tu app autenticadora</p>
+      <input class="form-input" style="text-align:center;font-size:var(--text-2xl);font-weight:700;letter-spacing:8px;max-width:200px;"
+             type="text" maxlength="6" [formControl]="otpCtrl" placeholder="------">
+      <div class="form-hint" style="margin-top:var(--sp-2);">STG bypass: 123456</div>
+    </div>
+    <div class="alert alert-warning" style="margin-top:var(--sp-5);font-size:var(--text-sm);">&#9888; Este pago es inmediato e irreversible una vez confirmado. Verifica el numero de telefono.</div>
+    <div *ngIf="error" class="alert alert-error">{{ error }}</div>
   </div>
-  <div class="form-group" style="text-align:center;margin-top:16px">
-    <label class="form-label">Código OTP (6 dígitos)</label>
-    <input class="form-input otp-input" type="text" maxlength="6" [formControl]="otpCtrl" placeholder="______">
-    <div class="form-hint">STG bypass: 123456</div>
-  </div>
-  <div class="alert alert-warning">⚠ Este pago es inmediato e irreversible. Verifica el número.</div>
-  <div *ngIf="error" class="alert alert-error">{{ error }}</div>
   <div class="card-footer">
-    <button class="btn btn-ghost" (click)="back()">← Volver</button>
-    <button class="btn btn-primary" (click)="confirm()" [disabled]="loading">
-      {{ loading ? 'Enviando...' : 'Confirmar envío' }}
-    </button>
+    <button class="btn btn-ghost" (click)="step = 1">&#8592; Modificar</button>
+    <button class="btn btn-primary" (click)="confirm()" [disabled]="loading">{{ loading ? 'Enviando...' : 'Confirmar envio' }}</button>
   </div>
 </div>

@@ -1,31 +1,58 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BizumService } from '../../services/bizum.service';
 
-@Component({ selector: 'app-bizum-request', templateUrl: './bizum-request.component.html' })
-export class BizumRequestComponent {
-  form: FormGroup;
-  loading = false;
-  error = '';
+export interface BizumIncomingRequest {
+  id: string;
+  requesterPhone: string;
+  amount: number;
+  concept: string;
+  expiresIn: string;
+}
 
-  constructor(private fb: FormBuilder, private svc: BizumService, private router: Router) {
-    this.form = this.fb.group({
-      recipientPhone: ['', [Validators.required, Validators.pattern(/^\+[1-9]\d{6,14}$/)]],
-      amount: ['', [Validators.required, Validators.min(0.01), Validators.max(500)]],
-      concept: ['', Validators.maxLength(35)]
+@Component({ selector: 'app-bizum-request', templateUrl: './bizum-request.component.html' })
+export class BizumRequestComponent implements OnInit {
+  recipientPhoneCtrl = new FormControl('', [Validators.required]);
+  amountCtrl         = new FormControl('', [Validators.required, Validators.min(0.01), Validators.max(500)]);
+  conceptCtrl        = new FormControl('');
+  form = new FormGroup({ recipientPhone: this.recipientPhoneCtrl, amount: this.amountCtrl, concept: this.conceptCtrl });
+  loading = false;
+  error   = '';
+  incomingRequests: BizumIncomingRequest[] = [];
+
+  constructor(private svc: BizumService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.svc.getIncomingRequests().subscribe({ next: r => this.incomingRequests = r, error: () => {} });
+  }
+
+  send(): void {
+    if (this.form.invalid) return;
+    this.loading = true;
+    this.svc.sendRequest({
+      recipientPhone: this.recipientPhoneCtrl.value!,
+      amount: +this.amountCtrl.value!,
+      concept: this.conceptCtrl.value || ''
+    }).subscribe({
+      next: () => this.router.navigateByUrl('/bizum/historial'),
+      error: (e: any) => { this.error = e.error?.message || 'Error al enviar'; this.loading = false; }
     });
   }
 
-  get recipientPhoneCtrl(): FormControl { return this.form.get('recipientPhone') as FormControl; }
-  get amountCtrl(): FormControl { return this.form.get('amount') as FormControl; }
-  get conceptCtrl(): FormControl { return this.form.get('concept') as FormControl; }
+  rejectRequest(id: string): void {
+    this.svc.rejectRequest(id).subscribe({
+      next: () => this.incomingRequests = this.incomingRequests.filter(r => r.id !== id),
+      error: () => {}
+    });
+  }
 
-  send(): void {
-    this.loading = true;
-    this.svc.requestMoney(this.form.value).subscribe({
-      next: () => { this.loading = false; this.router.navigateByUrl('/bizum/historial'); },
-      error: (e) => { this.loading = false; this.error = e.error?.message || 'Error al enviar la solicitud'; }
+  acceptRequest(req: BizumIncomingRequest): void {
+    const otp = prompt('Introduce el codigo OTP (STG bypass: 123456)');
+    if (!otp) return;
+    this.svc.acceptRequest(req.id, otp).subscribe({
+      next: () => this.incomingRequests = this.incomingRequests.filter(r => r.id !== req.id),
+      error: (e: any) => alert(e.error?.message || 'OTP invalido')
     });
   }
 

@@ -1,25 +1,56 @@
-<div class="breadcrumb"><a (click)="back()">Bizum</a> › Solicitar dinero</div>
+<div class="breadcrumb"><a (click)="back()">Bizum</a> &#8250; Solicitar dinero</div>
 <h1 class="page-title">Solicitar dinero</h1>
-<p class="page-sub">El destinatario tiene 24h para aceptar o rechazar</p>
-<div class="card card-body" style="max-width:560px">
-  <div class="form-group">
-    <label class="form-label">¿A quién le pides? *</label>
-    <input class="form-input" type="tel" [formControl]="recipientPhoneCtrl" placeholder="+34 6XX XXX XXX">
+<p style="font-size:var(--text-base);color:var(--color-text-secondary);margin-bottom:var(--sp-6);">El destinatario recibira una notificacion para aceptar o rechazar (expira en 24h)</p>
+<div style="max-width:560px;">
+
+  <div class="card" style="margin-bottom:var(--sp-4);">
+    <div class="card-header"><span class="card-title">Nueva solicitud</span></div>
+    <div class="card-body">
+      <div class="form-group">
+        <label class="form-label">&#191;A quien le pides? <span class="req">*</span></label>
+        <input class="form-input" type="tel" [formControl]="recipientPhoneCtrl" placeholder="+34 6XX XXX XXX">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Importe <span class="req">*</span></label>
+          <input class="form-input" type="number" [formControl]="amountCtrl" style="font-size:var(--text-xl);font-weight:700;">
+          <div class="form-hint">Max. 500 por solicitud</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Concepto (opcional)</label>
+          <input class="form-input" [formControl]="conceptCtrl" placeholder="Para que es?">
+        </div>
+      </div>
+      <div class="alert alert-info" style="font-size:var(--text-sm);">&#128203; La solicitud expira automaticamente a las <strong>24 horas</strong> si no hay respuesta (RN-F022-07)</div>
+      <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-ghost" (click)="back()">Cancelar</button>
+      <button class="btn btn-primary" (click)="send()" [disabled]="loading || form.invalid">{{ loading ? 'Enviando...' : 'Enviar solicitud &#8594;' }}</button>
+    </div>
   </div>
-  <div class="form-group">
-    <label class="form-label">Importe * (máx. €500)</label>
-    <input class="form-input" type="number" [formControl]="amountCtrl" placeholder="0,00">
+
+  <div class="card" *ngIf="incomingRequests.length > 0">
+    <div class="card-header">
+      <span class="card-title">Solicitudes pendientes recibidas</span>
+      <span class="badge badge-warning" style="margin-left:var(--sp-2);">{{ incomingRequests.length }}</span>
+    </div>
+    <div class="card-body">
+      <div class="op-item" *ngFor="let req of incomingRequests">
+        <div class="op-avatar pending">&#128229;</div>
+        <div class="op-info">
+          <div class="op-name">{{ req.requesterPhone }} te pide</div>
+          <div class="op-meta">{{ req.requesterPhone }} &middot; &ldquo;{{ req.concept }}&rdquo; &middot; Vence en {{ req.expiresIn }}</div>
+        </div>
+        <div class="op-right">
+          <div class="op-pend" style="margin-bottom:var(--sp-2);">{{ req.amount | currency:'EUR':'symbol':'1.2-2' }}</div>
+          <div style="display:flex;gap:var(--sp-2);">
+            <button class="btn btn-ghost btn-sm" (click)="rejectRequest(req.id)">Rechazar</button>
+            <button class="btn btn-primary btn-sm" (click)="acceptRequest(req)">Aceptar + OTP</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="form-group">
-    <label class="form-label">Concepto (opcional)</label>
-    <input class="form-input" [formControl]="conceptCtrl" placeholder="¿Para qué es?">
-  </div>
-  <div class="alert alert-info">📋 La solicitud expira automáticamente a las 24 horas si no hay respuesta.</div>
-  <div *ngIf="error" class="alert alert-error">{{ error }}</div>
-  <div class="card-footer">
-    <button class="btn btn-ghost" (click)="back()">Cancelar</button>
-    <button class="btn btn-primary" (click)="send()" [disabled]="loading || form.invalid">
-      {{ loading ? 'Enviando...' : 'Enviar solicitud →' }}
-    </button>
-  </div>
+
 </div>
