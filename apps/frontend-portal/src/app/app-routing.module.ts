@@ -10,11 +10,7 @@ const routes: Routes = [
     loadChildren: () => import('./features/login/login.module').then(m => m.LoginModule)
   },
   // Rutas autenticadas — con shell (sidebar visible)
-    {
-    path: 'bizum',
-    loadChildren: () => import('./features/bizum/bizum.module').then(m => m.BizumModule)
-  },
-{
+  {
     path: '',
     component: ShellComponent,
     canActivate: [AuthGuard],
@@ -45,10 +41,15 @@ const routes: Routes = [
         path: 'depositos',
         loadChildren: () => import('./features/deposits/deposits.module').then(m => m.DepositsModule)
       },
-            // FEAT-020 Sprint 22 — LA-FRONT-001: ruta préstamos registrada
+      // FEAT-020 Sprint 22 — LA-FRONT-001: ruta préstamos registrada
       {
         path: 'prestamos',
         loadChildren: () => import('./features/loans/loans.module').then(m => m.LoansModule)
+      },
+      // FEAT-022 Sprint 24 — Bizum P2P (LA-FRONT-001): dentro del shell para sidebar + AuthGuard
+      {
+        path: 'bizum',
+        loadChildren: () => import('./features/bizum/bizum.module').then(m => m.BizumModule)
       },
       // FEAT-019 Sprint 21 — LA-FRONT-001: rutas registradas (DEBT-039 resuelto)
       {
