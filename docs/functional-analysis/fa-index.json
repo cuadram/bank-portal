@@ -2763,8 +2763,8 @@
   "total_business_rules": 209,
   "last_sprint_consolidated": 24,
   "last_feat": "FEAT-021",
-  "updated_at": "2026-04-14T14:58:47.568Z",
-  "doc_version": "0.5",
+  "updated_at": "2026-04-15T19:42:20.351Z",
+  "doc_version": "0.6",
   "doc_path": "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx",
   "doc_history": [
     {
@@ -2788,6 +2788,12 @@
     {
       "version": "0.5",
       "date": "2026-04-14",
+      "sprint": "S1–S24 / FEAT-021",
+      "desc": "Actualización automática gate-8b. 93 func, 209 RN. Indice clickable v2.6. SOFIA v2.7."
+    },
+    {
+      "version": "0.6",
+      "date": "2026-04-15",
       "sprint": "S1–S24 / FEAT-021",
       "desc": "Actualización automática gate-8b. 93 func, 209 RN. Indice clickable v2.6. SOFIA v2.7."
     }

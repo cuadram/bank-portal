@@ -6,9 +6,9 @@
   "client": "Banco Meridian",
   "current_sprint": 24,
   "current_feature": "FEAT-022",
-  "current_step": "8",
-  "pipeline_step": "8",
-  "pipeline_step_name": "documentation-agent",
+  "current_step": "9",
+  "pipeline_step": "9",
+  "pipeline_step_name": "workflow-manager",
   "completed_steps": [
     "1",
     "2",
@@ -309,6 +309,11 @@
       "docs/deliverables/sprint-24-FEAT-022/RELEASE-NOTES-v1.24.0.md",
       "Git tag: v1.24.0 (pendiente push manual por Angel)",
       "Docker deploy: pendiente docker compose up (shell sin permisos Docker)"
+    ],
+    "8b_s24": [
+      "validate-fa-index PASS 8/8 — 93 func, 209 BRs — 2026-04-15T19:42:29.091416Z",
+      "FA-bank-portal-Banco Meridian.docx v0.6 — 76.9KB — docs/functional-analysis/",
+      "Sprints cubiertos: S1-S24 — FEAT-022 Bizum P2P consolidado"
     ]
   },
   "gates": {
@@ -431,14 +436,30 @@
       "sprint": 24,
       "feature": "FEAT-022",
       "note": "Guardrail 72/72 OK"
+    },
+    "G-8_s24": {
+      "approved_by": "pm",
+      "approved_at": "2026-04-15T19:42:13.487887Z",
+      "step": "8",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "17 DOCX + 3 XLSX + 1 JSON generados. Audit CMMI L3 29/29 100%. Step 8 COMPLETADO."
+    },
+    "G-8b_s24": {
+      "approved_by": "auto",
+      "approved_at": "2026-04-15T19:42:29.091416Z",
+      "step": "8b",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "validate-fa-index PASS 8/8 · FA v0.6 76.9KB · 93 func 209 BRs · S1-S24"
     }
   },
   "fa_agent": {
-    "last_gate": "2b",
-    "last_updated": "2026-04-14T14:15:58.449Z",
+    "last_gate": "8b",
+    "last_updated": "2026-04-15T19:42:29.091416Z",
     "last_feat": "FEAT-022",
     "doc_path": "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx",
-    "doc_version": "0.5",
+    "doc_version": "0.6",
     "index_path": "docs/functional-analysis/fa-index.json",
     "functionalities": 93,
     "business_rules": 209,
@@ -484,7 +505,14 @@
     "new_env_vars": 0,
     "rollback_procedure": true,
     "release_notes": "docs/deliverables/sprint-24-FEAT-022/RELEASE-NOTES-v1.24.0.md",
-    "smoke_script": "docs/devops/SMOKE-TEST-v1.24.0.sh"
+    "smoke_script": "docs/devops/SMOKE-TEST-v1.24.0.sh",
+    "build_fixes": [
+      "OtpValidationUseCase package .twofa.application (no .service)",
+      "BizumStatus.ACCEPTED añadido al enum",
+      "java.awt.* → java.awt.Color (ambigüedad Rectangle pre-existente S23)",
+      "NotificationHistoryUseCase.findByUserId signature real (pre-existente S23)"
+    ],
+    "build_status": "COMPILED_OK"
   },
   "security": {
     "last_audit": "2026-04-14",
@@ -658,7 +686,7 @@
     "report": "docs/code-review/CR-FEAT-022-sprint24.md",
     "reviewed_at": "2026-04-14T15:27:18.000Z"
   },
-  "updated_at": "2026-04-14T15:44:33.431Z",
+  "updated_at": "2026-04-15T19:42:29.091416Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": false,
   "gate8_approved_by": "release-manager",
