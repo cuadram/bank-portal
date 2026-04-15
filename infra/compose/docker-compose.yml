@@ -2,13 +2,14 @@
 # STG · Sprint 9 · FEAT-007 · DEBT-011/012
 # Variables sensibles inyectadas desde .env — NUNCA commitear .env con valores reales
 
-version: '3.9'
-
 services:
 
   # ── BACKEND ──────────────────────────────────────────────────────────────────
   backend:
-    image: ${REGISTRY:-registry.meridian.internal}/bankportal-backend-2fa:${IMAGE_TAG:-latest-dev}
+    build:
+      context: ../../apps/backend-2fa
+      dockerfile: Dockerfile
+    image: bankportal-backend-2fa:local-dev
     container_name: bankportal-backend
     restart: unless-stopped
     ports:
@@ -42,16 +43,19 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
-      start_period: 60s
+      start_period: 120s
     deploy:
       resources:
         limits:
-          memory: 512M
-          cpus: '0.5'
+          memory: 768M
+          cpus: '1.0'
 
   # ── FRONTEND ─────────────────────────────────────────────────────────────────
   frontend:
-    image: ${REGISTRY:-registry.meridian.internal}/bankportal-frontend-portal:${IMAGE_TAG:-latest-dev}
+    build:
+      context: ../../apps/frontend-portal
+      dockerfile: Dockerfile
+    image: bankportal-frontend-portal:local-dev
     container_name: bankportal-frontend
     restart: unless-stopped
     ports:
@@ -64,7 +68,7 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
-      start_period: 15s
+      start_period: 30s
     deploy:
       resources:
         limits:
@@ -113,6 +117,7 @@ services:
   # ── MAILHOG — SMTP mock para notificaciones email ─────────────────────────────
   mailhog:
     image: mailhog/mailhog:v1.0.1
+    platform: linux/amd64
     container_name: bankportal-mailhog
     restart: unless-stopped
     ports:
