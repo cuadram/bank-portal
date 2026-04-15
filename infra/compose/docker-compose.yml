@@ -110,6 +110,25 @@ services:
         limits:
           memory: 128M
 
+  # ── MAILHOG — SMTP mock para notificaciones email ─────────────────────────────
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: bankportal-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8025"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+
 volumes:
   postgres_data:
     driver: local
