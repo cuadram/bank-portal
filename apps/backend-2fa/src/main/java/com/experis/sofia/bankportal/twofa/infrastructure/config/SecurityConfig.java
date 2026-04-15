@@ -56,3 +56,9 @@ public class SecurityConfig {
             .httpBasic(AbstractHttpConfigurer::disable);
         return http.build();
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
+    }
+}
