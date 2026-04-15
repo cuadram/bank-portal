@@ -2,6 +2,7 @@
 # Dockerfile — bankportal-frontend-portal
 # Sprint 9 · v1.9.0 · FEAT-007
 # Multi-stage: build (Node 22 / Angular) → runtime (Nginx Alpine)
+# NOTA: Angular 17+ genera output en dist/<project>/browser/ (esbuild)
 # ──────────────────────────────────────────────────────────────────────────────
 
 # ── STAGE 1: BUILD ────────────────────────────────────────────────────────────
@@ -26,8 +27,8 @@ LABEL version="1.9.0"
 LABEL project="BankPortal"
 LABEL feature="FEAT-007"
 
-# Configuración Nginx — SPA routing + headers de seguridad
-COPY --from=builder /build/dist/bankportal /usr/share/nginx/html
+# Angular 17+ (esbuild) genera los assets en dist/<project>/browser/
+COPY --from=builder /build/dist/bankportal/browser /usr/share/nginx/html
 
 # Configuración Nginx personalizada para Angular SPA + seguridad
 RUN cat > /etc/nginx/conf.d/default.conf << 'EOF'
@@ -42,10 +43,9 @@ server {
     add_header X-Content-Type-Options    "nosniff"          always;
     add_header X-XSS-Protection          "1; mode=block"    always;
     add_header Referrer-Policy           "no-referrer"      always;
-    add_header Content-Security-Policy   "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.bankmeridian.com" always;
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
-    # index.html: nunca cachear — garantiza que el navegador cargue el bundle correcto tras rebuild
+    # index.html: nunca cachear
     location = /index.html {
         add_header Cache-Control "no-store, no-cache, must-revalidate" always;
         add_header Pragma "no-cache" always;
@@ -53,12 +53,12 @@ server {
         try_files $uri =404;
     }
 
-    # SPA routing
+    # SPA routing — todas las rutas Angular sirven index.html
     location / {
         try_files $uri $uri/ /index.html;
     }
 
-    # Cache largo para assets con hash
+    # Cache largo para assets con hash (Angular genera hashes en nombres)
     location ~* \.(js|css|png|jpg|gif|ico|woff2?)$ {
         expires 1y;
         add_header Cache-Control "public, immutable";
