@@ -62,6 +62,6 @@ public class RevokedTokenFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.equals("/auth/login") || path.equals("/2fa/verify") || path.equals("/actuator/health");
+        return path.equals("/auth/login") || path.equals("/2fa/verify") || path.startsWith("/actuator/health");
     }
 }

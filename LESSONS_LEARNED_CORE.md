@@ -105,3 +105,107 @@ _Fuente: FacturaFlow Sprint 0 · Aprobado PO: Angel de la Cuadra · 2026-04-10_
 - **Corrección / GR-CORE-030:** REGLA PERMANENTE — Gate 1 de cualquier proyecto SOFIA requiere como precondición bloqueante: (1) git init, (2) crear ramas main + develop, (3) configurar remote y hacer push inicial. Cada sprint crea rama feature/FEAT-XXX-sprintYY desde develop. Al cerrar sprint: merge --no-ff feature → develop → push. Al crear release: merge --no-ff develop → main + tag vX.Y.0 → push.
 - **Proyectos afectados:** BankPortal (LA-023-04), ExperisTracker (LA-ET-001-21), TakeOverSintetico (LA-TO-001-01)
 - **Aprobado por:** Product Owner | 2026-04-11
+
+---
+
+## LA-CORE-038 — Audit @Value sin default obligatorio antes de crear perfil IT
+
+- **Fecha:** 2026-04-15
+- **Tipo:** testing/configuration
+- **Scope:** SOFIA-CORE
+- **Problema:** Los perfiles de test IT (application-*-compose.yml, application-*-test.yml) se construyen sin auditar previamente todos los @Value sin default del codebase Spring Boot. Como el ApplicationContext inicializa beans en orden de dependencias y falla en el primero que encuentra, cada ejecucion de tests revela solo el siguiente error oculto — generando ciclos repetitivos de fix/rerun (hasta 12 en BankPortal Sprint 24) para propiedades como bank.core.api-key, session.deny-link.hmac-key, notification.email.from, etc.
+- **Corrección (REGLA PERMANENTE):** Antes de crear cualquier perfil de test IT, ejecutar OBLIGATORIAMENTE: . Todas las propiedades resultantes sin default deben añadirse al YAML antes de la primera ejecucion. Adicionalmente, leer docker-compose.yml para puertos y credenciales reales de servicios externos (no asumir valores Spring por defecto).
+- **Gate donde aplicar:** G-4 (Developer) — checklist obligatorio antes de declarar Step 4 completo.
+- **Proyectos afectados:** BankPortal Sprint 24 (FEAT-022 Bizum, 12 fixes evitables)
+- **Aprobado por:** Product Owner Angel de la Cuadra | 2026-04-15
+
+---
+
+## LA-CORE-039 — Fixtures idempotentes con UUIDs fijos para ITs con FK constraints
+
+- **Fecha:** 2026-04-15
+- **Tipo:** testing/design
+- **Scope:** SOFIA-CORE
+- **Problema:** Los ITs diseñados con Testcontainers (BD limpia por test) usan UUID.randomUUID() para entidades con FK a tablas maestras (users, accounts). Al migrar a Docker Compose con BD compartida y persistente, esos UUIDs no existen y todos los inserts fallan con ConstraintViolationException. Los tests son completamente no ejecutables.
+- **Corrección (REGLA PERMANENTE):** Todo IT que inserte entidades con FK a tablas maestras debe: (1) Disponer de fixture SQL idempotente (ON CONFLICT DO NOTHING) con UUIDs fijos en src/test/resources/db/. (2) Cargar el fixture via @Sql(executionPhase = BEFORE_TEST_CLASS) en la clase base del IT. (3) Usar constantes (TEST_USER_ID, TEST_ACCOUNT_ID) en lugar de UUID.randomUUID() para satisfacer FKs. Patron de referencia: BizumIntegrationTestBase + db/bizum-test-fixtures.sql (BankPortal Sprint 24).
+- **Gate donde aplicar:** G-4 (Developer) — checklist: los ITs con FKs usan fixtures idempotentes con UUIDs fijos.
+- **Proyectos afectados:** BankPortal Sprint 24 (FEAT-022 Bizum)
+- **Aprobado por:** Product Owner Angel de la Cuadra | 2026-04-15
+
+---
+
+## LA-CORE-040 — Bulk JPQL UPDATE requiere flush()+clear() antes de findById() en tests @Transactional
+
+- **Fecha:** 2026-04-15
+- **Tipo:** testing/jpa
+- **Scope:** SOFIA-CORE
+- **Problema:** En tests @Transactional, los bulk JPQL/SQL UPDATE y DELETE bypassan el Hibernate first-level cache. Un findById() posterior al bulk UPDATE devuelve el snapshot pre-update del cache en lugar del estado real de BD, produciendo falsos negativos en assertions.
+- **Corrección (REGLA PERMANENTE):** En cualquier test que verifique el resultado de un bulk UPDATE/DELETE, seguir este patron: em.flush() [persiste entidades pendientes para que el bulk UPDATE las vea] → adapter.bulkUpdate() → em.clear() [invalida first-level cache, fuerza re-lectura de BD] → adapter.findById(id) [ahora lee estado real post-UPDATE]. Inyectar EntityManager directamente en la clase de test (@Autowired EntityManager em).
+- **Gate donde aplicar:** G-4 (Developer) — checklist: los tests que verifican bulk UPDATEs hacen flush()+clear() antes de la lectura de verificacion.
+- **Proyectos afectados:** BankPortal Sprint 24 (BizumExpireIT — expiresPendingRequestsPastDeadline)
+- **Aprobado por:** Product Owner Angel de la Cuadra | 2026-04-15
+
+---
+
+## LA-CORE-041 — Developer Agent debe leer el prototipo ANTES de escribir cada componente Angular
+
+- **Fecha:** 2026-04-15
+- **Tipo:** process/frontend
+- **Scope:** SOFIA-CORE
+- **Problema:** El Developer Agent escribe componentes Angular "de memoria" sin leer el prototipo aprobado (Step 2c), generando una brecha sistemática entre el diseño aprobado y la implementación. La verificacion ocurre reactivamente cuando el PO detecta diferencias visuales, generando ciclos de corrección que duplican el tiempo de desarrollo del Step 4.
+- **Corrección (REGLA PERMANENTE):** Para cada pantalla del prototipo aprobado (PROTO-FEAT-XXX-sprintYY.html), el Developer Agent DEBE: (1) Localizar el bloque HTML de esa pantalla en el prototipo. (2) Extraer el HTML exacto y adaptarlo a sintaxis Angular (reemplazar onclick por (click), class por [ngClass], valores estáticos por bindings). (3) Verificar que las clases CSS del template existen en el segundo bloque style del prototipo. Solo después puede hacer commit. La verificación es PREVIA al código, no posterior.
+- **Gate donde aplicar:** G-4 (Developer) — checklist BLOQUEANTE: "¿Se ha leído el bloque HTML del prototipo para esta pantalla antes de escribir el template Angular?"
+- **Proyectos afectados:** BankPortal Sprint 24 FEAT-022 Bizum — 15+ commits de corrección evitables
+- **Aprobado por:** Product Owner Angel de la Cuadra | 2026-04-15
+
+---
+
+## LA-CORE-042 — Auditar modelos y servicios TypeScript antes de escribir templates Angular
+
+- **Fecha:** 2026-04-15
+- **Tipo:** process/frontend
+- **Scope:** SOFIA-CORE
+- **Problema:** El Developer Agent referencia propiedades y métodos en templates Angular (.html) sin verificar que existen en el modelo (.model.ts), el servicio (.service.ts) y el componente (.component.ts). Resultado: errores de compilación TS como "Property X does not exist on type Y" que bloquean el build y generan ciclos de fix/rerun. En BankPortal S24 se generaron 10 errores de compilación de este tipo (contactName, dailyUsedPct, getIncomingRequests, sendRequest, rejectRequest, acceptRequest, deactivate, dailyUsed, dailyAvailable).
+- **Corrección (REGLA PERMANENTE):** Antes de escribir cualquier template Angular, leer OBLIGATORIAMENTE: (1) El modelo de dominio (*.model.ts) para conocer los campos disponibles. (2) El servicio (*.service.ts) para conocer los métodos disponibles. (3) El componente .ts para conocer las propiedades expuestas al template. Solo referenciar en el HTML lo que ya existe en el .ts. Si se necesita una propiedad nueva, añadirla primero al .ts, luego usarla en el .html.
+- **Gate donde aplicar:** G-4 (Developer) — checklist BLOQUEANTE: "¿Se han leído model.ts, service.ts y component.ts antes de escribir el template?"
+- **Proyectos afectados:** BankPortal Sprint 24 FEAT-022 Bizum — 10 errores TS en un solo build
+- **Aprobado por:** Product Owner Angel de la Cuadra | 2026-04-15
+
+---
+
+## LA-CORE-043 — LA-023-02 (fidelidad prototipo) se aplica en G-4, no reactivamente tras despliegue
+
+- **Fecha:** 2026-04-15
+- **Tipo:** process/governance
+- **Scope:** SOFIA-CORE
+- **Problema:** LA-023-02 establece que el Developer Agent debe verificar cada componente Angular contra el prototipo aprobado en G-4 y G-5. En la práctica esta verificación no ocurre hasta que el PO visualiza la app desplegada y detecta diferencias. Este es exactamente el antipatrón que LA-023-02 intenta evitar: la verificación de fidelidad como gate de ENTRADA al Step 4, no como corrección reactiva tras el despliegue.
+- **Corrección (REGLA PERMANENTE):** El checklist de G-4 debe incluir como ítems BLOQUEANTES (sin los cuales el Developer Agent no puede declarar el Step 4 completo): (1) Por cada pantalla del prototipo, existe un componente Angular equivalente. (2) El HTML del componente reproduce fielmente la estructura del prototipo. (3) Todas las clases CSS del template existen en styles.css extraídas del prototipo. (4) No hay pantallas del prototipo sin implementar. La declaración de G-4 completo SIN haber ejecutado este checklist es una violación de proceso equivalente a LA-CORE-018 (HITL obligatorio).
+- **Gate donde aplicar:** G-4 (Developer) y G-5 (Code Review) — ambos como checklist BLOQUEANTE.
+- **Proyectos afectados:** BankPortal Sprint 24 FEAT-022 Bizum — pantalla bizum-activate no existía, solicitudes recibidas ausentes, CSS sin clases del prototipo.
+- **Aprobado por:** Product Owner Angel de la Cuadra | 2026-04-15
+
+---
+
+## LA-CORE-044 — DevOps Agent (Step 7) debe publicar Runbook MD en docs/runbooks/ como parte de su entrega
+
+- **Fecha:** 2026-04-15
+- **Tipo:** process/devops
+- **Scope:** SOFIA-CORE
+- **Problema:** El DevOps Agent genera el pipeline report y el smoke test script pero no genera el Runbook operacional en la ruta canónica docs/runbooks/RUNBOOK-backend-2fa-vX.Y.Z.md. El Runbook existe como DOCX en el Delivery Package del Step 8, pero el MD canónico es responsabilidad del Step 7. La cadena se rompió en BankPortal S24: S22 y S23 tienen su Runbook MD canónico, S24 no lo tenía hasta que el audit CMMI L3 del Step 8 lo detectó.
+- **Corrección (REGLA PERMANENTE):** El checklist de G-7 (DevOps Agent) incluye como ítem BLOQUEANTE: publicar docs/runbooks/RUNBOOK-backend-2fa-vX.Y.Z.md antes de declarar el step completo. El Runbook MD debe contener: (1) arranque del stack, (2) variables de entorno de la feature nueva, (3) verificación Flyway, (4) smoke tests de los endpoints nuevos, (5) procedimiento de rollback. Sin este fichero en disco el Gate G-7 no se aprueba.
+- **Gate donde aplicar:** G-7 (DevOps) — checklist BLOQUEANTE: "¿Existe docs/runbooks/RUNBOOK-backend-2fa-vX.Y.Z.md con contenido de la feature actual?"
+- **Proyectos afectados:** BankPortal Sprint 24 — gap detectado en audit CMMI L3 Step 8
+- **Aprobado por:** Product Owner Angel de la Cuadra | 2026-04-15
+
+---
+
+## LA-CORE-045 — Documentation Agent (Step 8) debe publicar Release Notes y Runbook MD en rutas canónicas del proyecto
+
+- **Fecha:** 2026-04-15
+- **Tipo:** process/documentation
+- **Scope:** SOFIA-CORE
+- **Problema:** El Documentation Agent genera los 17 DOCX y 3 XLSX correctamente en docs/deliverables/sprint-NN-FEAT-XXX/ pero no copia los artefactos MD fuente a sus rutas canónicas del proyecto: docs/releases/RELEASE-NOTES-vX.Y.Z.md y docs/runbooks/RUNBOOK-backend-2fa-vX.Y.Z.md. El audit CMMI L3 de la PA CM (Configuration Management) consulta estas rutas canónicas como evidencia. Sin ellos, CM falla aunque los DOCX existan.
+- **Corrección (REGLA PERMANENTE):** El gen-docs-sprintNN.js debe incluir al final un paso de sincronización canónica: (1) copiar RELEASE-NOTES-vX.Y.Z.md a docs/releases/, (2) verificar que docs/runbooks/RUNBOOK-backend-2fa-vX.Y.Z.md existe (generado en Step 7) — si no existe, crearlo con contenido mínimo. El audit CMMI L3 debe ejecutarse al finalizar la generación para detectar gaps antes de reportar el step completo. Sin audit verde el Step 8 no se declara completo.
+- **Gate donde aplicar:** G-8 (Documentation/PM) — checklist BLOQUEANTE: "¿Pasa el audit CMMI L3 de 9 PAs con 100%? ¿docs/releases/ y docs/runbooks/ tienen los artefactos MD del sprint?"
+- **Proyectos afectados:** BankPortal Sprint 24 — 2 gaps CM detectados en audit Step 8
+- **Aprobado por:** Product Owner Angel de la Cuadra | 2026-04-15

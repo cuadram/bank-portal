@@ -57,7 +57,7 @@ public class NotificationHistoryUseCase {
         Instant windowStart = Instant.now().minus(HISTORY_WINDOW_DAYS, ChronoUnit.DAYS);
 
         Page<UserNotification> page = notificationRepo
-                .findByUserIdWithFilter(userId, filter, windowStart, pageable);
+                .findByUserId(userId, filter != null ? filter.eventType() : null, pageable);
 
         auditLogService.log("NOTIFICATIONS_VIEWED", userId,
                 "page=" + pageable.getPageNumber()

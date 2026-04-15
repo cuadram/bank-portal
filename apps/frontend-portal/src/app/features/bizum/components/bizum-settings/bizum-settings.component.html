@@ -1,0 +1,76 @@
+<div class="breadcrumb"><a (click)="back()">Bizum</a> &#8250; Configuracion</div>
+<h1 class="page-title">Configuracion Bizum</h1>
+<div style="max-width:580px;">
+
+  <div class="card" style="margin-bottom:var(--sp-4);">
+    <div class="card-header"><span class="card-title">Cuenta y numero vinculado</span></div>
+    <div class="card-body">
+      <div style="background:var(--color-bg-card);border-radius:var(--radius-md);padding:var(--sp-4);display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:var(--text-md);font-weight:600;color:var(--color-text-primary);">{{ status.phoneMasked }}</div>
+          <div style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-top:2px;">Cuenta vinculada &middot; Activo desde hoy</div>
+        </div>
+        <span class="badge badge-success">ACTIVO</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:var(--sp-4);">
+    <div class="card-header"><span class="card-title">Limites operativos</span></div>
+    <div class="card-body">
+      <div class="dl-row"><span class="dl-label">Limite por operacion</span><span class="dl-value">{{ status.perOperationLimit | currency:'EUR':'symbol':'1.2-2' }}</span></div>
+      <div class="dl-row"><span class="dl-label">Limite diario</span><span class="dl-value">{{ status.dailyLimit | currency:'EUR':'symbol':'1.2-2' }}</span></div>
+      <div style="margin-top:var(--sp-4);">
+        <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:var(--sp-2);">
+          <span>Usado hoy: {{ status.dailyUsed | currency:'EUR':'symbol':'1.2-2' }}</span>
+          <span>{{ status.dailyLimit - status.dailyUsed | currency:'EUR':'symbol':'1.2-2' }} disponibles</span>
+        </div>
+        <div class="limit-track"><div class="limit-fill" [style.width.%]="usedPct"></div></div>
+      </div>
+      <div class="form-hint" style="margin-top:var(--sp-2);">Limites regulatorios &middot; Circular BdE 4/2019 &middot; RN-F022-04/05</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:var(--sp-4);">
+    <div class="card-header"><span class="card-title">Notificaciones Bizum</span></div>
+    <div class="card-body">
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-main">Bizum activo</div>
+          <div class="toggle-sub">Permite enviar y recibir pagos Bizum</div>
+        </div>
+        <div class="toggle-sw on"></div>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-main">Push al recibir pago</div>
+          <div class="toggle-sub">Notificacion al instante</div>
+        </div>
+        <div class="toggle-sw" [class.on]="pushPayments" (click)="pushPayments=!pushPayments"></div>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-main">Push al recibir solicitud</div>
+          <div class="toggle-sub">Cuando alguien te pide dinero</div>
+        </div>
+        <div class="toggle-sw" [class.on]="pushRequests" (click)="pushRequests=!pushRequests"></div>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-main">Aviso de expiracion</div>
+          <div class="toggle-sub">2h antes de que expire una solicitud</div>
+        </div>
+        <div class="toggle-sw" [class.on]="pushExpiry" (click)="pushExpiry=!pushExpiry"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="card-title" style="color:var(--color-error);">Zona de peligro</span></div>
+    <div class="card-body">
+      <p style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:var(--sp-4);">Desactivar Bizum eliminara tu activacion y desvincularas tu numero de telefono. Podras reactivarlo cuando quieras.</p>
+      <button class="btn btn-danger btn-sm" (click)="deactivate()">Desactivar Bizum</button>
+    </div>
+  </div>
+
+</div>

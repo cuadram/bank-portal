@@ -11,14 +11,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Mock del core bancario — Sprint 10 (ADR-016).
- * Activo con perfil 'staging' o 'test'. Swap por BankCoreRestAdapter en Sprint 11.
+ * Activo con perfil 'staging', 'test' o 'integration-compose'.
+ * Swap por BankCoreRestAdapter en Sprint 11.
  * Simula saldos en memoria con 10.000€ por cuenta como valor inicial.
  *
  * @author SOFIA Developer Agent — FEAT-008 Sprint 10
  */
 @Slf4j
 @Component
-@Profile({"staging", "test"})
+@Profile({"staging", "test", "integration-compose"})
 public class BankCoreMockAdapter implements BankCoreTransferPort {
 
     private final ConcurrentHashMap<UUID, BigDecimal> balances = new ConcurrentHashMap<>();

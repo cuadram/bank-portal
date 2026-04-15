@@ -91,7 +91,7 @@ class OpenDepositUseCaseTest {
     @Test
     @DisplayName("TC-DEPOSIT-009 — OTP invalido lanza excepcion y NO persiste")
     void otpInvalidoNoGuarda() {
-        doThrow(new InvalidOtpException("OTP incorrecto"))
+        doThrow(new InvalidOtpException())
             .when(otpValidation).validate(any(), any());
         assertThatThrownBy(() -> useCase.execute(validRequest, userId))
             .isInstanceOf(InvalidOtpException.class);

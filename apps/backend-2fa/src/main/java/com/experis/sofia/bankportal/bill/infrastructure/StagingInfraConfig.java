@@ -6,11 +6,11 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.client.RestClient;
 
 /**
- * Beans de infraestructura para STG — FEAT-009.
- * RestClient stub para BillCoreAdapter en entorno de pruebas.
+ * Beans de infraestructura para STG e ITs — FEAT-009.
+ * RestClient stub para BillCoreAdapter en entornos de pruebas.
  */
 @Configuration
-@Profile("staging")
+@Profile({"staging", "integration-compose"})
 public class StagingInfraConfig {
 
     @Bean
