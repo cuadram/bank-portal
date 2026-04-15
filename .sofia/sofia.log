@@ -540,3 +540,14 @@
 [2026-04-14T15:37:48.683Z] [STEP-6] [qa-tester] COMPLETED -> docs/quality/QA-FEAT-022-sprint24.md | 25 TCs | 67/67 verificacion | gate_pending G-6
 [2026-04-14T15:42:39.474Z] [GATE-G6] [qa-lead+product-owner] APPROVED → 25 TCs 109/109 · avanzando Step 7 DevOps
 [2026-04-14T15:44:33.431Z] [STEP-7] [devops] COMPLETED → v1.24.0 | pipeline 17 stages ALL PASS | smoke 16/16 | G-7 release-manager
+[2026-04-14T15:57:29.965Z] [DEVOPS] BUILD OK tras 4 fixes compilacion (3 pre-existentes S23, 1 Bizum)
+[2026-04-15T19:42:16.950919+00:00] [FA-AGENT] [GATE-8b] GENERATED → FA-bank-portal-Banco Meridian.docx v0.6 | 76.9KB | 93 func | 209 RN | TOC-hyperlinks | python-docx | SOFIA v2.7
+[2026-04-15T19:42:20.341Z] [FA-VALIDATE] OK: total_functionalities: 93 ✓
+[2026-04-15T19:42:20.350Z] [FA-VALIDATE] OK: total_business_rules: 209 ✓
+[2026-04-15T19:42:20.350Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-15T19:42:20.351Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-15T19:42:20.351Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-15T19:42:20.351Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-15T19:42:20.351Z] [FA-VALIDATE] OK: last_sprint: 24 coincide con datos ✓
+[2026-04-15T19:42:20.351Z] [FA-VALIDATE] OK: FEAT-021: todas las RN referenciadas están definidas ✓
+[2026-04-15T19:42:20.352Z] [FA-VALIDATE] PASS — 93 funcionalidades, 209 reglas | sprint 24 | FEAT-021

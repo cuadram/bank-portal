@@ -1,7 +1,7 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "in_progress",
+  "status": "completed",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 24,
@@ -452,6 +452,14 @@
       "sprint": 24,
       "feature": "FEAT-022",
       "note": "validate-fa-index PASS 8/8 · FA v0.6 76.9KB · 93 func 209 BRs · S1-S24"
+    },
+    "G-9_s24": {
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-15T19:47:18.406239Z",
+      "step": "9",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "Sprint 24 CERRADO — SCRUM-143..152 Finalizada — Confluence 13533185 + Retro 13565953 — 17 DOCX + 3 XLSX — FA v0.6 93/209 — Dashboard pendiente"
     }
   },
   "fa_agent": {
@@ -537,8 +545,8 @@
     "exit_criteria": "gte_90pct_pass_0_critical"
   },
   "metrics": {
-    "total_sp": 545,
-    "total_tests": 953,
+    "total_sp": 569,
+    "total_tests": 978,
     "coverage": 89,
     "defects": 0,
     "ncs_last_sprint": 0
@@ -651,6 +659,36 @@
         "SCRUM-130",
         "SCRUM-131"
       ]
+    },
+    "sprint_24": {
+      "feature": "FEAT-022",
+      "status": "completed",
+      "sp": 24,
+      "acum": 569,
+      "tests": 25,
+      "tests_acum": 978,
+      "cov": 89,
+      "ncs": 0,
+      "defects": 0,
+      "rel": "v1.24.0",
+      "closed_at": "2026-04-15",
+      "confluence_page": "13533185",
+      "confluence_retro": "13565953",
+      "jira_issues": [
+        "SCRUM-143",
+        "SCRUM-144",
+        "SCRUM-145",
+        "SCRUM-146",
+        "SCRUM-147",
+        "SCRUM-148",
+        "SCRUM-149",
+        "SCRUM-150",
+        "SCRUM-151",
+        "SCRUM-152"
+      ],
+      "sofia_core_version": "2.6.40",
+      "las_generated": 10,
+      "las_promoted_core": 8
     }
   },
   "cmmi": {
@@ -686,16 +724,16 @@
     "report": "docs/code-review/CR-FEAT-022-sprint24.md",
     "reviewed_at": "2026-04-14T15:27:18.000Z"
   },
-  "updated_at": "2026-04-15T19:42:29.091416Z",
+  "updated_at": "2026-04-15T19:47:18.406239Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
-  "sprint_closed": false,
+  "sprint_closed": true,
   "gate8_approved_by": "release-manager",
   "gate8_approved_at": "2026-03-25T17:00:00Z",
   "retrospective": "docs/sprints/SPRINT-022-retrospectiva.md",
   "confluence_retro_id": "7667713",
   "atlassian_synced": true,
   "atlassian_sync_date": "2026-04-09",
-  "sprint_closed_at": "2026-04-09T16:20:59.754Z",
+  "sprint_closed_at": "2026-04-15T19:47:18.406239Z",
   "dashboard_global": {
     "last_generated": "2026-04-09T16:20:59.754Z",
     "gate": "G-9",
