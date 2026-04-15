@@ -34,9 +34,9 @@ WORKDIR /app
 RUN addgroup -S meridian && adduser -S meridian -G meridian
 USER meridian
 
-# Copiar JAR desde builder
+# Copiar JAR desde builder — artifactId: bankportal-backend-2fa
 COPY --from=builder --chown=meridian:meridian \
-     /build/target/backend-2fa-*.jar app.jar
+     /build/target/bankportal-backend-2fa-*.jar app.jar
 
 # Variables de entorno (valores por defecto no sensibles)
 # Secrets inyectados en runtime por Kubernetes SecretRef / docker .env
