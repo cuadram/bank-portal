@@ -1,16 +1,22 @@
 <div class="breadcrumb"><span>Bizum</span></div>
 <h1 style="font-size:var(--text-2xl);font-weight:700;color:var(--color-text-primary);margin:0 0 var(--sp-1);">&#128184; Activar Bizum</h1>
 <p style="font-size:var(--text-base);color:var(--color-text-secondary);margin-bottom:var(--sp-6);">Vincula tu numero de telefono para enviar y recibir dinero al instante</p>
+
 <div style="max-width:500px;">
+  <!-- Hero informativo -->
   <div class="bizum-hero" style="text-align:center;padding:var(--sp-8) var(--sp-6);margin-bottom:var(--sp-4);">
     <div style="font-size:48px;margin-bottom:var(--sp-4);">&#128184;</div>
     <div style="font-size:var(--text-xl);font-weight:700;margin-bottom:var(--sp-2);">Bizum en BankPortal</div>
     <div style="font-size:var(--text-sm);opacity:.8;margin-bottom:var(--sp-5);">Pagos inmediatos a cualquier numero de movil. Gratis, disponible 24/7/365.</div>
     <div style="display:flex;gap:var(--sp-6);justify-content:center;font-size:var(--text-sm);opacity:.75;">
-      <span>&#10003; Hasta 500/op</span><span>&#10003; 2.000/dia</span><span>&#10003; SEPA Instant</span>
+      <span>&#10003; Hasta 500/op</span>
+      <span>&#10003; 2.000/dia</span>
+      <span>&#10003; SEPA Instant</span>
     </div>
   </div>
-  <div class="card">
+
+  <!-- Formulario activacion -->
+  <div class="card" style="margin-bottom:var(--sp-4);">
     <div class="card-header"><span class="card-title">Datos de activacion</span></div>
     <div class="card-body">
       <div class="form-group">
@@ -20,14 +26,19 @@
       </div>
       <div class="form-group">
         <label class="form-label">Cuenta vinculada</label>
-        <input class="form-input" value="Cuenta principal" readonly style="background:var(--color-bg-card);color:var(--color-text-secondary);">
+        <input class="form-input" value="Cuenta principal vinculada" readonly
+               style="background:var(--color-bg-card);color:var(--color-text-secondary);">
       </div>
-      <div class="alert alert-info" style="font-size:var(--text-sm);">&#8505; Al activar, consientes que BankPortal vincule tu numero a esta cuenta conforme al RGPD Art.6.</div>
+      <div class="alert alert-info" style="font-size:var(--text-sm);">
+        Al activar, consientes que BankPortal vincule tu numero a esta cuenta conforme al RGPD Art.6.
+      </div>
       <div *ngIf="error" class="alert alert-error">{{ error }}</div>
     </div>
     <div class="card-footer">
       <button class="btn btn-ghost" (click)="back()">Cancelar</button>
-      <button class="btn btn-primary" (click)="activate()" [disabled]="loading || !phoneCtrl.value">{{ loading ? 'Activando...' : 'Activar Bizum &#8594;' }}</button>
+      <button class="btn btn-primary" (click)="activate()" [disabled]="loading || !phoneCtrl.value">
+        {{ loading ? 'Activando...' : 'Activar Bizum' }}
+      </button>
     </div>
   </div>
 </div>
