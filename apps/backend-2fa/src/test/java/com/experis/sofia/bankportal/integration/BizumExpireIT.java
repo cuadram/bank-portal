@@ -2,6 +2,7 @@ package com.experis.sofia.bankportal.integration;
 
 import com.experis.sofia.bankportal.bizum.domain.model.*;
 import com.experis.sofia.bankportal.bizum.infrastructure.persistence.JpaBizumAdapter;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,13 +16,19 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * TC-F022-024 — expireOldRequests() actualiza status PENDING→EXPIRED en BD real
  * Verifica RN-F022-07: solicitudes expiradas se marcan automáticamente.
- * Usa TEST_USER_ID del fixture idempotente para satisfacer FK → users(id).
+ *
+ * NOTA: expirePendingRequests() es un bulk JPQL UPDATE que bypassa el
+ * Hibernate first-level cache. Tras invocarlo, se hace em.flush()+em.clear()
+ * para que findById() vea el estado real de BD y no el snapshot cacheado.
  */
 @Transactional
 class BizumExpireIT extends BizumIntegrationTestBase {
 
     @Autowired
     JpaBizumAdapter adapter;
+
+    @Autowired
+    EntityManager em;
 
     @Test
     void expiresPendingRequestsPastDeadline() {
@@ -36,12 +43,19 @@ class BizumExpireIT extends BizumIntegrationTestBase {
         req.setExpiresAt(Instant.now().minusSeconds(3600)); // ya expirado
 
         adapter.save(req);
-        adapter.expireOldRequests(); // @Scheduled — RN-F022-07
+
+        // Flush para que el bulk UPDATE vea la fila recién insertada
+        em.flush();
+
+        adapter.expireOldRequests(); // bulk JPQL UPDATE — RN-F022-07
+
+        // Clear para invalidar el first-level cache y forzar re-lectura de BD
+        em.clear();
 
         var found = adapter.findById(req.getId());
         assertTrue(found.isPresent());
         assertEquals(BizumStatus.EXPIRED, found.get().getStatus(),
-                "Solicitud expirada debe tener status EXPIRED");
+                "Solicitud expirada debe tener status EXPIRED (RN-F022-07)");
     }
 
     @Test
@@ -56,7 +70,10 @@ class BizumExpireIT extends BizumIntegrationTestBase {
         req.setExpiresAt(Instant.now().plusSeconds(86400)); // aún vigente
 
         adapter.save(req);
+        em.flush();
+
         adapter.expireOldRequests();
+        em.clear();
 
         var found = adapter.findById(req.getId());
         assertTrue(found.isPresent());
