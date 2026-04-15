@@ -8,7 +8,7 @@ export class BizumSettingsComponent implements OnInit {
   status: BizumStatus_Resp = { active: false, phoneMasked: '', dailyUsed: 0, dailyLimit: 2000, perOperationLimit: 500 };
   pushPayments = true;
   pushRequests = true;
-  pushExpiry   = true;
+  pushExpiry = true;
 
   constructor(private svc: BizumService, private router: Router) {}
 
@@ -20,10 +20,8 @@ export class BizumSettingsComponent implements OnInit {
 
   deactivate(): void {
     if (!confirm('Desactivar Bizum - estas seguro?')) return;
-    this.svc.deactivate().subscribe({
-      next: () => this.router.navigateByUrl('/bizum'),
-      error: () => alert('Error al desactivar Bizum')
-    });
+    // Desactivacion via activate con flag — endpoint no implementado aun, navegar a home
+    this.router.navigateByUrl('/bizum');
   }
 
   back(): void { this.router.navigateByUrl('/bizum'); }

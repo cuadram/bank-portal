@@ -9,6 +9,8 @@ export class BizumSendComponent {
   step = 1;
   loading = false;
   error = '';
+  dailyUsed = 0;
+  dailyLimit = 2000;
 
   constructor(private fb: FormBuilder, private svc: BizumService, private router: Router) {
     this.form = this.fb.group({
@@ -17,7 +19,11 @@ export class BizumSendComponent {
       concept: ['', Validators.maxLength(35)],
       otp: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]]
     });
+    this.svc.getStatus().subscribe(s => { this.dailyUsed = s.dailyUsed; this.dailyLimit = s.dailyLimit; });
   }
+
+  get dailyUsedPct(): number { return Math.min(100, Math.round((this.dailyUsed / this.dailyLimit) * 100)); }
+  get dailyAvailable(): number { return this.dailyLimit - this.dailyUsed; }
 
   goToConfirm(): void { if (this.form.get('recipientPhone')?.valid && this.form.get('amount')?.valid) this.step = 2; }
 
