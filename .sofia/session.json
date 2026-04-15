@@ -724,7 +724,7 @@
     "report": "docs/code-review/CR-FEAT-022-sprint24.md",
     "reviewed_at": "2026-04-14T15:27:18.000Z"
   },
-  "updated_at": "2026-04-15T19:47:18.406239Z",
+  "updated_at": "2026-04-15T19:47:56.037Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -735,9 +735,14 @@
   "atlassian_sync_date": "2026-04-09",
   "sprint_closed_at": "2026-04-15T19:47:18.406239Z",
   "dashboard_global": {
-    "last_generated": "2026-04-09T16:20:59.754Z",
-    "gate": "G-9",
-    "step": "9"
+    "path": "docs/dashboard/bankportal-global-dashboard.html",
+    "alias": "docs/quality/sofia-dashboard.html",
+    "last_generated": "2026-04-15T19:47:56.037Z",
+    "last_gate": "G-9",
+    "last_step": "9",
+    "sprint": 24,
+    "feature": "FEAT-022",
+    "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
   "gate_history": [
     {
@@ -1494,6 +1499,13 @@
       "step": "7",
       "approved_by": "release-manager",
       "approved_at": "2026-04-14T15:44:33.431Z",
+      "sprint": 24,
+      "feature": "FEAT-022"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_at": "2026-04-15T19:47:56.037Z",
       "sprint": 24,
       "feature": "FEAT-022"
     }
