@@ -3,6 +3,7 @@
 # Sprint 9 · v1.9.0 · FEAT-007
 # Multi-stage: build (Node 22 / Angular) → runtime (Nginx Alpine)
 # NOTA: Angular 17+ genera output en dist/<project>/browser/ (esbuild)
+# NOTA: env.prod usa apiUrl='' → nginx hace proxy /api y /auth hacia backend
 # ──────────────────────────────────────────────────────────────────────────────
 
 # ── STAGE 1: BUILD ────────────────────────────────────────────────────────────
@@ -30,7 +31,10 @@ LABEL feature="FEAT-007"
 # Angular 17+ (esbuild) genera los assets en dist/<project>/browser/
 COPY --from=builder /build/dist/bankportal/browser /usr/share/nginx/html
 
-# Configuración Nginx personalizada para Angular SPA + seguridad
+# Configuración Nginx: SPA routing + proxy hacia backend + cabeceras seguridad
+# BACKEND_URL se inyecta en runtime via variable de entorno (default: http://backend:8080)
+ENV BACKEND_URL=http://backend:8080
+
 RUN cat > /etc/nginx/conf.d/default.conf << 'EOF'
 server {
     listen       80;
@@ -43,7 +47,16 @@ server {
     add_header X-Content-Type-Options    "nosniff"          always;
     add_header X-XSS-Protection          "1; mode=block"    always;
     add_header Referrer-Policy           "no-referrer"      always;
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+    # Proxy hacia backend — /auth, /api, /actuator, /dev
+    location ~ ^/(auth|api|actuator|dev)/ {
+        proxy_pass         http://backend:8080;
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Real-IP         $remote_addr;
+        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_read_timeout 60s;
+    }
 
     # index.html: nunca cachear
     location = /index.html {
