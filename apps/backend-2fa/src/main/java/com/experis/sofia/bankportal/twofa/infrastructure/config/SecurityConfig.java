@@ -38,7 +38,10 @@ public class SecurityConfig {
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/login", "/2fa/verify", "/actuator/health", "/dev/**", "/error",
+                .requestMatchers("/auth/login", "/2fa/verify",
+                    "/actuator/health", "/actuator/health/**",  // liveness + readiness subpaths
+                    "/actuator/info",
+                    "/dev/**", "/error",
                     "/api/v1/deposits/simulate",
                     "/api/v1/loans/simulate").permitAll()
                 .requestMatchers("/api/v1/admin/**").hasRole("KYC_REVIEWER")
@@ -53,9 +56,3 @@ public class SecurityConfig {
             .httpBasic(AbstractHttpConfigurer::disable);
         return http.build();
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
-    }
-}
