@@ -5,7 +5,7 @@
 # ══════════════════════════════════════════════════════════
 set -euo pipefail
 
-BASE="${BASE_URL:-http://localhost:8080}"
+BASE="${BASE_URL:-http://localhost:8081}"
 FE="${FE_URL:-http://localhost:4201}"
 PASS=0; FAIL=0
 
