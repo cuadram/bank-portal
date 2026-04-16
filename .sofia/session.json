@@ -724,7 +724,7 @@
     "report": "docs/code-review/CR-FEAT-022-sprint24.md",
     "reviewed_at": "2026-04-14T15:27:18.000Z"
   },
-  "updated_at": "2026-04-15T19:47:56.037Z",
+  "updated_at": "2026-04-16T05:22:57.952Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -2386,6 +2386,96 @@
       "source": "promoted",
       "sofia_core_version": "2.6.37",
       "imported_at": "2026-04-12T17:47:26.356Z"
+    },
+    {
+      "id": "LA-CORE-038",
+      "type": "testing/configuration",
+      "description": "Audit @Value sin default obligatorio antes de crear perfil IT; grep exhaustivo previo a primera ejecucion",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-039",
+      "type": "testing/design",
+      "description": "Fixtures idempotentes ON CONFLICT DO NOTHING con UUIDs fijos para ITs con FK constraints; patron BizumIntegrationTestBase",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-040",
+      "type": "testing/jpa",
+      "description": "Bulk JPQL UPDATE bypassa Hibernate first-level cache; em.flush()+em.clear() obligatorio antes de findById() en tests @Transactional",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-041",
+      "type": "process/frontend",
+      "description": "Developer Agent debe leer prototipo HTML pantalla a pantalla ANTES de escribir template Angular; verificación previa, no reactiva",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-042",
+      "type": "process/frontend",
+      "description": "Auditar model.ts + service.ts + component.ts antes de escribir template Angular; solo referenciar lo que existe en el .ts",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-043",
+      "type": "process/governance",
+      "description": "LA-023-02 fidelidad prototipo aplica en G-4 como checklist BLOQUEANTE de entrada, no como corrección reactiva tras despliegue",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-044",
+      "type": "process/devops",
+      "description": "DevOps Agent Step 7 debe publicar Runbook MD en docs/runbooks/ como entrega BLOQUEANTE en G-7",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-045",
+      "type": "process/documentation",
+      "description": "Documentation Agent Step 8 debe sincronizar MD fuente a rutas canonicas docs/releases/ y docs/runbooks/; audit CMMI L3 obligatorio antes de declarar step completo",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-036",
+      "type": "infrastructure",
+      "description": "Binarios generados en contenedor Claude: flujo canonico = generate → present_files → operador descarga → deposita en SOFIA_REPO. filesystem:write_file solo texto plano. Base64 PROHIBIDO.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:22:57.944Z"
     }
   ],
   "unit_test_verification": {
