@@ -4,8 +4,8 @@
   "client": "Banco Meridian",
   "generated_by": "FA-Agent — SOFIA v2.3",
   "last_updated": "2026-03-31",
-  "last_sprint": 24,
-  "total_functionalities": 93,
+  "last_sprint": 25,
+  "total_functionalities": 100,
   "notes": "S1-S15 RECONSTRUIDO. S16-S21 documentadas con evidencias directas.",
   "functionalities": [
     {
@@ -1623,6 +1623,158 @@
       "business_rules": [
         "RN-F022-11"
       ]
+    },
+    {
+      "id": "FA-PFM-001",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "module": "Finanzas Personales (PFM)",
+      "name": "Categorización automática de movimientos",
+      "description": "El sistema clasifica automáticamente los movimientos de la cuenta en categorías de gasto predefinidas (Alimentación, Transporte, Restaurantes, Salud, Hogar, Suministros, Comunicaciones, Ocio, Educación, Viajes, Seguros, Nómina, Transferencias, Otros) aplicando un motor de reglas basado en el concepto del movimiento e IBAN acreedor. Las reglas del usuario tienen prioridad sobre las del sistema.",
+      "actors": [
+        "Cliente Banco Meridian"
+      ],
+      "status": "PLANNED",
+      "business_rules": [
+        "RN-F023-01",
+        "RN-F023-02",
+        "RN-F023-03"
+      ],
+      "source": "SRS-FEAT-023-sprint25.md · US-F023-01",
+      "regulations": [
+        "GDPR Art.6",
+        "PSD2 Art.67"
+      ]
+    },
+    {
+      "id": "FA-PFM-002",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "module": "Finanzas Personales (PFM)",
+      "name": "Gestión de presupuestos mensuales por categoría",
+      "description": "El cliente puede crear, editar y eliminar presupuestos mensuales para cada categoría de gasto. Cada presupuesto muestra en tiempo real el porcentaje consumido mediante una barra de progreso con código de color (verde <80%, naranja 80-100%, rojo >100%). El sistema permite un máximo de 10 presupuestos activos simultáneos, uno por categoría, con importe entre 0,01 EUR y 99.999,99 EUR (BigDecimal HALF_EVEN). Los presupuestos son de carácter mensual recurrente.",
+      "actors": [
+        "Cliente Banco Meridian"
+      ],
+      "status": "PLANNED",
+      "business_rules": [
+        "RN-F023-04",
+        "RN-F023-05",
+        "RN-F023-06",
+        "RN-F023-07"
+      ],
+      "source": "SRS-FEAT-023-sprint25.md · US-F023-02",
+      "regulations": [
+        "GDPR Art.6"
+      ]
+    },
+    {
+      "id": "FA-PFM-003",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "module": "Finanzas Personales (PFM)",
+      "name": "Alertas de gasto por umbral configurable",
+      "description": "El sistema emite una notificación push al cliente cuando el gasto acumulado en una categoría supera el umbral porcentual configurado sobre el presupuesto correspondiente. El umbral es configurable entre el 50% y el 95% en incrementos de 5 puntos porcentuales. La alerta se dispara una única vez por presupuesto y mes, integrándose con el centro de notificaciones del portal (FEAT-014). La evaluación del umbral se realiza de forma síncrona en cada nuevo movimiento.",
+      "actors": [
+        "Cliente Banco Meridian",
+        "Sistema de Notificaciones"
+      ],
+      "status": "PLANNED",
+      "business_rules": [
+        "RN-F023-08",
+        "RN-F023-09",
+        "RN-F023-10",
+        "RN-F023-11"
+      ],
+      "source": "SRS-FEAT-023-sprint25.md · US-F023-03",
+      "regulations": [
+        "GDPR Art.6",
+        "PSD2 Art.10"
+      ]
+    },
+    {
+      "id": "FA-PFM-004",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "module": "Finanzas Personales (PFM)",
+      "name": "Análisis mensual comparativo de gasto",
+      "description": "El módulo Mi Dinero presenta un análisis visual del gasto mensual desglosado por categoría con comparación directa con el mes anterior. La visualización incluye un gráfico de barras dobles por categoría, el total gastado en ambos meses y el porcentaje de variación global e individual. El cliente puede navegar entre los últimos 12 meses. Solo se muestran categorías con al menos un movimiento CARGO en el período. Los importes se presentan en EUR con 2 decimales y alineación tabular.",
+      "actors": [
+        "Cliente Banco Meridian"
+      ],
+      "status": "PLANNED",
+      "business_rules": [
+        "RN-F023-12",
+        "RN-F023-13",
+        "RN-F023-14"
+      ],
+      "source": "SRS-FEAT-023-sprint25.md · US-F023-04",
+      "regulations": [
+        "GDPR Art.6"
+      ]
+    },
+    {
+      "id": "FA-PFM-005",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "module": "Finanzas Personales (PFM)",
+      "name": "Widget resumen financiero en dashboard principal",
+      "description": "El dashboard principal de BankPortal incorpora un widget de finanzas personales que muestra el gasto total del mes en curso, las tres categorías con mayor importe y un semáforo de estado de los presupuestos (verde: todos por debajo del umbral; naranja: alguno supera el 80%; rojo: alguno excedido). El widget se carga de forma asíncrona para no bloquear el render del dashboard. Si el cliente no tiene presupuestos configurados se muestra un CTA hacia la sección de presupuestos. La navegación usa Router.navigateByUrl() en cumplimiento de LA-023-01.",
+      "actors": [
+        "Cliente Banco Meridian"
+      ],
+      "status": "PLANNED",
+      "business_rules": [
+        "RN-F023-15",
+        "RN-F023-16"
+      ],
+      "source": "SRS-FEAT-023-sprint25.md · US-F023-05",
+      "regulations": [
+        "GDPR Art.6"
+      ]
+    },
+    {
+      "id": "FA-PFM-006",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "module": "Finanzas Personales (PFM)",
+      "name": "Edición manual de categoría con aprendizaje de regla",
+      "description": "El cliente puede corregir la categoría asignada automáticamente a cualquier movimiento CARGO. Tras la corrección el sistema almacena una regla personalizada que asocia el concepto exacto del movimiento a la nueva categoría, aplicándola automáticamente a futuros movimientos del mismo comercio. Las reglas del usuario tienen prioridad permanente sobre las del sistema. El cliente puede consultar y eliminar sus reglas personalizadas desde la sección de configuración de Mi Dinero. Máximo 50 reglas por usuario.",
+      "actors": [
+        "Cliente Banco Meridian"
+      ],
+      "status": "PLANNED",
+      "business_rules": [
+        "RN-F023-17",
+        "RN-F023-18",
+        "RN-F023-19"
+      ],
+      "source": "SRS-FEAT-023-sprint25.md · US-F023-06",
+      "regulations": [
+        "GDPR Art.6",
+        "GDPR Art.17"
+      ]
+    },
+    {
+      "id": "FA-PFM-007",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "module": "Finanzas Personales (PFM)",
+      "name": "Distribución de gasto y ranking de comercios",
+      "description": "El módulo Mi Dinero presenta la distribución porcentual del gasto del mes en curso mediante un gráfico de tarta por categoría, excluyendo Transferencias y Nóminas. Adicionalmente muestra el ranking de los 10 comercios donde el cliente concentra mayor importe, unificando movimientos de domiciliaciones (bill_payments) y transacciones de cargo (transactions CARGO). El cliente puede hacer drill-down en cada comercio para ver el detalle de sus transacciones en el período. Esta funcionalidad cierra la deuda técnica DEBT-047.",
+      "actors": [
+        "Cliente Banco Meridian"
+      ],
+      "status": "PLANNED",
+      "business_rules": [
+        "RN-F023-20",
+        "RN-F023-21",
+        "RN-F023-22"
+      ],
+      "source": "SRS-FEAT-023-sprint25.md · US-F023-07",
+      "regulations": [
+        "GDPR Art.6"
+      ]
     }
   ],
   "business_rules": [
@@ -2733,6 +2885,138 @@
       "description": "El módulo Angular Bizum debe verificarse componente a componente contra el prototipo HITL aprobado antes de pasar a QA. El diseño respeta el sistema de producción: sidebar navy #1e3a5f, fondo #F5F7FA, cards blancas, botones primarios navy (LA-023-02).",
       "feature": "FEAT-022",
       "func_ref": "FA-022-G"
+    },
+    {
+      "id": "RN-F023-01",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "Categorización por ILIKE sobre campo concept del movimiento contra tabla pfm_category_rules. Reglas del usuario (pfm_user_rules) tienen prioridad sobre reglas del sistema."
+    },
+    {
+      "id": "RN-F023-02",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "Solo movimientos de tipo CARGO se incluyen en presupuestos y análisis de gasto. Los ABONO se muestran en el listado pero no computan en ningún presupuesto."
+    },
+    {
+      "id": "RN-F023-03",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "La categoría se calcula en tiempo de consulta. Solo se persiste en BD el override manual del usuario (pfm_user_rules). La categoría derivada no se almacena en la tabla transactions."
+    },
+    {
+      "id": "RN-F023-04",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "Máximo 10 presupuestos activos simultáneos por usuario. Al alcanzar el límite el botón de creación se deshabilita y se muestra mensaje informativo."
+    },
+    {
+      "id": "RN-F023-05",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "Un único presupuesto por categoría por mes. No se permiten dos presupuestos para la misma categoría en el mismo período mensual."
+    },
+    {
+      "id": "RN-F023-06",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "El importe del presupuesto debe ser mayor que 0 EUR y menor o igual a 99.999,99 EUR con exactamente dos decimales. Todos los cálculos monetarios usan BigDecimal con modo de redondeo HALF_EVEN (ADR-034)."
+    },
+    {
+      "id": "RN-F023-07",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "Los presupuestos son de periodicidad mensual. El consumo se resetea automáticamente al inicio de cada mes. El importe configurado actúa como plantilla recurrente y se mantiene activo hasta que el usuario lo elimine explícitamente."
+    },
+    {
+      "id": "RN-F023-08",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "El umbral de alerta de presupuesto es configurable entre el 50% y el 95% del importe en incrementos de 5 puntos porcentuales (50, 55, 60, 65, 70, 75, 80, 85, 90, 95). Valores fuera de este rango son rechazados con error de validación."
+    },
+    {
+      "id": "RN-F023-09",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "La alerta de presupuesto se dispara una única vez por presupuesto y por mes natural. Una vez emitida no se vuelve a generar aunque el gasto siga aumentando hasta el próximo reset mensual."
+    },
+    {
+      "id": "RN-F023-10",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "Las alertas de presupuesto se integran con el sistema de notificaciones push del portal (FEAT-014, Sprint 16). El tipo de notificación es BUDGET_ALERT y la acción de navegación apunta a /pfm/presupuestos."
+    },
+    {
+      "id": "RN-F023-11",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "La evaluación del umbral de alerta se realiza de forma síncrona cada vez que se registra un nuevo movimiento CARGO. Si el acumulado supera el umbral configurado y no se ha emitido alerta en el mes en curso se genera la notificación."
+    },
+    {
+      "id": "RN-F023-12",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "El historial de análisis mensual cubre los últimos 12 meses desde la fecha actual. El selector de mes no permite navegar a períodos fuera de este rango."
+    },
+    {
+      "id": "RN-F023-13",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "En el análisis mensual solo se muestran categorías que tengan al menos un movimiento CARGO en el período seleccionado. Las categorías sin actividad no se representan en los gráficos."
+    },
+    {
+      "id": "RN-F023-14",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "Los importes monetarios en el módulo PFM se presentan en EUR con 2 decimales, separador de miles mediante punto y separador decimal mediante coma. Los elementos de importe usan font-variant-numeric: tabular-nums para alineación vertical (LA-023-02)."
+    },
+    {
+      "id": "RN-F023-15",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "El widget de Mi Dinero en el dashboard se carga de forma asíncrona (llamada independiente al endpoint /api/v1/pfm/summary) para no bloquear el render del dashboard principal. Si la llamada falla el widget muestra un estado degradado sin romper el layout de la página."
+    },
+    {
+      "id": "RN-F023-16",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "Toda navegación interna desde el widget de Mi Dinero en el dashboard usa Router.navigateByUrl() mediante handler (click). Queda expresamente prohibido el uso de [href] para rutas internas Angular (LA-023-01)."
+    },
+    {
+      "id": "RN-F023-17",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "Las reglas de recategorización del usuario se almacenan en la tabla pfm_user_rules con los campos user_id, concept_pattern (texto exacto del concepto del movimiento) y category_code. El concept_pattern es case-insensitive."
+    },
+    {
+      "id": "RN-F023-18",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "Cada usuario puede tener un máximo de 50 reglas de categorización personalizadas activas. Al alcanzar el límite el sistema informa al usuario y requiere eliminar una regla existente antes de crear una nueva."
+    },
+    {
+      "id": "RN-F023-19",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "Solo los movimientos de tipo CARGO son recategorizables entre categorías de gasto. Los movimientos de tipo ABONO (nóminas, ingresos) mantienen su categoría de ingreso y no pueden asignarse a categorías de gasto."
+    },
+    {
+      "id": "RN-F023-20",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "El ranking de top comercios unifica dos fuentes: biller_name de la tabla bill_payments y el primer token de más de 4 caracteres del campo concept de la tabla transactions para movimientos CARGO. Esta regla cierra la deuda técnica DEBT-047 (DashboardJpaAdapter.findTopMerchants)."
+    },
+    {
+      "id": "RN-F023-21",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "Se excluyen del ranking de top comercios las transferencias entre cuentas propias del usuario y los pagos a la Administración Pública identificados por los patrones: AEAT, TGSS, SUMA, AGENCIA TRIBUTARIA."
+    },
+    {
+      "id": "RN-F023-22",
+      "feature": "FEAT-023",
+      "module": "PFM",
+      "description": "El gráfico de distribución de gasto por categoría utiliza la paleta de colores del design system BankPortal definida en el prototipo UX aprobado en gate HITL PO+TL. El gráfico incluye valores numéricos en texto alternativo para cumplir WCAG 2.1 AA criterio 1.1.1."
     }
   ],
   "modules": [
@@ -2760,10 +3044,10 @@
     "SEPA-DD",
     "AML-KYC"
   ],
-  "total_business_rules": 209,
+  "total_business_rules": 231,
   "last_sprint_consolidated": 24,
   "last_feat": "FEAT-021",
-  "updated_at": "2026-04-15T19:42:20.351Z",
+  "updated_at": "2026-04-16T11:42:17.895Z",
   "doc_version": "0.6",
   "doc_path": "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx",
   "doc_history": [
@@ -2801,5 +3085,6 @@
   "markdowns": [
     "docs/functional-analysis/FA-FEAT-021-sprint23.md"
   ],
-  "sprints_covered": "S1-S24"
+  "sprints_covered": "S1-S24",
+  "last_feature": "FEAT-023"
 }

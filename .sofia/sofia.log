@@ -561,3 +561,14 @@
 [2026-04-16T10:40:06.994Z] [STEP-1] [scrum-master] COMPLETED → docs/sprints/SPRINT-025-planning.md | Jira SCRUM-154..162 + SCRUM-153 | 10 issues 24SP | Gate G-1 aprobado PO
 [2026-04-16T11:11:55.349Z] [STEP-2] [requirements-analyst] STARTED → FEAT-023 Mi Dinero PFM · Sprint 25
 [2026-04-16T11:16:17.415Z] [STEP-2] [requirements-analyst] COMPLETED → SRS-FEAT-023-sprint25.md | 7 US 22 RN 7 RNF-delta RTM | gate_pending G-2
+[2026-04-16T11:40:55.475Z] [STEP-2b] [fa-agent] STARTED → FEAT-023 Mi Dinero · fa-index update + validate
+[2026-04-16T11:42:17.884Z] [FA-VALIDATE] OK: total_functionalities: 100 ✓
+[2026-04-16T11:42:17.893Z] [FA-VALIDATE] OK: total_business_rules: 231 ✓
+[2026-04-16T11:42:17.894Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-16T11:42:17.894Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-16T11:42:17.894Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-16T11:42:17.894Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-16T11:42:17.894Z] [FA-VALIDATE] OK: last_sprint: 25 coincide con datos ✓
+[2026-04-16T11:42:17.894Z] [FA-VALIDATE] OK: FEAT-021: todas las RN referenciadas están definidas ✓
+[2026-04-16T11:42:17.896Z] [FA-VALIDATE] PASS — 100 funcionalidades, 231 reglas | sprint 25 | FEAT-021
+[2026-04-16T11:43:23.409Z] [STEP-2b] [fa-agent] COMPLETED → validate-fa-index PASS 8/8 | 100 func (+7) | 231 BRs (+22) | FA-FEAT-023-sprint25-draft.md | Gate G-2b AUTO
