@@ -1,7 +1,7 @@
 # LESSONS LEARNED — bank-portal
 
-> Generado: 2026-04-16T05:22:57.953Z | Total: 97 LAs
-> LAs proyecto: 51 | LAs SOFIA-CORE integradas: 46
+> Generado: 2026-04-16T05:32:01.910Z | Total: 99 LAs
+> LAs proyecto: 52 | LAs SOFIA-CORE integradas: 47
 
 ## LAs del Proyecto
 
@@ -473,6 +473,16 @@ _Registrada: 2026-04-11T14:19:28.899Z_
 
 ---
 
+### LA-024-11 · process/governance
+
+**Descripción:** La task de soporte del Workflow Manager (SCRUM-NNN Sprint XX Closure — Step 9) no se incluía en el batch de transición a Finalizada del Step 9. El script de transición usaba el rango numerado de US/DEBT (SCRUM-143..152) pero omitía la task de soporte que tiene número anterior (SCRUM-142). Resultado: issue en Por Hacer al cierre del sprint, detectado por el PO.
+
+**Corrección:** REGLA PERMANENTE: el Workflow Manager en Step 9 NUNCA debe usar un rango fijo de issue keys para la sincronización Jira. Debe ejecutar una query JQL completa del sprint activo: project=SCRUM AND sprint="Tablero Sprint N" para obtener TODOS los issues independientemente de su numeración. Cualquier issue con status != Finalizada al inicio del Step 9 debe transitarse antes de declarar la sincronización completa. Checklist G-9 añade: verificar JQL sprint=activo → 0 issues fuera de Finalizada.
+
+_Registrada: 2026-04-16T05:31:34.470534Z_
+
+---
+
 ## LAs SOFIA-CORE Integradas
 
 > Estas LAs han sido promovidas desde otros proyectos y aprobadas por el PO.
@@ -935,6 +945,16 @@ _SOFIA-CORE v2.6.40 · Importada: 2026-04-16T05:16:43.316Z_
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
 _SOFIA-CORE v2.6.40 · Importada: 2026-04-16T05:22:57.944Z_
+
+---
+
+### LA-CORE-046 · process/governance ⭐ CORE
+
+**Descripción:** Step 9 Workflow Manager: sincronizacion Jira con JQL completo del sprint, nunca rango fijo de keys; checklist G-9 bloqueante: 0 issues fuera de Finalizada
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.6.41 · Importada: 2026-04-16T05:32:01.901Z_
 
 ---
 

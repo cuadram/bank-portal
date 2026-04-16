@@ -724,7 +724,7 @@
     "report": "docs/code-review/CR-FEAT-022-sprint24.md",
     "reviewed_at": "2026-04-14T15:27:18.000Z"
   },
-  "updated_at": "2026-04-16T05:22:57.952Z",
+  "updated_at": "2026-04-16T05:32:01.909Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -2476,6 +2476,29 @@
       "source": "promoted",
       "sofia_core_version": "2.6.40",
       "imported_at": "2026-04-16T05:22:57.944Z"
+    },
+    {
+      "id": "LA-024-11",
+      "sprint": 24,
+      "type": "process/governance",
+      "scope": "proyecto",
+      "description": "La task de soporte del Workflow Manager (SCRUM-NNN Sprint XX Closure — Step 9) no se incluía en el batch de transición a Finalizada del Step 9. El script de transición usaba el rango numerado de US/DEBT (SCRUM-143..152) pero omitía la task de soporte que tiene número anterior (SCRUM-142). Resultado: issue en Por Hacer al cierre del sprint, detectado por el PO.",
+      "correction": "REGLA PERMANENTE: el Workflow Manager en Step 9 NUNCA debe usar un rango fijo de issue keys para la sincronización Jira. Debe ejecutar una query JQL completa del sprint activo: project=SCRUM AND sprint=\"Tablero Sprint N\" para obtener TODOS los issues independientemente de su numeración. Cualquier issue con status != Finalizada al inicio del Step 9 debe transitarse antes de declarar la sincronización completa. Checklist G-9 añade: verificar JQL sprint=activo → 0 issues fuera de Finalizada.",
+      "registered_at": "2026-04-16T05:31:34.470534Z",
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-16T05:31:34.470534Z",
+      "jira_ref": "SCRUM-142",
+      "gate": "G-9"
+    },
+    {
+      "id": "LA-CORE-046",
+      "type": "process/governance",
+      "description": "Step 9 Workflow Manager: sincronizacion Jira con JQL completo del sprint, nunca rango fijo de keys; checklist G-9 bloqueante: 0 issues fuera de Finalizada",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.41",
+      "imported_at": "2026-04-16T05:32:01.901Z"
     }
   ],
   "unit_test_verification": {
