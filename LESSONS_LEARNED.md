@@ -1,7 +1,7 @@
 # LESSONS LEARNED — bank-portal
 
-> Generado: 2026-04-16T05:32:01.910Z | Total: 99 LAs
-> LAs proyecto: 52 | LAs SOFIA-CORE integradas: 47
+> Generado: 2026-04-16T06:10:56.403Z | Total: 101 LAs
+> LAs proyecto: 53 | LAs SOFIA-CORE integradas: 48
 
 ## LAs del Proyecto
 
@@ -483,6 +483,16 @@ _Registrada: 2026-04-16T05:31:34.470534Z_
 
 ---
 
+### LA-024-12 · process/dashboard
+
+**Descripción:** El dashboard global no se regenero durante ninguno de los gates G-1 a G-8 del Sprint 24. Todo el pipeline se ejecuto en una sola sesion el 14/04/2026 en ~2 horas con aprobaciones en rafaga. gen-global-dashboard.js no es invocado automaticamente: requiere llamada explicita del Orchestrator tras cada gate. En pipelines rapidos esta llamada se omite. Tendencia degradacion: S19=9 regen, S22=parcial, S23=parcial (G4..G8 ausentes), S24=solo G-9. GR-011 existia pero no se verificaba en la practica.
+
+**Corrección:** REGLA PERMANENTE: el Orchestrator DEBE invocar gen-global-dashboard.js inmediatamente tras registrar cada aprobacion de gate en session.json, sin excepcion por velocidad del pipeline. La llamada es parte del protocolo de aprobacion, no un paso separado opcional. Checklist de cada gate: dashboard_global.last_generated debe actualizarse antes de declarar el gate completo. GR-011 en guardrail-pre-gate.js: bloquear si last_generated < timestamp del ultimo gate. Sin verificacion el siguiente gate no aprueba.
+
+_Registrada: 2026-04-16T06:10:35.367466Z_
+
+---
+
 ## LAs SOFIA-CORE Integradas
 
 > Estas LAs han sido promovidas desde otros proyectos y aprobadas por el PO.
@@ -955,6 +965,16 @@ _SOFIA-CORE v2.6.40 · Importada: 2026-04-16T05:22:57.944Z_
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
 _SOFIA-CORE v2.6.41 · Importada: 2026-04-16T05:32:01.901Z_
+
+---
+
+### LA-CORE-047 · process/dashboard ⭐ CORE
+
+**Descripción:** Orchestrator invoca gen-global-dashboard.js tras CADA gate como parte atomica del protocolo de aprobacion; GR-011 bloqueante verificado en guardrail-pre-gate.js; sin excepcion por velocidad del pipeline
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.6.42 · Importada: 2026-04-16T06:10:56.394Z_
 
 ---
 

@@ -724,7 +724,7 @@
     "report": "docs/code-review/CR-FEAT-022-sprint24.md",
     "reviewed_at": "2026-04-14T15:27:18.000Z"
   },
-  "updated_at": "2026-04-16T05:42:13.894Z",
+  "updated_at": "2026-04-16T06:10:56.402Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -2513,6 +2513,29 @@
       "source": "promoted",
       "sofia_core_version": "2.6.41",
       "imported_at": "2026-04-16T05:32:01.901Z"
+    },
+    {
+      "id": "LA-024-12",
+      "sprint": 24,
+      "type": "process/dashboard",
+      "scope": "proyecto",
+      "description": "El dashboard global no se regenero durante ninguno de los gates G-1 a G-8 del Sprint 24. Todo el pipeline se ejecuto en una sola sesion el 14/04/2026 en ~2 horas con aprobaciones en rafaga. gen-global-dashboard.js no es invocado automaticamente: requiere llamada explicita del Orchestrator tras cada gate. En pipelines rapidos esta llamada se omite. Tendencia degradacion: S19=9 regen, S22=parcial, S23=parcial (G4..G8 ausentes), S24=solo G-9. GR-011 existia pero no se verificaba en la practica.",
+      "correction": "REGLA PERMANENTE: el Orchestrator DEBE invocar gen-global-dashboard.js inmediatamente tras registrar cada aprobacion de gate en session.json, sin excepcion por velocidad del pipeline. La llamada es parte del protocolo de aprobacion, no un paso separado opcional. Checklist de cada gate: dashboard_global.last_generated debe actualizarse antes de declarar el gate completo. GR-011 en guardrail-pre-gate.js: bloquear si last_generated < timestamp del ultimo gate. Sin verificacion el siguiente gate no aprueba.",
+      "gate": "G-1..G-9",
+      "registered_at": "2026-04-16T06:10:35.367466Z",
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-16T06:10:35.367466Z",
+      "evidence": "sofia.log: S24 sin entradas DASH entre 2026-04-14T14:08 y 2026-04-15T19:47"
+    },
+    {
+      "id": "LA-CORE-047",
+      "type": "process/dashboard",
+      "description": "Orchestrator invoca gen-global-dashboard.js tras CADA gate como parte atomica del protocolo de aprobacion; GR-011 bloqueante verificado en guardrail-pre-gate.js; sin excepcion por velocidad del pipeline",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.42",
+      "imported_at": "2026-04-16T06:10:56.394Z"
     }
   ],
   "unit_test_verification": {
