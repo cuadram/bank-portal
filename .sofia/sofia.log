@@ -557,3 +557,5 @@
 [2026-04-16T05:42:13.894Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-9 · Step: 9 · Sprint 24
 [2026-04-16T06:12:24.558Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-9 · Step: 9 · Sprint 24
 [2026-04-16T06:26:14.521Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-9 · Step: 9 · Sprint 24
+[2026-04-16T10:38:13.173Z] [STEP-1] [scrum-master] STARTED → Sprint 25 · FEAT-023 Mi Dinero PFM · G-1 aprobado PO
+[2026-04-16T10:40:06.994Z] [STEP-1] [scrum-master] COMPLETED → docs/sprints/SPRINT-025-planning.md | Jira SCRUM-154..162 + SCRUM-153 | 10 issues 24SP | Gate G-1 aprobado PO
