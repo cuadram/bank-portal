@@ -724,7 +724,7 @@
     "report": "docs/code-review/CR-FEAT-022-sprint24.md",
     "reviewed_at": "2026-04-14T15:27:18.000Z"
   },
-  "updated_at": "2026-04-16T06:12:24.558Z",
+  "updated_at": "2026-04-16T06:20:32.273061Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -2855,6 +2855,18 @@
       "closed_at": "2026-04-14T15:17:56.837Z",
       "closed_sprint": 24,
       "desc": "Redis rate-limit key pattern ratelimit:{userId}:bizum:{date} — ADR-039"
+    },
+    {
+      "id": "DEBT-047",
+      "area": "Backend",
+      "priority": "Media",
+      "desc": "findTopMerchants consulta solo bill_payments — excluye transacciones generales (tarjeta, transferencias). Vista parcial del top de comercios.",
+      "detail": "DashboardJpaAdapter.findTopMerchants() solo JOIN bill_payments. Debe unificar bill_payments + transactions CARGO agrupando por concept/issuer para ranking real.",
+      "sprint_target": "S25",
+      "origin": "coherence-audit-dashboard-S24",
+      "registered_at": "2026-04-16T06:20:00.895915Z",
+      "status": "OPEN",
+      "jira": "SCRUM-153"
     }
   ],
   "skills_updated_s21": [
