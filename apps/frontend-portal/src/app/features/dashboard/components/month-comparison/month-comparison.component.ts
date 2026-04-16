@@ -3,7 +3,7 @@ import { MonthComparison } from '../../services/dashboard.service';
 
 /**
  * MonthComparisonComponent — variación % mes actual vs anterior.
- * US-1104 FEAT-011 Sprint 13.
+ * US-1105b FEAT-011 Sprint 13. (G4-FIX: era US-1104 duplicado con EvolutionChart)
  */
 @Component({
   selector: 'app-month-comparison',

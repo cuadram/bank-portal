@@ -9,10 +9,12 @@ import { CategoriesChartComponent }  from './components/categories-chart/categor
 import { EvolutionChartComponent }   from './components/evolution-chart/evolution-chart.component';
 import { MonthComparisonComponent }  from './components/month-comparison/month-comparison.component';
 import { BudgetAlertsComponent }     from './components/budget-alerts/budget-alerts.component';
+import { TopMerchantsComponent }     from './components/top-merchants/top-merchants.component';
 
 /**
  * DashboardModule — módulo lazy-loaded del dashboard analítico.
  * US-1101 FEAT-011 Sprint 13.
+ * G1-FIX (2026-04-16): TopMerchantsComponent declarado e integrado.
  */
 @NgModule({
   declarations: [
@@ -21,7 +23,8 @@ import { BudgetAlertsComponent }     from './components/budget-alerts/budget-ale
     CategoriesChartComponent,
     EvolutionChartComponent,
     MonthComparisonComponent,
-    BudgetAlertsComponent
+    BudgetAlertsComponent,
+    TopMerchantsComponent        // G1-FIX
   ],
   imports: [
     CommonModule,

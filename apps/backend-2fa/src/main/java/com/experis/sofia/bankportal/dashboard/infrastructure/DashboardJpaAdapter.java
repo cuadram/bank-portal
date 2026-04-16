@@ -17,6 +17,11 @@ import java.util.UUID;
  * Usa JdbcClient (Spring 6.1) para las queries de agregación.
  * FEAT-010 Sprint 12.
  *
+ * G3-FIX (2026-04-16): findRawSpendings usaba t.category AS issuer — la columna category
+ * contiene enums de negocio (PAGO_TARJETA, DOMICILIACION) que nunca coinciden con los
+ * keywords del SpendingCategorizationEngine. Corregido a t.concept AS issuer para
+ * pasar el texto libre del banco al motor de categorización.
+ *
  * @author SOFIA Developer Agent
  */
 @Repository
@@ -64,8 +69,11 @@ public class DashboardJpaAdapter implements DashboardRepositoryPort {
 
     @Override
     public List<RawSpendingRecord> findRawSpendings(UUID userId, String period) {
+        // G3-FIX: concepto libre-texto como 'issuer' para keyword matching en el
+        // SpendingCategorizationEngine. t.category contenía enums de negocio
+        // (PAGO_TARJETA, DOMICILIACION) que no aportan keywords útiles.
         return jdbc.sql("""
-            SELECT t.concept, t.category AS issuer, t.amount
+            SELECT t.concept, t.concept AS issuer, t.amount
             FROM transactions t JOIN accounts a ON t.account_id = a.id
             WHERE a.user_id = :userId AND t.type = 'CARGO'
             AND TO_CHAR(t.transaction_date, 'YYYY-MM') = :period
