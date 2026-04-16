@@ -33,7 +33,7 @@ check SM-02 "Readiness backend" 200 "$BASE/actuator/health/readiness"
 check SM-03 "Frontend SPA"      200 "$FE/"
 
 # ── Auth (S1-S3) ───────────────────────────────────────
-check SM-04 "Login sin credenciales → 400/401" 400 -X POST "$BASE/api/v1/auth/login" \
+check SM-04 "Login sin credenciales → 400/401" 401 -X POST "$BASE/api/v1/auth/login" \
   -H "Content-Type: application/json" -d '{}'
 check SM-05 "Token sin JWT → 401" 401 "$BASE/api/v1/accounts"
 
