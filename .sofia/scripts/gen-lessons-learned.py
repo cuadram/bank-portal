@@ -177,10 +177,10 @@ def main():
 
     by_sprint = defaultdict(list)
     for la in las:
-        by_sprint[la['sprint']].append(la)
+        by_sprint[la.get('sprint', 'CORE')].append(la)
 
-    for sp in sorted(by_sprint.keys()):
-        lines.append(f'## Sprint {sp}')
+    for sp in sorted(by_sprint.keys(), key=lambda x: (0, x) if isinstance(x, str) else (1, x)):
+        lines.append(f'## Sprint {sp}' if isinstance(sp, int) else f'## {sp}')
         lines.append('')
         for la in by_sprint[sp]:
             emoji = TYPE_EMOJI.get(la.get('type', ''), '📌')

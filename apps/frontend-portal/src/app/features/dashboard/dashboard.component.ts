@@ -3,9 +3,14 @@ import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import {
   DashboardService, DashboardSummary, SpendingCategory,
-  MonthlyEvolution, MonthComparison, BudgetAlert
+  MonthlyEvolution, MonthComparison, BudgetAlert, TopMerchant
 } from './services/dashboard.service';
 
+/**
+ * DashboardComponent — dashboard analítico principal.
+ * G1-FIX (2026-04-16): añadido topMerchants al forkJoin y al template.
+ * El endpoint /top-merchants existía en backend y service pero no se llamaba.
+ */
 @Component({
   selector: 'app-dashboard',
   template: `
@@ -39,6 +44,10 @@ import {
 
       <app-evolution-chart [evolution]="evolution" [loading]="loading">
       </app-evolution-chart>
+
+      <!-- G1-FIX: top merchants integrado (endpoint /top-merchants ya existía) -->
+      <app-top-merchants [merchants]="topMerchants" [loading]="loading">
+      </app-top-merchants>
     </div>
   `,
   styles: [`
@@ -55,32 +64,35 @@ import {
   `]
 })
 export class DashboardComponent implements OnInit {
-  summary: DashboardSummary | null = null;
-  categories: SpendingCategory[] | null = null;
-  evolution: MonthlyEvolution[] | null = null;
-  comparison: MonthComparison | null = null;
-  alerts: BudgetAlert[] | null = null;
-  loading = true;
+  summary: DashboardSummary | null       = null;
+  categories: SpendingCategory[] | null  = null;
+  evolution: MonthlyEvolution[] | null   = null;
+  comparison: MonthComparison | null     = null;
+  alerts: BudgetAlert[] | null           = null;
+  topMerchants: TopMerchant[] | null     = null;  // G1-FIX
+  loading  = true;
   hasError = false;
 
   constructor(private dashService: DashboardService, private router: Router) {}
 
   ngOnInit(): void {
     forkJoin({
-      summary:    this.dashService.getSummary(),
-      categories: this.dashService.getCategories(),
-      evolution:  this.dashService.getEvolution(),
-      comparison: this.dashService.getComparison(),
-      alerts:     this.dashService.getAlerts()
+      summary:      this.dashService.getSummary(),
+      categories:   this.dashService.getCategories(),
+      evolution:    this.dashService.getEvolution(),
+      comparison:   this.dashService.getComparison(),
+      alerts:       this.dashService.getAlerts(),
+      topMerchants: this.dashService.getTopMerchants()  // G1-FIX: llamada añadida
     }).subscribe({
       next: data => {
-        this.summary    = data.summary;
-        this.categories = data.categories;
-        this.evolution  = data.evolution;
-        this.comparison = data.comparison;
-        this.alerts     = data.alerts;
-        this.loading    = false;
-        this.hasError   = !data.summary && !data.categories;
+        this.summary      = data.summary;
+        this.categories   = data.categories;
+        this.evolution    = data.evolution;
+        this.comparison   = data.comparison;
+        this.alerts       = data.alerts;
+        this.topMerchants = data.topMerchants;           // G1-FIX
+        this.loading      = false;
+        this.hasError     = !data.summary && !data.categories;
       },
       error: () => { this.loading = false; this.hasError = true; }
     });

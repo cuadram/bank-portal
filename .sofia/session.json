@@ -724,7 +724,7 @@
     "report": "docs/code-review/CR-FEAT-022-sprint24.md",
     "reviewed_at": "2026-04-14T15:27:18.000Z"
   },
-  "updated_at": "2026-04-15T19:47:18.406239Z",
+  "updated_at": "2026-04-16T06:26:14.521Z",
   "resume_next": "Sprint 24 · FEAT-022 Bizum P2P · Gate G-1 pendiente aprobación PO",
   "sprint_closed": true,
   "gate8_approved_by": "release-manager",
@@ -735,9 +735,14 @@
   "atlassian_sync_date": "2026-04-09",
   "sprint_closed_at": "2026-04-15T19:47:18.406239Z",
   "dashboard_global": {
-    "last_generated": "2026-04-09T16:20:59.754Z",
-    "gate": "G-9",
-    "step": "9"
+    "path": "docs/dashboard/bankportal-global-dashboard.html",
+    "alias": "docs/quality/sofia-dashboard.html",
+    "last_generated": "2026-04-16T06:26:14.521Z",
+    "last_gate": "G-9",
+    "last_step": "9",
+    "sprint": 24,
+    "feature": "FEAT-022",
+    "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
   "gate_history": [
     {
@@ -1494,6 +1499,41 @@
       "step": "7",
       "approved_by": "release-manager",
       "approved_at": "2026-04-14T15:44:33.431Z",
+      "sprint": 24,
+      "feature": "FEAT-022"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_at": "2026-04-15T19:47:56.037Z",
+      "sprint": 24,
+      "feature": "FEAT-022"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_at": "2026-04-16T05:38:16.023Z",
+      "sprint": 24,
+      "feature": "FEAT-022"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_at": "2026-04-16T05:42:13.894Z",
+      "sprint": 24,
+      "feature": "FEAT-022"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_at": "2026-04-16T06:12:24.558Z",
+      "sprint": 24,
+      "feature": "FEAT-022"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_at": "2026-04-16T06:26:14.521Z",
       "sprint": 24,
       "feature": "FEAT-022"
     }
@@ -2374,6 +2414,142 @@
       "source": "promoted",
       "sofia_core_version": "2.6.37",
       "imported_at": "2026-04-12T17:47:26.356Z"
+    },
+    {
+      "id": "LA-CORE-038",
+      "type": "testing/configuration",
+      "description": "Audit @Value sin default obligatorio antes de crear perfil IT; grep exhaustivo previo a primera ejecucion",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-039",
+      "type": "testing/design",
+      "description": "Fixtures idempotentes ON CONFLICT DO NOTHING con UUIDs fijos para ITs con FK constraints; patron BizumIntegrationTestBase",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-040",
+      "type": "testing/jpa",
+      "description": "Bulk JPQL UPDATE bypassa Hibernate first-level cache; em.flush()+em.clear() obligatorio antes de findById() en tests @Transactional",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-041",
+      "type": "process/frontend",
+      "description": "Developer Agent debe leer prototipo HTML pantalla a pantalla ANTES de escribir template Angular; verificación previa, no reactiva",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-042",
+      "type": "process/frontend",
+      "description": "Auditar model.ts + service.ts + component.ts antes de escribir template Angular; solo referenciar lo que existe en el .ts",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-043",
+      "type": "process/governance",
+      "description": "LA-023-02 fidelidad prototipo aplica en G-4 como checklist BLOQUEANTE de entrada, no como corrección reactiva tras despliegue",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-044",
+      "type": "process/devops",
+      "description": "DevOps Agent Step 7 debe publicar Runbook MD en docs/runbooks/ como entrega BLOQUEANTE en G-7",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-045",
+      "type": "process/documentation",
+      "description": "Documentation Agent Step 8 debe sincronizar MD fuente a rutas canonicas docs/releases/ y docs/runbooks/; audit CMMI L3 obligatorio antes de declarar step completo",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:16:43.316Z"
+    },
+    {
+      "id": "LA-CORE-036",
+      "type": "infrastructure",
+      "description": "Binarios generados en contenedor Claude: flujo canonico = generate → present_files → operador descarga → deposita en SOFIA_REPO. filesystem:write_file solo texto plano. Base64 PROHIBIDO.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.40",
+      "imported_at": "2026-04-16T05:22:57.944Z"
+    },
+    {
+      "id": "LA-024-11",
+      "sprint": 24,
+      "type": "process/governance",
+      "scope": "proyecto",
+      "description": "La task de soporte del Workflow Manager (SCRUM-NNN Sprint XX Closure — Step 9) no se incluía en el batch de transición a Finalizada del Step 9. El script de transición usaba el rango numerado de US/DEBT (SCRUM-143..152) pero omitía la task de soporte que tiene número anterior (SCRUM-142). Resultado: issue en Por Hacer al cierre del sprint, detectado por el PO.",
+      "correction": "REGLA PERMANENTE: el Workflow Manager en Step 9 NUNCA debe usar un rango fijo de issue keys para la sincronización Jira. Debe ejecutar una query JQL completa del sprint activo: project=SCRUM AND sprint=\"Tablero Sprint N\" para obtener TODOS los issues independientemente de su numeración. Cualquier issue con status != Finalizada al inicio del Step 9 debe transitarse antes de declarar la sincronización completa. Checklist G-9 añade: verificar JQL sprint=activo → 0 issues fuera de Finalizada.",
+      "registered_at": "2026-04-16T05:31:34.470534Z",
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-16T05:31:34.470534Z",
+      "jira_ref": "SCRUM-142",
+      "gate": "G-9"
+    },
+    {
+      "id": "LA-CORE-046",
+      "type": "process/governance",
+      "description": "Step 9 Workflow Manager: sincronizacion Jira con JQL completo del sprint, nunca rango fijo de keys; checklist G-9 bloqueante: 0 issues fuera de Finalizada",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.41",
+      "imported_at": "2026-04-16T05:32:01.901Z"
+    },
+    {
+      "id": "LA-024-12",
+      "sprint": 24,
+      "type": "process/dashboard",
+      "scope": "proyecto",
+      "description": "El dashboard global no se regenero durante ninguno de los gates G-1 a G-8 del Sprint 24. Todo el pipeline se ejecuto en una sola sesion el 14/04/2026 en ~2 horas con aprobaciones en rafaga. gen-global-dashboard.js no es invocado automaticamente: requiere llamada explicita del Orchestrator tras cada gate. En pipelines rapidos esta llamada se omite. Tendencia degradacion: S19=9 regen, S22=parcial, S23=parcial (G4..G8 ausentes), S24=solo G-9. GR-011 existia pero no se verificaba en la practica.",
+      "correction": "REGLA PERMANENTE: el Orchestrator DEBE invocar gen-global-dashboard.js inmediatamente tras registrar cada aprobacion de gate en session.json, sin excepcion por velocidad del pipeline. La llamada es parte del protocolo de aprobacion, no un paso separado opcional. Checklist de cada gate: dashboard_global.last_generated debe actualizarse antes de declarar el gate completo. GR-011 en guardrail-pre-gate.js: bloquear si last_generated < timestamp del ultimo gate. Sin verificacion el siguiente gate no aprueba.",
+      "gate": "G-1..G-9",
+      "registered_at": "2026-04-16T06:10:35.367466Z",
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-16T06:10:35.367466Z",
+      "evidence": "sofia.log: S24 sin entradas DASH entre 2026-04-14T14:08 y 2026-04-15T19:47"
+    },
+    {
+      "id": "LA-CORE-047",
+      "type": "process/dashboard",
+      "description": "Orchestrator invoca gen-global-dashboard.js tras CADA gate como parte atomica del protocolo de aprobacion; GR-011 bloqueante verificado en guardrail-pre-gate.js; sin excepcion por velocidad del pipeline",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.42",
+      "imported_at": "2026-04-16T06:10:56.394Z"
     }
   ],
   "unit_test_verification": {
@@ -2686,6 +2862,18 @@
       "closed_at": "2026-04-14T15:17:56.837Z",
       "closed_sprint": 24,
       "desc": "Redis rate-limit key pattern ratelimit:{userId}:bizum:{date} — ADR-039"
+    },
+    {
+      "id": "DEBT-047",
+      "area": "Backend",
+      "priority": "Media",
+      "desc": "findTopMerchants consulta solo bill_payments — excluye transacciones generales (tarjeta, transferencias). Vista parcial del top de comercios.",
+      "detail": "DashboardJpaAdapter.findTopMerchants() solo JOIN bill_payments. Debe unificar bill_payments + transactions CARGO agrupando por concept/issuer para ranking real.",
+      "sprint_target": "S25",
+      "origin": "coherence-audit-dashboard-S24",
+      "registered_at": "2026-04-16T06:20:00.895915Z",
+      "status": "OPEN",
+      "jira": "SCRUM-153"
     }
   ],
   "skills_updated_s21": [
