@@ -15,7 +15,39 @@
       "decided_by": "product-owner",
       "source_sprint": 23,
       "sofia_core_version": "2.6.31"
+    },
+    {
+      "la_id": "LA-025-01",
+      "decision": "ACCEPTED",
+      "decided_at": "2026-04-16T18:03:45.647279Z",
+      "decided_by": "product-owner",
+      "source_sprint": 25,
+      "sofia_core_version": "2.6.48"
+    },
+    {
+      "la_id": "LA-025-02",
+      "decision": "ACCEPTED",
+      "decided_at": "2026-04-16T18:03:49.813218Z",
+      "decided_by": "product-owner",
+      "source_sprint": 25,
+      "sofia_core_version": "2.6.49"
+    },
+    {
+      "la_id": "LA-025-03",
+      "decision": "ACCEPTED",
+      "decided_at": "2026-04-16T18:03:54.520441Z",
+      "decided_by": "product-owner",
+      "source_sprint": 25,
+      "sofia_core_version": "2.6.50"
+    },
+    {
+      "la_id": "LA-025-04",
+      "decision": "ACCEPTED",
+      "decided_at": "2026-04-16T18:03:59.977907Z",
+      "decided_by": "product-owner",
+      "source_sprint": 25,
+      "sofia_core_version": "2.6.51"
     }
   ],
-  "last_updated": "2026-04-07T12:09:50.101146Z"
+  "last_updated": "2026-04-16T18:03:59.977909Z"
 }

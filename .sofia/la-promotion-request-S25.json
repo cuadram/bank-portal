@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0",
+  "sprint": 25,
+  "project": "bank-portal",
+  "client": "Banco Meridian",
+  "generated_at": "2026-04-16T18:03:39.428Z",
+  "po_review_required": true,
+  "po_reviewer": "Angel de la Cuadra (Product Owner)",
+  "status": "COMPLETED",
+  "sofia_core_path": "/Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE",
+  "candidates": [
+    {
+      "id": "LA-025-01",
+      "type": "process/governance",
+      "description": "Gate G-2 Sprint 25 aprobado explícitamente por el PO pero no persistido en session.json por el Orchestrator. Step 2b ejecutado correctamente tras aprobación, pero la trazabilidad CMMI L3 quedó rota. Bug adicional: validate-fa-index.js validaba RN references contra idx.last_feat (FEAT-021) en lugar de la feature activa en session.current_feature (FEAT-023). PASS 8/8 era parcialmente falso positivo. Hallazgo adicional: FA-Agent S24 y S25 añadió funcionalidades sin campo feat — FEAT-022 y FEAT-023 quedaron con feat:undefined en fa-index.json.",
+      "correction": "REGLA PERMANENTE: (1) Persistencia de gate en session.json es operación ATÓMICA del Orchestrator — inmediatamente tras recibir aprobación PO, antes de iniciar el siguiente step. (2) validate-fa-index.js v2.4: CHECK 8 lee current_feature desde session.json (fuente de verdad), con fallback a idx.last_feat. (3) FA-Agent: al añadir funcionalidades a fa-index.json DEBE establecer campo feat con el ID de la feature activa. (4) validate-fa-index CHECK adicional: 0 funcionalidades con feat:undefined. Ambas correcciones elevadas a LA-CORE.",
+      "registered_at": "2026-04-16T12:46:11.069Z",
+      "scope": "proyecto+SOFIA-CORE",
+      "impact": "CRITICAL",
+      "score": 8,
+      "matched_criteria": [
+        "REGLA_PERMANENTE",
+        "BLOCKER_GATE",
+        "MULTI_SKILL"
+      ],
+      "promotion_status": "approved",
+      "po_decision": "ACCEPTED",
+      "po_notes": null,
+      "po_decided_at": "2026-04-16T18:03:45.647037Z"
+    },
+    {
+      "id": "LA-025-02",
+      "type": "process/fa-agent",
+      "description": "Step 2b debe invocar gen-fa-document.py para actualizar el FA Word consolidado además de actualizar fa-index.json y ejecutar validate-fa-index. El .docx es el entregable formal del FA-Agent en Gate 2b. Detectado en 3 proyectos: BankPortal S25 (solo draft .md, sin docx), ExperisTracker (docx actualizado en 8b no en 2b), TakeOverSintetico (FA global inexistente, Sprint 1 sin consolidar).",
+      "correction": "REGLA PERMANENTE: Step 2b checklist obligatorio: (1) actualizar fa-index.json con funcionalidades+BRs de la feature activa con campo feat, (2) validate-fa-index PASS 8/8, (3) invocar gen-fa-document.py → .docx actualizado, (4) registrar los 3 en artifacts[2b_sNN]. El .docx es BLOQUEANTE para Gate G-2b — sin él el gate no se aprueba.",
+      "registered_at": "2026-04-16T13:00:02.547Z",
+      "scope": "SOFIA-CORE",
+      "impact": "CRITICAL",
+      "score": 12,
+      "matched_criteria": [
+        "REGLA_PERMANENTE",
+        "SCOPE_CORE",
+        "BLOCKER_GATE",
+        "MULTI_SKILL"
+      ],
+      "promotion_status": "approved",
+      "po_decision": "ACCEPTED",
+      "po_notes": null,
+      "po_decided_at": "2026-04-16T18:03:49.812976Z"
+    },
+    {
+      "id": "LA-025-03",
+      "type": "ux/process",
+      "description": "UX/UI Designer Agent generó PROTO-FEAT-023-sprint25 desde el scaffold genérico del SKILL.md en lugar de copiar PROTO-FEAT-022-sprint24.html como base. La declaración \"CSS/JS heredado\" en los artefactos era falsa. Los errores de sidebar (blanco vs navy #1e3a5f) no habrían ocurrido con herencia real porque el prototipo S24 ya los tenía corregidos. El patrón incremental sprint-a-sprint garantiza coherencia visual durante toda la vida del proyecto.",
+      "correction": "REGLA PERMANENTE: Step 2c PASO 0 obligatorio y bloqueante — antes de escribir cualquier HTML o CSS, ejecutar: cp docs/ux-ui/prototypes/PROTO-FEAT-0XX-sprintYY.html docs/ux-ui/prototypes/PROTO-FEAT-0(XX+1)-sprint(YY+1).html. El Orchestrator verifica que el nuevo archivo contiene la firma CSS del anterior (grep del color sidebar, tokens DS) antes de declarar el step iniciado. Sin este check el gate HITL-PO-TL no puede aprobarse. Checklist G-2c añade: archivo nuevo hereda de archivo anterior verificado.",
+      "registered_at": "2026-04-16T14:27:12.198Z",
+      "scope": "proyecto+SOFIA-CORE",
+      "impact": "HIGH",
+      "score": 5,
+      "matched_criteria": [
+        "REGLA_PERMANENTE",
+        "MULTI_SKILL"
+      ],
+      "promotion_status": "approved",
+      "po_decision": "ACCEPTED",
+      "po_notes": null,
+      "po_decided_at": "2026-04-16T18:03:54.520199Z"
+    },
+    {
+      "id": "LA-025-04",
+      "type": "process/governance",
+      "description": "current_step en session.json no se actualizaba al avanzar entre steps — quedó en 3 mientras el pipeline estaba en 5b. Adicionalmente, gate_pending recibió el valor no canónico AUTO-5b que el dashboard no sabe normalizar (no está en GATE_ROLES map), causando que el dashboard mostrara Step 3 · Pendiente Responsable cuando el pipeline estaba en Step 5b.",
+      "correction": "REGLA PERMANENTE: (1) current_step y pipeline_step son el mismo valor — el Orchestrator los escribe SIEMPRE en el mismo bloque atómico de persistencia de gate, sin excepción. (2) gate_pending solo acepta valores canónicos definidos en GATE_ROLES del dashboard: G-1, G-2, G-2b, HITL-PO-TL, G-3, G-3b, G-4, G-4b, G-5, G-5b, G-6, G-7, G-8, G-8b, G-9. Valores inventados como AUTO-5b o HITL-TL sin normalizar rompen el dashboard. Para gates AUTO usar el código canónico directamente (G-5b). (3) Checklist de persistencia de gate añade verificación: gate_pending ∈ GATE_ROLES antes de escribir session.json.",
+      "registered_at": "2026-04-16T17:47:47.070Z",
+      "scope": "proyecto+SOFIA-CORE",
+      "impact": "CRITICAL",
+      "score": 8,
+      "matched_criteria": [
+        "REGLA_PERMANENTE",
+        "BLOCKER_GATE",
+        "MULTI_SKILL"
+      ],
+      "promotion_status": "approved",
+      "po_decision": "ACCEPTED",
+      "po_notes": null,
+      "po_decided_at": "2026-04-16T18:03:59.977663Z"
+    }
+  ],
+  "skipped": [],
+  "stats": {
+    "total_las_sprint": 4,
+    "candidates_count": 4,
+    "skipped_count": 0
+  }
+}
