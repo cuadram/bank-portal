@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🎨 PROTO — Mi Dinero PFM · BankPortal Sprint 25</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-primary:#1B5E99;--color-primary-dark:#0D3E6E;--color-primary-light:#E3F0FB;
+  --color-success:#00897B;--color-success-light:#E0F2F1;
+  --color-error:#E53935;--color-error-light:#FFEBEE;
+  --color-warning:#F57F17;--color-warning-light:#FFF8E1;
+  --color-info:#1976D2;--color-info-light:#E3F2FD;
+  --color-bg-app:#F5F7FA;--color-bg-card:#F5F7FA;
+  --color-border:#E8ECF0;--color-border-input:#D1D5DB;
+  --color-text-primary:#1A2332;--color-text-secondary:#4A5568;
+  --color-text-disabled:#9CA3AF;--color-white:#FFFFFF;
+  --font-base:'Inter','Roboto',sans-serif;
+  --text-xs:11px;--text-sm:12px;--text-base:14px;--text-md:16px;
+  --text-lg:18px;--text-xl:20px;--text-2xl:24px;--text-3xl:28px;
+  --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;
+  --sp-6:24px;--sp-8:32px;--sp-10:40px;--sp-12:48px;
+  --radius-sm:4px;--radius-md:8px;--radius-lg:12px;--radius-full:9999px;
+  --shadow-card:0 1px 4px rgba(0,0,0,0.08);
+  --shadow-modal:0 8px 32px rgba(0,0,0,0.16);
+  --shadow-button:0 2px 8px rgba(27,94,153,0.30);
+  --transition:200ms cubic-bezier(0.4,0,0.2,1);
+  --pfm-alimentacion:#4CAF50;--pfm-transporte:#2196F3;
+  --pfm-restaurantes:#FF9800;--pfm-salud:#E91E63;
+  --pfm-hogar:#9C27B0;--pfm-suministros:#00BCD4;
+  --pfm-ocio:#FF5722;--pfm-educacion:#3F51B5;
+  --pfm-viajes:#009688;--pfm-seguros:#795548;
+  --pfm-nomina:#00897B;--pfm-transferencias:#607D8B;
+  --pfm-otros:#9E9E9E;
+  --pfm-ok:#00897B;--pfm-warn:#F57F17;--pfm-danger:#E53935;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-base);background:#1a1a2e;min-height:100vh}
+.proto-shell{display:flex;flex-direction:column;min-height:100vh}
+.proto-toolbar{background:#12122a;border-bottom:1px solid #2a2a4a;padding:var(--sp-3) var(--sp-6);display:flex;align-items:center;gap:var(--sp-4);position:sticky;top:0;z-index:1000;flex-wrap:wrap}
+.proto-title{color:#fff;font-size:var(--text-sm);font-weight:600;letter-spacing:.5px}
+.proto-badge{background:#C84A14;color:#fff;font-size:var(--text-xs);font-weight:700;padding:2px 8px;border-radius:var(--radius-full);letter-spacing:.8px}
+.proto-nav{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-left:auto}
+.proto-nav-btn{background:transparent;border:1px solid #3a3a5a;color:#aaa;font-size:var(--text-sm);padding:var(--sp-1) var(--sp-3);border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);font-family:var(--font-base)}
+.proto-nav-btn:hover,.proto-nav-btn.active{background:var(--color-primary);border-color:var(--color-primary);color:#fff}
+.proto-vp-toggle{display:flex;gap:var(--sp-1);background:#0e0e20;padding:3px;border-radius:var(--radius-sm)}
+.proto-vp-btn{background:transparent;border:none;color:#888;padding:4px 10px;border-radius:3px;cursor:pointer;font-size:var(--text-sm);transition:var(--transition);font-family:var(--font-base)}
+.proto-vp-btn.active{background:#2a2a4a;color:#fff}
+.proto-canvas{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:var(--sp-8);overflow-x:auto}
+.proto-screen{display:none;width:100%;max-width:1280px}
+.proto-screen.active{display:block}
+.viewport-tablet .proto-screen{max-width:768px}
+.viewport-mobile .proto-screen{max-width:390px}
+.app-shell{background:var(--color-bg-app);border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4);min-height:600px}
+.app-header{display:none!important}
+.app-logo{font-size:var(--text-lg);font-weight:700;color:var(--color-primary);letter-spacing:-.5px}
+.app-logo span{color:var(--color-text-secondary);font-weight:400}
+.app-user{margin-left:auto;display:flex;align-items:center;gap:var(--sp-3)}
+.app-avatar{width:36px;height:36px;border-radius:50%;background:var(--color-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:700}
+.app-layout{display:flex;min-height:600px}
+.app-sidebar{width:200px;background:#1e3a5f;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-group{display:none!important}.sidebar-brand{padding:16px 14px;border-bottom:1px solid rgba(255,255,255,.12);font-size:15px;font-weight:700;color:#fff;flex-shrink:0}.sidebar-nav-wrap{flex:1;padding:4px 0}.sidebar-divider{height:1px;background:rgba(255,255,255,.12);margin:4px 0}.sidebar-footer-real{padding:10px 14px;border-top:1px solid rgba(255,255,255,.12);flex-shrink:0}.sidebar-logout{width:100%;display:flex;align-items:center;gap:6px;background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);border-radius:5px;padding:6px 10px;cursor:pointer;font-size:11px;font-family:var(--font-base)}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:13px;color:rgba(255,255,255,.72);cursor:pointer;transition:var(--transition);border-left:3px solid transparent}
+.sidebar-item:hover{background:rgba(255,255,255,.1);color:#fff}
+.sidebar-item.active{background:rgba(255,255,255,.15)!important;color:#fff!important;border-left-color:#fff!important;font-weight:600}
+.app-content{flex:1;padding:var(--sp-8);overflow-y:auto;min-height:600px}
+.pfm-tabs{display:flex;gap:0;border-bottom:2px solid var(--color-border);margin-bottom:var(--sp-6)}
+.pfm-tab{padding:var(--sp-3) var(--sp-5);font-size:var(--text-base);color:var(--color-text-secondary);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:var(--transition);font-weight:500}
+.pfm-tab:hover{color:var(--color-primary)}
+.pfm-tab.active{color:var(--color-primary);border-bottom-color:var(--color-primary);font-weight:600}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-4);margin-bottom:var(--sp-6)}
+.kpi-card{background:var(--color-white);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--sp-5);box-shadow:var(--shadow-card)}
+.kpi-label{font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:var(--sp-2)}
+.kpi-value{font-size:var(--text-2xl);font-weight:700;color:var(--color-text-primary);font-variant-numeric:tabular-nums}
+.kpi-sub{font-size:var(--text-sm);color:var(--color-text-secondary);margin-top:var(--sp-1)}
+.cat-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:600;color:#fff}
+.mv-list{background:var(--color-white);border:1px solid var(--color-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);overflow:hidden}
+.mv-row{display:flex;align-items:center;gap:var(--sp-4);padding:var(--sp-4) var(--sp-5);border-bottom:1px solid var(--color-border);transition:var(--transition)}
+.mv-row:last-child{border-bottom:none}
+.mv-row:hover{background:var(--color-primary-light)}
+.mv-icon{width:36px;height:36px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.mv-info{flex:1}
+.mv-concept{font-size:var(--text-base);font-weight:500;color:var(--color-text-primary)}
+.mv-meta{font-size:var(--text-sm);color:var(--color-text-secondary);margin-top:2px}
+.mv-amount{width:7rem;text-align:right;font-variant-numeric:tabular-nums;font-size:var(--text-base);font-weight:600;color:var(--color-error);flex-shrink:0}
+.mv-edit{background:none;border:none;cursor:pointer;font-size:16px;color:var(--color-text-disabled);padding:var(--sp-1);border-radius:var(--radius-sm);transition:var(--transition)}
+.mv-edit:hover{background:var(--color-bg-card);color:var(--color-primary)}
+.budget-list{display:flex;flex-direction:column;gap:var(--sp-4)}
+.budget-card{background:var(--color-white);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--sp-5);box-shadow:var(--shadow-card)}
+.budget-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-3)}
+.budget-name{font-size:var(--text-md);font-weight:600;color:var(--color-text-primary);display:flex;align-items:center;gap:var(--sp-2)}
+.budget-amounts{font-size:var(--text-sm);color:var(--color-text-secondary);text-align:right;font-variant-numeric:tabular-nums}
+.budget-bar-bg{height:10px;background:var(--color-bg-card);border-radius:var(--radius-full);overflow:hidden;margin-bottom:var(--sp-2)}
+.budget-bar-fill{height:100%;border-radius:var(--radius-full);transition:width .6s ease}
+.budget-status{font-size:var(--text-sm);font-weight:500}
+.analysis-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-6)}
+.analysis-nav-btn{background:var(--color-white);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:var(--sp-2) var(--sp-4);cursor:pointer;font-size:var(--text-base);color:var(--color-text-secondary);transition:var(--transition)}
+.analysis-nav-btn:hover{border-color:var(--color-primary);color:var(--color-primary)}
+.analysis-period{font-size:var(--text-xl);font-weight:700;color:var(--color-text-primary)}
+.analysis-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-4);margin-bottom:var(--sp-6)}
+.analysis-row{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-4) var(--sp-5);border-bottom:1px solid var(--color-border)}
+.analysis-row:last-child{border-bottom:none}
+.analysis-cat{flex:1;font-size:var(--text-base);font-weight:500;color:var(--color-text-primary)}
+.analysis-bars{display:flex;flex-direction:column;gap:4px;width:200px}
+.analysis-bar{height:8px;border-radius:var(--radius-full)}
+.analysis-amount{width:7rem;text-align:right;font-variant-numeric:tabular-nums;font-size:var(--text-sm);color:var(--color-text-secondary)}
+.analysis-delta{width:80px;text-align:right;font-size:var(--text-sm);font-weight:600}
+.delta-up{color:var(--color-error)}
+.delta-down{color:var(--color-success)}
+.dist-legend{display:flex;flex-direction:column;gap:var(--sp-3)}
+.dist-leg-row{display:flex;align-items:center;gap:var(--sp-3);font-size:var(--text-sm)}
+.dist-leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.dist-leg-name{flex:1;color:var(--color-text-secondary)}
+.dist-leg-pct{font-weight:600;color:var(--color-text-primary);font-variant-numeric:tabular-nums;min-width:38px;text-align:right}
+.merchant-row{display:flex;align-items:center;gap:var(--sp-4);padding:var(--sp-4) var(--sp-5);border-bottom:1px solid var(--color-border);cursor:pointer;transition:var(--transition)}
+.merchant-row:last-child{border-bottom:none}
+.merchant-row:hover{background:var(--color-primary-light)}
+.merchant-rank{width:28px;height:28px;border-radius:50%;background:var(--color-bg-card);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:700;color:var(--color-text-secondary);flex-shrink:0}
+.merchant-rank.top3{background:var(--color-primary);color:#fff}
+.merchant-name{font-weight:500;color:var(--color-text-primary)}
+.merchant-count{font-size:var(--text-sm);color:var(--color-text-secondary)}
+.merchant-amount{width:7rem;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:var(--color-text-primary);flex-shrink:0}
+.modal{background:var(--color-white);border-radius:var(--radius-lg);box-shadow:var(--shadow-modal);width:100%;max-width:480px;overflow:hidden}
+.modal-header{padding:var(--sp-5) var(--sp-6);border-bottom:1px solid var(--color-border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:var(--text-lg);font-weight:600;color:var(--color-text-primary)}
+.modal-body{padding:var(--sp-6)}
+.modal-footer{padding:var(--sp-4) var(--sp-6);border-top:1px solid var(--color-border);display:flex;justify-content:flex-end;gap:var(--sp-3)}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2)}
+.cat-option{display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-3);border:1.5px solid var(--color-border);border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);font-size:var(--text-base)}
+.cat-option:hover{border-color:var(--color-primary);background:var(--color-primary-light)}
+.cat-option.selected{border-color:var(--color-primary);background:var(--color-primary-light);font-weight:600;color:var(--color-primary)}
+.form-group{margin-bottom:var(--sp-5)}
+.form-label{display:block;font-size:var(--text-sm);font-weight:500;color:var(--color-text-primary);margin-bottom:var(--sp-2)}
+.form-label .req{color:var(--color-error);margin-left:2px}
+.form-input{width:100%;padding:var(--sp-3) var(--sp-4);border:1.5px solid var(--color-border-input);border-radius:var(--radius-md);font-size:var(--text-base);font-family:var(--font-base);color:var(--color-text-primary);background:var(--color-white);outline:none;transition:var(--transition)}
+.form-input:focus{border-color:var(--color-primary);box-shadow:0 0 0 3px rgba(27,94,153,.12)}
+.form-hint{font-size:var(--text-sm);color:var(--color-text-secondary);margin-top:var(--sp-1)}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%234A5568' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+.range-wrap{display:flex;align-items:center;gap:var(--sp-4)}
+.range-input{flex:1;accent-color:var(--color-primary)}
+.range-value{font-size:var(--text-lg);font-weight:700;color:var(--color-primary);min-width:48px;text-align:center}
+.btn{display:inline-flex;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-5);border-radius:var(--radius-md);font-size:var(--text-base);font-weight:500;cursor:pointer;transition:var(--transition);border:none;font-family:var(--font-base);line-height:1.5}
+.btn-primary{background:var(--color-primary);color:#fff;box-shadow:var(--shadow-button)}
+.btn-primary:hover{background:var(--color-primary-dark)}
+.btn-secondary{background:transparent;color:var(--color-primary);border:1.5px solid var(--color-primary)}
+.btn-secondary:hover{background:var(--color-primary-light)}
+.btn-ghost{background:transparent;color:var(--color-text-secondary)}
+.btn-ghost:hover{background:var(--color-bg-card)}
+.card{background:var(--color-white);border-radius:var(--radius-lg);border:1px solid var(--color-border);box-shadow:var(--shadow-card)}
+.card-header{padding:var(--sp-5) var(--sp-6);border-bottom:1px solid var(--color-border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:var(--text-md);font-weight:600;color:var(--color-text-primary)}
+.card-body{padding:var(--sp-6)}
+.card-footer{padding:var(--sp-4) var(--sp-6);border-top:1px solid var(--color-border);display:flex;justify-content:flex-end;gap:var(--sp-3)}
+.alert{display:flex;gap:var(--sp-3);padding:var(--sp-4) var(--sp-5);border-radius:var(--radius-md);font-size:var(--text-base);margin-bottom:var(--sp-4)}
+.alert-info{background:var(--color-info-light);border-left:4px solid var(--color-info);color:#0c3a6e}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:600}
+.badge-success{background:var(--color-success-light);color:#00695C}
+.badge-error{background:var(--color-error-light);color:#C62828}
+.badge-warning{background:var(--color-warning-light);color:var(--color-warning)}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--sp-12) var(--sp-6);text-align:center}
+.empty-icon{font-size:56px;margin-bottom:var(--sp-4);opacity:.5}
+.empty-title{font-size:var(--text-lg);font-weight:600;color:var(--color-text-primary);margin-bottom:var(--sp-2)}
+.empty-sub{font-size:var(--text-base);color:var(--color-text-secondary);margin-bottom:var(--sp-6);max-width:360px}
+.ann-dot{display:inline-flex;width:18px;height:18px;background:#C84A14;color:#fff;border-radius:50%;font-size:10px;font-weight:700;align-items:center;justify-content:center;vertical-align:super;cursor:help;margin-left:3px;position:relative}
+.ann-dot:hover .ann-tip{display:block}
+.ann-tip{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;font-size:12px;padding:8px 12px;border-radius:6px;white-space:normal;min-width:220px;max-width:300px;z-index:1000;line-height:1.4;font-weight:400;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.ann-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#1a1a2e}
+.toast-container{position:fixed;bottom:var(--sp-6);right:var(--sp-6);z-index:9999}
+.toast{background:#1A2332;color:#fff;padding:var(--sp-3) var(--sp-5);border-radius:var(--radius-md);font-size:var(--text-base);box-shadow:var(--shadow-modal);display:flex;align-items:center;gap:var(--sp-3);margin-top:var(--sp-2);animation:slideIn .3s ease}
+.toast-success{border-left:4px solid var(--color-success)}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.flex{display:flex}.items-center{align-items:center}.justify-between{justify-content:space-between}
+.gap-4{gap:var(--sp-4)}.mt-4{margin-top:var(--sp-4)}.mb-4{margin-bottom:var(--sp-4)}.mb-6{margin-bottom:var(--sp-6)}
+.page-title{font-size:var(--text-2xl);font-weight:700;color:var(--color-text-primary)}
+.page-sub{font-size:var(--text-base);color:var(--color-text-secondary);margin-top:var(--sp-1)}
+.proto-notes{background:#12122a;border-top:1px solid #2a2a4a;padding:var(--sp-3) var(--sp-6);font-size:var(--text-sm);color:#888}
+.proto-notes strong{color:#aaa}
+</style>
+</head>
+<body>
+<div class="proto-shell" id="protoShell">
+<div class="proto-toolbar">
+  <span class="proto-badge">PROTO</span>
+  <span class="proto-title">Mi Dinero PFM · FEAT-023 · BankPortal · Sprint 25</span>
+  <div class="proto-nav">
+    <button class="proto-nav-btn active" onclick="showScreen('screen-overview')">📊 Overview</button>
+    <button class="proto-nav-btn" onclick="showScreen('screen-budgets')">💰 Presupuestos</button>
+    <button class="proto-nav-btn" onclick="showScreen('screen-new-budget')">➕ Nuevo Prespto.</button>
+    <button class="proto-nav-btn" onclick="showScreen('screen-analysis')">📈 Análisis</button>
+    <button class="proto-nav-btn" onclick="showScreen('screen-distribution')">🍕 Distribución</button>
+    <button class="proto-nav-btn" onclick="showScreen('screen-edit-cat')">✏️ Editar Cat.</button>
+    <button class="proto-nav-btn" onclick="showScreen('screen-dashboard')">🏠 Dashboard</button>
+    <button class="proto-nav-btn" onclick="showScreen('screen-empty')">📭 Vacío</button>
+    <button class="proto-nav-btn" onclick="showScreen('screen-budget-form-error')">⚠️ Form Error</button>
+    <button class="proto-nav-btn" onclick="showScreen('screen-dashboard-no-budget')">🏠 Widget Vacío</button>
+    <button class="proto-nav-btn" onclick="showScreen('screen-merchant-detail')">🏪 Detalle Comercio</button>
+  </div>
+  <div class="proto-vp-toggle">
+    <button class="proto-vp-btn active" onclick="setVP('desktop',this)">🖥 Desktop</button>
+    <button class="proto-vp-btn" onclick="setVP('tablet',this)">📱 Tablet</button>
+    <button class="proto-vp-btn" onclick="setVP('mobile',this)">📱 Mobile</button>
+  </div>
+</div>
+<div class="proto-canvas" id="protoCanvas">
+
+<!-- SCREEN: OVERVIEW -->
+<div class="proto-screen active" id="screen-overview">
+  <div class="app-shell">
+    <div class="app-header">
+      <div class="app-logo">Bank<span>Portal</span></div>
+      <div class="app-user"><div class="app-avatar">AL</div><span style="font-size:var(--text-base);color:var(--color-text-secondary)">Ana López</span></div>
+    </div>
+    <div class="app-layout">
+      <aside class="app-sidebar">
+        <div class="sidebar-brand">🏛 BankPortal</div>
+        <div class="sidebar-nav-wrap">
+          <div class="sidebar-item" onclick="showScreen('screen-dashboard')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Dashboard</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏦</span><span>Cuentas</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💳</span><span>Tarjetas</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔄</span><span>Domiciliaciones</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📤</span><span>Exportación</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏛</span><span>Préstamos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💰</span><span>Depósitos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💸</span><span>Bizum</span></div>
+          <div class="sidebar-item active" onclick="showScreen('screen-overview')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Mi Dinero</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">👤</span><span>Mi Perfil</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔒</span><span>Centro de Privacidad</span></div>
+        </div>
+        <div class="sidebar-footer-real">
+          <button class="sidebar-logout">🔓 Cerrar sesión</button>
+        </div>
+      </aside>
+      <main class="app-content">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <div class="page-title">Mi Dinero <span class="ann-dot">1<span class="ann-tip">Nombre corto y directo. Coherente con el item de navegación lateral.</span></span></div>
+            <div class="page-sub">Resumen financiero · Abril 2026</div>
+          </div>
+          <span style="font-size:var(--text-sm);color:var(--color-text-secondary)">Última actualización: hace 2 min</span>
+        </div>
+        <div class="pfm-tabs">
+          <div class="pfm-tab active">📊 Overview</div>
+          <div class="pfm-tab" onclick="showScreen('screen-budgets')">💰 Presupuestos</div>
+          <div class="pfm-tab" onclick="showScreen('screen-analysis')">📈 Análisis</div>
+          <div class="pfm-tab" onclick="showScreen('screen-distribution')">🍕 Distribución</div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">Gasto total mes <span class="ann-dot">2<span class="ann-tip">Solo CARGO (RN-F023-02). Excluye nómina, transferencias internas y AEAT/TGSS.</span></span></div>
+            <div class="kpi-value">1.247,30 €</div>
+            <div class="kpi-sub" style="color:var(--color-error)">↑ +14,5% vs marzo</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Presupuestos activos</div>
+            <div class="kpi-value">4 / 10</div>
+            <div class="kpi-sub">
+              <span style="color:var(--color-success)">● 2 verde</span>&nbsp;
+              <span style="color:var(--color-warning)">● 1 naranja</span>&nbsp;
+              <span style="color:var(--color-error)">● 1 rojo</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Categorías detectadas</div>
+            <div class="kpi-value">8</div>
+            <div class="kpi-sub">de 14 posibles este mes</div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between mb-4">
+          <div style="font-size:var(--text-md);font-weight:600;color:var(--color-text-primary)">Movimientos del mes categorizados</div>
+          <select style="font-size:var(--text-sm);padding:var(--sp-1) var(--sp-3);border:1px solid var(--color-border);border-radius:var(--radius-sm);background:var(--color-white);color:var(--color-text-secondary)">
+            <option>Todas las categorías</option>
+            <option>Alimentación</option>
+            <option>Restaurantes</option>
+          </select>
+        </div>
+        <div class="mv-list">
+          <div class="mv-row">
+            <div class="mv-icon" style="background:#E8F5E9">🛒</div>
+            <div class="mv-info">
+              <div class="mv-concept">MERCADONA SA</div>
+              <div class="mv-meta"><span class="cat-badge" style="background:var(--pfm-alimentacion)">Alimentación</span>&nbsp;14 abr 2026</div>
+            </div>
+            <div class="mv-amount">-45,20 €</div>
+            <button class="mv-edit" onclick="showScreen('screen-edit-cat')" title="Editar categoría">✏️</button>
+          </div>
+          <div class="mv-row">
+            <div class="mv-icon" style="background:#E3F2FD">🚗</div>
+            <div class="mv-info">
+              <div class="mv-concept">CABIFY APP</div>
+              <div class="mv-meta"><span class="cat-badge" style="background:var(--pfm-transporte)">Transporte</span>&nbsp;13 abr 2026</div>
+            </div>
+            <div class="mv-amount">-12,40 €</div>
+            <button class="mv-edit" onclick="showScreen('screen-edit-cat')">✏️</button>
+          </div>
+          <div class="mv-row">
+            <div class="mv-icon" style="background:#FFF3E0">🍽️</div>
+            <div class="mv-info">
+              <div class="mv-concept">RESTAURANTE EL QUIJOTE</div>
+              <div class="mv-meta"><span class="cat-badge" style="background:var(--pfm-restaurantes)">Restaurantes</span>&nbsp;12 abr 2026</div>
+            </div>
+            <div class="mv-amount">-38,00 €</div>
+            <button class="mv-edit" onclick="showScreen('screen-edit-cat')">✏️</button>
+          </div>
+          <div class="mv-row">
+            <div class="mv-icon" style="background:#F3E5F5">🏠</div>
+            <div class="mv-info">
+              <div class="mv-concept">IKEA SPAIN SL</div>
+              <div class="mv-meta"><span class="cat-badge" style="background:var(--pfm-hogar)">Hogar</span>&nbsp;11 abr 2026</div>
+            </div>
+            <div class="mv-amount">-89,99 €</div>
+            <button class="mv-edit" onclick="showScreen('screen-edit-cat')">✏️</button>
+          </div>
+          <div class="mv-row">
+            <div class="mv-icon" style="background:#E0F2F1">💰</div>
+            <div class="mv-info">
+              <div class="mv-concept">NOMINA ABRIL EMPRESA SL</div>
+              <div class="mv-meta"><span class="cat-badge" style="background:var(--pfm-nomina)">Nómina</span>&nbsp;1 abr 2026 <span class="ann-dot">3<span class="ann-tip">ABONO: categoría Nómina. NO computa en presupuestos ni análisis (RN-F023-02). Botón ✏️ deshabilitado (RN-F023-19).</span></span></div>
+            </div>
+            <div class="mv-amount" style="color:var(--color-success)">+2.400,00 €</div>
+            <button class="mv-edit" style="opacity:.3;cursor:not-allowed" title="Los ingresos no son recategorizables">✏️</button>
+          </div>
+          <div class="mv-row">
+            <div class="mv-icon" style="background:var(--color-bg-card)">❓</div>
+            <div class="mv-info">
+              <div class="mv-concept">FLOWERTOPIA SL REF0042</div>
+              <div class="mv-meta"><span class="cat-badge" style="background:var(--pfm-otros)">Otros</span>&nbsp;10 abr 2026 <span class="ann-dot">4<span class="ann-tip">Concepto no reconocido → Otros automático. Cliente puede recategorizar con ✏️ y el sistema aprende la regla (RN-F023-01, RN-F023-17).</span></span></div>
+            </div>
+            <div class="mv-amount">-24,00 €</div>
+            <button class="mv-edit" onclick="showScreen('screen-edit-cat')">✏️</button>
+          </div>
+        </div>
+        <div style="text-align:center;padding:var(--sp-4);font-size:var(--text-sm);color:var(--color-text-secondary)">Mostrando 6 de 47 movimientos · <a style="color:var(--color-primary);cursor:pointer">Ver todos</a></div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: BUDGETS -->
+<div class="proto-screen" id="screen-budgets">
+  <div class="app-shell">
+    <div class="app-header"><div class="app-logo">Bank<span>Portal</span></div><div class="app-user"><div class="app-avatar">AL</div></div></div>
+    <div class="app-layout">
+      <aside class="app-sidebar">
+        <div class="sidebar-brand">🏛 BankPortal</div>
+        <div class="sidebar-nav-wrap">
+          <div class="sidebar-item" onclick="showScreen('screen-dashboard')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Dashboard</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏦</span><span>Cuentas</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💳</span><span>Tarjetas</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔄</span><span>Domiciliaciones</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📤</span><span>Exportación</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏛</span><span>Préstamos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💰</span><span>Depósitos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💸</span><span>Bizum</span></div>
+          <div class="sidebar-item active" onclick="showScreen('screen-overview')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Mi Dinero</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">👤</span><span>Mi Perfil</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔒</span><span>Centro de Privacidad</span></div>
+        </div>
+        <div class="sidebar-footer-real">
+          <button class="sidebar-logout">🔓 Cerrar sesión</button>
+        </div>
+      </aside>
+      <main class="app-content">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <div class="page-title">Mis Presupuestos</div>
+            <div class="page-sub">Abril 2026 · 4 activos · máx. 10 <span class="ann-dot">5<span class="ann-tip">Contador límite visible (RN-F023-04). A 10/10 el botón + se desactiva con tooltip explicativo.</span></span></div>
+          </div>
+          <button class="btn btn-primary" onclick="showScreen('screen-new-budget')">+ Nuevo presupuesto</button>
+        </div>
+        <div class="pfm-tabs">
+          <div class="pfm-tab" onclick="showScreen('screen-overview')">📊 Overview</div>
+          <div class="pfm-tab active">💰 Presupuestos</div>
+          <div class="pfm-tab" onclick="showScreen('screen-analysis')">📈 Análisis</div>
+          <div class="pfm-tab" onclick="showScreen('screen-distribution')">🍕 Distribución</div>
+        </div>
+        <div class="budget-list">
+          <div class="budget-card" style="border-left:4px solid var(--pfm-danger)">
+            <div class="budget-header">
+              <div class="budget-name"><span style="font-size:20px">🍽️</span> Restaurantes</div>
+              <div class="budget-amounts">
+                <div style="font-size:var(--text-lg);font-weight:700;color:var(--pfm-danger)">315,00 € <span style="font-size:var(--text-sm);color:var(--color-text-secondary)">/ 300,00 €</span></div>
+                <div style="color:var(--pfm-danger);font-size:var(--text-sm);font-weight:600">105% consumido</div>
+              </div>
+            </div>
+            <div class="budget-bar-bg"><div class="budget-bar-fill" style="width:100%;background:var(--pfm-danger)"></div></div>
+            <div class="flex items-center justify-between">
+              <div class="budget-status" style="color:var(--pfm-danger)">✗ Excedido en 15,00 € <span class="ann-dot">6<span class="ann-tip">ROJO: gasto ≥ 100%. Barra completa roja. El mes anterior se habrá emitido BUDGET_ALERT cuando alcanzó el umbral configurado.</span></span></div>
+              <span class="badge badge-error">Excedido</span>
+            </div>
+          </div>
+          <div class="budget-card" style="border-left:4px solid var(--pfm-warn)">
+            <div class="budget-header">
+              <div class="budget-name"><span style="font-size:20px">🛒</span> Alimentación</div>
+              <div class="budget-amounts">
+                <div style="font-size:var(--text-lg);font-weight:700;color:var(--pfm-warn)">245,00 € <span style="font-size:var(--text-sm);color:var(--color-text-secondary)">/ 300,00 €</span></div>
+                <div style="color:var(--pfm-warn);font-size:var(--text-sm);font-weight:600">81% consumido</div>
+              </div>
+            </div>
+            <div class="budget-bar-bg"><div class="budget-bar-fill" style="width:81%;background:var(--pfm-warn)"></div></div>
+            <div class="flex items-center justify-between">
+              <div class="budget-status" style="color:var(--pfm-warn)">⚠ Quedan 55,00 € <span class="ann-dot">7<span class="ann-tip">NARANJA: 80-99%. Notificación BUDGET_ALERT ya emitida si umbral ≤81% (RN-F023-08/09).</span></span></div>
+              <span class="badge badge-warning">Atención</span>
+            </div>
+          </div>
+          <div class="budget-card" style="border-left:4px solid var(--pfm-ok)">
+            <div class="budget-header">
+              <div class="budget-name"><span style="font-size:20px">🚗</span> Transporte</div>
+              <div class="budget-amounts">
+                <div style="font-size:var(--text-lg);font-weight:700;color:var(--pfm-ok)">58,00 € <span style="font-size:var(--text-sm);color:var(--color-text-secondary)">/ 150,00 €</span></div>
+                <div style="color:var(--pfm-ok);font-size:var(--text-sm);font-weight:600">38% consumido</div>
+              </div>
+            </div>
+            <div class="budget-bar-bg"><div class="budget-bar-fill" style="width:38%;background:var(--pfm-ok)"></div></div>
+            <div class="flex items-center justify-between">
+              <div class="budget-status" style="color:var(--pfm-ok)">✓ Quedan 92,00 €</div>
+              <span class="badge badge-success">Bien</span>
+            </div>
+          </div>
+          <div class="budget-card" style="border-left:4px solid var(--pfm-ok)">
+            <div class="budget-header">
+              <div class="budget-name"><span style="font-size:20px">🎯</span> Ocio</div>
+              <div class="budget-amounts">
+                <div style="font-size:var(--text-lg);font-weight:700;color:var(--pfm-ok)">80,00 € <span style="font-size:var(--text-sm);color:var(--color-text-secondary)">/ 200,00 €</span></div>
+                <div style="color:var(--pfm-ok);font-size:var(--text-sm);font-weight:600">40% consumido</div>
+              </div>
+            </div>
+            <div class="budget-bar-bg"><div class="budget-bar-fill" style="width:40%;background:var(--pfm-ok)"></div></div>
+            <div class="flex items-center justify-between">
+              <div class="budget-status" style="color:var(--pfm-ok)">✓ Quedan 120,00 €</div>
+              <span class="badge badge-success">Bien</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: NEW BUDGET -->
+<div class="proto-screen" id="screen-new-budget">
+  <div class="app-shell">
+    <div class="app-header"><div class="app-logo">Bank<span>Portal</span></div><div class="app-user"><div class="app-avatar">AL</div></div></div>
+    <div class="app-layout">
+      <aside class="app-sidebar">
+        <div class="sidebar-brand">🏛 BankPortal</div>
+        <div class="sidebar-nav-wrap">
+          <div class="sidebar-item" onclick="showScreen('screen-dashboard')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Dashboard</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏦</span><span>Cuentas</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💳</span><span>Tarjetas</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔄</span><span>Domiciliaciones</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📤</span><span>Exportación</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏛</span><span>Préstamos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💰</span><span>Depósitos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💸</span><span>Bizum</span></div>
+          <div class="sidebar-item active" onclick="showScreen('screen-overview')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Mi Dinero</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">👤</span><span>Mi Perfil</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔒</span><span>Centro de Privacidad</span></div>
+        </div>
+        <div class="sidebar-footer-real">
+          <button class="sidebar-logout">🔓 Cerrar sesión</button>
+        </div>
+      </aside>
+      <main class="app-content">
+        <div class="page-title mb-4">Nuevo presupuesto</div>
+        <div class="card" style="max-width:580px">
+          <div class="card-header"><span class="card-title">Configura tu presupuesto mensual</span></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Categoría <span class="req">*</span> <span class="ann-dot">8<span class="ann-tip">Solo categorías GASTO. Nómina y Transferencias excluidas (RN-F023-02). Error inline si la categoría ya tiene presupuesto este mes (RN-F023-05).</span></span></label>
+              <select class="form-input form-select">
+                <option value="">Selecciona una categoría</option>
+                <option>🛒 Alimentación</option><option>🚗 Transporte</option>
+                <option>🍽️ Restaurantes</option><option>❤️ Salud</option>
+                <option>🏠 Hogar</option><option>💡 Suministros</option>
+                <option>📱 Comunicaciones</option><option>🎯 Ocio</option>
+                <option>📚 Educación</option><option>✈️ Viajes</option>
+                <option>🔒 Seguros</option><option>❓ Otros</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Importe mensual (€) <span class="req">*</span> <span class="ann-dot">9<span class="ann-tip">BigDecimal HALF_EVEN (ADR-034). Rango 0,01–99.999,99 € (RN-F023-06). Validación al blur.</span></span></label>
+              <input class="form-input" type="number" placeholder="0,00" min="0.01" max="99999.99" step="0.01" value="300">
+              <div class="form-hint">Entre 0,01 € y 99.999,99 €</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Umbral de alerta push <span class="ann-dot">10<span class="ann-tip">Slider 50–95% en steps de 5% (RN-F023-08). Preview en euros calculado en tiempo real.</span></span></label>
+              <div class="range-wrap">
+                <input type="range" class="range-input" min="50" max="95" step="5" value="80" id="thresholdRange" oninput="updateThreshold(this.value)">
+                <div class="range-value" id="thresholdVal">80%</div>
+              </div>
+              <div class="form-hint" id="thresholdPreview">Recibirás alerta push al alcanzar <strong>240,00 €</strong> de 300,00 €</div>
+            </div>
+            <div class="alert alert-info">ℹ El presupuesto se reinicia automáticamente cada mes (RN-F023-07).</div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-ghost" onclick="showScreen('screen-budgets')">Cancelar</button>
+            <button class="btn btn-primary" onclick="showScreen('screen-budgets');showToast('✅ Presupuesto creado · 300,00 €/mes')">Crear presupuesto</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: ANALYSIS -->
+<div class="proto-screen" id="screen-analysis">
+  <div class="app-shell">
+    <div class="app-header"><div class="app-logo">Bank<span>Portal</span></div><div class="app-user"><div class="app-avatar">AL</div></div></div>
+    <div class="app-layout">
+      <aside class="app-sidebar">
+        <div class="sidebar-brand">🏛 BankPortal</div>
+        <div class="sidebar-nav-wrap">
+          <div class="sidebar-item" onclick="showScreen('screen-dashboard')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Dashboard</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏦</span><span>Cuentas</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💳</span><span>Tarjetas</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔄</span><span>Domiciliaciones</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📤</span><span>Exportación</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏛</span><span>Préstamos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💰</span><span>Depósitos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💸</span><span>Bizum</span></div>
+          <div class="sidebar-item active" onclick="showScreen('screen-overview')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Mi Dinero</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">👤</span><span>Mi Perfil</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔒</span><span>Centro de Privacidad</span></div>
+        </div>
+        <div class="sidebar-footer-real">
+          <button class="sidebar-logout">🔓 Cerrar sesión</button>
+        </div>
+      </aside>
+      <main class="app-content">
+        <div class="page-title mb-4">Análisis mensual</div>
+        <div class="pfm-tabs mb-6">
+          <div class="pfm-tab" onclick="showScreen('screen-overview')">📊 Overview</div>
+          <div class="pfm-tab" onclick="showScreen('screen-budgets')">💰 Presupuestos</div>
+          <div class="pfm-tab active">📈 Análisis</div>
+          <div class="pfm-tab" onclick="showScreen('screen-distribution')">🍕 Distribución</div>
+        </div>
+        <div class="analysis-nav">
+          <button class="analysis-nav-btn">◀ Marzo 2026</button>
+          <div class="analysis-period">Abril 2026 <span class="ann-dot">11<span class="ann-tip">Navegación hasta 12 meses atrás (RN-F023-12). Botón ▶ desactivado en mes actual.</span></span></div>
+          <button class="analysis-nav-btn" style="opacity:.4;cursor:not-allowed">Mayo 2026 ▶</button>
+        </div>
+        <div class="analysis-summary">
+          <div class="kpi-card"><div class="kpi-label">Total abril</div><div class="kpi-value">1.247,30 €</div></div>
+          <div class="kpi-card"><div class="kpi-label">Total marzo</div><div class="kpi-value">1.089,10 €</div></div>
+          <div class="kpi-card"><div class="kpi-label">Variación global</div><div class="kpi-value delta-up">↑ +14,5%</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Comparativa por categoría</span>
+            <div style="display:flex;gap:var(--sp-4);font-size:var(--text-sm)">
+              <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:2px;background:var(--color-primary);display:inline-block"></span> Abril</span>
+              <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:2px;background:var(--color-border);display:inline-block"></span> Marzo</span>
+            </div>
+          </div>
+          <div>
+            <div class="analysis-row" style="cursor:pointer" onmouseover="this.style.background='var(--color-primary-light)'" onmouseout="this.style.background=''">
+              <div class="analysis-cat">🍽️ Restaurantes <span class="ann-dot">12<span class="ann-tip">Click → drill-down movimientos de esa categoría en el mes. Solo categorías con ≥1 CARGO (RN-F023-13).</span></span></div>
+              <div class="analysis-bars"><div class="analysis-bar" style="width:100%;background:var(--color-primary)"></div><div class="analysis-bar" style="width:57%;background:#c5d8ec"></div></div>
+              <div class="analysis-amount">315,00 €<br><small>180,00 €</small></div>
+              <div class="analysis-delta delta-up">↑ +75,0%</div>
+            </div>
+            <div class="analysis-row" style="cursor:pointer" onmouseover="this.style.background='var(--color-primary-light)'" onmouseout="this.style.background=''">
+              <div class="analysis-cat">🛒 Alimentación</div>
+              <div class="analysis-bars"><div class="analysis-bar" style="width:78%;background:var(--color-primary)"></div><div class="analysis-bar" style="width:64%;background:#c5d8ec"></div></div>
+              <div class="analysis-amount">245,00 €<br><small>201,00 €</small></div>
+              <div class="analysis-delta delta-up">↑ +21,9%</div>
+            </div>
+            <div class="analysis-row" style="cursor:pointer" onmouseover="this.style.background='var(--color-primary-light)'" onmouseout="this.style.background=''">
+              <div class="analysis-cat">🏠 Hogar</div>
+              <div class="analysis-bars"><div class="analysis-bar" style="width:57%;background:var(--color-primary)"></div><div class="analysis-bar" style="width:51%;background:#c5d8ec"></div></div>
+              <div class="analysis-amount">180,00 €<br><small>160,00 €</small></div>
+              <div class="analysis-delta delta-up">↑ +12,5%</div>
+            </div>
+            <div class="analysis-row" style="cursor:pointer" onmouseover="this.style.background='var(--color-primary-light)'" onmouseout="this.style.background=''">
+              <div class="analysis-cat">🎯 Ocio</div>
+              <div class="analysis-bars"><div class="analysis-bar" style="width:25%;background:var(--color-primary)"></div><div class="analysis-bar" style="width:30%;background:#c5d8ec"></div></div>
+              <div class="analysis-amount">80,00 €<br><small>95,00 €</small></div>
+              <div class="analysis-delta delta-down">↓ -15,8%</div>
+            </div>
+            <div class="analysis-row" style="cursor:pointer" onmouseover="this.style.background='var(--color-primary-light)'" onmouseout="this.style.background=''">
+              <div class="analysis-cat">🚗 Transporte</div>
+              <div class="analysis-bars"><div class="analysis-bar" style="width:18%;background:var(--color-primary)"></div><div class="analysis-bar" style="width:23%;background:#c5d8ec"></div></div>
+              <div class="analysis-amount">58,00 €<br><small>72,00 €</small></div>
+              <div class="analysis-delta delta-down">↓ -19,4%</div>
+            </div>
+            <div class="analysis-row" style="cursor:pointer" onmouseover="this.style.background='var(--color-primary-light)'" onmouseout="this.style.background=''">
+              <div class="analysis-cat">❤️ Salud</div>
+              <div class="analysis-bars"><div class="analysis-bar" style="width:48%;background:var(--color-primary)"></div><div class="analysis-bar" style="width:0%;background:#c5d8ec"></div></div>
+              <div class="analysis-amount">152,00 €<br><small>0,00 €</small></div>
+              <div class="analysis-delta delta-up">↑ Nuevo</div>
+            </div>
+            <div class="analysis-row">
+              <div class="analysis-cat">❓ Otros</div>
+              <div class="analysis-bars"><div class="analysis-bar" style="width:66%;background:var(--color-primary)"></div><div class="analysis-bar" style="width:92%;background:#c5d8ec"></div></div>
+              <div class="analysis-amount">207,30 €<br><small>290,10 €</small></div>
+              <div class="analysis-delta delta-down">↓ -28,5%</div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: DISTRIBUTION -->
+<div class="proto-screen" id="screen-distribution">
+  <div class="app-shell">
+    <div class="app-header"><div class="app-logo">Bank<span>Portal</span></div><div class="app-user"><div class="app-avatar">AL</div></div></div>
+    <div class="app-layout">
+      <aside class="app-sidebar">
+        <div class="sidebar-brand">🏛 BankPortal</div>
+        <div class="sidebar-nav-wrap">
+          <div class="sidebar-item" onclick="showScreen('screen-dashboard')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Dashboard</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏦</span><span>Cuentas</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💳</span><span>Tarjetas</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔄</span><span>Domiciliaciones</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📤</span><span>Exportación</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏛</span><span>Préstamos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💰</span><span>Depósitos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💸</span><span>Bizum</span></div>
+          <div class="sidebar-item active" onclick="showScreen('screen-overview')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Mi Dinero</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">👤</span><span>Mi Perfil</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔒</span><span>Centro de Privacidad</span></div>
+        </div>
+        <div class="sidebar-footer-real">
+          <button class="sidebar-logout">🔓 Cerrar sesión</button>
+        </div>
+      </aside>
+      <main class="app-content">
+        <div class="page-title mb-4">Distribución de gasto · Abril 2026</div>
+        <div class="pfm-tabs mb-6">
+          <div class="pfm-tab" onclick="showScreen('screen-overview')">📊 Overview</div>
+          <div class="pfm-tab" onclick="showScreen('screen-budgets')">💰 Presupuestos</div>
+          <div class="pfm-tab" onclick="showScreen('screen-analysis')">📈 Análisis</div>
+          <div class="pfm-tab active">🍕 Distribución</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-6);margin-bottom:var(--sp-6)">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Por categoría <span class="ann-dot">13<span class="ann-tip">CSS conic-gradient. Excluye Transferencias y Nómina (RN-F023-21). Paleta 8 colores DS (RN-F023-22).</span></span></span></div>
+            <div class="card-body" style="display:flex;align-items:center;gap:var(--sp-6)">
+              <div style="flex-shrink:0">
+                <div style="width:180px;height:180px;border-radius:50%;background:conic-gradient(var(--pfm-restaurantes) 0% 25.3%,var(--pfm-alimentacion) 25.3% 44.9%,var(--pfm-hogar) 44.9% 59.3%,var(--pfm-salud) 59.3% 71.5%,var(--pfm-ocio) 71.5% 77.9%,var(--pfm-transporte) 77.9% 82.6%,var(--pfm-otros) 82.6% 100%);box-shadow:0 4px 20px rgba(0,0,0,.12)"></div>
+              </div>
+              <div class="dist-legend">
+                <div class="dist-leg-row"><div class="dist-leg-dot" style="background:var(--pfm-restaurantes)"></div><span class="dist-leg-name">🍽️ Restaurantes</span><span class="dist-leg-pct">25,3%</span></div>
+                <div class="dist-leg-row"><div class="dist-leg-dot" style="background:var(--pfm-alimentacion)"></div><span class="dist-leg-name">🛒 Alimentación</span><span class="dist-leg-pct">19,6%</span></div>
+                <div class="dist-leg-row"><div class="dist-leg-dot" style="background:var(--pfm-hogar)"></div><span class="dist-leg-name">🏠 Hogar</span><span class="dist-leg-pct">14,4%</span></div>
+                <div class="dist-leg-row"><div class="dist-leg-dot" style="background:var(--pfm-salud)"></div><span class="dist-leg-name">❤️ Salud</span><span class="dist-leg-pct">12,2%</span></div>
+                <div class="dist-leg-row"><div class="dist-leg-dot" style="background:var(--pfm-ocio)"></div><span class="dist-leg-name">🎯 Ocio</span><span class="dist-leg-pct">6,4%</span></div>
+                <div class="dist-leg-row"><div class="dist-leg-dot" style="background:var(--pfm-transporte)"></div><span class="dist-leg-name">🚗 Transporte</span><span class="dist-leg-pct">4,6%</span></div>
+                <div class="dist-leg-row"><div class="dist-leg-dot" style="background:var(--pfm-otros)"></div><span class="dist-leg-name">❓ Otros</span><span class="dist-leg-pct">16,6%</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Resumen</span></div>
+            <div class="card-body">
+              <div style="font-size:var(--text-3xl);font-weight:700;color:var(--color-text-primary);font-variant-numeric:tabular-nums;margin-bottom:var(--sp-2)">1.247,30 €</div>
+              <div style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:var(--sp-6)">Total gasto CARGO abril 2026 (excl. transferencias y nómina)</div>
+              <div style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:var(--sp-2)">Mayor categoría de gasto</div>
+              <div style="display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3);background:var(--color-bg-card);border-radius:var(--radius-md)">
+                <span style="font-size:24px">🍽️</span>
+                <div><div style="font-weight:600;color:var(--color-text-primary)">Restaurantes</div><div style="font-size:var(--text-sm);color:var(--color-text-secondary)">315,00 € · 25,3% del total</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Top 10 Comercios <span class="ann-dot">14<span class="ann-tip">DEBT-047: unifica bill_payments.biller_name + transactions.concept (primer token >4 chars). Excluye AEAT, TGSS, SUMA y transferencias propias (RN-F023-21).</span></span></span>
+            <span style="font-size:var(--text-sm);color:var(--color-text-secondary)">Abril 2026</span>
+          </div>
+          <div>
+            <div class="merchant-row"><div class="merchant-rank top3">1</div><div style="flex:1;min-width:0"><div class="merchant-name">MERCADONA SA</div><div class="merchant-count">5 transacciones</div></div><div class="merchant-amount">224,50 €</div></div>
+            <div class="merchant-row"><div class="merchant-rank top3">2</div><div style="flex:1;min-width:0"><div class="merchant-name">RESTAURANTE EL QUIJOTE</div><div class="merchant-count">3 transacciones</div></div><div class="merchant-amount">114,00 €</div></div>
+            <div class="merchant-row"><div class="merchant-rank top3">3</div><div style="flex:1;min-width:0"><div class="merchant-name">IKEA SPAIN SL</div><div class="merchant-count">1 transacción</div></div><div class="merchant-amount">89,99 €</div></div>
+            <div class="merchant-row"><div class="merchant-rank">4</div><div style="flex:1;min-width:0"><div class="merchant-name">FARMACIA SAN JUAN</div><div class="merchant-count">4 transacciones</div></div><div class="merchant-amount">87,20 €</div></div>
+            <div class="merchant-row"><div class="merchant-rank">5</div><div style="flex:1;min-width:0"><div class="merchant-name">CABIFY APP</div><div class="merchant-count">7 transacciones</div></div><div class="merchant-amount">58,00 €</div></div>
+            <div class="merchant-row" style="justify-content:center;color:var(--color-primary);cursor:pointer">Ver los 10 comercios →</div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: EDIT CATEGORY -->
+<div class="proto-screen" id="screen-edit-cat">
+  <div class="app-shell" style="position:relative">
+    <div class="app-header"><div class="app-logo">Bank<span>Portal</span></div><div class="app-user"><div class="app-avatar">AL</div></div></div>
+    <div class="app-layout" style="filter:blur(2px)">
+      <aside class="app-sidebar">
+        <div class="sidebar-brand">🏛 BankPortal</div>
+        <div class="sidebar-nav-wrap">
+          <div class="sidebar-item" onclick="showScreen('screen-dashboard')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Dashboard</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏦</span><span>Cuentas</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💳</span><span>Tarjetas</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔄</span><span>Domiciliaciones</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📤</span><span>Exportación</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏛</span><span>Préstamos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💰</span><span>Depósitos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💸</span><span>Bizum</span></div>
+          <div class="sidebar-item active" onclick="showScreen('screen-overview')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Mi Dinero</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">👤</span><span>Mi Perfil</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔒</span><span>Centro de Privacidad</span></div>
+        </div>
+        <div class="sidebar-footer-real">
+          <button class="sidebar-logout">🔓 Cerrar sesión</button>
+        </div>
+      </aside>
+      <main class="app-content">
+        <div class="mv-list">
+          <div class="mv-row" style="background:var(--color-primary-light)">
+            <div class="mv-icon" style="background:var(--color-bg-card)">❓</div>
+            <div class="mv-info"><div class="mv-concept">FLOWERTOPIA SL REF0042</div><div class="mv-meta"><span class="cat-badge" style="background:var(--pfm-otros)">Otros</span>&nbsp;10 abr 2026</div></div>
+            <div class="mv-amount">-24,00 €</div>
+            <button class="mv-edit">✏️</button>
+          </div>
+        </div>
+      </main>
+    </div>
+    <div style="position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:100">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title">Cambiar categoría <span class="ann-dot">15<span class="ann-tip">Modal focus-trapped (aria-modal, Escape cierra). Solo CARGO (RN-F023-19). Tras confirmar: regla en pfm_user_rules para concept_pattern=FLOWERTOPIA (RN-F023-17). Límite 50 reglas (RN-F023-18).</span></span></div>
+          <button class="mv-edit" onclick="showScreen('screen-overview')">✕</button>
+        </div>
+        <div class="modal-body">
+          <div style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:var(--sp-4)">
+            Movimiento: <strong>FLOWERTOPIA SL REF0042</strong> · -24,00 €<br>
+            Categoría actual: <span class="cat-badge" style="background:var(--pfm-otros);font-size:11px">Otros</span>
+          </div>
+          <div class="cat-grid">
+            <div class="cat-option">🛒 Alimentación</div>
+            <div class="cat-option">🚗 Transporte</div>
+            <div class="cat-option">🍽️ Restaurantes</div>
+            <div class="cat-option">❤️ Salud</div>
+            <div class="cat-option selected">🏠 Hogar</div>
+            <div class="cat-option">💡 Suministros</div>
+            <div class="cat-option">📱 Comunicaciones</div>
+            <div class="cat-option">🎯 Ocio</div>
+            <div class="cat-option">📚 Educación</div>
+            <div class="cat-option">✈️ Viajes</div>
+            <div class="cat-option">🔒 Seguros</div>
+            <div class="cat-option">❓ Otros</div>
+          </div>
+          <div class="alert alert-info" style="margin-top:var(--sp-4)">ℹ El sistema aplicará "Hogar" automáticamente a futuros movimientos de <strong>FLOWERTOPIA SL</strong>.</div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="showScreen('screen-overview')">Cancelar</button>
+          <button class="btn btn-primary" onclick="showScreen('screen-overview');showToast('✅ Categoría actualizada. Regla guardada para FLOWERTOPIA SL')">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: DASHBOARD WIDGET -->
+<div class="proto-screen" id="screen-dashboard">
+  <div class="app-shell">
+    <div class="app-header">
+      <div class="app-logo">Bank<span>Portal</span></div>
+      <div class="app-user"><div class="app-avatar">AL</div><span style="font-size:var(--text-base);color:var(--color-text-secondary)">Ana López</span></div>
+    </div>
+    <div class="app-layout">
+      <aside class="app-sidebar">
+        <div class="sidebar-brand">🏛 BankPortal</div>
+        <div class="sidebar-nav-wrap">
+          <div class="sidebar-item active" onclick="showScreen('screen-dashboard')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Dashboard</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏦</span><span>Cuentas</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💳</span><span>Tarjetas</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔄</span><span>Domiciliaciones</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📤</span><span>Exportación</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏛</span><span>Préstamos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💰</span><span>Depósitos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💸</span><span>Bizum</span></div>
+          <div class="sidebar-item" onclick="showScreen('screen-overview')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Mi Dinero</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">👤</span><span>Mi Perfil</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔒</span><span>Centro de Privacidad</span></div>
+        </div>
+        <div class="sidebar-footer-real">
+          <button class="sidebar-logout">🔓 Cerrar sesión</button>
+        </div>
+      </aside>
+      <main class="app-content">
+        <div class="page-title mb-6">Bienvenida, Ana 👋</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);margin-bottom:var(--sp-6)">
+          <div class="card">
+            <div class="card-body">
+              <div style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:var(--sp-2)">Saldo cuenta principal</div>
+              <div style="font-size:var(--text-3xl);font-weight:700;color:var(--color-text-primary);font-variant-numeric:tabular-nums">4.821,50 €</div>
+              <div style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-top:var(--sp-1)">ES12 3456 7890 **** 5678</div>
+            </div>
+          </div>
+          <div class="card" style="border:2px solid var(--color-primary-light)">
+            <div class="card-header" style="background:var(--color-primary-light)">
+              <span class="card-title" style="color:var(--color-primary)">📊 Mi Dinero · Abril <span class="ann-dot">16<span class="ann-tip">Widget asíncrono (RN-F023-15). Carga independiente del dashboard. Fallo PFM → degradación elegante, nunca EMPTY (LA-STG-001). Navegación: Router.navigateByUrl('/pfm') (LA-023-01, RN-F023-16).</span></span></span>
+              <button onclick="showScreen('screen-overview')" style="font-size:var(--text-sm);color:var(--color-primary);background:none;border:none;cursor:pointer">Ver detalle →</button>
+            </div>
+            <div class="card-body">
+              <div style="display:flex;align-items:baseline;gap:var(--sp-2);margin-bottom:var(--sp-4)">
+                <div style="font-size:var(--text-2xl);font-weight:700;font-variant-numeric:tabular-nums;color:var(--color-text-primary)">1.247,30 €</div>
+                <div style="font-size:var(--text-sm);color:var(--color-error)">↑ +14,5% vs marzo</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:var(--sp-2);margin-bottom:var(--sp-4)">
+                <div style="display:flex;align-items:center;gap:var(--sp-2)"><span>🍽️</span><div style="flex:1;height:6px;background:var(--color-bg-card);border-radius:9px;overflow:hidden"><div style="width:100%;height:100%;background:var(--pfm-restaurantes);border-radius:9px"></div></div><span style="font-size:var(--text-sm);font-variant-numeric:tabular-nums;min-width:60px;text-align:right">315,00 €</span></div>
+                <div style="display:flex;align-items:center;gap:var(--sp-2)"><span>🛒</span><div style="flex:1;height:6px;background:var(--color-bg-card);border-radius:9px;overflow:hidden"><div style="width:78%;height:100%;background:var(--pfm-alimentacion);border-radius:9px"></div></div><span style="font-size:var(--text-sm);font-variant-numeric:tabular-nums;min-width:60px;text-align:right">245,00 €</span></div>
+                <div style="display:flex;align-items:center;gap:var(--sp-2)"><span>🏠</span><div style="flex:1;height:6px;background:var(--color-bg-card);border-radius:9px;overflow:hidden"><div style="width:57%;height:100%;background:var(--pfm-hogar);border-radius:9px"></div></div><span style="font-size:var(--text-sm);font-variant-numeric:tabular-nums;min-width:60px;text-align:right">180,00 €</span></div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--sp-3);background:var(--color-bg-card);border-radius:var(--radius-md)">
+                <span style="font-size:var(--text-sm);color:var(--color-text-secondary)">Presupuestos</span>
+                <div style="display:flex;gap:var(--sp-2)">
+                  <span style="color:var(--pfm-ok);font-size:var(--text-sm);font-weight:600">● 2 bien</span>
+                  <span style="color:var(--pfm-warn);font-size:var(--text-sm);font-weight:600">● 1 atención</span>
+                  <span style="color:var(--pfm-danger);font-size:var(--text-sm);font-weight:600">● 1 excedido</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-info">ℹ Widget "Mi Dinero" integrado en dashboard (US-F023-05). Carga asíncrona e independiente.</div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: EMPTY -->
+<div class="proto-screen" id="screen-empty">
+  <div class="app-shell">
+    <div class="app-header"><div class="app-logo">Bank<span>Portal</span></div><div class="app-user"><div class="app-avatar">AL</div></div></div>
+    <div class="app-layout">
+      <aside class="app-sidebar">
+        <div class="sidebar-brand">🏛 BankPortal</div>
+        <div class="sidebar-nav-wrap">
+          <div class="sidebar-item" onclick="showScreen('screen-dashboard')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Dashboard</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏦</span><span>Cuentas</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💳</span><span>Tarjetas</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔄</span><span>Domiciliaciones</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📤</span><span>Exportación</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏛</span><span>Préstamos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💰</span><span>Depósitos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💸</span><span>Bizum</span></div>
+          <div class="sidebar-item active" onclick="showScreen('screen-overview')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Mi Dinero</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">👤</span><span>Mi Perfil</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔒</span><span>Centro de Privacidad</span></div>
+        </div>
+        <div class="sidebar-footer-real">
+          <button class="sidebar-logout">🔓 Cerrar sesión</button>
+        </div>
+      </aside>
+      <main class="app-content">
+        <div class="page-title mb-4">Mi Dinero</div>
+        <div class="pfm-tabs mb-6">
+          <div class="pfm-tab active">📊 Overview</div>
+          <div class="pfm-tab">💰 Presupuestos</div>
+          <div class="pfm-tab">📈 Análisis</div>
+          <div class="pfm-tab">🍕 Distribución</div>
+        </div>
+        <div class="card">
+          <div class="empty-state">
+            <div class="empty-icon">📊</div>
+            <div class="empty-title">Bienvenida a Mi Dinero</div>
+            <div class="empty-sub">Configura tus primeros presupuestos y el portal clasificará automáticamente tus movimientos.</div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:100%;max-width:320px">
+              <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="showScreen('screen-new-budget')">💰 Crear mi primer presupuesto</button>
+              <button class="btn btn-secondary" style="width:100%;justify-content:center" onclick="showScreen('screen-overview')">📊 Ver movimientos categorizados</button>
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-info mt-4">ℹ Tus movimientos ya se categorizan automáticamente aunque no tengas presupuestos configurados. <span class="ann-dot">17<span class="ann-tip">Estado vacío = sin presupuestos. La categorización es siempre automática desde el primer acceso (RN-F023-03).</span></span></div>
+      </main>
+    </div>
+  </div>
+</div>
+
+
+<!-- SCREEN: BUDGET FORM ERROR (US-03 · US-02 validaciones) -->
+<div class="proto-screen" id="screen-budget-form-error">
+  <div class="app-shell">
+    <div class="app-header"><div class="app-logo">Bank<span>Portal</span></div><div class="app-user"><div class="app-avatar">AL</div></div></div>
+    <div class="app-layout">
+      <aside class="app-sidebar">
+        <div class="sidebar-brand">🏛 BankPortal</div>
+        <div class="sidebar-nav-wrap">
+          <div class="sidebar-item" onclick="showScreen('screen-dashboard')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Dashboard</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏦</span><span>Cuentas</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💳</span><span>Tarjetas</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔄</span><span>Domiciliaciones</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📤</span><span>Exportación</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏛</span><span>Préstamos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💰</span><span>Depósitos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💸</span><span>Bizum</span></div>
+          <div class="sidebar-item active" onclick="showScreen('screen-overview')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Mi Dinero</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">👤</span><span>Mi Perfil</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔒</span><span>Centro de Privacidad</span></div>
+        </div>
+        <div class="sidebar-footer-real">
+          <button class="sidebar-logout">🔓 Cerrar sesión</button>
+        </div>
+      </aside>
+      <main class="app-content">
+        <div class="page-title mb-4">Nuevo presupuesto</div>
+        <div class="card" style="max-width:580px">
+          <div class="card-header"><span class="card-title">Configura tu presupuesto mensual</span></div>
+          <div class="card-body">
+            <div class="alert" style="background:var(--color-error-light);border-left:4px solid var(--color-error);color:#7f1d1d;margin-bottom:var(--sp-5)">⚠ No se puede crear el presupuesto. Corrige los errores marcados en rojo.</div>
+            <div class="form-group">
+              <label class="form-label">Categoría <span class="req">*</span> <span class="ann-dot">A<span class="ann-tip">Error RN-F023-05: ya existe presupuesto para "Restaurantes" en abril. El selector muestra el error inline al blur — no al submit. Mensaje preciso con el mes afectado.</span></span></label>
+              <select class="form-input" style="border-color:var(--color-error)">
+                <option>🍽️ Restaurantes</option>
+              </select>
+              <div style="font-size:var(--text-sm);color:var(--color-error);margin-top:var(--sp-1);display:flex;align-items:center;gap:4px">⚠ Ya tienes un presupuesto para Restaurantes en abril</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Importe mensual (€) <span class="req">*</span></label>
+              <input class="form-input" value="300" style="border-color:var(--color-border-input)">
+              <div class="form-hint">Entre 0,01 € y 99.999,99 €</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Umbral de alerta push <span class="ann-dot">B<span class="ann-tip">RN-F023-08: umbral 50–95% en steps de 5%. El slider HTML5 (min=50, max=95, step=5) previene entradas fuera de rango a nivel de control. Si la validación API retorna error (e.g., request manipulada), se muestra el banner de error superior y este mensaje inline.</span></span></label>
+              <div class="range-wrap">
+                <input type="range" class="range-input" min="50" max="95" step="5" value="80" style="border:none">
+                <div class="range-value">80%</div>
+              </div>
+              <div style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-top:var(--sp-1)">Recibirás alerta al alcanzar <strong>240,00 €</strong> de 300,00 €</div>
+              <div style="font-size:var(--text-sm);color:var(--color-text-secondary);background:var(--color-bg-card);border-radius:var(--radius-md);padding:var(--sp-3);margin-top:var(--sp-2)">
+                <strong>Validación (RN-F023-08):</strong> El control slider limita 50–95% en steps de 5%. Si la API recibe un valor fuera de rango devuelve HTTP 422 con body <code style="font-family:monospace;font-size:var(--text-sm)">"El umbral debe estar entre 50% y 95%"</code> — mostrar en el banner superior.
+              </div>
+            </div>
+            <div style="background:var(--color-bg-card);border-radius:var(--radius-md);padding:var(--sp-4);font-size:var(--text-sm);color:var(--color-text-secondary)">
+              <strong>También bloquea Gate:</strong> Límite 10 presupuestos activos (RN-F023-04) — al llegar a 10/10, botón desactivado: <button class="btn btn-primary" disabled style="opacity:.4;cursor:not-allowed;font-size:var(--text-sm)">+ Nuevo presupuesto</button> con tooltip <em>"Has alcanzado el máximo de 10 presupuestos"</em>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-ghost" onclick="showScreen('screen-budgets')">Cancelar</button>
+            <button class="btn btn-primary" style="opacity:.5;cursor:not-allowed" disabled>Crear presupuesto</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: DASHBOARD WIDGET SIN PRESUPUESTOS (US-05 escenario 2) -->
+<div class="proto-screen" id="screen-dashboard-no-budget">
+  <div class="app-shell">
+    <div class="app-header">
+      <div class="app-logo">Bank<span>Portal</span></div>
+      <div class="app-user"><div class="app-avatar">AL</div><span style="font-size:var(--text-base);color:var(--color-text-secondary)">Ana López</span></div>
+    </div>
+    <div class="app-layout">
+      <aside class="app-sidebar">
+        <div class="sidebar-brand">🏛 BankPortal</div>
+        <div class="sidebar-nav-wrap">
+          <div class="sidebar-item active" onclick="showScreen('screen-dashboard')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Dashboard</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏦</span><span>Cuentas</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💳</span><span>Tarjetas</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔄</span><span>Domiciliaciones</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📤</span><span>Exportación</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏛</span><span>Préstamos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💰</span><span>Depósitos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💸</span><span>Bizum</span></div>
+          <div class="sidebar-item" onclick="showScreen('screen-overview')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Mi Dinero</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">👤</span><span>Mi Perfil</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔒</span><span>Centro de Privacidad</span></div>
+        </div>
+        <div class="sidebar-footer-real">
+          <button class="sidebar-logout">🔓 Cerrar sesión</button>
+        </div>
+      </aside>
+      <main class="app-content">
+        <div class="page-title mb-6">Bienvenida, Ana 👋</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);margin-bottom:var(--sp-6)">
+          <div class="card">
+            <div class="card-body">
+              <div style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:var(--sp-2)">Saldo cuenta principal</div>
+              <div style="font-size:var(--text-3xl);font-weight:700;color:var(--color-text-primary);font-variant-numeric:tabular-nums">4.821,50 €</div>
+              <div style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-top:var(--sp-1)">ES12 3456 7890 **** 5678</div>
+            </div>
+          </div>
+          <!-- Widget Mi Dinero sin presupuestos -->
+          <div class="card" style="border:2px solid var(--color-primary-light)">
+            <div class="card-header" style="background:var(--color-primary-light)">
+              <span class="card-title" style="color:var(--color-primary)">📊 Mi Dinero · Abril <span class="ann-dot">C<span class="ann-tip">RN-F023-15 escenario 2: usuario sin presupuestos configurados. El widget muestra el gasto total del mes (siempre disponible via categorización automática) y un CTA para crear el primer presupuesto. Navegación: Router.navigateByUrl('/pfm/presupuestos') — NUNCA [href] (LA-023-01).</span></span></span>
+            </div>
+            <div class="card-body">
+              <div style="display:flex;align-items:baseline;gap:var(--sp-2);margin-bottom:var(--sp-4)">
+                <div style="font-size:var(--text-2xl);font-weight:700;font-variant-numeric:tabular-nums;color:var(--color-text-primary)">1.247,30 €</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">gastados este mes</div>
+              </div>
+              <!-- Top categoría sin presupuesto -->
+              <div style="background:var(--color-bg-card);border-radius:var(--radius-md);padding:var(--sp-4);margin-bottom:var(--sp-4);text-align:center">
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:var(--sp-3)">Sin presupuestos configurados</div>
+                <button onclick="showScreen('screen-new-budget')" style="display:inline-flex;align-items:center;gap:var(--sp-2);background:var(--color-primary);color:#fff;border:none;border-radius:var(--radius-md);padding:var(--sp-2) var(--sp-4);font-size:var(--text-sm);font-weight:500;cursor:pointer">
+                  💰 Configura tus presupuestos
+                </button>
+              </div>
+              <div style="font-size:var(--text-sm);color:var(--color-text-secondary);text-align:center">
+                <a onclick="showScreen('screen-overview')" style="color:var(--color-primary);cursor:pointer">Ver movimientos categorizados →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-info">ℹ Escenario US-F023-05 sin presupuestos: el widget muestra el gasto total + CTA (RN-F023-15). No hay semáforo de presupuestos al no existir ninguno.</div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: DRILL-DOWN COMERCIO (US-07 escenario 3) -->
+<div class="proto-screen" id="screen-merchant-detail">
+  <div class="app-shell">
+    <div class="app-header"><div class="app-logo">Bank<span>Portal</span></div><div class="app-user"><div class="app-avatar">AL</div></div></div>
+    <div class="app-layout">
+      <aside class="app-sidebar">
+        <div class="sidebar-brand">🏛 BankPortal</div>
+        <div class="sidebar-nav-wrap">
+          <div class="sidebar-item" onclick="showScreen('screen-dashboard')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Dashboard</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏦</span><span>Cuentas</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💳</span><span>Tarjetas</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔄</span><span>Domiciliaciones</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📤</span><span>Exportación</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🏛</span><span>Préstamos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💰</span><span>Depósitos</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">💸</span><span>Bizum</span></div>
+          <div class="sidebar-item active" onclick="showScreen('screen-overview')"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">📊</span><span>Mi Dinero</span></div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">👤</span><span>Mi Perfil</span></div>
+          <div class="sidebar-item"><span style="font-size:14px;width:20px;text-align:center;flex-shrink:0">🔒</span><span>Centro de Privacidad</span></div>
+        </div>
+        <div class="sidebar-footer-real">
+          <button class="sidebar-logout">🔓 Cerrar sesión</button>
+        </div>
+      </aside>
+      <main class="app-content">
+        <div style="display:flex;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-4)">
+          <button class="btn btn-ghost" onclick="showScreen('screen-distribution')" style="padding:var(--sp-2)">← Volver</button>
+          <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Distribución / Detalle comercio</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--sp-4);margin-bottom:var(--sp-6)">
+          <div style="width:48px;height:48px;border-radius:var(--radius-lg);background:var(--color-primary-light);display:flex;align-items:center;justify-content:center;font-size:24px">🛒</div>
+          <div>
+            <div class="page-title">MERCADONA SA <span class="ann-dot">D<span class="ann-tip">RN-F023-20: el nombre del comercio se obtiene del primer token >4 chars de transactions.concept, o de bill_payments.biller_name. Aquí "MERCADONA" (>4 chars) identifica al comercio. Consolidación unificada bill_payments + transactions CARGO (DEBT-047).</span></span></div>
+            <div class="page-sub">Categoría: 🛒 Alimentación · Abril 2026</div>
+          </div>
+          <div style="margin-left:auto;text-align:right">
+            <div style="font-size:var(--text-2xl);font-weight:700;font-variant-numeric:tabular-nums;color:var(--color-text-primary)">224,50 €</div>
+            <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">5 transacciones</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Transacciones · Abril 2026</span>
+            <span class="ann-dot">E<span class="ann-tip">RN-F023-20: drill-down muestra TODAS las transacciones del comercio en el período, tanto de bill_payments como de la tabla transactions. Ordenadas por fecha descendente.</span></span>
+          </div>
+          <div class="mv-list" style="border:none;box-shadow:none">
+            <div class="mv-row">
+              <div class="mv-icon" style="background:#E8F5E9">🛒</div>
+              <div class="mv-info">
+                <div class="mv-concept">MERCADONA SA CALLE ALCALA 10</div>
+                <div class="mv-meta"><span class="cat-badge" style="background:var(--pfm-alimentacion)">Alimentación</span>&nbsp;14 abr 2026 · TPV</div>
+              </div>
+              <div class="mv-amount">-45,20 €</div>
+            </div>
+            <div class="mv-row">
+              <div class="mv-icon" style="background:#E8F5E9">🛒</div>
+              <div class="mv-info">
+                <div class="mv-concept">MERCADONA SA CALLE ALCALA 10</div>
+                <div class="mv-meta"><span class="cat-badge" style="background:var(--pfm-alimentacion)">Alimentación</span>&nbsp;10 abr 2026 · TPV</div>
+              </div>
+              <div class="mv-amount">-62,80 €</div>
+            </div>
+            <div class="mv-row">
+              <div class="mv-icon" style="background:#E8F5E9">🛒</div>
+              <div class="mv-info">
+                <div class="mv-concept">MERCADONA SA CALLE GRAN VIA 45</div>
+                <div class="mv-meta"><span class="cat-badge" style="background:var(--pfm-alimentacion)">Alimentación</span>&nbsp;7 abr 2026 · TPV</div>
+              </div>
+              <div class="mv-amount">-38,10 €</div>
+            </div>
+            <div class="mv-row">
+              <div class="mv-icon" style="background:#E8F5E9">🛒</div>
+              <div class="mv-info">
+                <div class="mv-concept">MERCADONA SA CALLE ALCALA 10</div>
+                <div class="mv-meta"><span class="cat-badge" style="background:var(--pfm-alimentacion)">Alimentación</span>&nbsp;3 abr 2026 · TPV</div>
+              </div>
+              <div class="mv-amount">-51,40 €</div>
+            </div>
+            <div class="mv-row">
+              <div class="mv-icon" style="background:#E8F5E9">🛒</div>
+              <div class="mv-info">
+                <div class="mv-concept">MERCADONA SA CALLE ALCALA 10</div>
+                <div class="mv-meta"><span class="cat-badge" style="background:var(--pfm-alimentacion)">Alimentación</span>&nbsp;1 abr 2026 · TPV</div>
+              </div>
+              <div class="mv-amount">-27,00 €</div>
+            </div>
+          </div>
+          <div style="padding:var(--sp-4) var(--sp-6);border-top:.5px solid var(--color-border);display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:var(--text-sm);color:var(--color-text-secondary)">5 transacciones · Total: <strong style="font-variant-numeric:tabular-nums">224,50 €</strong></span>
+            <button class="btn btn-secondary" onclick="showScreen('screen-edit-cat')" style="font-size:var(--text-sm)">✏️ Recategorizar todas</button>
+          </div>
+        </div>
+        
+      </main>
+    </div>
+  </div>
+</div>
+
+</div><!-- /proto-canvas -->
+<div class="proto-notes">
+  <strong>PROTO-FEAT-023-sprint25.html</strong> · BankPortal · Banco Meridian · Sprint 25 · SOFIA v2.7 · UX/UI Designer Agent v2.0 ·
+  11 pantallas · 3 flujos · 22 anotaciones · Herencia CSS PROTO-FEAT-022-sprint24 · v1.2 · shell real #1e3a5f · navegación S24 real ·
+  Puntos 🟠 naranja = anotaciones (hover) · Botones superiores para navegar entre pantallas
+</div>
+</div><!-- /proto-shell -->
+<div class="toast-container" id="toastContainer"></div>
+<script>
+function showScreen(id){
+  document.querySelectorAll('.proto-screen').forEach(s=>s.classList.remove('active'));
+  const s=document.getElementById(id);if(s)s.classList.add('active');
+  document.querySelectorAll('.proto-nav-btn').forEach(b=>b.classList.remove('active'));
+  const map={'screen-overview':'Overview','screen-budgets':'Presupuestos','screen-new-budget':'Nuevo','screen-analysis':'Análisis','screen-distribution':'Distribución','screen-edit-cat':'Editar','screen-dashboard':'Dashboard','screen-empty':'Vacío','screen-budget-form-error':'Form','screen-dashboard-no-budget':'Widget','screen-merchant-detail':'Detalle'};
+  document.querySelectorAll('.proto-nav-btn').forEach(b=>{if(map[id]&&b.textContent.includes(map[id]))b.classList.add('active');});
+}
+function setVP(vp,btn){
+  document.getElementById('protoShell').className='proto-shell viewport-'+vp;
+  document.querySelectorAll('.proto-vp-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function showToast(msg){
+  const c=document.getElementById('toastContainer');
+  const t=document.createElement('div');t.className='toast toast-success';t.textContent=msg;
+  c.appendChild(t);setTimeout(()=>t.remove(),4000);
+}
+function updateThreshold(v){
+  document.getElementById('thresholdVal').textContent=v+'%';
+  const euros=(300*v/100).toFixed(2).replace('.',',');
+  document.getElementById('thresholdPreview').innerHTML='Recibirás alerta push al alcanzar <strong>'+euros+' €</strong> de 300,00 €';
+}
+</script>
+</body>
+</html>
