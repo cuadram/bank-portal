@@ -10,6 +10,7 @@ import { EvolutionChartComponent }   from './components/evolution-chart/evolutio
 import { MonthComparisonComponent }  from './components/month-comparison/month-comparison.component';
 import { BudgetAlertsComponent }     from './components/budget-alerts/budget-alerts.component';
 import { TopMerchantsComponent }     from './components/top-merchants/top-merchants.component';
+import { PfmWidgetComponent }        from '../pfm/components/pfm-widget/pfm-widget.component';
 
 /**
  * DashboardModule — módulo lazy-loaded del dashboard analítico.
@@ -24,7 +25,8 @@ import { TopMerchantsComponent }     from './components/top-merchants/top-mercha
     EvolutionChartComponent,
     MonthComparisonComponent,
     BudgetAlertsComponent,
-    TopMerchantsComponent        // G1-FIX
+    TopMerchantsComponent,       // G1-FIX
+    PfmWidgetComponent            // FEAT-023 Sprint 25
   ],
   imports: [
     CommonModule,

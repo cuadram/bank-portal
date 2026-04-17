@@ -1,0 +1,195 @@
+{
+  "sprint": 25,
+  "sp": 24,
+  "acum": 593,
+  "feat": "FEAT-023",
+  "titulo": "Mi Dinero — Gestor de Finanzas Personales (PFM)",
+  "rel": "v1.25.0",
+  "tests": 64,
+  "tests_acum": 1042,
+  "cov": 89,
+  "ncs": 0,
+  "defects": 0,
+  "date_closed": "2026-04-16",
+  "las_session": [
+    "LA-025-06",
+    "LA-025-07",
+    "LA-025-08"
+  ],
+  "las_core": [
+    "LA-CORE-053",
+    "LA-CORE-054",
+    "LA-CORE-055",
+    "LA-CORE-056",
+    "LA-CORE-057"
+  ],
+  "guardrails_nuevos": [
+    "GR-SQL-001",
+    "GR-JDBC-001",
+    "GR-API-001",
+    "GR-VISUAL-001",
+    "GR-ANGULAR-001"
+  ],
+  "debt_closed": [
+    "DEBT-047"
+  ],
+  "bug_po": {
+    "total": 36,
+    "critical": 9,
+    "major": 14,
+    "minor": 13,
+    "resolved": 15,
+    "deferred": 21,
+    "root_cause": "Math.abs() ausente en mapeo frontend CARGO + select filter sin [(ngModel)]+FormsModule",
+    "verified_at": "2026-04-16T20:31:48Z",
+    "bugs_fixed": [
+      "BUG-PO-001",
+      "BUG-PO-002",
+      "BUG-PO-003",
+      "BUG-PO-004",
+      "BUG-PO-005",
+      "BUG-PO-006",
+      "BUG-PO-007",
+      "BUG-PO-008",
+      "BUG-PO-009",
+      "BUG-PO-010",
+      "BUG-PO-011",
+      "BUG-PO-016",
+      "BUG-PO-019",
+      "BUG-PO-020",
+      "BUG-PO-021"
+    ]
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/api/v1/pfm/overview",
+      "desc": "Listado paginado de movimientos categorizados"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pfm/budgets",
+      "desc": "Listado presupuestos del usuario"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pfm/budgets",
+      "desc": "Crear presupuesto (máx 10 activos)"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/pfm/budgets/{id}",
+      "desc": "Eliminar presupuesto"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pfm/analysis",
+      "desc": "Análisis mensual comparativo vs mes anterior"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pfm/distribution",
+      "desc": "Distribución por categoría + top-10 comercios"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/pfm/movimientos/{txId}/category",
+      "desc": "Recategorización manual (crea PfmUserRule)"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pfm/widget",
+      "desc": "Resumen para dashboard (3 top categorías + semáforo)"
+    }
+  ],
+  "jira_issues": [
+    {
+      "key": "SCRUM-153",
+      "title": "DEBT-047: Dashboard top-merchants — unificar fuentes",
+      "sp": 2,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-154",
+      "title": "SPRINT-025 Planning & Setup — Scrum Master",
+      "sp": 1,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-155",
+      "title": "US-F023-01: Categorización automática",
+      "sp": 3,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-156",
+      "title": "US-F023-02: Gestión de presupuestos",
+      "sp": 3,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-157",
+      "title": "US-F023-03: Alertas de gasto",
+      "sp": 3,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-158",
+      "title": "US-F023-04: Análisis mensual comparativo",
+      "sp": 3,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-159",
+      "title": "US-F023-05: Widget Mi Dinero en dashboard",
+      "sp": 2,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-160",
+      "title": "US-F023-06: Edición manual de categoría",
+      "sp": 2,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-161",
+      "title": "US-F023-07: Distribución + top comercios",
+      "sp": 3,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-162",
+      "title": "SPRINT-025 Closure — Workflow Manager",
+      "sp": 1,
+      "status": "En curso"
+    }
+  ],
+  "flyway": {
+    "migration": "V28__pfm.sql",
+    "tables": 4,
+    "seed_rules": 72
+  },
+  "confluence": {
+    "hld_page": "11371521"
+  },
+  "git": {
+    "tag": "v1.25.0",
+    "branch": "feature/FEAT-023-sprint25",
+    "status": "tag created local · push pending"
+  },
+  "gates": [
+    "G-1",
+    "G-2",
+    "G-2b",
+    "HITL-PO-TL",
+    "G-3",
+    "G-3b",
+    "G-4",
+    "G-4b",
+    "G-5",
+    "G-5b",
+    "G-6",
+    "G-7"
+  ],
+  "gate_pending": "G-8"
+}

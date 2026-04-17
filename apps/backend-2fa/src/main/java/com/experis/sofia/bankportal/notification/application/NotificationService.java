@@ -112,6 +112,13 @@ public class NotificationService {
 
             case TWO_FA_DEACTIVATED ->
                     "⚠️ La verificación en dos pasos ha sido desactivada en tu cuenta.";
+            // FEAT-023 Sprint 25 — alerta presupuesto PFM
+            case BUDGET_ALERT -> {
+                String cat   = meta.getOrDefault("category",    "?");
+                String pct   = meta.getOrDefault("percent",     "?");
+                String limit = meta.getOrDefault("amountLimit", "?");
+                yield "⚠️ " + cat + ": has consumido el " + pct + "% de tu presupuesto de " + limit + " €";
+            }
         };
     }
 }
