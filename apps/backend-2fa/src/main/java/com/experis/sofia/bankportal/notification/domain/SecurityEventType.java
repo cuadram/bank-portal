@@ -3,7 +3,10 @@ package com.experis.sofia.bankportal.notification.domain;
 /**
  * Tipos de evento de seguridad que generan notificaciones visibles al usuario.
  *
- * @author SOFIA Developer Agent — FEAT-004 Sprint 5
+ * <p>FEAT-004 Sprint 5: tipos originales login/sesión/2FA.
+ * FEAT-023 Sprint 25: añadido BUDGET_ALERT para alertas de presupuesto PFM.
+ *
+ * @author SOFIA Developer Agent — FEAT-004 Sprint 5 · FEAT-023 Sprint 25
  */
 public enum SecurityEventType {
 
@@ -25,10 +28,13 @@ public enum SecurityEventType {
 
     // ── 2FA ───────────────────────────────────────────────────────────────────
     TWO_FA_ACTIVATED("2FA activado en tu cuenta", false),
-    TWO_FA_DEACTIVATED("2FA desactivado en tu cuenta", true);
+    TWO_FA_DEACTIVATED("2FA desactivado en tu cuenta", true),
+
+    // ── PFM — FEAT-023 Sprint 25 ──────────────────────────────────────────────
+    BUDGET_ALERT("Alerta de presupuesto", false);
 
     private final String displayTitle;
-    private final boolean critical;   // los eventos críticos se muestran como toast SSE
+    private final boolean critical;
 
     SecurityEventType(String displayTitle, boolean critical) {
         this.displayTitle = displayTitle;

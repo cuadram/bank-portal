@@ -1,6 +1,6 @@
 {
-  "last_sync_at": "2026-04-16T06:10:56.394Z",
-  "last_core_version": "2.6.42",
+  "last_sync_at": "2026-04-16T21:24:02.178Z",
+  "last_core_version": "2.6.52",
   "imported_la_ids": [
     "LA-CORE-001",
     "LA-CORE-002",
@@ -45,7 +45,25 @@
     "LA-CORE-045",
     "LA-CORE-036",
     "LA-CORE-046",
-    "LA-CORE-047"
+    "LA-CORE-047",
+    "LA-CORE-049",
+    "LA-CORE-051",
+    "LA-CORE-052",
+    "LA-023-01",
+    "LA-CORE-017",
+    "LA-CORE-018",
+    "LA-CORE-033",
+    "LA-CORE-048",
+    "LA-CORE-050",
+    "LA-025-01",
+    "LA-025-02",
+    "LA-025-03",
+    "LA-025-04",
+    "LA-CORE-053",
+    "LA-CORE-054",
+    "LA-CORE-055",
+    "LA-CORE-056",
+    "LA-CORE-057"
   ],
   "skipped_la_ids": [],
   "sync_history": [
@@ -174,6 +192,72 @@
       "core_version": "2.6.42",
       "new_las": [
         "LA-CORE-047"
+      ],
+      "skills_updated": [],
+      "mode": "delta"
+    },
+    {
+      "synced_at": "2026-04-16T14:45:58.198Z",
+      "core_version": "2.6.45",
+      "new_las": [
+        "LA-CORE-049"
+      ],
+      "skills_updated": [],
+      "mode": "delta"
+    },
+    {
+      "synced_at": "2026-04-16T17:48:29.128Z",
+      "core_version": "2.6.46",
+      "direction": "project->core",
+      "promoted_las": [
+        "LA-CORE-051"
+      ],
+      "approved_by": "product-owner",
+      "mode": "promotion",
+      "note": "BankPortal S25 → SOFIA-CORE. LA-025-04: current_step atomico + gate_pending canonico."
+    },
+    {
+      "synced_at": "2026-04-16T17:57:29.104Z",
+      "core_version": "2.6.45",
+      "new_las": [],
+      "skills_updated": [],
+      "mode": "delta"
+    },
+    {
+      "synced_at": "2026-04-16T17:58:35.124Z",
+      "core_version": "2.6.47",
+      "new_las": [],
+      "skills_updated": [],
+      "mode": "delta"
+    },
+    {
+      "synced_at": "2026-04-16T18:06:44.417Z",
+      "core_version": "2.6.52",
+      "new_las": [
+        "LA-CORE-052"
+      ],
+      "skills_updated": [],
+      "mode": "delta"
+    },
+    {
+      "synced_at": "2026-04-16T21:24:02.178Z",
+      "core_version": "2.6.52",
+      "new_las": [
+        "LA-023-01",
+        "LA-CORE-017",
+        "LA-CORE-018",
+        "LA-CORE-033",
+        "LA-CORE-048",
+        "LA-CORE-050",
+        "LA-025-01",
+        "LA-025-02",
+        "LA-025-03",
+        "LA-025-04",
+        "LA-CORE-053",
+        "LA-CORE-054",
+        "LA-CORE-055",
+        "LA-CORE-056",
+        "LA-CORE-057"
       ],
       "skills_updated": [],
       "mode": "delta"

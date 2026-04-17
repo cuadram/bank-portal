@@ -51,6 +51,11 @@ const routes: Routes = [
         path: 'bizum',
         loadChildren: () => import('./features/bizum/bizum.module').then(m => m.BizumModule)
       },
+      // FEAT-023 Sprint 25 — Mi Dinero PFM (LA-FRONT-001): lazy module /pfm
+      {
+        path: 'pfm',
+        loadChildren: () => import('./features/pfm/pfm.module').then(m => m.PfmModule)
+      },
       // FEAT-019 Sprint 21 — LA-FRONT-001: rutas registradas (DEBT-039 resuelto)
       {
         path: 'perfil',

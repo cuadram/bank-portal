@@ -48,6 +48,10 @@ import {
       <!-- G1-FIX: top merchants integrado (endpoint /top-merchants ya existía) -->
       <app-top-merchants [merchants]="topMerchants" [loading]="loading">
       </app-top-merchants>
+      <!-- FEAT-023 Sprint 25 — Widget Mi Dinero (RN-F023-15: async, degradación elegante) -->
+      <div class="pfm-widget-slot">
+        <app-pfm-widget></app-pfm-widget>
+      </div>
     </div>
   `,
   styles: [`
