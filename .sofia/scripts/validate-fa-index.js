@@ -1,6 +1,7 @@
 /**
  * validate-fa-index.js — Validador de integridad de fa-index.json
- * SOFIA v2.3 — LA-021-01
+ * SOFIA v2.4 — LA-021-01 + LA-025-01
+ * FIX LA-025-01: current_feature leída desde session.json (no idx.last_feat)
  * 
  * Ejecutar en Gate 2b, Gate 3b y Gate 8b como paso OBLIGATORIO y BLOQUEANTE.
  * Salida: 0 = OK, 1 = ERRORES encontrados (bloquea el gate)
@@ -124,8 +125,15 @@ if (parseInt(idx.last_sprint, 10) !== maxSprint) {
 }
 
 // ─── CHECK 8: reglas de FEAT actual presentes ────────────────────────────────
-if (idx.last_feat) {
-  const currentFeat = idx.last_feat;
+// FIX LA-025-01: leer current_feature desde session.json, no desde idx.last_feat
+// idx.last_feat puede no estar actualizado; session.json es la fuente de verdad
+let activeFeat = idx.last_feat; // fallback
+try {
+  const session = JSON.parse(fs.readFileSync('.sofia/session.json', 'utf8'));
+  if (session.current_feature) activeFeat = session.current_feature;
+} catch(e) { /* usar fallback */ }
+if (activeFeat) {
+  const currentFeat = activeFeat;
   const currentFuncs = idx.functionalities.filter(f => f.feat === currentFeat);
   const currentFuncRuleIds = new Set(currentFuncs.flatMap(f => f.business_rules || []));
   const presentRuleIds = new Set(rnIds);

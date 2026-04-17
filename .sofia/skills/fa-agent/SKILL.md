@@ -1,10 +1,15 @@
 ---
 name: fa-agent
 sofia_version: "2.6"
-version: "2.7"
+version: "2.8"
 created: "2026-03-26"
-updated: "2026-04-05"
+updated: "2026-04-16"
 changelog: |
+  v2.8 (2026-04-16) — LA-025-02: gen-fa-document.py OBLIGATORIO en Gate 2b.
+    El .docx acumulativo se regenera en Gate 2b (no solo en 8b).
+    Checklist G-2b bloqueante: (1) fa-index.json, (2) validate-fa-index PASS,
+    (3) gen-fa-document.py → .docx, (4) verificacion post-ejecucion.
+    Sin .docx generado el Gate G-2b no se aprueba.
   v2.7 (2026-04-05) — Gate 8b: validate-fa-completeness.py obligatorio post-docx.
     Informe NC generado en docs/quality/NC-FA-Sprint{N}-{fecha}.md.
     EXIT 1 si hay NCs bloqueantes — PO debe decidir antes de aprobar Gate 8b.
@@ -247,12 +252,19 @@ El documento `FA-{proyecto}-{cliente}.docx` es **único, incremental y versionad
 
 ## Proceso — Gate 2b: Borrador Funcional
 
+> **LA-025-02 (2026-04-16) REGLA PERMANENTE:** Gate 2b incluye generación obligatoria
+> del FA Word acumulativo via gen-fa-document.py. Sin .docx generado G-2b no se aprueba.
+
 1. Leer US, criterios de aceptación, actores, RNF de negocio del SRS
 2. Identificar el **segmento bancario** afectado (retail / minorista / mayorista)
 3. Aplicar terminología bancaria correcta según segmento
 4. Referenciar regulación aplicable (PSD2, SEPA, Basilea, etc.)
-5. Crear `docs/functional-analysis/FA-[FEAT-XXX]-sprint[N]-draft.md`
-6. Actualizar `session.json`: `fa_agent.last_gate = "2b"`
+5. Actualizar `docs/functional-analysis/fa-index.json` con functionalities + business_rules de la feature activa. Campo `feat` OBLIGATORIO en cada funcionalidad.
+6. Ejecutar `node .sofia/scripts/validate-fa-index.js` — BLOQUEANTE (EXIT 0 requerido)
+7. Crear `docs/functional-analysis/FA-[FEAT-XXX]-sprint[N]-draft.md`
+8. **[LA-025-02] Ejecutar gen-fa-document.py BLOQUEANTE:** `python3 .sofia/scripts/gen-fa-document.py`
+9. **[LA-025-02] Verificar .docx:** existe + size > 10KB + mtime < 120s
+10. Actualizar `session.json`: `fa_agent.last_gate = "2b"`, `doc_version`, `docx_verified = true`, `artifacts[2b_sNN]`
 
 ---
 
@@ -565,11 +577,13 @@ El bloque ✅ DEBE incluir los resultados de la validación NC:
 | Artefacto | Ruta | Cuándo | Acumulativo |
 |---|---|---|---|
 | FA borrador | `docs/functional-analysis/FA-[FEAT]-sprint[N]-draft.md` | Gate 2b | No (por feature) |
+| **FA Word único** ★ | `docs/functional-analysis/FA-{proyecto}-{cliente}.docx` | **Gate 2b + 3b + 8b** | **SÍ — acumulativo** |
+| Índice JSON | `docs/functional-analysis/fa-index.json` | Gate 2b + 3b + 8b | **SÍ — acumulativo** |
 | FA enriquecido | `docs/functional-analysis/FA-[FEAT]-sprint[N]-draft.md` | Gate 3b | No (actualización) |
 | FA sprint consolidado | `docs/functional-analysis/FA-[FEAT]-sprint[N].md` | Gate 8b | No (por sprint) |
-| **FA Word único** | `docs/functional-analysis/FA-{proyecto}-{cliente}.docx` | Gate 8b | **SÍ — todos los sprints** |
-| Índice JSON | `docs/functional-analysis/fa-index.json` | Gate 8b | **SÍ — acumulativo** |
 | **Informe NC** | `docs/quality/NC-FA-Sprint{N}-{fecha}.md` | Gate 8b | No (por sprint) |
+
+> ★ **LA-025-02**: .docx se regenera en Gate 2b, 3b y 8b. doc_version se incrementa en cada ejecución.
 
 > **REGLA LA-FA-INCR**: El `.docx` es el único entregable oficial para el cliente.
 > Los markdowns son artefactos de trabajo interno. El documento Word crece sprint a sprint
@@ -596,6 +610,16 @@ El bloque ✅ DEBE incluir los resultados de la validación NC:
   · validate-fa-index.js: EXIT 0 ✅ (BLOQUEANTE)
 - session.json: fa_agent.last_gate = "[2b|3b|8b]", updated
 - sofia.log: entry written [TIMESTAMP]
+
+[GATE 2b Y 3b — campos obligatorios LA-025-02]
+- Script ejecutado: python3 .sofia/scripts/gen-fa-document.py → EXIT 0 ✅
+- Documento Word: docs/functional-analysis/FA-{proyecto}-{cliente}.docx
+  · doc_version: [X.Y]         ← versión incrementada
+  · docx_verified: true
+  · docx_size_kb: [X.X KB]    ← debe ser > 10 KB
+  · mtime_reciente: true       ← modificado en los últimos 120 segundos
+- fa_agent.docx_verified: true (en session.json)
+- fa_agent.doc_version: [X.Y] (en session.json)
 
 [SOLO GATE 8b — campos obligatorios adicionales]
 - Script ejecutado: python3 .sofia/scripts/gen-fa-document.py → EXIT 0 ✅

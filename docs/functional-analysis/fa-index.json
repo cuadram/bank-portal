@@ -3,7 +3,7 @@
   "project": "bank-portal",
   "client": "Banco Meridian",
   "generated_by": "FA-Agent — SOFIA v2.3",
-  "last_updated": "2026-03-31",
+  "last_updated": "2026-04-17T12:09:29.857Z",
   "last_sprint": 25,
   "total_functionalities": 100,
   "notes": "S1-S15 RECONSTRUIDO. S16-S21 documentadas con evidencias directas.",
@@ -1553,7 +1553,8 @@
       "business_rules": [
         "RN-F022-01",
         "RN-F022-02"
-      ]
+      ],
+      "feat": "FEAT-022"
     },
     {
       "id": "FA-022-B",
@@ -1567,7 +1568,8 @@
         "RN-F022-04",
         "RN-F022-05",
         "RN-F022-06"
-      ]
+      ],
+      "feat": "FEAT-022"
     },
     {
       "id": "FA-022-C",
@@ -1578,7 +1580,8 @@
       "description": "El cliente envía una solicitud de cobro a otro usuario Bizum. La solicitud expira en 24h si no se atiende y genera notificación push al destinatario.",
       "business_rules": [
         "RN-F022-07"
-      ]
+      ],
+      "feat": "FEAT-022"
     },
     {
       "id": "FA-022-D",
@@ -1589,7 +1592,8 @@
       "description": "El cliente acepta (ejecuta el pago con SCA OTP) o rechaza una solicitud Bizum recibida. En ambos casos el solicitante recibe notificación push del resultado.",
       "business_rules": [
         "RN-F022-08"
-      ]
+      ],
+      "feat": "FEAT-022"
     },
     {
       "id": "FA-022-E",
@@ -1600,7 +1604,8 @@
       "description": "El cliente consulta todas sus operaciones Bizum (enviadas, recibidas, solicitudes emitidas y recibidas) con filtros por tipo y estado, paginadas de 20 en 20.",
       "business_rules": [
         "RN-F022-09"
-      ]
+      ],
+      "feat": "FEAT-022"
     },
     {
       "id": "FA-022-F",
@@ -1611,7 +1616,8 @@
       "description": "El sistema emite notificaciones push VAPID en todos los eventos relevantes: recepción de pago, solicitud entrante, solicitud aceptada, solicitud rechazada y solicitud expirada.",
       "business_rules": [
         "RN-F022-10"
-      ]
+      ],
+      "feat": "FEAT-022"
     },
     {
       "id": "FA-022-G",
@@ -1622,7 +1628,8 @@
       "description": "Interfaz Angular con acceso lazy desde el sidebar del shell. Pantallas: Inicio Bizum, Enviar, Solicitar, Historial y Configuración. Fidelidad al prototipo HITL aprobado.",
       "business_rules": [
         "RN-F022-11"
-      ]
+      ],
+      "feat": "FEAT-022"
     },
     {
       "id": "FA-PFM-001",
@@ -1644,7 +1651,8 @@
       "regulations": [
         "GDPR Art.6",
         "PSD2 Art.67"
-      ]
+      ],
+      "feat": "FEAT-023"
     },
     {
       "id": "FA-PFM-002",
@@ -1666,7 +1674,8 @@
       "source": "SRS-FEAT-023-sprint25.md · US-F023-02",
       "regulations": [
         "GDPR Art.6"
-      ]
+      ],
+      "feat": "FEAT-023"
     },
     {
       "id": "FA-PFM-003",
@@ -1690,7 +1699,8 @@
       "regulations": [
         "GDPR Art.6",
         "PSD2 Art.10"
-      ]
+      ],
+      "feat": "FEAT-023"
     },
     {
       "id": "FA-PFM-004",
@@ -1711,7 +1721,8 @@
       "source": "SRS-FEAT-023-sprint25.md · US-F023-04",
       "regulations": [
         "GDPR Art.6"
-      ]
+      ],
+      "feat": "FEAT-023"
     },
     {
       "id": "FA-PFM-005",
@@ -1731,7 +1742,8 @@
       "source": "SRS-FEAT-023-sprint25.md · US-F023-05",
       "regulations": [
         "GDPR Art.6"
-      ]
+      ],
+      "feat": "FEAT-023"
     },
     {
       "id": "FA-PFM-006",
@@ -1753,7 +1765,8 @@
       "regulations": [
         "GDPR Art.6",
         "GDPR Art.17"
-      ]
+      ],
+      "feat": "FEAT-023"
     },
     {
       "id": "FA-PFM-007",
@@ -1774,7 +1787,8 @@
       "source": "SRS-FEAT-023-sprint25.md · US-F023-07",
       "regulations": [
         "GDPR Art.6"
-      ]
+      ],
+      "feat": "FEAT-023"
     }
   ],
   "business_rules": [
@@ -3045,10 +3059,10 @@
     "AML-KYC"
   ],
   "total_business_rules": 231,
-  "last_sprint_consolidated": 24,
-  "last_feat": "FEAT-021",
-  "updated_at": "2026-04-16T11:42:17.895Z",
-  "doc_version": "0.6",
+  "last_sprint_consolidated": 25,
+  "last_feat": "FEAT-023",
+  "updated_at": "2026-04-17T12:09:46.028269+00:00",
+  "doc_version": "0.10",
   "doc_path": "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx",
   "doc_history": [
     {
@@ -3080,11 +3094,30 @@
       "date": "2026-04-15",
       "sprint": "S1–S24 / FEAT-021",
       "desc": "Actualización automática gate-8b. 93 func, 209 RN. Indice clickable v2.6. SOFIA v2.7."
+    },
+    {
+      "version": "0.7",
+      "date": "2026-04-16",
+      "sprint": "S1–S25 / FEAT-023",
+      "desc": "Actualización automática gate-8b. 100 func, 231 RN. Indice clickable v2.6. SOFIA v2.7."
+    },
+    {
+      "version": "0.8",
+      "date": "2026-04-16",
+      "sprint": "S1–S25 / FEAT-023",
+      "desc": "Actualización automática gate-8b. 100 func, 231 RN. Indice clickable v2.6. SOFIA v2.7."
+    },
+    {
+      "version": "0.10",
+      "date": "2026-04-17",
+      "sprint": "S1–S25 / FEAT-023",
+      "desc": "Actualización automática gate-8b. 100 func, 231 RN. Indice clickable v2.6. SOFIA v2.7."
     }
   ],
   "markdowns": [
     "docs/functional-analysis/FA-FEAT-021-sprint23.md"
   ],
   "sprints_covered": "S1-S24",
-  "last_feature": "FEAT-023"
+  "last_feature": "FEAT-023",
+  "last_feat_consolidated": "FEAT-023"
 }
