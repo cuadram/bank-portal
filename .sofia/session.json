@@ -687,7 +687,7 @@
   },
   "resume_next": "Sprint 25 CERRADO · v1.25.0 · 593 SP · 1042 tests · 89% cov · 0 defectos · Sprint 26 pendiente definición PO (FEAT-024 TBD) — primer sprint con G-4 checklist fidelidad BLOQUEANTE activo",
   "sprint_closed": true,
-  "updated_at": "2026-04-17T12:54:24.048Z",
+  "updated_at": "2026-04-17T13:14:35.481Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-04-17T12:10:11.370Z",
@@ -742,7 +742,10 @@
       "SCRUM-162"
     ],
     "started_at": "2026-04-16T10:40:06.994Z",
-    "closed_at": "2026-04-17T12:54:10.007Z"
+    "closed_at": "2026-04-17T13:13:55.434Z",
+    "closed_by": "product-owner-ui",
+    "sprint_id": 464,
+    "close_method": "Jira UI (Opción A · LA-025-10 pendiente MCP completeSprint)"
   },
   "cmmi": {
     "level": 3,
@@ -831,7 +834,8 @@
         "LA-025-06",
         "LA-025-07",
         "LA-025-08",
-        "LA-025-09"
+        "LA-025-09",
+        "LA-025-10"
       ],
       "las_core_promoted": [
         "LA-CORE-053",
@@ -847,7 +851,9 @@
       },
       "debt_closed": [
         "DEBT-047"
-      ]
+      ],
+      "jira_sprint_closed_at": "2026-04-17T13:13:55.434Z",
+      "jira_sprint_id": 464
     }
   },
   "repository": {
@@ -919,6 +925,20 @@
     }
   ],
   "lessons_learned": [
+    {
+      "id": "LA-025-10",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "type": "process/tooling",
+      "title": "mcp-atlassian-lacks-sprint-lifecycle-api",
+      "description": "Las herramientas MCP Atlassian disponibles (searchJiraIssuesUsingJql, getJiraIssue, transitionJiraIssue, editJiraIssue, addCommentToJiraIssue, getTransitionsForJiraIssue, createIssueLink, etc.) cubren la Jira Platform REST API v3 sobre issues, pero NO exponen la Jira Agile REST API (/rest/agile/1.0/sprint/{id}) que es la unica via oficial para transicionar un sprint de active → closed. Consecuencia: Step 9 Workflow Manager puede finalizar todos los issues via transitionJiraIssue pero NO puede completar el sprint en si mismo; queda pendiente una accion manual del PO desde la UI de Jira o un curl con API token fuera de la allowlist de sofia-shell. Verificado en Sprint 25 (sprint_id=464, board_id=1): todos los issues SCRUM-153..162 pasaron a Finalizada via MCP, pero el sprint seguia state=active hasta que el PO hizo click en \"Completar sprint\" en la UI.",
+      "correction": "Tres opciones de mejora: (a) solicitar a Anthropic/Atlassian que amplie el MCP server para incluir endpoints Agile API (completeSprint, createSprint, updateSprint, moveIssuesToSprint); (b) incluir en SOFIA un wrapper Node con https.request + ATLASSIAN_API_TOKEN en .env (fuera del repo) que encapsule completeSprint; (c) hasta que exista soporte nativo, documentar explicitamente en la skill workflow-manager/SKILL.md que la accion final de cerrar sprint en Jira es manual PO-UI y que el Step 9 termina con este flag pendiente. Promover a SOFIA-CORE porque afecta a todos los proyectos que usen SOFIA + Jira Cloud.",
+      "registered_at": "2026-04-17T13:14:35.481Z",
+      "approved_by": "product-owner",
+      "hitl_approved": true,
+      "sofia_core_candidate": true,
+      "guardrail_proposed": "GR-ATLASSIAN-001: Step 9 Workflow Manager debe registrar accion manual pendiente en Jira UI si MCP no expone sprint lifecycle"
+    },
     {
       "id": "LA-025-09",
       "sprint": 25,
