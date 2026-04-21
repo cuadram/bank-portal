@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BankPortal - Dashboard SOFIA-CORE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #FAFBFC; --bg-elevated: #FFFFFF; --bg-subtle: #F1F5F9;
+      --border: #E2E8F0; --border-strong: #CBD5E1;
+      --text: #1E293B; --text-muted: #64748B; --text-dim: #94A3B8;
+      --accent: #C84A14; --accent-hover: #A83E10; --accent-dim: #FEF1EA;
+      --green: #059669; --green-dim: #ECFDF5;
+      --amber: #D97706; --amber-dim: #FFFBEB;
+      --red: #DC2626; --red-dim: #FEF2F2;
+      --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+      --font-serif: 'Newsreader', ui-serif, Georgia, serif;
+      --font-mono: 'DM Mono', ui-monospace, monospace;
+      --text-hero: 56px; --text-display: 48px; --text-h1: 32px; --text-h2: 24px; --text-h3: 18px;
+      --text-body: 16px; --text-sm: 14px; --text-xs: 12px;
+      --sp-1: 4px; --sp-2: 8px; --sp-3: 16px; --sp-4: 24px; --sp-5: 32px; --sp-6: 48px; --sp-7: 64px; --sp-8: 96px;
+      --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
+      --transition: 200ms cubic-bezier(0.4,0,0.2,1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body { font-family: var(--font-sans); font-size: var(--text-body); line-height: 1.6; color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    h1, h2, h3 { font-family: var(--font-serif); letter-spacing: -0.005em; line-height: 1.2; font-weight: 400; }
+    h1 { font-size: var(--text-h1); } h2 { font-size: var(--text-h2); } h3 { font-size: var(--text-h3); }
+    .container { max-width: 1440px; margin: 0 auto; padding: var(--sp-6) var(--sp-5); }
+    .page-header { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-5); margin-bottom: var(--sp-7); padding-bottom: var(--sp-5); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .page-title { display: flex; flex-direction: column; gap: var(--sp-1); }
+    .eyebrow { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.15em; }
+    .page-title h1 { font-size: var(--text-display); }
+    .page-meta { display: flex; gap: var(--sp-5); font-size: var(--text-sm); color: var(--text-muted); align-items: baseline; flex-wrap: wrap; }
+    .page-meta .meta-label { color: var(--text-dim); }
+    .page-meta .meta-value { color: var(--text); font-family: var(--font-mono); }
+    .hero-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--sp-5); margin-bottom: var(--sp-7); }
+    .hero-kpi { display: flex; flex-direction: column; gap: var(--sp-2); }
+    .hero-kpi .label { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
+    .hero-kpi .value { font-family: var(--font-serif); font-size: var(--text-hero); font-weight: 400; line-height: 1.05; letter-spacing: -0.015em; color: var(--text); }
+    .hero-kpi .unit { font-size: var(--text-body); color: var(--text-muted); font-family: var(--font-sans); margin-left: var(--sp-1); }
+    .hero-kpi .delta { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--text-muted); }
+    .hero-kpi .delta.up { color: var(--green); } .hero-kpi .delta.down { color: var(--red); }
+    .tabs { display: flex; gap: var(--sp-3); border-bottom: 1px solid var(--border); margin-bottom: var(--sp-6); overflow-x: auto; }
+    .tab { font-family: var(--font-sans); font-size: var(--text-body); font-weight: 500; color: var(--text-muted); background: transparent; border: none; padding: var(--sp-3) var(--sp-1); margin-bottom: -1px; border-bottom: 2px solid transparent; cursor: pointer; transition: var(--transition); white-space: nowrap; }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--text); border-bottom-color: var(--accent); }
+    .tab-panel { display: none; } .tab-panel.active { display: block; }
+    section + section { margin-top: var(--sp-7); }
+    .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--sp-5); flex-wrap: wrap; gap: var(--sp-3); }
+    .section-header h2 { font-size: var(--text-h2); }
+    .section-header .note { font-size: var(--text-sm); color: var(--text-muted); font-family: var(--font-mono); }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--sp-6); }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--sp-5); }
+    .data-block { display: flex; flex-direction: column; gap: var(--sp-3); padding-bottom: var(--sp-5); border-bottom: 1px solid var(--border); }
+    .data-block:last-child { border-bottom: none; }
+    .data-block .label { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
+    .data-block .value { font-family: var(--font-serif); font-size: var(--text-h1); font-weight: 400; line-height: 1.1; }
+    .data-block .detail { font-size: var(--text-sm); color: var(--text-muted); }
+    .status { display: inline-flex; align-items: center; gap: var(--sp-2); font-family: var(--font-mono); font-size: var(--text-sm); }
+    .status .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .status.green .dot { background: var(--green); } .status.amber .dot { background: var(--amber); } .status.red .dot { background: var(--red); }
+    .status.green { color: var(--green); } .status.amber { color: var(--amber); } .status.red { color: var(--red); }
+    table.data-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+    .data-table th { text-align: left; padding: var(--sp-3) var(--sp-4); font-size: var(--text-xs); font-family: var(--font-mono); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; border-bottom: 1px solid var(--border-strong); }
+    .data-table td { padding: var(--sp-3) var(--sp-4); border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); }
+    .data-table tr:hover td { background: var(--bg-subtle); }
+    .data-table .num { font-family: var(--font-mono); text-align: right; }
+    .data-table .muted { color: var(--text-muted); }
+    .chart-wrap { position: relative; width: 100%; height: 260px; margin-top: var(--sp-3); }
+    .chart-legend { display: flex; gap: var(--sp-4); font-size: var(--text-xs); color: var(--text-muted); font-family: var(--font-mono); margin-bottom: var(--sp-3); flex-wrap: wrap; }
+    .chart-legend .item { display: flex; align-items: center; gap: var(--sp-2); }
+    .chart-legend .swatch { width: 10px; height: 10px; border-radius: 2px; }
+    footer { margin-top: var(--sp-8); padding-top: var(--sp-5); border-top: 1px solid var(--border); display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--sp-3); font-size: var(--text-xs); font-family: var(--font-mono); color: var(--text-dim); }
+    @media (max-width: 768px) { .page-title h1 { font-size: var(--text-h1); } .hero-kpi .value { font-size: var(--text-display); } .container { padding: var(--sp-5) var(--sp-4); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header class="page-header">
+      <div class="page-title">
+        <span class="eyebrow">Banco Meridian</span>
+        <h1>BankPortal - Sprint 25</h1>
+      </div>
+      <div class="page-meta">
+        <span><span class="meta-label">Framework</span> <span class="meta-value">SOFIA-CORE v2.6.64</span></span>
+        <span><span class="meta-label">Estado</span> <span class="status green"><span class="dot"></span>Saludable</span></span>
+        <span><span class="meta-label">CMMI</span> <span class="meta-value">Nivel 3</span></span>
+        <span><span class="meta-label">Actualizado</span> <span class="meta-value">2026-04-21</span></span>
+      </div>
+    </header>
+    
+    <section class="hero-kpis">
+      <div class="hero-kpi">
+        <span class="label">Story Points</span>
+        <span class="value">593</span>
+        <span class="delta">acumulado 25 sprints</span>
+      </div>
+      <div class="hero-kpi">
+        <span class="label">Tests</span>
+        <span class="value">1 042</span>
+        <span class="delta">suite completa CI</span>
+      </div>
+      <div class="hero-kpi">
+        <span class="label">Cobertura</span>
+        <span class="value">89<span class="unit">%</span></span>
+        <span class="delta up">target 85%</span>
+      </div>
+      <div class="hero-kpi">
+        <span class="label">Defectos prod</span>
+        <span class="value">0</span>
+        <span class="delta">regresiones produccion</span>
+      </div>
+    </section>
+    
+    
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="entrega">Entrega y calidad</button>
+      <button class="tab" data-tab="tests">Tests y QA</button>
+      <button class="tab" data-tab="gobierno">CMMI y gobierno</button>
+      <button class="tab" data-tab="seguridad">Seguridad</button>
+      <button class="tab" data-tab="estado">Estado sprint</button>
+    </nav>
+    
+    
+    <div class="tab-panel active" data-panel="entrega">
+      <section>
+        <div class="section-header">
+          <h2>Velocidad por sprint</h2>
+          <span class="note">ultimos 2 sprints</span>
+        </div>
+        <div class="chart-legend">
+          <span class="item"><span class="swatch" style="background:#C84A14;"></span>Story Points</span>
+          <span class="item"><span class="swatch" style="background:#059669;"></span>Cobertura %</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="velocityChart" role="img" aria-label="Velocidad y cobertura"></canvas>
+        </div>
+      </section>
+      
+      <section>
+        <div class="section-header">
+          <h2>Historial de sprints</h2>
+          <span class="note">ultimos 2 sprints</span>
+        </div>
+        <table class="data-table">
+          <thead><tr>
+            <th class="num">Sprint</th><th>Feature</th><th>Titulo</th>
+            <th class="num">SP</th><th class="num">Tests</th><th class="num">Cov</th><th class="num">Cerrado</th>
+          </tr></thead>
+          <tbody>
+        <tr>
+          <td class="num">S25</td>
+          <td>FEAT-023</td>
+          <td class="muted" style="max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Mi Dinero — Gestor de Finanzas Personales (PFM)</td>
+          <td class="num">24</td>
+          <td class="num">64</td>
+          <td class="num">89%</td>
+          <td class="num">2026-04-17</td>
+        </tr>
+        <tr>
+          <td class="num">S24</td>
+          <td>FEAT-022</td>
+          <td class="muted" style="max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">-</td>
+          <td class="num">24</td>
+          <td class="num">25</td>
+          <td class="num">89%</td>
+          <td class="num">2026-04-15</td>
+        </tr></tbody>
+        </table>
+      </section>
+    </div>
+    
+    
+    <div class="tab-panel" data-panel="tests">
+      <section>
+        <div class="section-header">
+          <h2>Indicadores de QA</h2>
+          <span class="note">agregado historico</span>
+        </div>
+        <div class="grid-3">
+          <div class="data-block">
+            <span class="label">Tests suite completa</span>
+            <span class="value">1 042</span>
+            <span class="detail">suma acumulada entrega continua</span>
+          </div>
+          <div class="data-block">
+            <span class="label">Cobertura actual</span>
+            <span class="value">89<span class="unit">%</span></span>
+            <span class="detail">target cumplido</span>
+          </div>
+          <div class="data-block">
+            <span class="label">Defectos produccion</span>
+            <span class="value" style="color: var(--green);">0</span>
+            <span class="detail">total regresiones historico</span>
+          </div>
+          <div class="data-block">
+            <span class="label">No conformidades</span>
+            <span class="value" style="color: var(--green);">0</span>
+            <span class="detail">NCs acumuladas</span>
+          </div>
+          <div class="data-block">
+            <span class="label">Tests nuevos S25</span>
+            <span class="value">64</span>
+            <span class="detail">ultimo sprint cerrado</span>
+          </div>
+          <div class="data-block">
+            <span class="label">Semaforo QA</span>
+            <span class="value" style="font-size: var(--text-h2); color: var(--green);">OK</span>
+            <span class="detail">cobertura + defectos</span>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div class="section-header">
+          <h2>Evolucion tests y cobertura</h2>
+          <span class="note">tests nuevos por sprint + cobertura %</span>
+        </div>
+        <div class="chart-legend">
+          <span class="item"><span class="swatch" style="background:#C84A14;"></span>Tests nuevos</span>
+          <span class="item"><span class="swatch" style="background:#059669;"></span>Cobertura %</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="qaChart" role="img" aria-label="Evolucion QA"></canvas>
+        </div>
+      </section>
+    </div>
+    
+    
+    <div class="tab-panel" data-panel="gobierno">
+      <section>
+        <div class="section-header">
+          <h2>Nivel CMMI y gap</h2>
+        </div>
+        <div class="grid-3">
+          <div class="data-block">
+            <span class="label">Nivel target</span>
+            <span class="value">Nivel 3</span>
+            <span class="detail">target formal del proyecto</span>
+          </div>
+          <div class="data-block">
+            <span class="label">Nivel actual</span>
+            <span class="value" style="font-size: var(--text-h2);">Nivel 3</span>
+            <span class="detail">alineado con target</span>
+          </div>
+          <div class="data-block">
+            <span class="label">Gap score</span>
+            <span class="value" style="color: var(--amber);">-</span>
+            <span class="detail">solo si hay gap evaluado</span>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div class="section-header">
+          <h2>Process Areas CMMI Nivel 3</h2>
+          <span class="note">9 activas</span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th class="num">PA</th><th>Nombre</th><th>Estado</th><th class="num">Score</th></tr></thead>
+          <tbody>
+        <tr>
+          <td class="num">PP</td>
+          <td>Project Planning</td>
+          <td><span class="status green"><span class="dot"></span>Activa</span></td>
+          <td class="num">-</td>
+        </tr>
+        <tr>
+          <td class="num">PMC</td>
+          <td>Project Monitoring & Control</td>
+          <td><span class="status green"><span class="dot"></span>Activa</span></td>
+          <td class="num">-</td>
+        </tr>
+        <tr>
+          <td class="num">RSKM</td>
+          <td>Risk Management</td>
+          <td><span class="status green"><span class="dot"></span>Activa</span></td>
+          <td class="num">-</td>
+        </tr>
+        <tr>
+          <td class="num">VER</td>
+          <td>Verification</td>
+          <td><span class="status green"><span class="dot"></span>Activa</span></td>
+          <td class="num">-</td>
+        </tr>
+        <tr>
+          <td class="num">VAL</td>
+          <td>Validation</td>
+          <td><span class="status green"><span class="dot"></span>Activa</span></td>
+          <td class="num">-</td>
+        </tr>
+        <tr>
+          <td class="num">CM</td>
+          <td>Configuration Management</td>
+          <td><span class="status green"><span class="dot"></span>Activa</span></td>
+          <td class="num">-</td>
+        </tr>
+        <tr>
+          <td class="num">PPQA</td>
+          <td>Process & Product QA</td>
+          <td><span class="status green"><span class="dot"></span>Activa</span></td>
+          <td class="num">-</td>
+        </tr>
+        <tr>
+          <td class="num">REQM</td>
+          <td>Requirements Management</td>
+          <td><span class="status green"><span class="dot"></span>Activa</span></td>
+          <td class="num">-</td>
+        </tr>
+        <tr>
+          <td class="num">DAR</td>
+          <td>Decision Analysis & Resolution</td>
+          <td><span class="status green"><span class="dot"></span>Activa</span></td>
+          <td class="num">-</td>
+        </tr></tbody>
+        </table>
+      </section>
+      <section>
+        <div class="section-header">
+          <h2>Historial de gates aprobados</h2>
+          <span class="note">8 gates total - ultimos 5</span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Gate</th><th class="num">Step</th><th class="num">Sprint</th><th>Feature</th><th>Aprobado</th></tr></thead>
+          <tbody>
+        <tr>
+          <td>G-9</td>
+          <td class="num">Step 9</td>
+          <td class="num">S25</td>
+          <td>FEAT-023</td>
+          <td class="muted">2026-04-17</td>
+        </tr>
+        <tr>
+          <td>G-9</td>
+          <td class="num">Step 9</td>
+          <td class="num">S25</td>
+          <td>FEAT-023</td>
+          <td class="muted">2026-04-17</td>
+        </tr>
+        <tr>
+          <td>G-8b</td>
+          <td class="num">Step 8b</td>
+          <td class="num">S25</td>
+          <td>FEAT-023</td>
+          <td class="muted">2026-04-17</td>
+        </tr>
+        <tr>
+          <td>G-8b</td>
+          <td class="num">Step 8b</td>
+          <td class="num">S25</td>
+          <td>FEAT-023</td>
+          <td class="muted">2026-04-17</td>
+        </tr>
+        <tr>
+          <td>G-8</td>
+          <td class="num">Step 8</td>
+          <td class="num">S25</td>
+          <td>FEAT-023</td>
+          <td class="muted">2026-04-17</td>
+        </tr></tbody>
+        </table>
+      </section>
+    </div>
+    
+    
+    <div class="tab-panel" data-panel="seguridad">
+      <section>
+        <div class="section-header">
+          <h2>Seguridad y compliance</h2>
+          <span class="status green"><span class="dot"></span>Saludable</span>
+        </div>
+        <div class="grid-3">
+          <div class="data-block">
+            <span class="label">CVE Criticas</span>
+            <span class="value" style="color: var(--green);">0</span>
+          </div>
+          <div class="data-block">
+            <span class="label">CVE Altas</span>
+            <span class="value" style="color: var(--green);">0</span>
+          </div>
+          <div class="data-block">
+            <span class="label">SAST findings</span>
+            <span class="value">1</span>
+            <span class="detail">1 findings</span>
+          </div>
+          <div class="data-block"><span class="label">PCI-DSS</span><span class="value" style="font-size: var(--text-h2);">Compliant</span></div><div class="data-block"><span class="label">GDPR</span><span class="value" style="font-size: var(--text-h2);">Compliant</span></div>
+          <div class="data-block">
+            <span class="label">Deudas abiertas</span>
+            <span class="value">0</span>
+          </div>
+        </div>
+      </section>
+    </div>
+    
+    
+    <div class="tab-panel" data-panel="estado">
+      <section>
+        <div class="section-header">
+          <h2>Estado actual del sprint</h2>
+        </div>
+        <div class="grid-3">
+          <div class="data-block">
+            <span class="label">Sprint actual</span>
+            <span class="value">S25</span>
+            <span class="detail">Sprint cerrado</span>
+          </div>
+          <div class="data-block">
+            <span class="label">Pipeline step</span>
+            <span class="value" style="font-size: var(--text-h2);">Step 9</span>
+            <span class="detail">workflow-manager</span>
+          </div>
+          <div class="data-block">
+            <span class="label">Gates</span>
+            <span class="value" style="font-size: var(--text-h2);">-</span>
+            <span class="detail">Sin gates pendientes</span>
+          </div>
+        </div>
+        <div style="margin-top: var(--sp-6); padding: var(--sp-4); background: var(--bg-subtle); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--text-muted);">
+          <strong style="color: var(--text); font-family: var(--font-sans); font-weight: 500;">Resume:</strong> Sprint 25 CERRADO · v1.25.0 · 593 SP · 1042 tests · 89% cov · 0 defectos · Sprint 26 pendiente definición PO (FEAT-024 TBD) — primer sprint con G-4 checklist fidelidad BLOQUEANTE activo
+        </div>
+      </section>
+    </div>
+    
+    <footer>
+      <span>SOFIA-CORE v2.6.64 - Dashboard v2.0 (Cool light - DM Sans - Newsreader)</span>
+      <span>Generado con gen-dashboard-v2.py - datos desde .sofia/session.json</span>
+    </footer>
+    
+  </div>
+  <script>
+    document.querySelectorAll('.tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.tab;
+        document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelector('[data-panel="' + id + '"]').classList.add('active');
+      });
+    });
+    
+    const ctx = document.getElementById('velocityChart');
+    if (ctx) new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ["S24", "S25"],
+        datasets: [
+          { label: 'Story Points', data: [24, 24], backgroundColor: '#C84A14', borderRadius: 4, yAxisID: 'y' },
+          { label: 'Cobertura %', type: 'line', data: [89, 89], borderColor: '#059669', backgroundColor: '#05966920', borderWidth: 2, tension: 0.3, pointRadius: 3, yAxisID: 'y1' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderWidth: 1, titleColor: '#1E293B', bodyColor: '#64748B' } },
+        scales: {
+          y: { type: 'linear', position: 'left', grid: { color: '#E2E8F0' }, ticks: { color: '#64748B', font: { family: 'DM Mono', size: 11 } }, border: { color: '#E2E8F0' } },
+          y1: { type: 'linear', position: 'right', min: 0, max: 100, grid: { display: false }, ticks: { color: '#64748B', font: { family: 'DM Mono', size: 11 }, callback: v => v + '%' }, border: { color: '#E2E8F0' } },
+          x: { grid: { display: false }, ticks: { color: '#64748B', font: { family: 'DM Mono', size: 11 } }, border: { color: '#E2E8F0' } }
+        }
+      }
+    });
+    const ctxQa = document.getElementById('qaChart');
+    if (ctxQa) new Chart(ctxQa, {
+      type: 'bar',
+      data: {
+        labels: ["S24", "S25"],
+        datasets: [
+          { label: 'Tests nuevos', data: [25, 64], backgroundColor: '#C84A14', borderRadius: 4, yAxisID: 'y' },
+          { label: 'Cobertura %', type: 'line', data: [89, 89], borderColor: '#059669', backgroundColor: '#05966920', borderWidth: 2, tension: 0.3, pointRadius: 3, yAxisID: 'y1' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderWidth: 1, titleColor: '#1E293B', bodyColor: '#64748B' } },
+        scales: {
+          y: { type: 'linear', position: 'left', grid: { color: '#E2E8F0' }, ticks: { color: '#64748B', font: { family: 'DM Mono', size: 11 } }, border: { color: '#E2E8F0' } },
+          y1: { type: 'linear', position: 'right', min: 0, max: 100, grid: { display: false }, ticks: { color: '#64748B', font: { family: 'DM Mono', size: 11 }, callback: v => v + '%' }, border: { color: '#E2E8F0' } },
+          x: { grid: { display: false }, ticks: { color: '#64748B', font: { family: 'DM Mono', size: 11 } }, border: { color: '#E2E8F0' } }
+        }
+      }
+    });
+    
+  </script>
+</body>
+</html>

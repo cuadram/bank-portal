@@ -657,3 +657,13 @@
 [2026-04-21T05:39:34.325Z] [DISTRIBUTION] [experis-tracker] la-sync DELTA executed | +7 LAs imported (LA-CORE-058..061 + LA-025-09/10/12)
 [2026-04-21T05:39:34.325Z] [DISTRIBUTION] [takeover] la-sync DELTA executed | +7 LAs imported (LA-CORE-058..061 + LA-025-09/10/12)
 [2026-04-21T05:39:34.325Z] [GOVERNANCE] [HITL-CORE-018] Promotion to SOFIA-CORE approved by Product Owner Angel de la Cuadra | scope=global | guardrails=GR-DASH-002, GR-ATLASSIAN-001, GR-GIT-001
+[2026-04-21T11:17:49.642Z] [A.3a] experis-tracker orchestrator/SKILL.md v2.7 → v2.8 — PASO 0.5 GR-GIT-001 (commit 84175e1, pushed)
+[2026-04-21T11:17:49.642Z] [A.3b] SOFIA-CORE skills/orchestrator/SKILL.md v2.8 → v2.9 — PASO 0.5 GR-GIT-001 genérico con smoke_test_files (commit 401985d, pushed)
+[2026-04-21T11:17:49.642Z] [A.3c] takeover — NO requiere skill local (lee desde SOFIA_CORE_PATH/skills/) — LA-CORE-061 operativa vía SOFIA-CORE v2.9
+[2026-04-21T11:17:49.642Z] [A.3 CLOSED] GR-GIT-001 desplegado en los 3 proyectos SOFIA (bank-portal v2.8 · experis-tracker v2.8 · takeover → SOFIA-CORE v2.9)
+[2026-04-21T11:17:49.642Z] [A.4 PENDING] takeover PR chore/la-sync-core-v2.6.61 → main requiere aprobación manual PO en UI GitHub (branch protection CI Build .NET 8)
+[2026-04-21T13:08:21.578Z] [A.4 CLOSED] takeover PR #1 merged to main · merge commit 51e507c · 4 commits integrados (aa855fb milestone + 1059329 la-sync + 8d7b5c1 DEBT-TK-011 + 46456f8 DEBT-TK-012)
+[2026-04-21T13:08:21.578Z] [DEBT-TK-011] takeover RESOLVED · scripts/**/*.cs excluido del ensamblado principal (CS8802 top-level statements fix)
+[2026-04-21T13:08:21.578Z] [DEBT-TK-012] takeover RESOLVED · using Microsoft.EntityFrameworkCore añadido en FacturasController.cs + ClientesController.cs (CS1061/CS0103 fix)
+[2026-04-21T13:08:21.578Z] [DEBT-TK-013] takeover REGISTERED · workflow ci.yml job test falla en dorny/test-reporter por permisos checks:write del GITHUB_TOKEN. No bloqueante (Test xUnit no es Required). Pendiente para próximo sprint takeover.
+[2026-04-21T13:08:21.578Z] [CLOSURE] Sprint 25 BankPortal + governance post-cierre COMPLETADO. GR-GIT-001 (LA-CORE-061) desplegado en 3 proyectos SOFIA. 4 repos sincronizados con remotes. A.3 + A.4 CLOSED.
