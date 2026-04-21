@@ -3,93 +3,147 @@
   "sprint": 25,
   "project": "bank-portal",
   "client": "Banco Meridian",
-  "generated_at": "2026-04-16T18:03:39.428Z",
+  "generated_at": "2026-04-20T19:54:50.965Z",
   "po_review_required": true,
   "po_reviewer": "Angel de la Cuadra (Product Owner)",
   "status": "COMPLETED",
   "sofia_core_path": "/Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE",
   "candidates": [
     {
-      "id": "LA-025-01",
-      "type": "process/governance",
-      "description": "Gate G-2 Sprint 25 aprobado explícitamente por el PO pero no persistido en session.json por el Orchestrator. Step 2b ejecutado correctamente tras aprobación, pero la trazabilidad CMMI L3 quedó rota. Bug adicional: validate-fa-index.js validaba RN references contra idx.last_feat (FEAT-021) en lugar de la feature activa en session.current_feature (FEAT-023). PASS 8/8 era parcialmente falso positivo. Hallazgo adicional: FA-Agent S24 y S25 añadió funcionalidades sin campo feat — FEAT-022 y FEAT-023 quedaron con feat:undefined en fa-index.json.",
-      "correction": "REGLA PERMANENTE: (1) Persistencia de gate en session.json es operación ATÓMICA del Orchestrator — inmediatamente tras recibir aprobación PO, antes de iniciar el siguiente step. (2) validate-fa-index.js v2.4: CHECK 8 lee current_feature desde session.json (fuente de verdad), con fallback a idx.last_feat. (3) FA-Agent: al añadir funcionalidades a fa-index.json DEBE establecer campo feat con el ID de la feature activa. (4) validate-fa-index CHECK adicional: 0 funcionalidades con feat:undefined. Ambas correcciones elevadas a LA-CORE.",
-      "registered_at": "2026-04-16T12:46:11.069Z",
-      "scope": "proyecto+SOFIA-CORE",
-      "impact": "CRITICAL",
-      "score": 8,
+      "id": "LA-025-12",
+      "type": "process/governance/git",
+      "description": "SOFIA ejecutó una sesión de arranque completa (lectura session.json, skill loader, inicialización Orchestrator) sin detectar que el working tree tenía 842 ficheros borrados respecto al HEAD de Git — toda la carpeta apps/ (backend-2fa + frontend-portal + CLAUDE.md raíz). Consecuencia: durante la sesión se generó LA-025-11 con un diagnóstico arquitectónico erróneo ('separación docs/code sin enlace'), se propusieron remediaciones costosas (submodules, workspace padre), y se asumió que el código nunca había estado en el checkout. La verdad se descubrió solo al ejecutar git status --short, que mostró las 841+1 entradas con prefijo 'D' (deleted). Ningún paso del pipeline SOFIA compara el estado del working tree contra el índice Git en el arranque, pese a que es una verificación O(1) y el proyecto depende completamente de la integridad de apps/ para Step 4 (Developer), guardrail G-4b (compile), y checklist fidelidad G-4 (LA-CORE-056). El fallo es especialmente grave porque la Regla Crítica LA-018-01 exige leer .sofia/session.json antes de cualquier acción, pero no exige verificar la coherencia del working tree — la asunción implícita es 'si el directorio existe, el código está ahí'.",
+      "correction": "Añadir guardrail GR-GIT-001 al Orchestrator (inicialización SOFIA, antes de cualquier skill): ejecutar `git status --porcelain | grep '^ D' | wc -l`; si el resultado > 0, bloquear con alerta detallando número de ficheros borrados y sugerir `git restore` como acción correctiva. Complementariamente añadir al bloque de arranque: (a) contador de ficheros .java y .ts en apps/ vs. cuenta esperada persistida en session.json.repository.expected_file_counts; (b) verificación de existencia de apps/backend-2fa/pom.xml y apps/frontend-portal/package.json como smoke test de integridad; (c) registro en sofia.log del hash git rev-parse HEAD al arrancar, para trazabilidad. Promover a SOFIA-CORE como LA-CORE-059 (GR-GIT-001) — aplicable a cualquier proyecto SOFIA basado en Git. Actualizar orchestrator/SKILL.md sección 'Inicialización automática' con PASO 0 nuevo: verificación de integridad del working tree.",
+      "registered_at": "2026-04-20T19:49:40.283602Z",
+      "scope": "project",
+      "impact": "MEDIUM",
+      "score": 2,
       "matched_criteria": [
-        "REGLA_PERMANENTE",
-        "BLOCKER_GATE",
         "MULTI_SKILL"
       ],
       "promotion_status": "approved",
       "po_decision": "ACCEPTED",
       "po_notes": null,
-      "po_decided_at": "2026-04-16T18:03:45.647037Z"
+      "po_decided_at": "2026-04-20T19:56:35.029519Z"
     },
     {
-      "id": "LA-025-02",
-      "type": "process/fa-agent",
-      "description": "Step 2b debe invocar gen-fa-document.py para actualizar el FA Word consolidado además de actualizar fa-index.json y ejecutar validate-fa-index. El .docx es el entregable formal del FA-Agent en Gate 2b. Detectado en 3 proyectos: BankPortal S25 (solo draft .md, sin docx), ExperisTracker (docx actualizado en 8b no en 2b), TakeOverSintetico (FA global inexistente, Sprint 1 sin consolidar).",
-      "correction": "REGLA PERMANENTE: Step 2b checklist obligatorio: (1) actualizar fa-index.json con funcionalidades+BRs de la feature activa con campo feat, (2) validate-fa-index PASS 8/8, (3) invocar gen-fa-document.py → .docx actualizado, (4) registrar los 3 en artifacts[2b_sNN]. El .docx es BLOQUEANTE para Gate G-2b — sin él el gate no se aprueba.",
-      "registered_at": "2026-04-16T13:00:02.547Z",
-      "scope": "SOFIA-CORE",
-      "impact": "CRITICAL",
-      "score": 12,
+      "id": "LA-025-11",
+      "type": "governance/repository",
+      "description": "El directorio SOFIA del proyecto (/Users/cuadram/proyectos/bank-portal) no contiene el codigo fuente Java ni Angular. El docker-compose.yml hace build desde ../../apps/backend-2fa y ../../apps/frontend-portal, rutas que no existen en el filesystem accesible. El contenedor bankportal-backend corre sobre una imagen pre-construida (bankportal-backend-2fa:local-dev) cuyo origen esta desacoplado del checkout documental. Consecuencia: auditorias de arquitectura contra la documentacion (HLD, LLD, session.json) producen una ilusion de verdad — el diagrama logico generado reflejaba 8 bounded contexts pero el JAR desplegado contiene 23. Tambien impide ejecutar mvn compile, leer el codigo para verificar fidelidad prototipo (LA-CORE-056), aplicar refactors, o resolver deudas tecnicas desde el puesto de trabajo canonico del PO.",
+      "correction": "Tres opciones: (a) incorporar apps/backend-2fa y apps/frontend-portal como git submodules del repositorio bank-portal para que el checkout SOFIA contenga la fuente canonica; (b) renombrar la raiz SOFIA a /Users/cuadram/proyectos/bank-portal-docs y crear un workspace padre que contenga apps/* y docs/* como hermanos; (c) si la separacion se mantiene, anadir un guardrail GR-REPO-001 que bloquee Step 4 y Step 5 si no existe ruta hacia el codigo fuente y registre la ubicacion real en session.json.repository.source_path. Promover a SOFIA-CORE: el problema afecta a cualquier proyecto que intente separar docs y code sin establecer el enlace.",
+      "registered_at": "2026-04-20T09:09:24.854Z",
+      "scope": "project",
+      "impact": "MEDIUM",
+      "score": 2,
       "matched_criteria": [
-        "REGLA_PERMANENTE",
-        "SCOPE_CORE",
-        "BLOCKER_GATE",
+        "MULTI_SKILL"
+      ],
+      "promotion_status": "rejected",
+      "po_decision": "REJECTED",
+      "po_notes": "Diagnóstico arquitectónico erróneo; invalidada por PO 2026-04-20. Causa real fue borrado accidental recuperado con git restore. Sustituida por LA-025-12.",
+      "po_decided_at": "2026-04-20T19:55:19.123200Z"
+    },
+    {
+      "id": "LA-025-10",
+      "type": "process/tooling",
+      "description": "Las herramientas MCP Atlassian disponibles (searchJiraIssuesUsingJql, getJiraIssue, transitionJiraIssue, editJiraIssue, addCommentToJiraIssue, getTransitionsForJiraIssue, createIssueLink, etc.) cubren la Jira Platform REST API v3 sobre issues, pero NO exponen la Jira Agile REST API (/rest/agile/1.0/sprint/{id}) que es la unica via oficial para transicionar un sprint de active → closed. Consecuencia: Step 9 Workflow Manager puede finalizar todos los issues via transitionJiraIssue pero NO puede completar el sprint en si mismo; queda pendiente una accion manual del PO desde la UI de Jira o un curl con API token fuera de la allowlist de sofia-shell. Verificado en Sprint 25 (sprint_id=464, board_id=1): todos los issues SCRUM-153..162 pasaron a Finalizada via MCP, pero el sprint seguia state=active hasta que el PO hizo click en \"Completar sprint\" en la UI.",
+      "correction": "Tres opciones de mejora: (a) solicitar a Anthropic/Atlassian que amplie el MCP server para incluir endpoints Agile API (completeSprint, createSprint, updateSprint, moveIssuesToSprint); (b) incluir en SOFIA un wrapper Node con https.request + ATLASSIAN_API_TOKEN en .env (fuera del repo) que encapsule completeSprint; (c) hasta que exista soporte nativo, documentar explicitamente en la skill workflow-manager/SKILL.md que la accion final de cerrar sprint en Jira es manual PO-UI y que el Step 9 termina con este flag pendiente. Promover a SOFIA-CORE porque afecta a todos los proyectos que usen SOFIA + Jira Cloud.",
+      "registered_at": "2026-04-17T13:14:35.481Z",
+      "scope": "project",
+      "impact": "MEDIUM",
+      "score": 2,
+      "matched_criteria": [
         "MULTI_SKILL"
       ],
       "promotion_status": "approved",
       "po_decision": "ACCEPTED",
       "po_notes": null,
-      "po_decided_at": "2026-04-16T18:03:49.812976Z"
+      "po_decided_at": "2026-04-20T19:56:30.904905Z"
     },
     {
-      "id": "LA-025-03",
-      "type": "ux/process",
-      "description": "UX/UI Designer Agent generó PROTO-FEAT-023-sprint25 desde el scaffold genérico del SKILL.md en lugar de copiar PROTO-FEAT-022-sprint24.html como base. La declaración \"CSS/JS heredado\" en los artefactos era falsa. Los errores de sidebar (blanco vs navy #1e3a5f) no habrían ocurrido con herencia real porque el prototipo S24 ya los tenía corregidos. El patrón incremental sprint-a-sprint garantiza coherencia visual durante toda la vida del proyecto.",
-      "correction": "REGLA PERMANENTE: Step 2c PASO 0 obligatorio y bloqueante — antes de escribir cualquier HTML o CSS, ejecutar: cp docs/ux-ui/prototypes/PROTO-FEAT-0XX-sprintYY.html docs/ux-ui/prototypes/PROTO-FEAT-0(XX+1)-sprint(YY+1).html. El Orchestrator verifica que el nuevo archivo contiene la firma CSS del anterior (grep del color sidebar, tokens DS) antes de declarar el step iniciado. Sin este check el gate HITL-PO-TL no puede aprobarse. Checklist G-2c añade: archivo nuevo hereda de archivo anterior verificado.",
-      "registered_at": "2026-04-16T14:27:12.198Z",
-      "scope": "proyecto+SOFIA-CORE",
+      "id": "LA-025-09",
+      "type": "process/tooling",
+      "description": ".sofia/scripts/gen-global-dashboard.js espera session.completed_steps como Array (calls .includes), pero el session.json lo persiste como objeto {sprint, feature, steps:[]}. Al ejecutar directamente el script falla con TypeError: completedSteps.includes is not a function. Workaround actual: wrapper Node que normaliza el campo antes de invocar, restaura el formato objeto después. Bloquea la regeneracion automatica del Dashboard Global en cada Gate (GR-DASH-001 incumplida). Bug cosmetico adicional: el banner del gate concatena GATE-${GP.step} cuando GP.step ya es G-8, resultando en GATE-G-8.",
+      "correction": "Refactorizar gen-global-dashboard.js para: (a) aceptar ambos formatos con normalizacion al cargar session.json — const completedSteps = Array.isArray(S.completed_steps) ? S.completed_steps : (S.completed_steps?.steps || []); (b) corregir la concatenacion del banner: gateLabel debe usar GP.step tal cual sin prefijo GATE- si ya contiene G-. Tests de regresion con ambos schemas. Promover a SOFIA-CORE como LA-CORE-058 y actualizar gen-global-dashboard.js en todos los proyectos registrados.",
+      "registered_at": "2026-04-17T12:08:33.479Z",
+      "scope": "project",
       "impact": "HIGH",
       "score": 5,
       "matched_criteria": [
-        "REGLA_PERMANENTE",
-        "MULTI_SKILL"
-      ],
-      "promotion_status": "approved",
-      "po_decision": "ACCEPTED",
-      "po_notes": null,
-      "po_decided_at": "2026-04-16T18:03:54.520199Z"
-    },
-    {
-      "id": "LA-025-04",
-      "type": "process/governance",
-      "description": "current_step en session.json no se actualizaba al avanzar entre steps — quedó en 3 mientras el pipeline estaba en 5b. Adicionalmente, gate_pending recibió el valor no canónico AUTO-5b que el dashboard no sabe normalizar (no está en GATE_ROLES map), causando que el dashboard mostrara Step 3 · Pendiente Responsable cuando el pipeline estaba en Step 5b.",
-      "correction": "REGLA PERMANENTE: (1) current_step y pipeline_step son el mismo valor — el Orchestrator los escribe SIEMPRE en el mismo bloque atómico de persistencia de gate, sin excepción. (2) gate_pending solo acepta valores canónicos definidos en GATE_ROLES del dashboard: G-1, G-2, G-2b, HITL-PO-TL, G-3, G-3b, G-4, G-4b, G-5, G-5b, G-6, G-7, G-8, G-8b, G-9. Valores inventados como AUTO-5b o HITL-TL sin normalizar rompen el dashboard. Para gates AUTO usar el código canónico directamente (G-5b). (3) Checklist de persistencia de gate añade verificación: gate_pending ∈ GATE_ROLES antes de escribir session.json.",
-      "registered_at": "2026-04-16T17:47:47.070Z",
-      "scope": "proyecto+SOFIA-CORE",
-      "impact": "CRITICAL",
-      "score": 8,
-      "matched_criteria": [
-        "REGLA_PERMANENTE",
         "BLOCKER_GATE",
         "MULTI_SKILL"
       ],
       "promotion_status": "approved",
       "po_decision": "ACCEPTED",
       "po_notes": null,
-      "po_decided_at": "2026-04-16T18:03:59.977663Z"
+      "po_decided_at": "2026-04-20T19:55:24.449264Z"
     }
   ],
-  "skipped": [],
+  "skipped": [
+    {
+      "id": "LA-023-01",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-017",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-018",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-033",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-048",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-050",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-025-01",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-025-02",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-025-03",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-025-04",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-053",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-054",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-055",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-056",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-057",
+      "reason": "ya promovida o en MANIFEST"
+    }
+  ],
   "stats": {
-    "total_las_sprint": 4,
+    "total_las_sprint": 22,
     "candidates_count": 4,
-    "skipped_count": 0
+    "skipped_count": 15
   }
 }
