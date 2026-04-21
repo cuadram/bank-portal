@@ -47,7 +47,94 @@
       "decided_by": "product-owner",
       "source_sprint": 25,
       "sofia_core_version": "2.6.51"
+    },
+    {
+      "la_id": "LA-CORE-053",
+      "decision": "ACCEPTED",
+      "decided_at": "2026-04-16T19:40:00.000Z",
+      "decided_by": "product-owner",
+      "source_sprint": 25,
+      "sofia_core_version": "2.6.53",
+      "retrofit": true,
+      "retrofit_at": "2026-04-19T17:10:07.339190Z",
+      "retrofit_reason": "Registro retroactivo: LAs redactadas y persistidas en SOFIA-CORE el 2026-04-16 sin pasar por sofia-contribute.py. Infringe LA-CORE-052 (vigente desde 18:05 UTC). Reconciliacion via C acordada con PO el 2026-04-19 — contenido tecnico correcto, se formaliza post-hoc para cerrar el log canonico antes de primer push a remote git."
+    },
+    {
+      "la_id": "LA-CORE-054",
+      "decision": "ACCEPTED",
+      "decided_at": "2026-04-16T19:40:00.000Z",
+      "decided_by": "product-owner",
+      "source_sprint": 25,
+      "sofia_core_version": "2.6.54",
+      "retrofit": true,
+      "retrofit_at": "2026-04-19T17:10:07.339190Z",
+      "retrofit_reason": "Registro retroactivo: LAs redactadas y persistidas en SOFIA-CORE el 2026-04-16 sin pasar por sofia-contribute.py. Infringe LA-CORE-052 (vigente desde 18:05 UTC). Reconciliacion via C acordada con PO el 2026-04-19 — contenido tecnico correcto, se formaliza post-hoc para cerrar el log canonico antes de primer push a remote git."
+    },
+    {
+      "la_id": "LA-CORE-055",
+      "decision": "ACCEPTED",
+      "decided_at": "2026-04-16T20:30:00.000Z",
+      "decided_by": "product-owner",
+      "source_sprint": 25,
+      "sofia_core_version": "2.6.55",
+      "retrofit": true,
+      "retrofit_at": "2026-04-19T17:10:07.339190Z",
+      "retrofit_reason": "Registro retroactivo: LAs redactadas y persistidas en SOFIA-CORE el 2026-04-16 sin pasar por sofia-contribute.py. Infringe LA-CORE-052 (vigente desde 18:05 UTC). Reconciliacion via C acordada con PO el 2026-04-19 — contenido tecnico correcto, se formaliza post-hoc para cerrar el log canonico antes de primer push a remote git."
+    },
+    {
+      "la_id": "LA-CORE-056",
+      "decision": "ACCEPTED",
+      "decided_at": "2026-04-16T20:30:00.000Z",
+      "decided_by": "product-owner",
+      "source_sprint": 25,
+      "sofia_core_version": "2.6.56",
+      "retrofit": true,
+      "retrofit_at": "2026-04-19T17:10:07.339190Z",
+      "retrofit_reason": "Registro retroactivo: LAs redactadas y persistidas en SOFIA-CORE el 2026-04-16 sin pasar por sofia-contribute.py. Infringe LA-CORE-052 (vigente desde 18:05 UTC). Reconciliacion via C acordada con PO el 2026-04-19 — contenido tecnico correcto, se formaliza post-hoc para cerrar el log canonico antes de primer push a remote git."
+    },
+    {
+      "la_id": "LA-CORE-057",
+      "decision": "ACCEPTED",
+      "decided_at": "2026-04-16T20:30:00.000Z",
+      "decided_by": "product-owner",
+      "source_sprint": 25,
+      "sofia_core_version": "2.6.57",
+      "retrofit": true,
+      "retrofit_at": "2026-04-19T17:10:07.339190Z",
+      "retrofit_reason": "Registro retroactivo: LAs redactadas y persistidas en SOFIA-CORE el 2026-04-16 sin pasar por sofia-contribute.py. Infringe LA-CORE-052 (vigente desde 18:05 UTC). Reconciliacion via C acordada con PO el 2026-04-19 — contenido tecnico correcto, se formaliza post-hoc para cerrar el log canonico antes de primer push a remote git."
+    },
+    {
+      "la_id": "LA-025-11",
+      "decision": "REJECTED",
+      "decided_at": "2026-04-20T19:55:19.123782Z",
+      "decided_by": "product-owner",
+      "motivo": "Diagnóstico arquitectónico erróneo; invalidada por PO 2026-04-20. Causa real fue borrado accidental recuperado con git restore. Sustituida por LA-025-12.",
+      "source_sprint": 25
+    },
+    {
+      "la_id": "LA-025-09",
+      "decision": "ACCEPTED",
+      "decided_at": "2026-04-20T19:55:24.449587Z",
+      "decided_by": "product-owner",
+      "source_sprint": 25,
+      "sofia_core_version": "2.6.59"
+    },
+    {
+      "la_id": "LA-025-10",
+      "decision": "ACCEPTED",
+      "decided_at": "2026-04-20T19:56:30.905229Z",
+      "decided_by": "product-owner",
+      "source_sprint": 25,
+      "sofia_core_version": "2.6.60"
+    },
+    {
+      "la_id": "LA-025-12",
+      "decision": "ACCEPTED",
+      "decided_at": "2026-04-20T19:56:35.029851Z",
+      "decided_by": "product-owner",
+      "source_sprint": 25,
+      "sofia_core_version": "2.6.61"
     }
   ],
-  "last_updated": "2026-04-16T18:03:59.977909Z"
+  "last_updated": "2026-04-20T19:56:35.029853Z"
 }

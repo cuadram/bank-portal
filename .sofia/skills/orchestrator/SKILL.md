@@ -1,9 +1,16 @@
 ---
 name: orchestrator
 sofia_version: "2.6"
-version: "2.7"
-updated: "2026-04-05"
+version: "2.8"
+updated: "2026-04-20"
 changelog: |
+  v2.8 (2026-04-20) — GR-GIT-001: verificacion working-tree vs HEAD (LA-025-12).
+    INIT paso 0.5 nuevo — BLOQUEANTE si git status detecta ficheros borrados.
+    Previene sesiones sobre checkout incompleto (caso S25: 842 ficheros apps/
+    borrados del working tree, invisibles hasta descubrimiento manual).
+    Registra git rev-parse HEAD en sofia.log para trazabilidad de arranque.
+    Verificacion complementaria: smoke test pom.xml + package.json.
+    Reemplaza GR-REPO-001 (propuesto erroneamente en LA-025-11, rechazada).
   v2.7 (2026-04-05) — Regla 23: sofia-shell verify-before-use (LA-CORE-009).
     Verificacion obligatoria de cwd antes de cualquier invocacion sofia-shell.
     GR-014: sofia-shell apunta al proyecto activo o BLOQUEAR.
@@ -21,7 +28,7 @@ changelog: |
   v2.1 (2026-03-26) — Dashboard Global como entregable consolidado.
 ---
 
-# Orchestrator — SOFIA Software Factory v2.6
+# Orchestrator — SOFIA Software Factory v2.8
 
 ## Rol
 Coordinar el pipeline completo de desarrollo de software, delegando a los 21
@@ -44,12 +51,29 @@ la persistencia del estado en session.json y sofia.log.
        No continuar hasta resolver el conflicto con el usuario."
    f) Si coinciden → SOFIA_REPO queda establecido para toda la sesion
 
+0.5. GR-GIT-001 — VERIFICAR INTEGRIDAD WORKING-TREE vs HEAD (LA-025-12 · BLOQUEANTE)
+   a) Ejecutar: git status --porcelain | grep "^ D" | wc -l
+      (cuenta ficheros borrados del working tree respecto al indice Git)
+   b) Si resultado > 0 → DETENER con alerta:
+      "GR-GIT-001 VIOLADO — working-tree incompleto:
+       [N] ficheros borrados respecto a HEAD.
+       Ejemplo: apps/backend-2fa/pom.xml, apps/frontend-portal/package.json.
+       Ejecutar 'git restore <path>' para reponer, o resolver intencionalmente.
+       No continuar hasta reconciliar el working tree."
+   c) Si resultado == 0 → verificacion complementaria:
+      · Si git ls-files apps/backend-2fa/pom.xml existe y el fichero NO → DETENER
+      · Si git ls-files apps/frontend-portal/package.json existe y el fichero NO → DETENER
+      · Caso contrario → OK
+   d) Registrar en sofia.log:
+      [TIMESTAMP] [GR-GIT-001] PASS · HEAD=<git rev-parse HEAD> · deleted=0
+   e) Working tree asumido coherente con indice para resto de la sesion.
+
 1. Leer CLAUDE.md (ya leido en paso 0)
 2. Leer SOFIA_REPO/.sofia/session.json    → estado del pipeline
 3. Leer SOFIA_REPO/.sofia/sofia-config.json → configuracion del proyecto
 4. Si session.json.status == "in_progress" → ejecutar RESUME PROTOCOL
 5. Si session.json.status == "idle"        → iniciar nuevo pipeline
-6. Confirmar: "SOFIA v2.6 activo — [project] | SOFIA_REPO=[ruta] verificado"
+6. Confirmar: "SOFIA v2.8 activo — [project] | SOFIA_REPO=[ruta] verificado | GR-GIT-001 OK"
 ```
 
 
