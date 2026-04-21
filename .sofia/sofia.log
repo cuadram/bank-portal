@@ -646,3 +646,14 @@
 [2026-04-17T12:54:24.048Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-9 · Step: 9 · Sprint 25
 [2026-04-17T12:54:34.132Z] gen-ma-baseline.js v1.1.0 — S25 BANK_PORTAL overall:GREEN sprints:2 metrics:6 elapsed:0.01s
 [2026-04-17T12:54:55.027Z] [WORKFLOW] [step-9] SPRINT 25 CERRADO · FEAT-023 Mi Dinero PFM · v1.25.0 · 24SP entregados · 593 acum · 64/64 tests · 89% cov · 0 defectos · JIRA 10/10 Finalizada · Confluence 14680065 + 14712833 · LA 4 sesión + 5 CORE promovidas · G-9 aprobado PO
+[2026-04-20T09:09:29.895Z] [LA-REGISTRY] LA-025-11 registered · sofia-project-dir-without-source-code · HITL pending · SOFIA-CORE candidate · GR-REPO-001 proposed
+[2026-04-20T19:49:56Z] [PO] LA-025-11 INVALIDATED — diagnóstico arquitectónico erróneo sustituido; causa real fue borrado accidental de apps/ recuperado via git restore
+[2026-04-20T19:49:56Z] [PO] LA-025-12 REGISTERED — working-tree-git-divergence-undetected — HITL aprobado — GR-GIT-001 propuesto — candidato SOFIA-CORE (LA-CORE-059)
+[2026-04-20T19:49:56Z] [GIT] apps/ + CLAUDE.md restaurados desde HEAD — 842 ficheros — working tree coherente con índice
+[2026-04-21T05:39:34.325Z] [PROMOTION] [bank-portal/S25] LA-025-09 → LA-CORE-059 (GR-DASH-002) | SOFIA-CORE v2.6.61 | approved_by=product-owner
+[2026-04-21T05:39:34.325Z] [PROMOTION] [bank-portal/S25] LA-025-10 → LA-CORE-060 (GR-ATLASSIAN-001) | SOFIA-CORE v2.6.61 | approved_by=product-owner
+[2026-04-21T05:39:34.325Z] [PROMOTION] [bank-portal/S25] LA-025-12 → LA-CORE-061 (GR-GIT-001) | SOFIA-CORE v2.6.61 | approved_by=product-owner
+[2026-04-21T05:39:34.325Z] [SYNC] [bank-portal] la-sync-state.json updated | last_core_version=2.6.61 | promoted_la_ids=[LA-CORE-059, LA-CORE-060, LA-CORE-061]
+[2026-04-21T05:39:34.325Z] [DISTRIBUTION] [experis-tracker] la-sync DELTA executed | +7 LAs imported (LA-CORE-058..061 + LA-025-09/10/12)
+[2026-04-21T05:39:34.325Z] [DISTRIBUTION] [takeover] la-sync DELTA executed | +7 LAs imported (LA-CORE-058..061 + LA-025-09/10/12)
+[2026-04-21T05:39:34.325Z] [GOVERNANCE] [HITL-CORE-018] Promotion to SOFIA-CORE approved by Product Owner Angel de la Cuadra | scope=global | guardrails=GR-DASH-002, GR-ATLASSIAN-001, GR-GIT-001
