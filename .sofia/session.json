@@ -687,7 +687,7 @@
   },
   "resume_next": "Sprint 25 CERRADO · v1.25.0 · 593 SP · 1042 tests · 89% cov · 0 defectos · Sprint 26 pendiente definición PO (FEAT-024 TBD) — primer sprint con G-4 checklist fidelidad BLOQUEANTE activo",
   "sprint_closed": true,
-  "updated_at": "2026-04-21T05:29:36.222Z",
+  "updated_at": "2026-04-21T18:42:23.891Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-04-17T12:10:11.370Z",
@@ -925,6 +925,30 @@
     }
   ],
   "lessons_learned": [
+    {
+      "id": "LA-025-13",
+      "sprint": 25,
+      "scope_sprint": "post-S25 pre-S26",
+      "feature": "FEAT-023",
+      "type": "qa/devops/process",
+      "title": "smoke-test-references-non-existent-endpoint",
+      "description": "El smoke test v1.1 de Sprint 25 (infra/compose/smoke-test-v1.25.0.sh) aprobado en Gate G-7 incluia el check SM-14 contra PUT /api/v1/pfm/budgets/{id}/alert, un endpoint que NUNCA fue implementado en PfmController.java. El controller solo expone GET, POST y DELETE de budgets (la unica variante PUT es /movimientos/{txId}/category). Consecuencia: SM-14 devolvia 404 de forma permanente en cualquier ejecucion post-deploy, pero el gate G-7 se aprobo con 16/16 PASS porque el PO interpreto el FAIL como falso positivo en el momento. Dos falsos positivos adicionales del mismo script: SM-05 leia accts[0][\"id\"] cuando el contrato real expone accountId (se saltaba siempre como SKIP); SM-09 no aceptaba 409 Conflict en re-ejecucion (el backend rechaza correctamente por UK user_category_month). Los 3 defectos del smoke test pasaron Gate G-7 sin deteccion porque el review del release-manager se centro en el numero de stages OK del pipeline y no en el grep cruzado entre URLs del smoke y @RequestMapping del controller.",
+      "correction": "Aplicado v1.2 (2026-04-21) con 3 parches: (a) SM-05 lectura tolerante con fallback accountId || id; (b) SM-09 acepta 201|409|422 como codigos validos post-deploy; (c) SM-14 reformulado como asercion de dominio thresholdPercent in [50..95] step 5 via GET (cubre la RN del SRS sin depender de endpoint inexistente). Sintaxis bash -n OK. Logica verificada via Node: 17/17 PASS contra stack real. Backup preservado en smoke-test-v1.25.0.sh.bak-v1.1. Para prevenir regresion: Step 7 DevOps debe ejecutar pre-gate G-7 un grep cruzado de todas las URLs absolutas del smoke test (/api/v1/...) contra los handlers reales del controller (@GetMapping/@PostMapping/@PutMapping/@DeleteMapping); cualquier URL sin match debe bloquear G-7. Adicionalmente, el smoke test debe aceptar codigos de idempotencia (409 en POST con UK violado) y leer campos del payload segun el contrato documentado en el OpenAPI, no por asuncion.",
+      "registered_at": "2026-04-21T18:37:18.878Z",
+      "approved_by": "product-owner",
+      "hitl_approved": true,
+      "sofia_core_candidate": true,
+      "guardrail_proposed": "GR-SMOKE-001: pre-gate G-7 debe validar que toda URL absoluta del smoke test corresponde a un handler @RequestMapping existente en los controllers del proyecto. Falla bloqueante.",
+      "related_las": [
+        "LA-019-07"
+      ],
+      "artifact_ref": "infra/compose/smoke-test-v1.25.0.sh (v1.2)",
+      "verification_result": "17 PASS · 0 FAIL · 0 SKIP (verificado via Node contra stack v1.25.0 2026-04-21T18:31:21Z)",
+      "promoted_to": "LA-CORE-064",
+      "promoted_at": "2026-04-21T18:42:23.891Z",
+      "sofia_core_version": "2.6.66",
+      "guardrail_official": "GR-SMOKE-001"
+    },
     {
       "id": "LA-025-12",
       "sprint": 25,

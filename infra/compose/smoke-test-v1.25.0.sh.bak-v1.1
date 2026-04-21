@@ -2,11 +2,6 @@
 # smoke-test-v1.25.0.sh — BankPortal · FEAT-023 Mi Dinero PFM
 # Sprint 25 · SOFIA v2.7 · LA-019-07
 # v1.1 — corregido BUG-002/003/004 post-verificacion real
-# v1.2 (2026-04-21) — falsos positivos eliminados post-smoke S25:
-#   * SM-05: payload expone accountId (no id) — BUG-005
-#   * SM-09: 409 aceptado (idempotencia re-run) — BUG-006
-#   * SM-14: PUT /budgets/{id}/alert no existe en PfmController;
-#            reformulado a asercion thresholdPercent dominio — BUG-007
 
 BASE_URL="${STG_URL:-http://localhost:8081}"
 PASS=0; FAIL=0
@@ -68,7 +63,7 @@ import urllib.request, json
 req = urllib.request.Request('$BASE_URL/api/v1/accounts', headers={'Authorization':'Bearer $TOKEN'})
 r = urllib.request.urlopen(req, timeout=5)
 accts = json.load(r)
-print(accts[0].get('accountId') or accts[0].get('id','') if accts else '')
+print(accts[0]['id'] if accts else '')
 " 2>/dev/null)
 if [ -n "$ACCOUNT_ID" ]; then
   check "SM-05" "accounts/{id}/transactions GET 200" "$BASE_URL/api/v1/accounts/$ACCOUNT_ID/transactions" "200" "$TOKEN"
@@ -103,7 +98,7 @@ try:
 except urllib.error.HTTPError as e:
     print(e.code)
 " 2>/dev/null)
-if [ "$CODE" = "201" ] || [ "$CODE" = "409" ] || [ "$CODE" = "422" ]; then
+if [ "$CODE" = "201" ] || [ "$CODE" = "422" ]; then
   echo "PASS ($CODE)"
   ((PASS++))
 else
@@ -111,28 +106,29 @@ else
   ((FAIL++))
 fi
 
-# SM-14 reformulado (v1.2) — PUT /budgets/{id}/alert NO existe en PfmController.
-# Verificamos la restriccion de dominio thresholdPercent (50-95, step 5) via GET.
-echo -n "CHECK [SM-14] thresholdPercent dominio [50..95] step 5 ... "
-TP_OK=$(python3 -c "
+# PUT alert umbral
+echo -n "CHECK [SM-14] pfm/budgets alert PUT ... "
+BID=$(python3 -c "
 import urllib.request, json
 req = urllib.request.Request('$BASE_URL/api/v1/pfm/budgets', headers={'Authorization':'Bearer $TOKEN'})
 r = urllib.request.urlopen(req, timeout=5)
 b = json.load(r)
-if not b:
-    print('SKIP')
-else:
-    invalid = [x for x in b if x.get('thresholdPercent') is None
-               or x['thresholdPercent'] < 50 or x['thresholdPercent'] > 95
-               or x['thresholdPercent'] % 5 != 0]
-    print('OK' if not invalid else 'FAIL:'+str(len(invalid)))
+print(b[0]['id'] if b else '')
 " 2>/dev/null)
-if [ "$TP_OK" = "OK" ]; then
-  echo "PASS"; ((PASS++))
-elif [ "$TP_OK" = "SKIP" ]; then
-  echo "SKIP (sin presupuestos)"; ((PASS++))
+if [ -n "$BID" ]; then
+  CODE=$(python3 -c "
+import urllib.request, urllib.error, json
+data = json.dumps({'threshold':80}).encode()
+req = urllib.request.Request('$BASE_URL/api/v1/pfm/budgets/$BID/alert', data=data, method='PUT',
+      headers={'Content-Type':'application/json','Authorization':'Bearer $TOKEN'})
+try:
+    r = urllib.request.urlopen(req, timeout=5); print(r.getcode())
+except urllib.error.HTTPError as e: print(e.code)
+" 2>/dev/null)
+  [ "$CODE" = "200" ] && echo "PASS" && ((PASS++)) || { echo "FAIL [$CODE]"; ((FAIL++)); }
 else
-  echo "FAIL [$TP_OK]"; ((FAIL++))
+  echo "SKIP (sin presupuestos)"
+  ((PASS++))
 fi
 
 # --- FLYWAY ---
