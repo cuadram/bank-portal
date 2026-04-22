@@ -1,44 +1,45 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "idle",
+  "status": "in_progress",
   "project": "bank-portal",
   "client": "Banco Meridian",
-  "current_sprint": 25,
-  "current_feature": "FEAT-023",
-  "current_step": "9",
-  "pipeline_step": "9",
-  "pipeline_step_name": "workflow-manager",
+  "current_sprint": 26,
+  "current_feature": "FEAT-024",
+  "current_step": "2",
+  "pipeline_step": "2",
+  "pipeline_step_name": "requirements-analyst",
   "_completed_steps_note": "Array del sprint actual (current_sprint: 25). Se resetea al inicio de cada sprint. No acumula sprints anteriores — ver sprint_history para histórico.",
   "completed_steps": {
-    "sprint": 25,
-    "feature": "FEAT-023",
+    "sprint": 26,
+    "feature": "FEAT-024",
     "steps": [
-      "1",
-      "2",
-      "2b",
-      "2c",
-      "3",
-      "3b",
-      "4",
-      "4b",
-      "5",
-      "5b",
-      "6",
-      "7",
-      "4-bugfix",
-      "8",
-      "8b",
-      "9"
+      "1"
     ]
   },
-  "pending_steps": [],
-  "last_skill": "workflow-manager",
-  "last_skill_output_path": "LESSONS_LEARNED.md",
-  "gate_pending": null,
+  "pending_steps": [
+    "1",
+    "2",
+    "2b",
+    "2c",
+    "3",
+    "3b",
+    "4",
+    "4b",
+    "5",
+    "5b",
+    "6",
+    "7",
+    "8",
+    "8b",
+    "9"
+  ],
+  "last_skill": "requirements-analyst",
+  "last_skill_output_path": "docs/deliverables/sprint-26-FEAT-024/SRS-FEAT-024-sprint26.md",
+  "gate_pending": "G-2",
   "release_blocked": false,
   "release_blocked_reason": null,
-  "sprint_goal": "Permitir al cliente de Banco Meridian tomar el control de sus finanzas personales mediante categorización automática de movimientos, presupuestos configurables, alertas de gasto y análisis mensual comparativo — posicionando BankPortal como referente de banca digital inteligente.",
+  "sprint_goal": "Extender banca inteligente de BankPortal mediante gestor de Objetivos de Ahorro (viajes, hogar, emergencia, educacion) con aportaciones manuales y automaticas, seguimiento de hitos y proyeccion. Consolidar contrato API backend mediante OpenAPI 3.1 como fuente de verdad para habilitar GR-SMOKE-001.",
   "sprint_capacity_sp": 24,
   "artifacts": {
     "1": [
@@ -436,6 +437,21 @@
       "Git tag: v1.25.0 creado local · push manual pendiente por Angel",
       "Dashboard global regenerado · Gate G-9",
       "session.json cerrado: sprint_closed=true · acum=593SP · tests=1042"
+    ],
+    "1_s26": [
+      "docs/sprints/SPRINT-026-planning.md (12.9KB)",
+      "Jira SCRUM-163..173 creados (11 issues: 8 Story + 3 Task, Por hacer)",
+      "Issue links: SCRUM-172 blocked by SCRUM-171 · SCRUM-173 blocked by SCRUM-172"
+    ],
+    "2_s26": [
+      "docs/deliverables/sprint-26-FEAT-024/SRS-FEAT-024-sprint26.md (26.0KB · 538 líneas)",
+      "8 US (US-024-01..08) con 39 scenarios Gherkin · 15 RNs (RN-F024-01..15) · 7 RNFs (RNF-F024-01..07)",
+      "RTM completa US ↔ RN ↔ Endpoint ↔ Component ↔ Test ↔ FA",
+      "Modelo datos: 4 tablas (savings_goals, goal_allocations, goal_milestones, goal_auto_rules) + Flyway V29 prevista",
+      "10 endpoints REST + 2 auxiliares OpenAPI",
+      "ADRs previstos: ADR-040 segregación virtual α, ADR-041 @Scheduled, ADR-042 OpenAPI",
+      "12 LAs/GRs aplicables · 6 riesgos con mitigación",
+      "gate_pending G-2 (HITL PO)"
     ]
   },
   "gates": {
@@ -662,6 +678,14 @@
       "sprint": 25,
       "feature": "FEAT-023",
       "note": "Sprint 25 CERRADO — SCRUM-153..162 Finalizada — Confluence 14680065 + Retro 14712833 — 17 DOCX + 3 XLSX + 1 JSON — FA v0.10 100/231 — 5 LAs promovidas a CORE (LA-CORE-053..057) — BUG-PO 15/36 resueltos · 21 diferidos S26"
+    },
+    "G-1_s26": {
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-21T19:13:10.056Z",
+      "step": "1",
+      "sprint": 26,
+      "feature": "FEAT-024",
+      "note": "FEAT-024 Objetivos de Ahorro aprobado. 24 SP (18 feature + 6 deuda OpenAPI). 8 US + 3 DEBT. Bugs PFM 21 diferidos a S27. ADR-040 segregacion virtual alpha."
     }
   },
   "security": {
@@ -678,16 +702,16 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-04-17T12:54:24.048Z",
-    "last_gate": "G-9",
-    "last_step": "9",
-    "sprint": 25,
-    "feature": "FEAT-023",
+    "last_generated": "2026-04-21T20:56:41.810Z",
+    "last_gate": "G-2-pending",
+    "last_step": "2",
+    "sprint": 26,
+    "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 25 CERRADO · v1.25.0 · 593 SP · 1042 tests · 89% cov · 0 defectos · Sprint 26 pendiente definición PO (FEAT-024 TBD) — primer sprint con G-4 checklist fidelidad BLOQUEANTE activo",
-  "sprint_closed": true,
-  "updated_at": "2026-04-21T18:42:23.891Z",
+  "resume_next": "Step 2 completado · SRS-FEAT-024-sprint26.md generado · gate_pending G-2 (HITL PO)",
+  "sprint_closed": false,
+  "updated_at": "2026-04-22T05:32:44.251Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-04-17T12:10:11.370Z",
@@ -723,34 +747,69 @@
       "registered_at": "2026-04-16T06:20:00.895915Z",
       "status": "CLOSED",
       "jira": "SCRUM-153"
+    },
+    {
+      "id": "DEBT-048",
+      "area": "Backend",
+      "priority": "Media",
+      "desc": "Generar OpenAPI 3.1 completo via springdoc",
+      "sprint_target": "S26",
+      "origin": "GR-SMOKE-001 enablement",
+      "registered_at": "2026-04-21T19:17:56.424Z",
+      "status": "OPEN",
+      "jira": "SCRUM-171"
+    },
+    {
+      "id": "DEBT-049",
+      "area": "SOFIA governance",
+      "priority": "Alta",
+      "desc": "Script validate-smoke-vs-openapi (implementa GR-SMOKE-001)",
+      "sprint_target": "S26",
+      "origin": "LA-CORE-064",
+      "registered_at": "2026-04-21T19:17:56.424Z",
+      "status": "OPEN",
+      "jira": "SCRUM-172"
+    },
+    {
+      "id": "DEBT-050",
+      "area": "SOFIA skills",
+      "priority": "Media",
+      "desc": "SKILL.md devops con checklist pre-G-7 invocando DEBT-049",
+      "sprint_target": "S26",
+      "origin": "LA-CORE-064",
+      "registered_at": "2026-04-21T19:17:56.424Z",
+      "status": "OPEN",
+      "jira": "SCRUM-173"
     }
   ],
   "jira_sprint": {
-    "sprint_name": "Tablero Sprint 25",
+    "sprint_name": "Tablero Sprint 26",
     "board_id": 1,
-    "state": "closed",
+    "state": "active",
     "issues": [
-      "SCRUM-153",
-      "SCRUM-154",
-      "SCRUM-155",
-      "SCRUM-156",
-      "SCRUM-157",
-      "SCRUM-158",
-      "SCRUM-159",
-      "SCRUM-160",
-      "SCRUM-161",
-      "SCRUM-162"
+      "SCRUM-163",
+      "SCRUM-164",
+      "SCRUM-165",
+      "SCRUM-166",
+      "SCRUM-167",
+      "SCRUM-168",
+      "SCRUM-169",
+      "SCRUM-170",
+      "SCRUM-171",
+      "SCRUM-172",
+      "SCRUM-173"
     ],
-    "started_at": "2026-04-16T10:40:06.994Z",
-    "closed_at": "2026-04-17T13:13:55.434Z",
-    "closed_by": "product-owner-ui",
-    "sprint_id": 464,
-    "close_method": "Jira UI (Opción A · LA-025-10 pendiente MCP completeSprint)"
+    "started_at": "2026-04-21T19:20:39.470Z",
+    "sprint_id": 497,
+    "open_method": "Jira UI (PO manual - GR-ATLASSIAN-001)",
+    "end_date": "2026-06-16T08:12:37.000Z"
   },
   "cmmi": {
     "level": 3,
     "active": true,
-    "process_areas": [
+    "total_pas": 16,
+    "process_areas_project": [
+      "REQM",
       "PP",
       "PMC",
       "RSKM",
@@ -758,9 +817,39 @@
       "VAL",
       "CM",
       "PPQA",
-      "REQM",
       "DAR"
-    ]
+    ],
+    "process_areas_org": [
+      "OPF",
+      "OPD",
+      "OT",
+      "IPM"
+    ],
+    "process_areas_engineering": [
+      "RD",
+      "TS",
+      "PI"
+    ],
+    "coverage_strategy": "PAs proyecto se evidencian en este session.json y artefactos del proyecto bank-portal. PAs organizacionales y de ingeniería heredadas de SOFIA-CORE v2.6.66 vía MANIFEST.json, contributions/, skills/ y scripts/.",
+    "coverage_matrix_path": "docs/cmmi/CMMI-COVERAGE-MATRIX.md",
+    "last_audit": "2026-04-22T05:20:00Z",
+    "last_audit_score": "48/49 (98%)",
+    "last_audit_verdict": "APPROVED with 3 collateral findings (LA-026-01/02/03)",
+    "previous_declaration": {
+      "level": 3,
+      "active": true,
+      "process_areas": [
+        "PP",
+        "PMC",
+        "RSKM",
+        "VER",
+        "VAL",
+        "CM",
+        "PPQA",
+        "REQM",
+        "DAR"
+      ]
+    }
   },
   "code_review": {
     "verdict": "APPROVED",
@@ -862,7 +951,7 @@
     "visibility": "public",
     "default_branch": "main",
     "develop_branch": "develop",
-    "active_branch": "feature/FEAT-023-sprint25",
+    "active_branch": "feature/FEAT-024-sprint26",
     "branching_model": "feature/FEAT-XXX-sprintYY",
     "guardrail": "GR-CORE-030"
   },
@@ -871,20 +960,6 @@
       "gate": "G-5b",
       "step": "5b",
       "approved_at": "2026-04-16T18:24:38.497Z",
-      "sprint": 25,
-      "feature": "FEAT-023"
-    },
-    {
-      "gate": "G-8-pending",
-      "step": "8",
-      "approved_at": "2026-04-17T06:25:47.400Z",
-      "sprint": 25,
-      "feature": "FEAT-023"
-    },
-    {
-      "gate": "G-8-pending",
-      "step": "8",
-      "approved_at": "2026-04-17T12:06:50.088Z",
       "sprint": 25,
       "feature": "FEAT-023"
     },
@@ -903,13 +978,6 @@
       "feature": "FEAT-023"
     },
     {
-      "gate": "G-8b",
-      "step": "8b",
-      "approved_at": "2026-04-17T12:10:23.360Z",
-      "sprint": 25,
-      "feature": "FEAT-023"
-    },
-    {
       "gate": "G-9",
       "step": "9",
       "approved_at": "2026-04-17T12:54:10.007Z",
@@ -917,14 +985,80 @@
       "feature": "FEAT-023"
     },
     {
-      "gate": "G-9",
-      "step": "9",
-      "approved_at": "2026-04-17T12:54:24.048Z",
-      "sprint": 25,
-      "feature": "FEAT-023"
+      "gate": "G-1",
+      "step": "1",
+      "approved_at": "2026-04-21T19:13:10.056Z",
+      "sprint": 26,
+      "feature": "FEAT-024"
     }
   ],
   "lessons_learned": [
+    {
+      "id": "LA-026-01",
+      "sprint": 26,
+      "feature": "FEAT-024",
+      "type": "process/governance/audit",
+      "title": "gate-history-mixes-pending-and-approved",
+      "description": "El array session.gate_history acumula tanto gates realmente aprobados (con approved_by humano) como entradas con sufijo \"-pending\" (G-1-pending, G-2-pending) que el script gen-global-dashboard.js inserta cuando regenera el dashboard antes de la aprobación formal. Consecuencia: cualquier auditoría CMMI que cuente \"gates aprobados en sprint X\" obtiene un valor inflado, y la trazabilidad PMC se ensucia. Detectado en auditoría CMMI Sprint 26 (gate_history mostraba gate=G-2-pending como última entrada cuando G-2 todavía no estaba aprobado por PO).",
+      "correction": "Separar en dos campos: (a) gate_history reservado solo para gates con approved_by != null y note != null; (b) nuevo campo gate_history_pending para los marcadores intermedios del dashboard. Refactor en gen-global-dashboard.js: insertar pendings en gate_history_pending. Refactor en orquestador de gates: solo insertar en gate_history al persistir un gate aprobado HITL. Validación retroactiva: limpiar entradas -pending del gate_history actual, moverlas al nuevo campo.",
+      "registered_at": "2026-04-22T05:24:58.496Z",
+      "approved_by": "product-owner",
+      "hitl_approved": true,
+      "sofia_core_candidate": true,
+      "guardrail_proposed": "GR-AUDIT-001: gate_history solo contiene entradas con approved_by humano; pendings van en gate_history_pending separado.",
+      "related_las": [
+        "LA-CORE-051"
+      ],
+      "detected_at": "2026-04-22 auditoría CMMI L3 Sprint 26",
+      "severity": "media",
+      "promoted_to": "LA-CORE-065",
+      "promoted_at": "2026-04-22T05:32:44.251Z",
+      "sofia_core_version": "2.6.67",
+      "guardrail_official": "GR-AUDIT-001"
+    },
+    {
+      "id": "LA-026-02",
+      "sprint": 26,
+      "feature": "FEAT-024",
+      "type": "process/governance/cmmi",
+      "title": "cmmi-process-areas-incomplete-declaration",
+      "description": "session.cmmi.process_areas declara solo 9 PAs (PP, PMC, RSKM, VER, VAL, CM, PPQA, REQM, DAR), pero CMMI Level 3 estricto requiere también OPF, OPD, OT, IPM, RD, TS, PI. SOFIA-CORE cubre estas PAs implícitamente (OPD via MANIFEST + skills, OPF via mecanismo promoción LAs proyecto a CORE, OT via skills versionadas, IPM via orchestrator, RD via requirements-analyst SKILL, TS via architect+developer SKILLs, PI via devops + smoke tests) pero no estan declaradas explicitamente. Una auditoría CMMI L3 formal preguntaria por las 16 PAs canonicas y nuestro session.json reportaria 9, dando lugar a una incompletitud documental.",
+      "correction": "Ampliar session.cmmi a estructura {level: 3, process_areas_project: [...9 PAs actuales...], process_areas_org: [OPF, OPD, OT, IPM], process_areas_engineering: [RD, TS, PI], total: 16, coverage_strategy: \"PAs proyecto en este session.json; PAs organizacionales y de ingenieria heredadas de SOFIA-CORE v2.6.66\"}. Crear matriz de cobertura PA-vs-evidencia en docs/cmmi/CMMI-COVERAGE-MATRIX.md mantenida sprint a sprint. Promover a SOFIA-CORE como template para todos los proyectos.",
+      "registered_at": "2026-04-22T05:24:58.496Z",
+      "approved_by": "product-owner",
+      "hitl_approved": true,
+      "sofia_core_candidate": true,
+      "guardrail_proposed": "GR-CMMI-001: session.cmmi debe declarar las 16 PAs canonicas L3 separadas por scope (project/org/engineering); incompletitud bloquea cierre de sprint en G-9.",
+      "related_las": [],
+      "detected_at": "2026-04-22 auditoría CMMI L3 Sprint 26",
+      "severity": "media",
+      "promoted_to": "LA-CORE-066",
+      "promoted_at": "2026-04-22T05:32:44.251Z",
+      "sofia_core_version": "2.6.67",
+      "guardrail_official": "GR-CMMI-001"
+    },
+    {
+      "id": "LA-026-03",
+      "sprint": 26,
+      "feature": "FEAT-024",
+      "type": "tooling/mcp/recovery",
+      "title": "mcp-shell-stdio-buffer-limit-large-payloads",
+      "description": "Al ejecutar Step 2 (generación SRS-FEAT-024-sprint26.md) via comando node con heredoc embebiendo template literal de 20 KB, el servidor MCP sofia-shell-bank-portal quedó no responsivo durante 4+ minutos y dejó timeout en todos los shells (bank-portal, SOFIA-CORE). Se confirmo que el directorio destino se habia creado pero el SRS no se habia escrito. Causa probable: limite del stdio buffer del MCP server al pasar payloads grandes como argumento de comando (estimado 16-20 KB). Recovery exitoso aplicado: dividir el SRS en 5 fragmentos de ~3-6 KB invocando node con fs.appendFileSync incremental, cada fragmento ejecutado en comando independiente.",
+      "correction": "Documentar en .sofia/skills/orchestrator/SKILL.md y en CLAUDE.md la regla: \"Para escritura de artefactos > 8 KB usar fs.appendFileSync en bloques ≤ 6 KB; nunca pasar el contenido completo como argumento de un comando shell\". Crear helper opcional .sofia/scripts/write-large-artifact.js que reciba path + array de fragmentos y los escriba secuencialmente con validacion. Promover a SOFIA-CORE para que aplique a cualquier proyecto SOFIA con MCP shell.",
+      "registered_at": "2026-04-22T05:24:58.496Z",
+      "approved_by": "product-owner",
+      "hitl_approved": true,
+      "sofia_core_candidate": true,
+      "guardrail_proposed": "GR-MCP-001: artefactos textuales > 8 KB deben escribirse via fragmentación appendFileSync; los SKILLs deben referenciar este patrón explícitamente.",
+      "related_las": [],
+      "detected_at": "2026-04-22 Step 2 Sprint 26 generación SRS",
+      "severity": "baja",
+      "recovery_evidence": "5 fragmentos appendFileSync · 26.0 KB final · sintaxis verificada · 0 corrupción",
+      "promoted_to": "LA-CORE-067",
+      "promoted_at": "2026-04-22T05:32:44.251Z",
+      "sofia_core_version": "2.6.67",
+      "guardrail_official": "GR-MCP-001"
+    },
     {
       "id": "LA-025-13",
       "sprint": 25,
@@ -1210,6 +1344,36 @@
       "source": "promoted",
       "sofia_core_version": "2.6.52",
       "imported_at": "2026-04-16T21:24:02.178Z"
+    }
+  ],
+  "gate_history_pending": [
+    {
+      "gate": "G-8-pending",
+      "step": "8",
+      "approved_at": "2026-04-17T06:25:47.400Z",
+      "sprint": 25,
+      "feature": "FEAT-023"
+    },
+    {
+      "gate": "G-8-pending",
+      "step": "8",
+      "approved_at": "2026-04-17T12:06:50.088Z",
+      "sprint": 25,
+      "feature": "FEAT-023"
+    },
+    {
+      "gate": "G-1-pending",
+      "step": "1",
+      "approved_at": "2026-04-21T19:04:58.917Z",
+      "sprint": 26,
+      "feature": "FEAT-024"
+    },
+    {
+      "gate": "G-2-pending",
+      "step": "2",
+      "approved_at": "2026-04-21T20:56:41.810Z",
+      "sprint": 26,
+      "feature": "FEAT-024"
     }
   ]
 }
