@@ -720,7 +720,7 @@
   },
   "resume_next": "Sprint 26 PAUSADO en limpio · G-2 aprobado · Step 2 cerrado · siguiente: Step 2b FA-Agent (enriquecer FA consolidado con FEAT-024) · sin gate_pending · sin acciones pendientes",
   "sprint_closed": false,
-  "updated_at": "2026-04-22T06:31:24.645Z",
+  "updated_at": "2026-04-22T05:37:56.042Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-04-17T12:10:11.370Z",
@@ -1016,33 +1016,6 @@
     }
   ],
   "lessons_learned": [
-    {
-      "id": "LA-026-04",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "type": "process/governance",
-      "severity": "high",
-      "scope": "SOFIA-CORE",
-      "title": "manifest-la-core-index-acepta-ids-locales-y-no-tiene-validacion",
-      "description": "MANIFEST.la_core_index acumuló 8 entradas espurias con prefijo de ID local (LA-023-01, LA-025-01..04, LA-025-09, LA-025-10, LA-025-12) que nunca debieron entrar — el contrato de la_core_index es contener ÚNICAMENTE IDs LA-CORE-*. Causa raíz: el flow de promoción que generó LA-CORE-048..051 (commit f6b160f 16-Abr) escribió tanto las entradas CORE como duplicados con el ID local original, sin saneamiento posterior. Los duplicados quedaron persistidos con descripciones truncadas a ~120 chars, lo que además rompió la-promote.js (línea 95: 'if (manifest.la_core_index[laId]) return true') bloqueando la re-promoción de LA-023-01 legítima. Adicionalmente lessons_learned_core (36), core_la_count (40) y la_count (75) divergen sin fuente única de verdad declarada. Hallazgo adicional descubierto durante el saneamiento: 27 entradas LA-CORE-002..016, 020..025, 028..032, 037 existen en MANIFEST.la_core_index y en session.json de proyectos (ET, TK) pero NUNCA fueron escritas en LESSONS_LEARNED_CORE.md — son LAs reales en uso operativo pero ausentes del catálogo formal CMMI L3.",
-      "correction": "REGLA PERMANENTE: (1) MANIFEST.la_core_index SOLO admite claves que matcheen ^LA-CORE-\\d+$ — añadir validación en sofia-contribute.py --accept que rechace claves que no cumplan el patrón. (2) la-promote.js debe distinguir entre entrada-CORE-promovida y entrada-local-injectada: la heurística actual ('return true si laId está en la_core_index') es ambigua. Cambiar a 'return manifest.la_core_index[laId] && /^LA-CORE-/.test(laId)'. (3) Añadir validador validate-manifest.js que se ejecuta en gate G-9 y bloquea cierre de sprint si detecta claves no canónicas en la_core_index. (4) Reconciliación de contadores: definir fuente única de verdad — propuesta: lessons_learned_core = len(la_core_index where key matches LA-CORE-*), core_la_count = count(headers en LESSONS_LEARNED_CORE.md), la_count = lessons_learned_core (sin espurias). Documentar en gen-ma-baseline.js. (5) Sprint arqueológico separado para reconstruir las 27 entradas LA-CORE huérfanas en LESSONS_LEARNED_CORE.md — diferido bajo decisión PO.",
-      "registered_at": "2026-04-22T06:31:24.645Z",
-      "approved_by": "product-owner",
-      "hitl_approved": true,
-      "approved_at": "2026-04-22T06:31:24.645Z",
-      "sofia_core_candidate": true,
-      "guardrail_proposed": "GR-CORE-030",
-      "related_las": [
-        "LA-CORE-052",
-        "LA-CORE-028",
-        "LA-CORE-029"
-      ],
-      "detected_at": "2026-04-22T06:31:24.645Z",
-      "promoted_to": null,
-      "promoted_at": null,
-      "sofia_core_version": null,
-      "guardrail_official": null
-    },
     {
       "id": "LA-026-01",
       "sprint": 26,

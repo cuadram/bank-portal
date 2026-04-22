@@ -720,7 +720,7 @@
   },
   "resume_next": "Sprint 26 PAUSADO en limpio · G-2 aprobado · Step 2 cerrado · siguiente: Step 2b FA-Agent (enriquecer FA consolidado con FEAT-024) · sin gate_pending · sin acciones pendientes",
   "sprint_closed": false,
-  "updated_at": "2026-04-22T06:31:24.645Z",
+  "updated_at": "2026-04-22T05:37:56.042Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-04-17T12:10:11.370Z",
@@ -1017,33 +1017,6 @@
   ],
   "lessons_learned": [
     {
-      "id": "LA-026-04",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "type": "process/governance",
-      "severity": "high",
-      "scope": "SOFIA-CORE",
-      "title": "manifest-la-core-index-acepta-ids-locales-y-no-tiene-validacion",
-      "description": "MANIFEST.la_core_index acumuló 8 entradas espurias con prefijo de ID local (LA-023-01, LA-025-01..04, LA-025-09, LA-025-10, LA-025-12) que nunca debieron entrar — el contrato de la_core_index es contener ÚNICAMENTE IDs LA-CORE-*. Causa raíz: el flow de promoción que generó LA-CORE-048..051 (commit f6b160f 16-Abr) escribió tanto las entradas CORE como duplicados con el ID local original, sin saneamiento posterior. Los duplicados quedaron persistidos con descripciones truncadas a ~120 chars, lo que además rompió la-promote.js (línea 95: 'if (manifest.la_core_index[laId]) return true') bloqueando la re-promoción de LA-023-01 legítima. Adicionalmente lessons_learned_core (36), core_la_count (40) y la_count (75) divergen sin fuente única de verdad declarada. Hallazgo adicional descubierto durante el saneamiento: 27 entradas LA-CORE-002..016, 020..025, 028..032, 037 existen en MANIFEST.la_core_index y en session.json de proyectos (ET, TK) pero NUNCA fueron escritas en LESSONS_LEARNED_CORE.md — son LAs reales en uso operativo pero ausentes del catálogo formal CMMI L3.",
-      "correction": "REGLA PERMANENTE: (1) MANIFEST.la_core_index SOLO admite claves que matcheen ^LA-CORE-\\d+$ — añadir validación en sofia-contribute.py --accept que rechace claves que no cumplan el patrón. (2) la-promote.js debe distinguir entre entrada-CORE-promovida y entrada-local-injectada: la heurística actual ('return true si laId está en la_core_index') es ambigua. Cambiar a 'return manifest.la_core_index[laId] && /^LA-CORE-/.test(laId)'. (3) Añadir validador validate-manifest.js que se ejecuta en gate G-9 y bloquea cierre de sprint si detecta claves no canónicas en la_core_index. (4) Reconciliación de contadores: definir fuente única de verdad — propuesta: lessons_learned_core = len(la_core_index where key matches LA-CORE-*), core_la_count = count(headers en LESSONS_LEARNED_CORE.md), la_count = lessons_learned_core (sin espurias). Documentar en gen-ma-baseline.js. (5) Sprint arqueológico separado para reconstruir las 27 entradas LA-CORE huérfanas en LESSONS_LEARNED_CORE.md — diferido bajo decisión PO.",
-      "registered_at": "2026-04-22T06:31:24.645Z",
-      "approved_by": "product-owner",
-      "hitl_approved": true,
-      "approved_at": "2026-04-22T06:31:24.645Z",
-      "sofia_core_candidate": true,
-      "guardrail_proposed": "GR-CORE-030",
-      "related_las": [
-        "LA-CORE-052",
-        "LA-CORE-028",
-        "LA-CORE-029"
-      ],
-      "detected_at": "2026-04-22T06:31:24.645Z",
-      "promoted_to": null,
-      "promoted_at": null,
-      "sofia_core_version": null,
-      "guardrail_official": null
-    },
-    {
       "id": "LA-026-01",
       "sprint": 26,
       "feature": "FEAT-024",
@@ -1235,16 +1208,11 @@
       "feature": "FEAT-023",
       "type": "frontend/process",
       "title": "prototype-fidelity-not-verified-g4-g5",
-      "description": "36 bugs detectados por el PO en QA manual de FEAT-023 (Overview PFM, Presupuestos, Análisis) por el patrón 'developer implementa de memoria sin comparar con el HTML del prototipo aprobado'. Los prototipos PROTO-FEAT-023-sprint25 aprobados en G-2c contenían los layouts, colores, tipografías y componentes correctos pero el Developer Agent escribió los componentes Angular sin abrir el HTML pantalla a pantalla. LA-CORE-041 (Developer Agent debe leer prototipo HTML pantalla a pantalla) y LA-CORE-043 (LA-023-02 fidelidad prototipo aplica en G-4 como checklist BLOQUEANTE) ya estaban registradas pero no se aplicaron en G-4b — la verificación fue declarativa, no operativa.",
-      "correction": "REGLA PERMANENTE: Checklist de fidelidad de prototipo BLOQUEANTE en G-4 y G-4b. (1) Developer Agent verifica cada elemento del prototipo HTML contra el componente Angular generado (1 a 1) — colores tokens, espaciados, tipografías, iconos, estados hover/active, layouts responsive. (2) PO ejecuta screenshot comparison lado-a-lado prototipo↔implementación antes de aprobar G-4b — se rechazan diferencias mayores al 5% en pixel-perfect comparison. (3) Code Reviewer en G-4 corre diff semántico HTML prototype vs componente template y bloquea si hay drift mayor al 10% en estructura DOM. (4) Cualquier desviación intencional debe documentarse en LLD con justificación firmada por Architect. El gate G-4b no se aprueba sin evidencia gráfica de fidelidad adjunta. Guardrail propuesto: GR-FRONTEND-003. Aplicable en gates: G-4, G-4b (BLOQUEANTE).",
+      "description": "36 bugs por no leer el prototipo pantalla a pantalla. LA-CORE-041 y LA-CORE-043 no aplicadas. Developer implemento de memoria sin comparar con el HTML del prototipo aprobado.",
+      "correction": "Checklist fidelidad BLOQUEANTE en G-4: verificar cada elemento del prototipo contra el componente Angular. PO hace screenshot comparison antes de aprobar G-4b.",
       "registered_at": "2026-04-16T20:34:14.884Z",
       "approved_by": "product-owner",
-      "sofia_core_candidate": true,
-      "scope": "SOFIA-CORE",
-      "severity": "high",
-      "guardrail_proposed": "GR-FRONTEND-003",
-      "enriched_at": "2026-04-22T06:19:53.931Z",
-      "enriched_note": "Texto enriquecido a partir del registro original detallando el contexto FEAT-023 + las 4 verificaciones bloqueantes. Aprobado por PO 2026-04-22 antes de promoción."
+      "sofia_core_candidate": true
     },
     {
       "id": "LA-025-08",
@@ -1268,20 +1236,13 @@
     },
     {
       "id": "LA-023-01",
-      "type": "frontend/angular",
-      "description": "En componentes Angular, usar [href] nativo en enlaces internos causa full page reload — el ShellComponent desaparece y la pantalla queda en blanco sin menú. Detectado en Mi Perfil inbox al pulsar 'Ver →' sobre notif.actionUrl. Segundo hallazgo del mismo bug: actionUrl en seeds con rutas inexistentes (/bills, /transfers) — navigateByUrl() silencia el error y no navega. Fix combinado: ROUTE_MAP de aliases + fallback a /dashboard + corrección de seeds en BD.",
-      "correction": "REGLA PERMANENTE: Nunca usar [href] para navegación interna en Angular. Usar siempre (click)+router.navigateByUrl() para URLs dinámicas con posibles query params, o [routerLink] para rutas estáticas. Checklist G-4/G-5 BLOQUEANTE: grep -r '\\[href\\]' src/app/features/ — cualquier resultado con path interno bloquea el gate. Adicionalmente: los seeds de notificaciones deben usar SOLO rutas registradas en app-routing.module.ts. Verificar con: SELECT DISTINCT action_url FROM user_notifications — cada valor debe existir en la tabla de rutas del router. Aplicable en gates: G-4, G-5 (BLOQUEANTE).",
+      "type": "frontend",
+      "description": "desde bank-portal Sprint 23 — [href] nativo en Angular Router causa full page reload. REGLA: router.navigateByUrl() o [routerLink] siempre",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
       "sofia_core_version": "2.6.52",
-      "imported_at": "2026-04-16T21:24:02.177Z",
-      "sprint": 23,
-      "feature": "FEAT-021",
-      "sofia_core_candidate": true,
-      "severity": "high",
-      "guardrail_proposed": "GR-ANGULAR-002",
-      "enriched_at": "2026-04-22T06:19:53.931Z",
-      "enriched_note": "Texto enriquecido desde commit 0c25ca7 (gen-lessons-learned.py 2026-04-05) tras detectarse re-import truncado por la-sync.js. Aprobado por PO 2026-04-22 antes de promoción."
+      "imported_at": "2026-04-16T21:24:02.177Z"
     },
     {
       "id": "LA-CORE-017",
@@ -1340,15 +1301,8 @@
       "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
-      "sofia_core_version": "2.6.48",
-      "imported_at": "2026-04-16T21:24:02.178Z",
-      "hitl_approved": true,
-      "approved_by_po": "product-owner",
-      "approved_at": "2026-04-22T06:18:09.611Z",
-      "promoted_to": "LA-CORE-048",
-      "promoted_at": "2026-04-16T20:08:07.000Z",
-      "promotion_type": "retroactive_already_in_core",
-      "promotion_note": "Cerrada retroactivamente: LA-CORE-048 (\"Gate no persistido en session.json + validate-fa-index CHECK 8\") ya promovida formalmente en commit f6b160f (16-Abr) declara \"Origen: LA-025-01 BankPortal Sprint 25 FEAT-023\". La entrada local persistió por re-import truncado de la-sync.js — bug cubierto por LA-CORE-052."
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
     },
     {
       "id": "LA-025-02",
@@ -1374,15 +1328,8 @@
       "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
       "scope": "SOFIA-CORE",
       "source": "promoted",
-      "sofia_core_version": "2.6.50",
-      "imported_at": "2026-04-16T21:24:02.178Z",
-      "hitl_approved": true,
-      "approved_by_po": "product-owner",
-      "approved_at": "2026-04-22T06:18:09.611Z",
-      "promoted_to": "LA-CORE-050",
-      "promoted_at": "2026-04-16T20:08:07.000Z",
-      "promotion_type": "retroactive_already_in_core",
-      "promotion_note": "Cerrada retroactivamente: LA-CORE-050 (\"UX/UI herencia prototipo sprint-a-sprint obligatoria PASO 0\") ya promovida formalmente en commit f6b160f (16-Abr) declara \"Origen: LA-025-03 BankPortal Sprint 25\". La entrada local persistió por re-import truncado de la-sync.js — bug cubierto por LA-CORE-052."
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
     },
     {
       "id": "LA-025-04",

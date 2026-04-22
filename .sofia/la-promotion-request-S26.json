@@ -1,0 +1,199 @@
+{
+  "schema_version": "1.0",
+  "sprint": 26,
+  "project": "bank-portal",
+  "client": "Banco Meridian",
+  "generated_at": "2026-04-22T06:30:10.512Z",
+  "po_review_required": true,
+  "po_reviewer": "Angel de la Cuadra (Product Owner)",
+  "status": "PENDING_PO_REVIEW",
+  "sofia_core_path": "/Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE",
+  "candidates": [
+    {
+      "id": "LA-026-01",
+      "type": "process/governance/audit",
+      "description": "El array session.gate_history acumula tanto gates realmente aprobados (con approved_by humano) como entradas con sufijo \"-pending\" (G-1-pending, G-2-pending) que el script gen-global-dashboard.js inserta cuando regenera el dashboard antes de la aprobación formal. Consecuencia: cualquier auditoría CMMI que cuente \"gates aprobados en sprint X\" obtiene un valor inflado, y la trazabilidad PMC se ensucia. Detectado en auditoría CMMI Sprint 26 (gate_history mostraba gate=G-2-pending como última entrada cuando G-2 todavía no estaba aprobado por PO).",
+      "correction": "Separar en dos campos: (a) gate_history reservado solo para gates con approved_by != null y note != null; (b) nuevo campo gate_history_pending para los marcadores intermedios del dashboard. Refactor en gen-global-dashboard.js: insertar pendings en gate_history_pending. Refactor en orquestador de gates: solo insertar en gate_history al persistir un gate aprobado HITL. Validación retroactiva: limpiar entradas -pending del gate_history actual, moverlas al nuevo campo.",
+      "registered_at": "2026-04-22T05:24:58.496Z",
+      "scope": "project",
+      "impact": "HIGH",
+      "score": 5,
+      "matched_criteria": [
+        "BLOCKER_GATE",
+        "MULTI_SKILL"
+      ],
+      "promotion_status": "pending_po_approval",
+      "po_decision": null,
+      "po_notes": null,
+      "po_decided_at": null
+    },
+    {
+      "id": "LA-026-02",
+      "type": "process/governance/cmmi",
+      "description": "session.cmmi.process_areas declara solo 9 PAs (PP, PMC, RSKM, VER, VAL, CM, PPQA, REQM, DAR), pero CMMI Level 3 estricto requiere también OPF, OPD, OT, IPM, RD, TS, PI. SOFIA-CORE cubre estas PAs implícitamente (OPD via MANIFEST + skills, OPF via mecanismo promoción LAs proyecto a CORE, OT via skills versionadas, IPM via orchestrator, RD via requirements-analyst SKILL, TS via architect+developer SKILLs, PI via devops + smoke tests) pero no estan declaradas explicitamente. Una auditoría CMMI L3 formal preguntaria por las 16 PAs canonicas y nuestro session.json reportaria 9, dando lugar a una incompletitud documental.",
+      "correction": "Ampliar session.cmmi a estructura {level: 3, process_areas_project: [...9 PAs actuales...], process_areas_org: [OPF, OPD, OT, IPM], process_areas_engineering: [RD, TS, PI], total: 16, coverage_strategy: \"PAs proyecto en este session.json; PAs organizacionales y de ingenieria heredadas de SOFIA-CORE v2.6.66\"}. Crear matriz de cobertura PA-vs-evidencia en docs/cmmi/CMMI-COVERAGE-MATRIX.md mantenida sprint a sprint. Promover a SOFIA-CORE como template para todos los proyectos.",
+      "registered_at": "2026-04-22T05:24:58.496Z",
+      "scope": "project",
+      "impact": "MEDIUM",
+      "score": 2,
+      "matched_criteria": [
+        "MULTI_SKILL"
+      ],
+      "promotion_status": "pending_po_approval",
+      "po_decision": null,
+      "po_notes": null,
+      "po_decided_at": null
+    },
+    {
+      "id": "LA-026-03",
+      "type": "tooling/mcp/recovery",
+      "description": "Al ejecutar Step 2 (generación SRS-FEAT-024-sprint26.md) via comando node con heredoc embebiendo template literal de 20 KB, el servidor MCP sofia-shell-bank-portal quedó no responsivo durante 4+ minutos y dejó timeout en todos los shells (bank-portal, SOFIA-CORE). Se confirmo que el directorio destino se habia creado pero el SRS no se habia escrito. Causa probable: limite del stdio buffer del MCP server al pasar payloads grandes como argumento de comando (estimado 16-20 KB). Recovery exitoso aplicado: dividir el SRS en 5 fragmentos de ~3-6 KB invocando node con fs.appendFileSync incremental, cada fragmento ejecutado en comando independiente.",
+      "correction": "Documentar en .sofia/skills/orchestrator/SKILL.md y en CLAUDE.md la regla: \"Para escritura de artefactos > 8 KB usar fs.appendFileSync en bloques ≤ 6 KB; nunca pasar el contenido completo como argumento de un comando shell\". Crear helper opcional .sofia/scripts/write-large-artifact.js que reciba path + array de fragmentos y los escriba secuencialmente con validacion. Promover a SOFIA-CORE para que aplique a cualquier proyecto SOFIA con MCP shell.",
+      "registered_at": "2026-04-22T05:24:58.496Z",
+      "scope": "project",
+      "impact": "MEDIUM",
+      "score": 2,
+      "matched_criteria": [
+        "MULTI_SKILL"
+      ],
+      "promotion_status": "pending_po_approval",
+      "po_decision": null,
+      "po_notes": null,
+      "po_decided_at": null
+    },
+    {
+      "id": "LA-025-13",
+      "type": "qa/devops/process",
+      "description": "El smoke test v1.1 de Sprint 25 (infra/compose/smoke-test-v1.25.0.sh) aprobado en Gate G-7 incluia el check SM-14 contra PUT /api/v1/pfm/budgets/{id}/alert, un endpoint que NUNCA fue implementado en PfmController.java. El controller solo expone GET, POST y DELETE de budgets (la unica variante PUT es /movimientos/{txId}/category). Consecuencia: SM-14 devolvia 404 de forma permanente en cualquier ejecucion post-deploy, pero el gate G-7 se aprobo con 16/16 PASS porque el PO interpreto el FAIL como falso positivo en el momento. Dos falsos positivos adicionales del mismo script: SM-05 leia accts[0][\"id\"] cuando el contrato real expone accountId (se saltaba siempre como SKIP); SM-09 no aceptaba 409 Conflict en re-ejecucion (el backend rechaza correctamente por UK user_category_month). Los 3 defectos del smoke test pasaron Gate G-7 sin deteccion porque el review del release-manager se centro en el numero de stages OK del pipeline y no en el grep cruzado entre URLs del smoke y @RequestMapping del controller.",
+      "correction": "Aplicado v1.2 (2026-04-21) con 3 parches: (a) SM-05 lectura tolerante con fallback accountId || id; (b) SM-09 acepta 201|409|422 como codigos validos post-deploy; (c) SM-14 reformulado como asercion de dominio thresholdPercent in [50..95] step 5 via GET (cubre la RN del SRS sin depender de endpoint inexistente). Sintaxis bash -n OK. Logica verificada via Node: 17/17 PASS contra stack real. Backup preservado en smoke-test-v1.25.0.sh.bak-v1.1. Para prevenir regresion: Step 7 DevOps debe ejecutar pre-gate G-7 un grep cruzado de todas las URLs absolutas del smoke test (/api/v1/...) contra los handlers reales del controller (@GetMapping/@PostMapping/@PutMapping/@DeleteMapping); cualquier URL sin match debe bloquear G-7. Adicionalmente, el smoke test debe aceptar codigos de idempotencia (409 en POST con UK violado) y leer campos del payload segun el contrato documentado en el OpenAPI, no por asuncion.",
+      "registered_at": "2026-04-21T18:37:18.878Z",
+      "scope": "project",
+      "impact": "HIGH",
+      "score": 5,
+      "matched_criteria": [
+        "BLOCKER_GATE",
+        "MULTI_SKILL"
+      ],
+      "promotion_status": "pending_po_approval",
+      "po_decision": null,
+      "po_notes": null,
+      "po_decided_at": null
+    },
+    {
+      "id": "LA-025-11",
+      "type": "governance/repository",
+      "description": "El directorio SOFIA del proyecto (/Users/cuadram/proyectos/bank-portal) no contiene el codigo fuente Java ni Angular. El docker-compose.yml hace build desde ../../apps/backend-2fa y ../../apps/frontend-portal, rutas que no existen en el filesystem accesible. El contenedor bankportal-backend corre sobre una imagen pre-construida (bankportal-backend-2fa:local-dev) cuyo origen esta desacoplado del checkout documental. Consecuencia: auditorias de arquitectura contra la documentacion (HLD, LLD, session.json) producen una ilusion de verdad — el diagrama logico generado reflejaba 8 bounded contexts pero el JAR desplegado contiene 23. Tambien impide ejecutar mvn compile, leer el codigo para verificar fidelidad prototipo (LA-CORE-056), aplicar refactors, o resolver deudas tecnicas desde el puesto de trabajo canonico del PO.",
+      "correction": "Tres opciones: (a) incorporar apps/backend-2fa y apps/frontend-portal como git submodules del repositorio bank-portal para que el checkout SOFIA contenga la fuente canonica; (b) renombrar la raiz SOFIA a /Users/cuadram/proyectos/bank-portal-docs y crear un workspace padre que contenga apps/* y docs/* como hermanos; (c) si la separacion se mantiene, anadir un guardrail GR-REPO-001 que bloquee Step 4 y Step 5 si no existe ruta hacia el codigo fuente y registre la ubicacion real en session.json.repository.source_path. Promover a SOFIA-CORE: el problema afecta a cualquier proyecto que intente separar docs y code sin establecer el enlace.",
+      "registered_at": "2026-04-20T09:09:24.854Z",
+      "scope": "project",
+      "impact": "MEDIUM",
+      "score": 2,
+      "matched_criteria": [
+        "MULTI_SKILL"
+      ],
+      "promotion_status": "pending_po_approval",
+      "po_decision": null,
+      "po_notes": null,
+      "po_decided_at": null
+    },
+    {
+      "id": "LA-025-07",
+      "type": "frontend/process",
+      "description": "36 bugs detectados por el PO en QA manual de FEAT-023 (Overview PFM, Presupuestos, Análisis) por el patrón 'developer implementa de memoria sin comparar con el HTML del prototipo aprobado'. Los prototipos PROTO-FEAT-023-sprint25 aprobados en G-2c contenían los layouts, colores, tipografías y componentes correctos pero el Developer Agent escribió los componentes Angular sin abrir el HTML pantalla a pantalla. LA-CORE-041 (Developer Agent debe leer prototipo HTML pantalla a pantalla) y LA-CORE-043 (LA-023-02 fidelidad prototipo aplica en G-4 como checklist BLOQUEANTE) ya estaban registradas pero no se aplicaron en G-4b — la verificación fue declarativa, no operativa.",
+      "correction": "REGLA PERMANENTE: Checklist de fidelidad de prototipo BLOQUEANTE en G-4 y G-4b. (1) Developer Agent verifica cada elemento del prototipo HTML contra el componente Angular generado (1 a 1) — colores tokens, espaciados, tipografías, iconos, estados hover/active, layouts responsive. (2) PO ejecuta screenshot comparison lado-a-lado prototipo↔implementación antes de aprobar G-4b — se rechazan diferencias mayores al 5% en pixel-perfect comparison. (3) Code Reviewer en G-4 corre diff semántico HTML prototype vs componente template y bloquea si hay drift mayor al 10% en estructura DOM. (4) Cualquier desviación intencional debe documentarse en LLD con justificación firmada por Architect. El gate G-4b no se aprueba sin evidencia gráfica de fidelidad adjunta. Guardrail propuesto: GR-FRONTEND-003. Aplicable en gates: G-4, G-4b (BLOQUEANTE).",
+      "registered_at": "2026-04-16T20:34:14.884Z",
+      "scope": "SOFIA-CORE",
+      "impact": "CRITICAL",
+      "score": 12,
+      "matched_criteria": [
+        "REGLA_PERMANENTE",
+        "SCOPE_CORE",
+        "BLOCKER_GATE",
+        "MULTI_SKILL"
+      ],
+      "promotion_status": "pending_po_approval",
+      "po_decision": null,
+      "po_notes": null,
+      "po_decided_at": null
+    }
+  ],
+  "skipped": [
+    {
+      "id": "LA-025-12",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-025-10",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-025-09",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-023-01",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-017",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-018",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-033",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-048",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-050",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-025-01",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-025-02",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-025-03",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-025-04",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-053",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-054",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-055",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-056",
+      "reason": "ya promovida o en MANIFEST"
+    },
+    {
+      "id": "LA-CORE-057",
+      "reason": "ya promovida o en MANIFEST"
+    }
+  ],
+  "stats": {
+    "total_las_sprint": 26,
+    "candidates_count": 6,
+    "skipped_count": 18
+  }
+}
