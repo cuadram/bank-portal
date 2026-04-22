@@ -711,8 +711,8 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-04-22T05:37:56.042Z",
-    "last_gate": "G-2",
+    "last_generated": "2026-04-21T20:56:41.810Z",
+    "last_gate": "G-2-pending",
     "last_step": "2",
     "sprint": 26,
     "feature": "FEAT-024",
@@ -720,7 +720,7 @@
   },
   "resume_next": "Sprint 26 PAUSADO en limpio · G-2 aprobado · Step 2 cerrado · siguiente: Step 2b FA-Agent (enriquecer FA consolidado con FEAT-024) · sin gate_pending · sin acciones pendientes",
   "sprint_closed": false,
-  "updated_at": "2026-04-22T05:37:56.042Z",
+  "updated_at": "2026-04-22T05:37:43.962Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-04-17T12:10:11.370Z",
@@ -1004,13 +1004,6 @@
       "gate": "G-2",
       "step": "2",
       "approved_at": "2026-04-22T05:37:43.962Z",
-      "sprint": 26,
-      "feature": "FEAT-024"
-    },
-    {
-      "gate": "G-2",
-      "step": "2",
-      "approved_at": "2026-04-22T05:37:56.042Z",
       "sprint": 26,
       "feature": "FEAT-024"
     }
