@@ -1,0 +1,1218 @@
+{
+  "version": "2.0",
+  "sofia_version": "2.7",
+  "status": "in_progress",
+  "project": "bank-portal",
+  "client": "Banco Meridian",
+  "current_sprint": 26,
+  "current_feature": "FEAT-024",
+  "current_step": "1",
+  "pipeline_step": "1",
+  "pipeline_step_name": "scrum-master",
+  "_completed_steps_note": "Array del sprint actual (current_sprint: 25). Se resetea al inicio de cada sprint. No acumula sprints anteriores — ver sprint_history para histórico.",
+  "completed_steps": {
+    "sprint": 26,
+    "feature": "FEAT-024",
+    "steps": []
+  },
+  "pending_steps": [
+    "1",
+    "2",
+    "2b",
+    "2c",
+    "3",
+    "3b",
+    "4",
+    "4b",
+    "5",
+    "5b",
+    "6",
+    "7",
+    "8",
+    "8b",
+    "9"
+  ],
+  "last_skill": "scrum-master",
+  "last_skill_output_path": "docs/sprints/SPRINT-026-planning.md",
+  "gate_pending": "G-1",
+  "release_blocked": false,
+  "release_blocked_reason": null,
+  "sprint_goal": "Extender banca inteligente de BankPortal mediante gestor de Objetivos de Ahorro (viajes, hogar, emergencia, educacion) con aportaciones manuales y automaticas, seguimiento de hitos y proyeccion. Consolidar contrato API backend mediante OpenAPI 3.1 como fuente de verdad para habilitar GR-SMOKE-001.",
+  "sprint_capacity_sp": 24,
+  "artifacts": {
+    "1": [
+      "docs/sprints/SPRINT-023-planning.md",
+      "Jira SCRUM-123..131 (9 issues creados, Por hacer)"
+    ],
+    "2": [
+      "docs/deliverables/sprint-23-FEAT-021/SRS-FEAT-021-sprint23.md",
+      "6 US + 10 RN + 9 RNF-delta + RTM completa — gate_pending G-2"
+    ],
+    "3": [
+      "docs/architecture/sprint-25/HLD-FEAT-023-sprint25.md",
+      "docs/architecture/sprint-25/LLD-FEAT-023-sprint25.md",
+      "docs/architecture/adr/ADR-037-pfm-categorizacion-consulta.md",
+      "docs/architecture/adr/ADR-038-pfm-budget-month-varchar.md",
+      "docs/architecture/adr/ADR-039-pfm-top-comercios-union.md"
+    ],
+    "4": [
+      "SpendingCategory.java (extendido 5→14 sin breaking change)",
+      "SpendingCategorizationEngine.java (keywords extendidos, orden preservado)",
+      "SecurityEventType.java (+BUDGET_ALERT)",
+      "pfm/domain/model: PfmUserRule · Budget · BudgetAlert",
+      "pfm/domain/repository: 4 puertos",
+      "pfm/domain/service: PfmCategorizationService · BudgetService · PfmBudgetAlertService · UserRuleService",
+      "pfm/application/usecase: GetPfmOverview · GetPfmAnalysis · GetPfmDistribution · GetPfmWidget",
+      "pfm/application/dto: PfmDtos.java (10 DTOs)",
+      "pfm/infrastructure/persistence: JpaPfmUserRuleAdapter · JpaBudgetAdapter · JpaBudgetAlertAdapter · JdbcPfmTransactionReadAdapter",
+      "pfm/api: PfmController (8 endpoints) · PfmExceptionHandler",
+      "db/migration/V28__pfm.sql (4 tablas + 72 reglas seed)",
+      "test/pfm/BudgetDomainTest.java (TC-005..010)",
+      "test/pfm/PfmCategorizationServiceTest.java (TC-001..004)",
+      "test/pfm/SpendingCategoryExtensionTest.java (TC-028..032)",
+      "test/pfm/PfmControllerIT.java (IT-001..005)",
+      "features/pfm/pfm.module.ts + pfm-routing.module.ts",
+      "features/pfm/models/pfm.models.ts",
+      "features/pfm/services/pfm.service.ts",
+      "features/pfm/components: 10 componentes (PfmPage/Overview/MovimientoRow/CategoryEditModal/BudgetList/BudgetProgressBar/BudgetForm/PfmAnalysis/PfmDistribution/PfmWidget)",
+      "app-routing.module.ts: ruta /pfm registrada (LA-FRONT-001)",
+      "shell.component.ts: nav item Mi Dinero añadido",
+      "dashboard.component.ts: slot <app-pfm-widget> añadido (RN-F023-15)",
+      "dashboard.module.ts: PfmWidgetComponent declarado"
+    ],
+    "5": [
+      "docs/code-review/CR-FEAT-020-sprint22.md — APPROVED 0 blocker 0 major 2 minor corregidos 1 sugerencia"
+    ],
+    "6": [
+      "docs/qa/QA-FEAT-020-sprint22.md",
+      "docs/qa/UNIT-TEST-FEAT-020-sprint22-qa.log",
+      "40/40 PASS 0 FAIL 0 BLOCKED"
+    ],
+    "7": [
+      "docs/releases/RELEASE-NOTES-v1.22.0.md",
+      "docs/runbooks/RUNBOOK-backend-2fa-v1.22.0.md",
+      "infra/compose/smoke-test-v1.22.0.sh"
+    ],
+    "8": [
+      "word/SRS-FEAT-020-Sprint22.docx (11KB)",
+      "word/HLD-FEAT-020-Sprint22.docx (11KB)",
+      "word/LLD-FEAT-020-Backend-Sprint22.docx (11KB)",
+      "word/LLD-FEAT-020-Frontend-Sprint22.docx (11KB)",
+      "word/QA-Report-FEAT-020-Sprint22.docx (11KB)",
+      "word/Code-Review-FEAT-020-Sprint22.docx (11KB)",
+      "word/Security-Report-FEAT-020-Sprint22.docx (11KB)",
+      "word/Release-Notes-v1.22.0-Sprint22.docx (10KB)",
+      "word/Runbook-v1.22.0-Sprint22.docx (10KB)",
+      "word/Sprint-22-Report-PMC.docx (11KB)",
+      "word/CMMI-Evidence-Sprint22.docx (11KB)",
+      "word/MEETING-MINUTES-Sprint22.docx (11KB)",
+      "word/PROJECT-PLAN-v1.22.docx (11KB)",
+      "word/QUALITY-SUMMARY-Sprint22.docx (11KB)",
+      "word/RISK-REGISTER-Sprint22.docx (11KB)",
+      "word/TRACEABILITY-FEAT-020-Sprint22.docx (11KB)",
+      "word/sprint22-planning-doc.docx (12KB)",
+      "excel/NC-Tracker-Sprint22.xlsx",
+      "excel/Decision-Log-Sprint22.xlsx",
+      "excel/Quality-Dashboard-Sprint22.xlsx",
+      "docs/sprints/SPRINT-022-data.json",
+      "gen-docs-sprint22.js (75KB) — generador reproducible",
+      "VERIFICACION: 17/17 DOCX correctos + 3/3 XLSX correctos — contenido coherente con estado real"
+    ],
+    "9": [
+      "JIRA: SCRUM-114..121 → Finalizada (8/8)",
+      "Confluence page 7634945 — Sprint 22 Resultados",
+      "Confluence page 7667713 — Sprint 22 Retrospectiva",
+      "LESSONS_LEARNED.md regenerado (47 LAs)",
+      "Dashboard global regenerado · Gate G-9",
+      "session.json cerrado: sprint_closed=true, acum=521SP",
+      ".sofia/ma-baseline.json — MA Process Baseline generado · 7 sprints · 6 métricas · overall:GREEN",
+      ".sofia/org-baseline.json — ORG Baseline local (1 proyecto · BANK_PORTAL)"
+    ],
+    "2b": [
+      "validate-fa-index PASS 8/8 — 86 func, 198 BRs — 2026-04-06T06:13:45.227Z",
+      "FA-bank-portal-Banco Meridian.docx v0.2 — 73.6KB — docs/functional-analysis/"
+    ],
+    "2c": [
+      "docs/ux-ui/UX-FEAT-021-sprint23.md",
+      "docs/ux-ui/prototypes/PROTO-FEAT-021-sprint23.html (78KB · 10 pantallas · CSS/JS heredado PROTO-FEAT-020-sprint22 · sidebar navy real de produccion)"
+    ],
+    "3b": [
+      "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx (v0.8 · 82KB)",
+      "docs/functional-analysis/fa-index.json (doc_version: 0.8)",
+      "validate-fa-index.js PASS 8/8"
+    ],
+    "4b": [
+      "mvn compile EXIT 0 — BUILD SUCCESS (1 warning preexistente, 0 errores)",
+      "Tests unitarios PFM: 30/30 PASS",
+      "  · PfmCategorizationServiceTest:    4/4  PASS",
+      "  · SpendingCategoryExtensionTest:  14/14 PASS (no-breaking FEAT-010)",
+      "  · BudgetDomainTest:                6/6  PASS",
+      "  · SpendingCategorizationEngineTest: 6/6  PASS",
+      "docker compose build --no-cache → bankportal-backend:local-dev BUILT ✅",
+      "docker compose up -d → todos los contenedores healthy ✅",
+      "actuator/health → {status:UP, db:UP, redis:UP} ✅",
+      "Flyway V28 pfm → success:true · installed_on:2026-04-16T17:08 ✅",
+      "4 tablas PFM creadas: pfm_category_rules · pfm_user_rules · pfm_budgets · pfm_budget_alerts ✅",
+      "72 reglas seed en pfm_category_rules ✅"
+    ],
+    "5b": [
+      "docs/deliverables/sprint-22-FEAT-020/SEC-FEAT-020-sprint22.md — GREEN 0 CVE_CRITICAL 0 CVE_HIGH 1 SAST_LOW"
+    ],
+    "8b": [
+      "FA-BankPortal-Banco-Meridian.docx — 70KB — 78 func 188 BRs — validate-fa-index PASS 8/8"
+    ],
+    "3b_s23": [
+      "validate-fa-index PASS 8/8 — 86 func, 198 BRs — 2026-04-09T08:51:16.807Z",
+      "FA-FEAT-021-sprint23.md enriquecido con arquitectura HLD/LLD — status READY_FOR_REVIEW",
+      "Confluence HLD page 9371649 — verificada (publicada en step 3)"
+    ],
+    "4_s23": [
+      "deposit/domain/model: Deposit, DepositApplication, DepositStatus, RenewalInstruction",
+      "deposit/domain/exception: DepositNotFoundException, AccessDenied, NotCancellable, SimulationException",
+      "deposit/domain/service: DepositSimulatorService (DEBT-044), IrpfRetentionCalculator (Art.25), PenaltyCalculator",
+      "deposit/domain/repository: DepositRepositoryPort, DepositApplicationRepositoryPort",
+      "deposit/application/usecase: List, GetDetail, Simulate, Open, SetRenewal, Cancel (6 UC)",
+      "deposit/application/dto: 8 DTOs",
+      "deposit/infrastructure/persistence: DepositEntity, JpaDepositRepository, JpaDepositAdapter",
+      "deposit/infrastructure/corebanking: CoreBankingMockDepositClient (ADR-037)",
+      "deposit/api: DepositController (getAttribute LA-TEST-001) + DepositExceptionHandler (LA-TEST-003)",
+      "V26__deposits.sql — Flyway migration",
+      "application.yml: bank.products.deposit.* + loan.tae (DEBT-044)",
+      "DEBT-044 CLOSED: SimulateLoanUseCase @Value taeAnual",
+      "DEBT-037 CLOSED: CardPanValidator regex PAN 13-19 + Luhn",
+      "DEBT-036 verificado CLOSED: ExportAuditService ya tenia AccountRepositoryPort",
+      "frontend deposits: module, routing, service, model, 5 components",
+      "app-routing.module.ts: /depositos lazy registrada (LA-FRONT-001)",
+      "shell.component.ts: nav item Depositos (LA-FRONT-001)",
+      "tests: IrpfRetentionCalculatorTest TC-001..006 + OpenDepositUseCaseTest TC-007..011",
+      "guardrail G-4b: 10/10 OK — BUILD DESBLOQUEADO"
+    ],
+    "5_s23": [
+      "docs/code-review/CR-FEAT-021-sprint23.md — APPROVED 0 blocker 0 major 2 minor 1 sugerencia"
+    ],
+    "5b_s23": [
+      "docs/deliverables/sprint-23-FEAT-021/SEC-FEAT-021-sprint23.md — GREEN 0 CVE_CRITICAL 0 CVE_HIGH 1 SAST_MENOR"
+    ],
+    "6_s23": [
+      "docs/qa/QA-FEAT-021-sprint23.md",
+      "docs/qa/UNIT-TEST-FEAT-021-sprint23.log",
+      "47/47 PASS 0 FAIL 0 BLOCKED"
+    ],
+    "7_s23": [
+      "docs/releases/RELEASE-NOTES-v1.23.0.md",
+      "docs/runbooks/RUNBOOK-backend-v1.23.0.md",
+      "infra/compose/smoke-test-v1.23.0.sh"
+    ],
+    "8_s23": [
+      "word/SRS-FEAT-021-Sprint23.docx (12KB)",
+      "word/HLD-FEAT-021-Sprint23.docx (11KB)",
+      "word/LLD-FEAT-021-Backend-Sprint23.docx (11KB)",
+      "word/LLD-FEAT-021-Frontend-Sprint23.docx (11KB)",
+      "word/QA-Report-FEAT-021-Sprint23.docx (11KB)",
+      "word/Code-Review-FEAT-021-Sprint23.docx (10KB)",
+      "word/Security-Report-FEAT-021-Sprint23.docx (10KB)",
+      "word/Release-Notes-v1.23.0-Sprint23.docx (10KB)",
+      "word/Runbook-v1.23.0-Sprint23.docx (10KB)",
+      "word/Sprint-23-Report-PMC.docx (10KB)",
+      "word/CMMI-Evidence-Sprint23.docx (11KB)",
+      "word/MEETING-MINUTES-Sprint23.docx (10KB)",
+      "word/PROJECT-PLAN-v1.23.docx (10KB)",
+      "word/QUALITY-SUMMARY-Sprint23.docx (10KB)",
+      "word/RISK-REGISTER-Sprint23.docx (10KB)",
+      "word/TRACEABILITY-FEAT-021-Sprint23.docx (10KB)",
+      "word/sprint23-planning-doc.docx (10KB)",
+      "excel/NC-Tracker-Sprint23.xlsx",
+      "excel/Decision-Log-Sprint23.xlsx",
+      "excel/Quality-Dashboard-Sprint23.xlsx",
+      "docs/sprints/SPRINT-023-data.json",
+      "gen-docs-sprint23.js — generador reproducible",
+      "VERIFICACION: 17/17 DOCX + 3/3 XLSX + 1 JSON — contenido coherente con estado real S23"
+    ],
+    "8b_s23": [
+      "validate-fa-index PASS 8/8 — 86 func, 198 BRs — 2026-04-09T15:16:57.055Z",
+      "FA-bank-portal-Banco Meridian.docx v0.3 — 73.7KB — docs/functional-analysis/",
+      "Sprints cubiertos: S1-S23 — FEAT-021 Depósitos a Plazo Fijo consolidado"
+    ],
+    "9_s23": [
+      "JIRA: SCRUM-122..131 → Finalizada (10/10)",
+      "Confluence page 11272193 — Sprint 23 Resultados",
+      "Confluence page 11304961 — Sprint 23 Retrospectiva",
+      "LESSONS_LEARNED.md regenerado (83 LAs · 29KB)",
+      "Dashboard global regenerado · Gate G-9",
+      "session.json cerrado: sprint_closed=true · acum=545SP"
+    ],
+    "1_s24": [
+      "docs/sprints/SPRINT-024-planning.md",
+      "Jira SCRUM-143..152 (10 issues creados, Por hacer)"
+    ],
+    "2_s24": [
+      "docs/deliverables/sprint-24-FEAT-022/SRS-FEAT-022-sprint24.md",
+      "7 US + 2 DEBT con criterios Gherkin + RTM completa — gate_pending G-2"
+    ],
+    "2b_s24": [
+      "validate-fa-index PASS 8/8 — 93 func, 209 BRs — 2026-04-14T14:15:58.449Z",
+      "FA-bank-portal-Banco Meridian.docx v0.5 — 76.9KB — docs/functional-analysis/"
+    ],
+    "2c_s24": [
+      "docs/ux-ui/prototypes/PROTO-FEAT-022-sprint24.html (72KB · 7 pantallas · CSS/JS heredado PROTO-FEAT-021-sprint23 · sidebar navy #1e3a5f real de producción)"
+    ],
+    "3_s24": [
+      "docs/architecture/HLD-FEAT-022-sprint24.md",
+      "docs/architecture/LLD-backend-FEAT-022-sprint24.md",
+      "docs/architecture/LLD-frontend-FEAT-022-sprint24.md",
+      "docs/architecture/ADR-038-039-FEAT-022-sprint24.md",
+      "Confluence page 12779521 — Sprint 24 HLD FEAT-022 Bizum"
+    ],
+    "3b_s24": [
+      "validate-fa-index PASS 8/8 — 93 func, 209 BRs — 2026-04-14T14:59:02.741Z",
+      "FA-FEAT-022-sprint24.md enriquecido con arquitectura HLD/LLD — status READY_FOR_REVIEW",
+      "Confluence HLD page 12779521 — verificada (publicada en step 3)"
+    ],
+    "4_s24": [
+      "bizum/domain/model: BizumActivation, BizumPayment, BizumRequest, BizumStatus",
+      "bizum/domain/exception: 6 excepciones de dominio",
+      "bizum/domain/service: BizumLimitService (@Value properties), PhoneValidationService (E.164 + mask)",
+      "bizum/domain/repository: 3 ports (Activation, Payment, Request)",
+      "bizum/application/usecase: 6 UC (Activate, SendPayment, RequestMoney, Accept, Reject, ListTransactions)",
+      "bizum/application/dto: 8 DTOs (records)",
+      "bizum/infrastructure/persistence: 3 entities + 3 JPA repos + JpaBizumAdapter (@Primary)",
+      "bizum/infrastructure/corebanking: SepaInstantPort + SepaInstantResult + CoreBankingMockBizumClient (ADR-038/DEBT-045)",
+      "bizum/infrastructure/redis: BizumRateLimitAdapter ratelimit:{userId}:bizum:{date} (ADR-039/DEBT-046)",
+      "bizum/api: BizumController + BizumExceptionHandler (LA-TEST-003)",
+      "V27__bizum.sql — Flyway migration 3 tablas",
+      "application.yml: bank.bizum.limit.* añadido",
+      "app-routing.module.ts: /bizum lazy registrada (LA-FRONT-001)",
+      "shell.component.ts: nav Bizum 💸 añadido (LA-FRONT-001)",
+      "features/bizum: module + routing + model + service + 5 components",
+      "tests: BizumLimitServiceTest TC001-005 + SendPaymentUseCaseTest TC006-010 + RequestMoneyUseCaseTest TC011-014",
+      "guardrail G-4b: 72/72 OK — BUILD DESBLOQUEADO"
+    ],
+    "4b_s24": [
+      "GUARDRAIL G-4b PASS 72/72 — 2026-04-14T15:17:56.837Z — BUILD DESBLOQUEADO"
+    ],
+    "5_s24": [
+      "docs/code-review/CR-FEAT-022-sprint24.md — APPROVED 0 blocker 0 major 0 minor 2 sugerencias aplicadas"
+    ],
+    "5b_s24": [
+      "docs/deliverables/sprint-24-FEAT-022/SEC-FEAT-022-sprint24.md — GREEN 0 CVE_CRITICAL 0 CVE_HIGH 0 SAST"
+    ],
+    "6_s24": [
+      "docs/quality/QA-FEAT-022-sprint24.md — 25 TCs (TC-F022-001..025)",
+      "Cobertura: 7/7 US + 11/11 RNs + 5 ITs @SpringBootTest",
+      "Seguridad: OTP 401 + Rate limit Redis + Enmascaramiento + GDPR",
+      "E2E: TC-F022-020 Playwright outline flujo completo Bizum",
+      "Criterios G-6: >=90% pass + 0 críticos + 11/11 RNs verificadas"
+    ],
+    "7_s24": [
+      "docs/devops/DEVOPS-FEAT-022-sprint24.md — pipeline 17 stages ALL PASS",
+      "docs/devops/SMOKE-TEST-v1.24.0.sh — 16 checks (SM-01..16, SM-13..16 nuevos Bizum)",
+      "docs/deliverables/sprint-24-FEAT-022/RELEASE-NOTES-v1.24.0.md",
+      "Git tag: v1.24.0 (pendiente push manual por Angel)",
+      "Docker deploy: pendiente docker compose up (shell sin permisos Docker)"
+    ],
+    "8b_s24": [
+      "validate-fa-index PASS 8/8 — 93 func, 209 BRs — 2026-04-15T19:42:29.091416Z",
+      "FA-bank-portal-Banco Meridian.docx v0.6 — 76.9KB — docs/functional-analysis/",
+      "Sprints cubiertos: S1-S24 — FEAT-022 Bizum P2P consolidado"
+    ],
+    "1_s25": [
+      "docs/sprints/SPRINT-025-planning.md",
+      "Jira SCRUM-154..162 + SCRUM-153 (10 issues, Por hacer)"
+    ],
+    "2_s25": [
+      "docs/deliverables/sprint-25-FEAT-023/SRS-FEAT-023-sprint25.md",
+      "7 US + 22 RN + 7 RNF-delta + RTM completa — gate_pending G-2"
+    ],
+    "2b_s25": [
+      "validate-fa-index PASS 8/8 — 100 func, 231 BRs — 2026-04-16T11:43:23.409Z",
+      "FA-FEAT-023-sprint25-draft.md — enriquecimiento pendiente Step 3b",
+      "FA-bank-portal-Banco Meridian.docx v0.7 — 81.6KB — docs/functional-analysis/ — FEAT-023 incorporado (LA-025-02)"
+    ],
+    "2c_s25": [
+      "docs/ux-ui/UX-FEAT-023-sprint25.md",
+      "docs/ux-ui/prototypes/PROTO-FEAT-023-sprint25.html (94KB · v1.2 · 11 pantallas · shell real #1e3a5f · navegación S24 corregida · 22 anotaciones · cobertura SRS 27/28)"
+    ],
+    "5_s25": [
+      "docs/code-review/CR-FEAT-023-sprint25.md — APPROVED 0 blocker 0 major 2 minor CORREGIDOS 2 sugerencias"
+    ],
+    "7_s25": [
+      "docs/devops/DEVOPS-FEAT-023-sprint25.md — 18 stages 16/16 PASS pre-gate",
+      "infra/compose/smoke-test-v1.25.0.sh — 20 checks SM-01..20",
+      "docs/releases/RELEASE-NOTES-v1.25.0.md",
+      "docs/runbooks/RUNBOOK-backend-v1.25.0.md",
+      "Git tag: v1.25.0 (pendiente push manual Angel)",
+      "Docker: bankportal-backend:v1.25.0 + bankportal-frontend:v1.25.0"
+    ],
+    "5b_s25": [
+      "docs/deliverables/sprint-25-FEAT-023/SEC-FEAT-023-sprint25.md — GREEN 0 CVE_CRITICAL 0 CVE_HIGH 1 SAST_INFO (CWE-390 CVSS 2.1 CERRADO)"
+    ],
+    "6_s25": [
+      "docs/quality/QA-FEAT-023-sprint25.md",
+      "64/64 PASS 0 FAIL 0 BLOCKED",
+      "7 US + 22 RN + 6 IT + 2 E2E + 6 SEC + 4 ACC + 13 PROTO(LA-023-02) — DEBT-047 CERRADO"
+    ],
+    "4_bugfix": [
+      "pfm-overview.component.ts — BUG-PO-001/002/010/011/012/024",
+      "budget-progress-bar.component.ts — BUG-PO-003/004",
+      "budget-list.component.ts — BUG-PO-008/016",
+      "budget-form.component.ts — BUG-PO-009/025/026/027/028/029",
+      "pfm-analysis.component.ts — BUG-PO-005/007/021/030",
+      "pfm-distribution.component.ts — BUG-PO-006/019/020/032",
+      "pfm.models.ts — PFM_CATEGORY_COLORS + PFM_CATEGORY_BG + formatYearMonth"
+    ],
+    "4_bugfix_verified": {
+      "status": "VERIFIED_BY_PO",
+      "verified_at": "2026-04-16T20:31:48.871Z",
+      "screens_ok": [
+        "overview",
+        "presupuestos",
+        "analisis",
+        "distribucion",
+        "nuevo-presupuesto"
+      ],
+      "bugs_fixed": [
+        "BUG-PO-001",
+        "BUG-PO-002",
+        "BUG-PO-003",
+        "BUG-PO-004",
+        "BUG-PO-005",
+        "BUG-PO-006",
+        "BUG-PO-007",
+        "BUG-PO-008",
+        "BUG-PO-009",
+        "BUG-PO-010",
+        "BUG-PO-011",
+        "BUG-PO-016",
+        "BUG-PO-019",
+        "BUG-PO-020",
+        "BUG-PO-021"
+      ],
+      "environment_fix": "v1.25.0 sprint 25 — environment.ts + environment.prod.ts",
+      "filter_fix": "FormsModule + [(ngModel)] en cat-filter select"
+    },
+    "8_s25": {
+      "word": [
+        "word/SRS-FEAT-023-Sprint25.docx (14KB)",
+        "word/HLD-FEAT-023-Sprint25.docx (11KB)",
+        "word/LLD-FEAT-023-Backend-Sprint25.docx (11KB)",
+        "word/LLD-FEAT-023-Frontend-Sprint25.docx (10KB)",
+        "word/QA-Report-FEAT-023-Sprint25.docx (11KB)",
+        "word/Code-Review-FEAT-023-Sprint25.docx (10KB)",
+        "word/Security-Report-FEAT-023-Sprint25.docx (10KB)",
+        "word/Release-Notes-v1.25.0-Sprint25.docx (11KB)",
+        "word/Runbook-v1.25.0-Sprint25.docx (11KB)",
+        "word/Sprint25-Report-PMC.docx (11KB)",
+        "word/CMMI-Evidence-Sprint25.docx (11KB)",
+        "word/MEETING-MINUTES-Sprint25.docx (10KB)",
+        "word/PROJECT-PLAN-v1.25.docx (10KB)",
+        "word/QUALITY-SUMMARY-Sprint25.docx (10KB)",
+        "word/RISK-REGISTER-Sprint25.docx (10KB)",
+        "word/TRACEABILITY-FEAT-023-Sprint25.docx (10KB)",
+        "word/Sprint25-Planning-Doc.docx (11KB)"
+      ],
+      "excel": [
+        "excel/NC-Tracker-Sprint25.xlsx (7KB)",
+        "excel/Decision-Log-Sprint25.xlsx (8KB)",
+        "excel/Quality-Dashboard-Sprint25.xlsx (9KB)"
+      ],
+      "json": [
+        "docs/sprints/SPRINT-025-data.json (4.1KB)"
+      ],
+      "generator": "docs/deliverables/sprint-25-FEAT-023/gen-docs-sprint25.js — generador reproducible",
+      "total": "17 DOCX + 3 XLSX + 1 JSON",
+      "verificacion": "17/17 DOCX + 3/3 XLSX + 1 JSON generados y verificados en disco — contenido coherente con estado real S25 · endpoints PfmController verificados · BUG-PO 15/36 resueltos documentado · LA-025-06/07/08 → LA-CORE-055/056/057"
+    },
+    "8b_s25": [
+      "validate-fa-index PASS 8/8 — 100 func, 231 BRs — 2026-04-17T12:10:11.370Z",
+      "FA-bank-portal-Banco Meridian.docx v0.10 — 80.8KB — docs/functional-analysis/",
+      "Sprints cubiertos: S1-S25 — FEAT-023 Mi Dinero PFM consolidado"
+    ],
+    "9_s25": [
+      "JIRA: SCRUM-153..162 → Finalizada (10/10)",
+      "Confluence page 14680065 — Sprint 25 Resultados (parent 229379, space 393220)",
+      "Confluence page 14712833 — Sprint 25 Retrospectiva (parent 229379, space 393220)",
+      "LESSONS_LEARNED.md regenerado — 19 LAs (4 proyecto + 15 SOFIA-CORE) — 7 KB",
+      "Git tag: v1.25.0 creado local · push manual pendiente por Angel",
+      "Dashboard global regenerado · Gate G-9",
+      "session.json cerrado: sprint_closed=true · acum=593SP · tests=1042"
+    ],
+    "1_s26": [
+      "docs/sprints/SPRINT-026-planning.md (12.9KB)",
+      "Jira issues pendientes creacion post G-1"
+    ]
+  },
+  "gates": {
+    "G-1": {
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-14T14:08:23.522Z",
+      "step": "1",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "FEAT-022 Bizum P2P aprobado. 24 SP. 19 feature + 5 deuda."
+    },
+    "G-2": {
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-14T14:13:53.093Z",
+      "step": "2",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "SRS + 7 US + RTM aprobados. Gate G-2 FEAT-022."
+    },
+    "HITL-PO-TL": {
+      "approved_by": "product-owner+tech-lead",
+      "approved_at": "2026-04-14T14:32:29.266Z",
+      "step": "2c",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "UX-FEAT-022-sprint24 + PROTO-FEAT-022-sprint24.html (72KB) aprobados. 7 pantallas, 3 flujos."
+    },
+    "G-4": {
+      "approved_by": "tech-lead",
+      "approved_at": "2026-04-14T15:26:06.416Z",
+      "step": "4",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "Developer FEAT-022 Bizum. DEBT-045/046 CLOSED. 95/95 verificación."
+    },
+    "G-5": {
+      "approved_by": "tech-lead",
+      "approved_at": "2026-04-14T15:27:18.000Z",
+      "step": "5",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "CR APPROVED 0 blocker 0 major 0 minor 2 sugerencias aplicadas"
+    },
+    "G-6": {
+      "approved_by": "qa-lead+product-owner",
+      "approved_at": "2026-04-14T15:42:39.474Z",
+      "step": "6",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "QA Plan 25 TCs aprobado. 109/109 verificación. 7 US + 11 RNs + 5 ITs."
+    },
+    "G-7": {
+      "approved_by": "release-manager",
+      "approved_at": "2026-04-14T15:44:33.431Z",
+      "step": "7",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "DevOps v1.24.0 — 17 stages ALL PASS — smoke 16/16"
+    },
+    "G-5b": {
+      "approved_by": "auto",
+      "approved_at": "2026-04-16T18:10:00.000Z",
+      "step": "5b",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "note": "GREEN 0 CVE_CRITICAL 0 CVE_HIGH 1 SAST_INFO CVSS 2.1 ya corregido — auto-avanza a QA"
+    },
+    "G-8": {
+      "approved_by": "pm",
+      "approved_at": "2026-04-09T15:16:32.366Z",
+      "step": "8",
+      "sprint": 23,
+      "feature": "FEAT-021",
+      "note": "17 DOCX + 3 XLSX + 1 JSON generados y verificados. Step 8 COMPLETADO."
+    },
+    "G-8b": {
+      "approved_by": "auto",
+      "approved_at": "2026-04-09T15:16:57.055Z",
+      "step": "8b",
+      "sprint": 23,
+      "feature": "FEAT-021",
+      "note": "validate-fa-index PASS 8/8 · FA-bank-portal v0.3 73.7KB · 86 func 198 BRs"
+    },
+    "G-9": {
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-09T16:20:59.754Z",
+      "step": "9",
+      "sprint": 23,
+      "feature": "FEAT-021",
+      "note": "Sprint 23 CERRADO — SCRUM-122..131 Finalizada — Confluence 11272193 + Retro 11304961 — 17 DOCX + 3 XLSX — FA v0.3 86/198 — Dashboard G-9"
+    },
+    "G-2b": {
+      "approved_by": "auto",
+      "approved_at": "2026-04-14T14:15:58.449Z",
+      "step": "2b",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "validate-fa-index PASS 8/8 · FA v0.5 76.9KB · 93 func 209 BRs"
+    },
+    "G-3": {
+      "approved_by": "tech-lead",
+      "approved_at": "2026-04-14T14:58:44.314Z",
+      "step": "3",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "HLD + LLD Backend + LLD Frontend + ADR-038/039 aprobados. 112/112 checks trazabilidad."
+    },
+    "G-3b": {
+      "approved_by": "auto",
+      "approved_at": "2026-04-14T14:59:02.741Z",
+      "step": "3b",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "Step 3b AUTO: validate-fa-index PASS 8/8 · FA enriquecido · HLD Confluence 12779521 OK"
+    },
+    "G-4b": {
+      "approved_by": "auto",
+      "approved_at": "2026-04-14T15:17:56.837Z",
+      "step": "4b",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "Guardrail 72/72 OK"
+    },
+    "G-8_s24": {
+      "approved_by": "pm",
+      "approved_at": "2026-04-15T19:42:13.487887Z",
+      "step": "8",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "17 DOCX + 3 XLSX + 1 JSON generados. Audit CMMI L3 29/29 100%. Step 8 COMPLETADO."
+    },
+    "G-8b_s24": {
+      "approved_by": "auto",
+      "approved_at": "2026-04-15T19:42:29.091416Z",
+      "step": "8b",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "validate-fa-index PASS 8/8 · FA v0.6 76.9KB · 93 func 209 BRs · S1-S24"
+    },
+    "G-9_s24": {
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-15T19:47:18.406239Z",
+      "step": "9",
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "Sprint 24 CERRADO — SCRUM-143..152 Finalizada — Confluence 13533185 + Retro 13565953 — 17 DOCX + 3 XLSX — FA v0.6 93/209 — Dashboard pendiente"
+    },
+    "G-1_s25": {
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-16T10:40:06.994Z",
+      "step": "1",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "note": "FEAT-023 Mi Dinero PFM aprobado. 24 SP. 19 feature + 2 debt + 3 buffer."
+    },
+    "G-2_s25": {
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-16T11:16:17.415Z",
+      "step": "2",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "note": "SRS FEAT-023 Mi Dinero PFM aprobado. 7 US + 22 RN + 7 RNF-delta + RTM completa. Gate G-2 Sprint 25. Aprobacion PO confirmada — persistencia retroactiva por LA-025-01."
+    },
+    "G-2b_s25": {
+      "approved_by": "auto",
+      "approved_at": "2026-04-16T12:57:27.688Z",
+      "step": "2b",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "note": "validate-fa-index PASS 8/8 · FA v0.7 81.6KB · 100 func 231 BRs · docx actualizado LA-025-02"
+    },
+    "HITL-PO-TL_s25": {
+      "approved_by": "product-owner+tech-lead",
+      "approved_at": "2026-04-16T17:27:13.413Z",
+      "step": "2c",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "note": "UX-FEAT-023-sprint25.md + PROTO-FEAT-023-sprint25.html (94KB) aprobados. 11 pantallas, 3 flujos. Gate HITL PO+TL confirmado."
+    },
+    "G-5_s25": {
+      "approved_by": "tech-lead",
+      "approved_at": "2026-04-16T17:44:33.088Z",
+      "step": "5",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "note": "CR APPROVED — 0 blocker 0 major · RV-M01 + RV-M02 corregidos antes de gate · HITL-TL confirmado"
+    },
+    "G-6_s25": {
+      "approved_by": "qa-lead+product-owner",
+      "approved_at": "2026-04-16T18:45:00.000Z",
+      "step": "6",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "note": "QA FEAT-023 — 64/64 PASS 0 FAIL · 7 US + 22 RN + 6 IT + 2 E2E + 6 SEC + 4 ACC + 13 PROTO(LA-023-02) · DEBT-047 CERRADO"
+    },
+    "G-7_s25": {
+      "approved_by": "release-manager",
+      "approved_at": "2026-04-16T19:10:00.000Z",
+      "step": "7",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "note": "DevOps v1.25.0 — 18 stages ALL PASS · smoke 20/20 · E2E 2/2 · 0 regresiones · 0 CVE"
+    },
+    "G-8_s25": {
+      "approved_by": "pm",
+      "approved_at": "2026-04-17T12:09:13.372Z",
+      "step": "8",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "note": "17 DOCX + 3 XLSX + 1 JSON generados y verificados · contenido coherente con estado real S25 · endpoints PfmController verificados · BUG-PO 15/36 resueltos documentado · LA-025-06/07/08/09 registradas. Step 8 COMPLETADO."
+    },
+    "G-8b_s25": {
+      "approved_by": "auto",
+      "approved_at": "2026-04-17T12:10:11.370Z",
+      "step": "8b",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "note": "validate-fa-index PASS 8/8 · FA v0.10 80.8KB · 100 func 231 BRs · S1-S25"
+    },
+    "G-9_s25": {
+      "approved_by": "product-owner",
+      "approved_at": "2026-04-17T12:54:10.007Z",
+      "step": "9",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "note": "Sprint 25 CERRADO — SCRUM-153..162 Finalizada — Confluence 14680065 + Retro 14712833 — 17 DOCX + 3 XLSX + 1 JSON — FA v0.10 100/231 — 5 LAs promovidas a CORE (LA-CORE-053..057) — BUG-PO 15/36 resueltos · 21 diferidos S26"
+    }
+  },
+  "security": {
+    "last_audit": "2026-04-16",
+    "semaphore": "GREEN",
+    "cve_critical": 0,
+    "cve_high": 0,
+    "sast_findings": 1,
+    "sast_blocker": 0,
+    "open_debts": [],
+    "pci_dss_compliant": true,
+    "gdpr_compliant": true
+  },
+  "dashboard_global": {
+    "path": "docs/dashboard/bankportal-global-dashboard.html",
+    "alias": "docs/quality/sofia-dashboard.html",
+    "last_generated": "2026-04-17T12:54:24.048Z",
+    "last_gate": "G-9",
+    "last_step": "9",
+    "sprint": 25,
+    "feature": "FEAT-023",
+    "generator": ".sofia/scripts/gen-global-dashboard.js"
+  },
+  "resume_next": "Sprint 26 ARRANCADO - Step 1 completado - gate_pending G-1 - SPRINT-026-planning.md listo para aprobacion PO",
+  "sprint_closed": false,
+  "updated_at": "2026-04-21T19:03:58.513Z",
+  "fa_agent": {
+    "last_gate": "8b",
+    "last_updated": "2026-04-17T12:10:11.370Z",
+    "last_feat": "FEAT-023",
+    "doc_path": "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx",
+    "doc_version": "0.10",
+    "index_path": "docs/functional-analysis/fa-index.json",
+    "functionalities": 100,
+    "business_rules": 231,
+    "last_sprint_consolidated": 25,
+    "skill_version": "2.8",
+    "active": true,
+    "sprints_covered": "S1-S25",
+    "docx_verified": true,
+    "docx_size_kb": 80.8,
+    "generator": "python-docx"
+  },
+  "metrics": {
+    "total_sp": 593,
+    "total_tests": 1042,
+    "coverage": 89,
+    "defects": 0,
+    "ncs_last_sprint": 0
+  },
+  "open_debts": [
+    {
+      "id": "DEBT-047",
+      "area": "Backend",
+      "priority": "Media",
+      "desc": "findTopMerchants consulta solo bill_payments — excluye transacciones generales",
+      "sprint_target": "S25",
+      "origin": "coherence-audit-dashboard-S24",
+      "registered_at": "2026-04-16T06:20:00.895915Z",
+      "status": "CLOSED",
+      "jira": "SCRUM-153"
+    }
+  ],
+  "jira_sprint": {
+    "sprint_name": "Tablero Sprint 25",
+    "board_id": 1,
+    "state": "closed",
+    "issues": [
+      "SCRUM-153",
+      "SCRUM-154",
+      "SCRUM-155",
+      "SCRUM-156",
+      "SCRUM-157",
+      "SCRUM-158",
+      "SCRUM-159",
+      "SCRUM-160",
+      "SCRUM-161",
+      "SCRUM-162"
+    ],
+    "started_at": "2026-04-16T10:40:06.994Z",
+    "closed_at": "2026-04-17T13:13:55.434Z",
+    "closed_by": "product-owner-ui",
+    "sprint_id": 464,
+    "close_method": "Jira UI (Opción A · LA-025-10 pendiente MCP completeSprint)"
+  },
+  "cmmi": {
+    "level": 3,
+    "active": true,
+    "process_areas": [
+      "PP",
+      "PMC",
+      "RSKM",
+      "VER",
+      "VAL",
+      "CM",
+      "PPQA",
+      "REQM",
+      "DAR"
+    ]
+  },
+  "code_review": {
+    "verdict": "APPROVED",
+    "findings_blocker": 0,
+    "findings_major": 0,
+    "findings_minor": 2,
+    "findings_suggestion": 2,
+    "report": "docs/code-review/CR-FEAT-023-sprint25.md",
+    "reviewed_at": "2026-04-16T17:43:42.061Z",
+    "fixes_applied": [
+      "RV-M01: CategoryOverrideRequest.concept añadido — conceptPattern usa concepto real del movimiento",
+      "RV-M02: log.warn añadido en catch widget — @Slf4j en PfmController"
+    ]
+  },
+  "sprint_history": {
+    "sprint_24": {
+      "feature": "FEAT-022",
+      "status": "completed",
+      "sp": 24,
+      "acum": 569,
+      "tests": 25,
+      "tests_acum": 978,
+      "cov": 89,
+      "ncs": 0,
+      "defects": 0,
+      "rel": "v1.24.0",
+      "closed_at": "2026-04-15",
+      "confluence_page": "13533185",
+      "confluence_retro": "13565953",
+      "jira_issues": [
+        "SCRUM-143",
+        "SCRUM-144",
+        "SCRUM-145",
+        "SCRUM-146",
+        "SCRUM-147",
+        "SCRUM-148",
+        "SCRUM-149",
+        "SCRUM-150",
+        "SCRUM-151",
+        "SCRUM-152"
+      ]
+    },
+    "sprint_25": {
+      "feature": "FEAT-023",
+      "title": "Mi Dinero — Gestor de Finanzas Personales (PFM)",
+      "status": "completed",
+      "sp": 24,
+      "acum": 593,
+      "tests": 64,
+      "tests_acum": 1042,
+      "cov": 89,
+      "ncs": 0,
+      "defects": 0,
+      "rel": "v1.25.0",
+      "closed_at": "2026-04-17",
+      "confluence_page": "14680065",
+      "confluence_retro": "14712833",
+      "jira_issues": [
+        "SCRUM-153",
+        "SCRUM-154",
+        "SCRUM-155",
+        "SCRUM-156",
+        "SCRUM-157",
+        "SCRUM-158",
+        "SCRUM-159",
+        "SCRUM-160",
+        "SCRUM-161",
+        "SCRUM-162"
+      ],
+      "las_session": [
+        "LA-025-06",
+        "LA-025-07",
+        "LA-025-08",
+        "LA-025-09",
+        "LA-025-10"
+      ],
+      "las_core_promoted": [
+        "LA-CORE-053",
+        "LA-CORE-054",
+        "LA-CORE-055",
+        "LA-CORE-056",
+        "LA-CORE-057"
+      ],
+      "bug_po": {
+        "total": 36,
+        "resolved": 15,
+        "deferred": 21
+      },
+      "debt_closed": [
+        "DEBT-047"
+      ],
+      "jira_sprint_closed_at": "2026-04-17T13:13:55.434Z",
+      "jira_sprint_id": 464
+    }
+  },
+  "repository": {
+    "remote": "https://github.com/cuadram/bank-portal.git",
+    "provider": "github",
+    "visibility": "public",
+    "default_branch": "main",
+    "develop_branch": "develop",
+    "active_branch": "feature/FEAT-024-sprint26",
+    "branching_model": "feature/FEAT-XXX-sprintYY",
+    "guardrail": "GR-CORE-030"
+  },
+  "gate_history": [
+    {
+      "gate": "G-5b",
+      "step": "5b",
+      "approved_at": "2026-04-16T18:24:38.497Z",
+      "sprint": 25,
+      "feature": "FEAT-023"
+    },
+    {
+      "gate": "G-8-pending",
+      "step": "8",
+      "approved_at": "2026-04-17T06:25:47.400Z",
+      "sprint": 25,
+      "feature": "FEAT-023"
+    },
+    {
+      "gate": "G-8-pending",
+      "step": "8",
+      "approved_at": "2026-04-17T12:06:50.088Z",
+      "sprint": 25,
+      "feature": "FEAT-023"
+    },
+    {
+      "gate": "G-8",
+      "step": "8",
+      "approved_at": "2026-04-17T12:09:13.372Z",
+      "sprint": 25,
+      "feature": "FEAT-023"
+    },
+    {
+      "gate": "G-8b",
+      "step": "8b",
+      "approved_at": "2026-04-17T12:10:11.370Z",
+      "sprint": 25,
+      "feature": "FEAT-023"
+    },
+    {
+      "gate": "G-8b",
+      "step": "8b",
+      "approved_at": "2026-04-17T12:10:23.360Z",
+      "sprint": 25,
+      "feature": "FEAT-023"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_at": "2026-04-17T12:54:10.007Z",
+      "sprint": 25,
+      "feature": "FEAT-023"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_at": "2026-04-17T12:54:24.048Z",
+      "sprint": 25,
+      "feature": "FEAT-023"
+    }
+  ],
+  "lessons_learned": [
+    {
+      "id": "LA-025-13",
+      "sprint": 25,
+      "scope_sprint": "post-S25 pre-S26",
+      "feature": "FEAT-023",
+      "type": "qa/devops/process",
+      "title": "smoke-test-references-non-existent-endpoint",
+      "description": "El smoke test v1.1 de Sprint 25 (infra/compose/smoke-test-v1.25.0.sh) aprobado en Gate G-7 incluia el check SM-14 contra PUT /api/v1/pfm/budgets/{id}/alert, un endpoint que NUNCA fue implementado en PfmController.java. El controller solo expone GET, POST y DELETE de budgets (la unica variante PUT es /movimientos/{txId}/category). Consecuencia: SM-14 devolvia 404 de forma permanente en cualquier ejecucion post-deploy, pero el gate G-7 se aprobo con 16/16 PASS porque el PO interpreto el FAIL como falso positivo en el momento. Dos falsos positivos adicionales del mismo script: SM-05 leia accts[0][\"id\"] cuando el contrato real expone accountId (se saltaba siempre como SKIP); SM-09 no aceptaba 409 Conflict en re-ejecucion (el backend rechaza correctamente por UK user_category_month). Los 3 defectos del smoke test pasaron Gate G-7 sin deteccion porque el review del release-manager se centro en el numero de stages OK del pipeline y no en el grep cruzado entre URLs del smoke y @RequestMapping del controller.",
+      "correction": "Aplicado v1.2 (2026-04-21) con 3 parches: (a) SM-05 lectura tolerante con fallback accountId || id; (b) SM-09 acepta 201|409|422 como codigos validos post-deploy; (c) SM-14 reformulado como asercion de dominio thresholdPercent in [50..95] step 5 via GET (cubre la RN del SRS sin depender de endpoint inexistente). Sintaxis bash -n OK. Logica verificada via Node: 17/17 PASS contra stack real. Backup preservado en smoke-test-v1.25.0.sh.bak-v1.1. Para prevenir regresion: Step 7 DevOps debe ejecutar pre-gate G-7 un grep cruzado de todas las URLs absolutas del smoke test (/api/v1/...) contra los handlers reales del controller (@GetMapping/@PostMapping/@PutMapping/@DeleteMapping); cualquier URL sin match debe bloquear G-7. Adicionalmente, el smoke test debe aceptar codigos de idempotencia (409 en POST con UK violado) y leer campos del payload segun el contrato documentado en el OpenAPI, no por asuncion.",
+      "registered_at": "2026-04-21T18:37:18.878Z",
+      "approved_by": "product-owner",
+      "hitl_approved": true,
+      "sofia_core_candidate": true,
+      "guardrail_proposed": "GR-SMOKE-001: pre-gate G-7 debe validar que toda URL absoluta del smoke test corresponde a un handler @RequestMapping existente en los controllers del proyecto. Falla bloqueante.",
+      "related_las": [
+        "LA-019-07"
+      ],
+      "artifact_ref": "infra/compose/smoke-test-v1.25.0.sh (v1.2)",
+      "verification_result": "17 PASS · 0 FAIL · 0 SKIP (verificado via Node contra stack v1.25.0 2026-04-21T18:31:21Z)",
+      "promoted_to": "LA-CORE-064",
+      "promoted_at": "2026-04-21T18:42:23.891Z",
+      "sofia_core_version": "2.6.66",
+      "guardrail_official": "GR-SMOKE-001"
+    },
+    {
+      "id": "LA-025-12",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "type": "process/governance/git",
+      "title": "working-tree-git-divergence-undetected",
+      "description": "SOFIA ejecutó una sesión de arranque completa (lectura session.json, skill loader, inicialización Orchestrator) sin detectar que el working tree tenía 842 ficheros borrados respecto al HEAD de Git — toda la carpeta apps/ (backend-2fa + frontend-portal + CLAUDE.md raíz). Consecuencia: durante la sesión se generó LA-025-11 con un diagnóstico arquitectónico erróneo ('separación docs/code sin enlace'), se propusieron remediaciones costosas (submodules, workspace padre), y se asumió que el código nunca había estado en el checkout. La verdad se descubrió solo al ejecutar git status --short, que mostró las 841+1 entradas con prefijo 'D' (deleted). Ningún paso del pipeline SOFIA compara el estado del working tree contra el índice Git en el arranque, pese a que es una verificación O(1) y el proyecto depende completamente de la integridad de apps/ para Step 4 (Developer), guardrail G-4b (compile), y checklist fidelidad G-4 (LA-CORE-056). El fallo es especialmente grave porque la Regla Crítica LA-018-01 exige leer .sofia/session.json antes de cualquier acción, pero no exige verificar la coherencia del working tree — la asunción implícita es 'si el directorio existe, el código está ahí'.",
+      "correction": "Añadir guardrail GR-GIT-001 al Orchestrator (inicialización SOFIA, antes de cualquier skill): ejecutar `git status --porcelain | grep '^ D' | wc -l`; si el resultado > 0, bloquear con alerta detallando número de ficheros borrados y sugerir `git restore` como acción correctiva. Complementariamente añadir al bloque de arranque: (a) contador de ficheros .java y .ts en apps/ vs. cuenta esperada persistida en session.json.repository.expected_file_counts; (b) verificación de existencia de apps/backend-2fa/pom.xml y apps/frontend-portal/package.json como smoke test de integridad; (c) registro en sofia.log del hash git rev-parse HEAD al arrancar, para trazabilidad. Promover a SOFIA-CORE como LA-CORE-059 (GR-GIT-001) — aplicable a cualquier proyecto SOFIA basado en Git. Actualizar orchestrator/SKILL.md sección 'Inicialización automática' con PASO 0 nuevo: verificación de integridad del working tree.",
+      "registered_at": "2026-04-20T19:49:40.283602Z",
+      "approved_by": "product-owner",
+      "hitl_approved": true,
+      "sofia_core_candidate": true,
+      "guardrail_proposed": "GR-GIT-001: Orchestrator debe ejecutar verificación de divergencia working-tree vs HEAD al arrancar (git status --porcelain | grep '^ D' | wc -l); si > 0, bloquear sesión hasta que PO confirme restauración",
+      "related_las": [
+        "LA-025-11"
+      ],
+      "replaces_guardrail": "GR-REPO-001 (propuesto en LA-025-11, ahora descartado)",
+      "promoted_to": "LA-CORE-061",
+      "promoted_at": "2026-04-20T19:55:00.000Z",
+      "sofia_core_version": "2.6.61",
+      "guardrail_official": "GR-GIT-001"
+    },
+    {
+      "id": "LA-025-11",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "type": "governance/repository",
+      "title": "sofia-project-dir-without-source-code",
+      "description": "El directorio SOFIA del proyecto (/Users/cuadram/proyectos/bank-portal) no contiene el codigo fuente Java ni Angular. El docker-compose.yml hace build desde ../../apps/backend-2fa y ../../apps/frontend-portal, rutas que no existen en el filesystem accesible. El contenedor bankportal-backend corre sobre una imagen pre-construida (bankportal-backend-2fa:local-dev) cuyo origen esta desacoplado del checkout documental. Consecuencia: auditorias de arquitectura contra la documentacion (HLD, LLD, session.json) producen una ilusion de verdad — el diagrama logico generado reflejaba 8 bounded contexts pero el JAR desplegado contiene 23. Tambien impide ejecutar mvn compile, leer el codigo para verificar fidelidad prototipo (LA-CORE-056), aplicar refactors, o resolver deudas tecnicas desde el puesto de trabajo canonico del PO.",
+      "correction": "Tres opciones: (a) incorporar apps/backend-2fa y apps/frontend-portal como git submodules del repositorio bank-portal para que el checkout SOFIA contenga la fuente canonica; (b) renombrar la raiz SOFIA a /Users/cuadram/proyectos/bank-portal-docs y crear un workspace padre que contenga apps/* y docs/* como hermanos; (c) si la separacion se mantiene, anadir un guardrail GR-REPO-001 que bloquee Step 4 y Step 5 si no existe ruta hacia el codigo fuente y registre la ubicacion real en session.json.repository.source_path. Promover a SOFIA-CORE: el problema afecta a cualquier proyecto que intente separar docs y code sin establecer el enlace.",
+      "registered_at": "2026-04-20T09:09:24.854Z",
+      "approved_by": null,
+      "hitl_approved": false,
+      "sofia_core_candidate": false,
+      "guardrail_proposed": "GR-REPO-001: session.json.repository.source_path debe apuntar a un directorio existente con pom.xml o package.json antes de G-4",
+      "status": "INVALIDATED",
+      "invalidated_at": "2026-04-20T19:49:40.283602Z",
+      "invalidated_by": "product-owner",
+      "invalidation_note": "Diagnóstico erróneo en raíz. La LA afirmaba separación estructural docs/code con paths inexistentes. Investigación forense (git status, git ls-files apps/) reveló que el código SÍ vive en este repo bajo apps/backend-2fa/ y apps/frontend-portal/ — 841 ficheros trackeados en HEAD. La ausencia en working tree era un borrado accidental (rm -rf apps/), no una decisión arquitectónica. git restore apps/ CLAUDE.md repuso los 842 ficheros sin pérdida. El problema REAL (falta de detección automática de divergencia working-tree vs HEAD) queda recogido en LA-025-12. Guardrail GR-REPO-001 propuesto en LA-025-11 se descarta — sustituido por GR-GIT-001 en LA-025-12."
+    },
+    {
+      "id": "LA-025-10",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "type": "process/tooling",
+      "title": "mcp-atlassian-lacks-sprint-lifecycle-api",
+      "description": "Las herramientas MCP Atlassian disponibles (searchJiraIssuesUsingJql, getJiraIssue, transitionJiraIssue, editJiraIssue, addCommentToJiraIssue, getTransitionsForJiraIssue, createIssueLink, etc.) cubren la Jira Platform REST API v3 sobre issues, pero NO exponen la Jira Agile REST API (/rest/agile/1.0/sprint/{id}) que es la unica via oficial para transicionar un sprint de active → closed. Consecuencia: Step 9 Workflow Manager puede finalizar todos los issues via transitionJiraIssue pero NO puede completar el sprint en si mismo; queda pendiente una accion manual del PO desde la UI de Jira o un curl con API token fuera de la allowlist de sofia-shell. Verificado en Sprint 25 (sprint_id=464, board_id=1): todos los issues SCRUM-153..162 pasaron a Finalizada via MCP, pero el sprint seguia state=active hasta que el PO hizo click en \"Completar sprint\" en la UI.",
+      "correction": "Tres opciones de mejora: (a) solicitar a Anthropic/Atlassian que amplie el MCP server para incluir endpoints Agile API (completeSprint, createSprint, updateSprint, moveIssuesToSprint); (b) incluir en SOFIA un wrapper Node con https.request + ATLASSIAN_API_TOKEN en .env (fuera del repo) que encapsule completeSprint; (c) hasta que exista soporte nativo, documentar explicitamente en la skill workflow-manager/SKILL.md que la accion final de cerrar sprint en Jira es manual PO-UI y que el Step 9 termina con este flag pendiente. Promover a SOFIA-CORE porque afecta a todos los proyectos que usen SOFIA + Jira Cloud.",
+      "registered_at": "2026-04-17T13:14:35.481Z",
+      "approved_by": "product-owner",
+      "hitl_approved": true,
+      "sofia_core_candidate": true,
+      "guardrail_proposed": "GR-ATLASSIAN-001: Step 9 Workflow Manager debe registrar accion manual pendiente en Jira UI si MCP no expone sprint lifecycle",
+      "promoted_to": "LA-CORE-060",
+      "promoted_at": "2026-04-20T19:55:00.000Z",
+      "sofia_core_version": "2.6.61",
+      "guardrail_official": "GR-ATLASSIAN-001"
+    },
+    {
+      "id": "LA-025-09",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "type": "process/tooling",
+      "title": "dashboard-script-completed-steps-schema-mismatch",
+      "description": ".sofia/scripts/gen-global-dashboard.js espera session.completed_steps como Array (calls .includes), pero el session.json lo persiste como objeto {sprint, feature, steps:[]}. Al ejecutar directamente el script falla con TypeError: completedSteps.includes is not a function. Workaround actual: wrapper Node que normaliza el campo antes de invocar, restaura el formato objeto después. Bloquea la regeneracion automatica del Dashboard Global en cada Gate (GR-DASH-001 incumplida). Bug cosmetico adicional: el banner del gate concatena GATE-${GP.step} cuando GP.step ya es G-8, resultando en GATE-G-8.",
+      "correction": "Refactorizar gen-global-dashboard.js para: (a) aceptar ambos formatos con normalizacion al cargar session.json — const completedSteps = Array.isArray(S.completed_steps) ? S.completed_steps : (S.completed_steps?.steps || []); (b) corregir la concatenacion del banner: gateLabel debe usar GP.step tal cual sin prefijo GATE- si ya contiene G-. Tests de regresion con ambos schemas. Promover a SOFIA-CORE como LA-CORE-058 y actualizar gen-global-dashboard.js en todos los proyectos registrados.",
+      "registered_at": "2026-04-17T12:08:33.479Z",
+      "approved_by": "product-owner",
+      "hitl_approved": true,
+      "sofia_core_candidate": true,
+      "guardrail_proposed": "GR-DASH-002: dashboard script debe tolerar ambos schemas de completed_steps",
+      "promoted_to": "LA-CORE-059",
+      "promoted_at": "2026-04-20T19:55:00.000Z",
+      "sofia_core_version": "2.6.61",
+      "guardrail_official": "GR-DASH-002"
+    },
+    {
+      "id": "LA-025-06",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "type": "frontend/angular",
+      "title": "sign-contract-backend",
+      "description": "Backend devuelve CARGO con signo negativo. Frontend debe aplicar Math.abs() antes de renderizar. Contrato no documentado en LLD/SRS. Corrompe porcentajes, semaforo y variaciones.",
+      "correction": "Math.abs() en todos los mapeos de amount/spent/percentConsumed. Documentar en LLD. Tests con valores negativos en mocks CARGO.",
+      "registered_at": "2026-04-16T20:34:14.884Z",
+      "approved_by": "product-owner",
+      "sofia_core_candidate": true
+    },
+    {
+      "id": "LA-025-07",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "type": "frontend/process",
+      "title": "prototype-fidelity-not-verified-g4-g5",
+      "description": "36 bugs por no leer el prototipo pantalla a pantalla. LA-CORE-041 y LA-CORE-043 no aplicadas. Developer implemento de memoria sin comparar con el HTML del prototipo aprobado.",
+      "correction": "Checklist fidelidad BLOQUEANTE en G-4: verificar cada elemento del prototipo contra el componente Angular. PO hace screenshot comparison antes de aprobar G-4b.",
+      "registered_at": "2026-04-16T20:34:14.884Z",
+      "approved_by": "product-owner",
+      "sofia_core_candidate": true
+    },
+    {
+      "id": "LA-025-08",
+      "sprint": 25,
+      "feature": "FEAT-023",
+      "type": "frontend/angular",
+      "title": "select-twoway-binding-reset",
+      "description": "select con (change) unidireccional no sincroniza DOM al resetear la variable programaticamente. Filtro de categorias no quedaba marcado y el reset no funcionaba.",
+      "correction": "[(ngModel)] + FormsModule para bidireccional. NUNCA (change) solo en controles con reset programatico.",
+      "registered_at": "2026-04-16T20:34:14.884Z",
+      "approved_by": "product-owner",
+      "sofia_core_candidate": true
+    },
+    {
+      "id": "LA-023-01",
+      "type": "frontend",
+      "description": "desde bank-portal Sprint 23 — [href] nativo en Angular Router causa full page reload. REGLA: router.navigateByUrl() o [routerLink] siempre",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.177Z"
+    },
+    {
+      "id": "LA-CORE-017",
+      "type": "analysis",
+      "description": "ORG baseline: leer SOFIA_ORG_PATH canonico, nunca snapshot local del proyecto",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
+    },
+    {
+      "id": "LA-CORE-018",
+      "type": "governance",
+      "description": "HITL obligatorio antes de persistir cualquier LA: aprobacion PO explicita",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
+    },
+    {
+      "id": "LA-CORE-033",
+      "type": "governance",
+      "description": "desde bank-portal Sprint 23 — Al ejecutar la-sync.js (GR-CORE-029), el Orchestrator aplicó el sync solo en los",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
+    },
+    {
+      "id": "LA-CORE-048",
+      "type": "process/governance",
+      "description": "Gate persistencia atomica session.json + validate-fa-index CHECK 8 usa session.current_feature + FA feat field obligatorio",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
+    },
+    {
+      "id": "LA-CORE-050",
+      "type": "ux/process",
+      "description": "PASO 0 herencia prototipo sprint-a-sprint obligatoria; cp archivo anterior + verificacion token portal real bloqueante G-2c",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
+    },
+    {
+      "id": "LA-025-01",
+      "type": "process/governance",
+      "description": "desde bank-portal Sprint 25 — Gate G-2 Sprint 25 aprobado explícitamente por el PO pero no persistido en sessi",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
+    },
+    {
+      "id": "LA-025-02",
+      "type": "process/fa-agent",
+      "description": "desde bank-portal Sprint 25 — Step 2b debe invocar gen-fa-document.py para actualizar el FA Word consolidado a",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
+    },
+    {
+      "id": "LA-025-03",
+      "type": "ux/process",
+      "description": "desde bank-portal Sprint 25 — UX/UI Designer Agent generó PROTO-FEAT-023-sprint25 desde el scaffold genérico d",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
+    },
+    {
+      "id": "LA-025-04",
+      "type": "process/governance",
+      "description": "desde bank-portal Sprint 25 — current_step en session.json no se actualizaba al avanzar entre steps — quedó en",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
+    },
+    {
+      "id": "LA-CORE-053",
+      "type": "backend/jdbc",
+      "description": "schema-drift-sql-native: verificar nombres de columna de tablas previas con \\d tabla o Flyway migration antes de escribir queries SQL nativas. GR-SQL-001 en G-4b.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
+    },
+    {
+      "id": "LA-CORE-054",
+      "type": "backend/jdbc",
+      "description": "instant-timestamptz-binding: JdbcClient no puede bindear Instant directo a TIMESTAMPTZ. Usar Timestamp.from(instant). GR-JDBC-001 en G-4b. Complementa LA-019-13.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
+    },
+    {
+      "id": "LA-CORE-055",
+      "type": "frontend/angular",
+      "description": "sign-contract-backend: backend devuelve CARGO con signo negativo; frontend aplica Math.abs() en todos los mapeos. Documentar en LLD. Mocks con valores negativos. GR-API-001 en G-4b.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
+    },
+    {
+      "id": "LA-CORE-056",
+      "type": "frontend/process",
+      "description": "prototype-fidelity-visual-review: 36 bugs por no leer prototipo pantalla a pantalla. Checklist fidelidad BLOQUEANTE en G-4 para cada pantalla. PO hace screenshot comparison antes de G-4b. Refuerza LA-CORE-041/043.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
+    },
+    {
+      "id": "LA-CORE-057",
+      "type": "frontend/angular",
+      "description": "select-twoway-binding-reset: (change) unidireccional no sincroniza DOM en reset programático. Usar [(ngModel)] + FormsModule en controles con reset. GR-ANGULAR-001 en G-4.",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.6.52",
+      "imported_at": "2026-04-16T21:24:02.178Z"
+    }
+  ]
+}
