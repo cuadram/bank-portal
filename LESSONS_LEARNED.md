@@ -74,7 +74,7 @@
 
 **Corrección / Regla:** Checklist fidelidad BLOQUEANTE en G-4: verificar cada elemento del prototipo contra el componente Angular. PO hace screenshot comparison antes de aprobar G-4b.
 
-**Estado:** Candidata SOFIA-CORE · Aprobada PO · pendiente promoción · Guardrail propuesto: —
+**Estado:** Promovida a SOFIA-CORE como LA-CORE-056 (2026-04-16, GR-VISUAL-001). Cerrada superseded en SOFIA-CORE Sprint S01 Step 6 SC-14 (2026-04-22T16:03:08.949559Z). **No crear LA-CORE-069** - duplicacion semantica evitada.
 
 ---
 
