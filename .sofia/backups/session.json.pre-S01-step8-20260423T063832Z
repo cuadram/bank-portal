@@ -720,7 +720,7 @@
   },
   "resume_next": "Sprint 26 PAUSADO en limpio · G-2 aprobado · Step 2 cerrado · siguiente: Step 2b FA-Agent (enriquecer FA consolidado con FEAT-024) · sin gate_pending · sin acciones pendientes",
   "sprint_closed": false,
-  "updated_at": "2026-04-23T06:38:51.971Z",
+  "updated_at": "2026-04-22T06:31:24.645Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-04-17T12:10:11.370Z",
@@ -1450,126 +1450,6 @@
       "source": "promoted",
       "sofia_core_version": "2.6.52",
       "imported_at": "2026-04-16T21:24:02.178Z"
-    },
-    {
-      "id": "LA-CORE-058",
-      "type": "infrastructure/governance",
-      "description": "repo-redundancy-via-github-not-onedrive: sistemas críticos SOFIA no pueden depender de OneDrive como única copia redundada. Remote git obligatorio para Tipo S (framework) y Tipo A (flujo git intensivo). OneDrive es sync, no backup transaccional. GR-INFRA-001.",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
-      "scope": "SOFIA-CORE",
-      "source": "promoted",
-      "sofia_core_version": "2.6.68",
-      "imported_at": "2026-04-23T06:38:51.962Z"
-    },
-    {
-      "id": "LA-CORE-059",
-      "type": "process/tooling",
-      "description": "dashboard-completed-steps-schema: gen-global-dashboard.js asume Array en session.completed_steps pero el schema real es {sprint, feature, steps:[]}; normalizar al cargar. Bug cosmético adicional: banner concatena GATE-${step} cuando step ya es G-N (produce GATE-G-8). Refactor + tests de regresión. GR-DASH-002.",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
-      "scope": "SOFIA-CORE",
-      "source": "promoted",
-      "sofia_core_version": "2.6.68",
-      "imported_at": "2026-04-23T06:38:51.962Z"
-    },
-    {
-      "id": "LA-CORE-060",
-      "type": "process/tooling",
-      "description": "mcp-atlassian-sprint-lifecycle-gap: las herramientas MCP Atlassian (searchJiraIssues, transitionJiraIssue) no exponen endpoints para abrir/cerrar sprints. Step 9 Workflow Manager debe registrar acción manual pendiente en Jira UI cuando MCP no cubre sprint lifecycle. GR-ATLASSIAN-001.",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
-      "scope": "SOFIA-CORE",
-      "source": "promoted",
-      "sofia_core_version": "2.6.68",
-      "imported_at": "2026-04-23T06:38:51.962Z"
-    },
-    {
-      "id": "LA-CORE-061",
-      "type": "process/governance/git",
-      "description": "working-tree-git-divergence-undetected: Orchestrator arrancó sesión completa sin detectar 842 ficheros borrados del working tree. Añadir PASO 0 de verificación de integridad: git status --porcelain | grep '^ D' | wc -l; si > 0, bloquear. Verificar existencia de pom.xml/package.json. Registrar hash HEAD en sofia.log al arrancar. GR-GIT-001.",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
-      "scope": "SOFIA-CORE",
-      "source": "promoted",
-      "sofia_core_version": "2.6.68",
-      "imported_at": "2026-04-23T06:38:51.962Z"
-    },
-    {
-      "id": "LA-CORE-062",
-      "type": "process/tooling - session-sprint-history-schema-drift: schema dict vs list en sprint_history incompatible entre proyectos - patron defensivo obligatorio",
-      "description": "",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
-      "scope": "SOFIA-CORE",
-      "source": "promoted",
-      "sofia_core_version": "2.6.68",
-      "imported_at": "2026-04-23T06:38:51.962Z"
-    },
-    {
-      "id": "LA-CORE-063",
-      "type": "process/tooling - session-json-falsy-and-schema-derivation: dos bugs defensivos (sprint=0 falsy + process_areas ausente) en consumidores de session.json - patron hermano de LA-CORE-062",
-      "description": "",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
-      "scope": "SOFIA-CORE",
-      "source": "promoted",
-      "sofia_core_version": "2.6.68",
-      "imported_at": "2026-04-23T06:38:51.962Z"
-    },
-    {
-      "id": "LA-CORE-064",
-      "type": "qa/devops/process",
-      "description": "smoke-test-references-non-existent-endpoint: smoke test aprobado en G-7 con check contra PUT /api/v1/pfm/budgets/{id}/alert (endpoint inexistente en PfmController). 2 defectos hermanos: SM-05 leia id vs accountId, SM-09 no aceptaba 409 en re-ejecucion. Corregido via grep cruzado URL-vs-@RequestMapping obligatorio pre-G-7. GR-SMOKE-001.",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
-      "scope": "SOFIA-CORE",
-      "source": "promoted",
-      "sofia_core_version": "2.6.68",
-      "imported_at": "2026-04-23T06:38:51.962Z"
-    },
-    {
-      "id": "LA-CORE-065",
-      "type": "process/governance/audit",
-      "description": "gate-history-mixes-pending-and-approved: gate_history mezcla gates HITL aprobados con marcadores -pending del dashboard. Refactor a gate_history (aprobados) + gate_history_pending (intermedios). Eliminar duplicados por clave gate+sprint+step. GR-AUDIT-001.",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
-      "scope": "SOFIA-CORE",
-      "source": "promoted",
-      "sofia_core_version": "2.6.68",
-      "imported_at": "2026-04-23T06:38:51.962Z"
-    },
-    {
-      "id": "LA-CORE-066",
-      "type": "process/governance/cmmi",
-      "description": "cmmi-process-areas-incomplete-declaration: session.cmmi declaraba 9 PAs vs 16 canonicas L3. Schema obligatorio {project:[9], org:[4], engineering:[3], coverage_strategy, coverage_matrix_path}. Crear docs/cmmi/CMMI-COVERAGE-MATRIX.md mantenida en Step 9. GR-CMMI-001 bloquea G-9 si incompleto.",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
-      "scope": "SOFIA-CORE",
-      "source": "promoted",
-      "sofia_core_version": "2.6.68",
-      "imported_at": "2026-04-23T06:38:51.962Z"
-    },
-    {
-      "id": "LA-CORE-067",
-      "type": "tooling/mcp/recovery",
-      "description": "mcp-shell-stdio-buffer-limit-large-payloads: MCP shell timeout en payloads >16KB como argumento. Patron: fs.appendFileSync en bloques <=6KB para artefactos >8KB. Helper write-large-artifact.js opcional. GR-MCP-001.",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
-      "scope": "SOFIA-CORE",
-      "source": "promoted",
-      "sofia_core_version": "2.6.68",
-      "imported_at": "2026-04-23T06:38:51.962Z"
-    },
-    {
-      "id": "LA-CORE-068",
-      "type": "frontend/angular - nunca usar [href] nativo para navegacion interna en Angular (causa full page reload + ShellComponent desaparece). Usar router.navigateByUrl() para URLs dinamicas o [routerLink] para estaticas. Seeds de notificaciones deben referenciar SOLO rutas registradas en app-routing.module.ts. Checklist G-4/G-5 bloqueante: grep -r '[href]' src/app/features/ (GR-ANGULAR-HREF-001).",
-      "description": "",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
-      "scope": "SOFIA-CORE",
-      "source": "promoted",
-      "sofia_core_version": "2.6.68",
-      "imported_at": "2026-04-23T06:38:51.962Z"
-    },
-    {
-      "id": "LA-CORE-070",
-      "type": "takeover/process - T-3 FA Reverse Agent debe producir T3-FUNCTIONAL-DESCRIPTION.md + T3-FUNCTIONAL-DESCRIPTION.docx como entregables explicativos del sistema heredado, ademas de los artefactos internos del pipeline (fa-index.json, fa-baseline, etc.). Sin estos entregables, el analisis funcional no queda accesible fuera del pipeline.",
-      "description": "",
-      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
-      "scope": "SOFIA-CORE",
-      "source": "promoted",
-      "sofia_core_version": "2.6.68",
-      "imported_at": "2026-04-23T06:38:51.962Z"
     }
   ],
   "gate_history_pending": [

@@ -1,6 +1,6 @@
 {
-  "last_sync_at": "2026-04-23T06:38:51.962Z",
-  "last_core_version": "2.6.68",
+  "last_sync_at": "2026-04-20T19:55:00.000Z",
+  "last_core_version": "2.6.61",
   "imported_la_ids": [
     "LA-CORE-001",
     "LA-CORE-002",
@@ -63,19 +63,7 @@
     "LA-CORE-054",
     "LA-CORE-055",
     "LA-CORE-056",
-    "LA-CORE-057",
-    "LA-CORE-058",
-    "LA-CORE-059",
-    "LA-CORE-060",
-    "LA-CORE-061",
-    "LA-CORE-062",
-    "LA-CORE-063",
-    "LA-CORE-064",
-    "LA-CORE-065",
-    "LA-CORE-066",
-    "LA-CORE-067",
-    "LA-CORE-068",
-    "LA-CORE-070"
+    "LA-CORE-057"
   ],
   "skipped_la_ids": [],
   "sync_history": [
@@ -291,26 +279,11 @@
       "approved_by": "product-owner",
       "mode": "promotion",
       "note": "BankPortal S25 → SOFIA-CORE v2.6.59. 3 guardrails: GR-DASH-002 (dashboard schema), GR-ATLASSIAN-001 (sprint lifecycle gap), GR-GIT-001 (working-tree integrity)."
-    },
-    {
-      "synced_at": "2026-04-23T06:38:51.962Z",
-      "core_version": "2.6.68",
-      "new_las": [
-        "LA-CORE-058",
-        "LA-CORE-059",
-        "LA-CORE-060",
-        "LA-CORE-061",
-        "LA-CORE-062",
-        "LA-CORE-063",
-        "LA-CORE-064",
-        "LA-CORE-065",
-        "LA-CORE-066",
-        "LA-CORE-067",
-        "LA-CORE-068",
-        "LA-CORE-070"
-      ],
-      "skills_updated": [],
-      "mode": "delta"
     }
+  ],
+  "promoted_la_ids": [
+    "LA-CORE-059",
+    "LA-CORE-060",
+    "LA-CORE-061"
   ]
 }
