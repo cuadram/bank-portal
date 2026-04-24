@@ -720,7 +720,7 @@
   },
   "resume_next": "Sprint 26 PAUSADO en limpio · G-2 aprobado · Step 2 cerrado · siguiente: Step 2b FA-Agent (enriquecer FA consolidado con FEAT-024) · sin gate_pending · sin acciones pendientes",
   "sprint_closed": false,
-  "updated_at": "2026-04-23T06:38:51.971Z",
+  "updated_at": "2026-04-24T13:03:07.450Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-04-17T12:10:11.370Z",
@@ -1570,6 +1570,36 @@
       "source": "promoted",
       "sofia_core_version": "2.6.68",
       "imported_at": "2026-04-23T06:38:51.962Z"
+    },
+    {
+      "id": "LA-CORE-071",
+      "type": "process/governance",
+      "description": "desde SOFIA-CORE Sprint 1 (orig LA-001-09) — En Sprint S01 Mini A Step 9, el Orchestrator ejecuto la secuencia de cierre form",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.3",
+      "imported_at": "2026-04-24T13:03:07.442Z"
+    },
+    {
+      "id": "LA-CORE-072",
+      "type": "process/tooling",
+      "description": "desde SOFIA-CORE Sprint 1 (orig LA-001-03) — En Sprint S01 Mini A Step 6 Fase 2 (propagacion de LAs reformateadas H3->H2 a lo",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.3",
+      "imported_at": "2026-04-24T13:03:07.442Z"
+    },
+    {
+      "id": "LA-CORE-073",
+      "type": "process/atomicity",
+      "description": "desde SOFIA-CORE Sprint 1 (orig LA-001-04) — En Sprint S01 Mini A Step 6, tras transicionar las issues SC-13 y SC-14 a estado",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.3",
+      "imported_at": "2026-04-24T13:03:07.442Z"
     }
   ],
   "gate_history_pending": [
