@@ -3,6 +3,7 @@
 # Python venv
 .sofia/venv/
 .sofia-venv/
+.sofia/backups/
 __pycache__/
 *.pyc
 
