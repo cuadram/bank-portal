@@ -682,3 +682,34 @@
 [2026-04-22T05:36:34.249Z] [GIT-COMMIT-PUSH] feature/FEAT-024-sprint26 actualizada: 3 commits atomicos (sprint-26 arranque · SRS Step 2 · cmmi hardening) · pushed a origin · working tree limpio (GR-GIT-001 verificado: 0 D files) · pipeline state intacto gate_pending=G-2
 [2026-04-22T05:37:55.908Z] [GATE] G-2_s26 aprobado PO · Step 2 CLOSED · avance atómico Step 2b (current_step+pipeline_step actualizados, gate_pending=null, status=paused) · LA-CORE-051 + GR-AUDIT-001 (LA-CORE-065) respetadas · gate_history limpio sin -pending
 [2026-04-22T05:37:56.042Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-2 · Step: 2 · Sprint 26
+[2026-04-26T18:58:18.609Z] [FA-VALIDATE] OK: total_functionalities: 108 ✓
+[2026-04-26T18:58:18.618Z] [FA-VALIDATE] OK: total_business_rules: 246 ✓
+[2026-04-26T18:58:18.618Z] [FA-VALIDATE] ERROR: Funcionalidades sin business_rules: FA-SAV-008
+[2026-04-26T18:58:18.618Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-26T18:58:18.618Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-26T18:58:18.618Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-26T18:58:18.618Z] [FA-VALIDATE] OK: last_sprint: 26 coincide con datos ✓
+[2026-04-26T18:58:18.620Z] [FA-VALIDATE] OK: FEAT-024: todas las RN referenciadas están definidas ✓
+[2026-04-26T18:58:18.621Z] [FA-VALIDATE] FAIL — 1 errores detectados
+[2026-04-26T18:59:00.909Z] [FA-VALIDATE] OK: total_functionalities: 108 ✓
+[2026-04-26T18:59:00.918Z] [FA-VALIDATE] OK: total_business_rules: 246 ✓
+[2026-04-26T18:59:00.919Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-26T18:59:00.919Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-26T18:59:00.919Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-26T18:59:00.919Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-26T18:59:00.919Z] [FA-VALIDATE] OK: last_sprint: 26 coincide con datos ✓
+[2026-04-26T18:59:00.920Z] [FA-VALIDATE] OK: FEAT-024: todas las RN referenciadas están definidas ✓
+[2026-04-26T18:59:00.921Z] [FA-VALIDATE] PASS — 108 funcionalidades, 246 reglas | sprint 26 | FEAT-024
+[2026-04-26T19:01:09.433926+00:00] [FA-AGENT] [GATE-8b] GENERATED → FA-bank-portal-Banco Meridian.docx v0.11 | 88.3KB | 108 func | 246 RN | TOC-hyperlinks | python-docx | SOFIA v2.7
+[2026-04-26T19:02:40.074Z] [FA-AGENT] [GATE-2b] APPROVED → FEAT-024 · FA v0.11 88.3KB · 108 func · 246 RN · validate-fa-index PASS 8/8 · LA-025-02 v2.8
+[2026-04-26T19:05:11.967Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-2b · Step: 2b · Sprint 26
+[2026-04-26T19:07:24.741Z] [ORCHESTRATOR] [PAUSE] Sprint 26 pausado tras G-2b · current_step=2c · sin gate pendiente
+
+[2026-04-27T09:18:52.858Z] [s26] [Step 2c] [ux-ui-designer] [PASS] PROTO-FEAT-024-sprint26.html (130.6KB · 5 pantallas · 22 anotaciones ANNOT-01..22 · hereda PROTO-FEAT-023-sprint25 LA-CORE-050) + UX-FEAT-024-sprint26.md (30KB · user flows + wireframes + 18 componentes Angular + WCAG 2.1 AA checklist) + UX-DESIGN-SYSTEM.md v1.1 (anexo §7 FEAT-024 · 7 tokens semánticos · 14 clases CSS) · gate_pending=HITL-PO-TL
+[2026-04-27T09:19:24.866Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: HITL-PO-TL · Step: 2c · Sprint 26
+
+[2026-04-27T09:32:51.891Z] [s26] [Step 2c FIX] Refactor estructural prototipo: 5 pantallas savings envueltas en shell .proto-screen completo (sidebar+header+main por pantalla, patrón heredado FEAT-023). Bug visual cards vacías corregido. HTML balanceado: 16 main, 16 aside, 1026 div, OK.
+
+[2026-04-27T11:12:51.876Z] [s26] [GATE G-2c] [HITL-PO-TL] [APPROVED] PROTO-FEAT-024-sprint26.html (143.5KB · 5 pantallas · 22 anotaciones · LA-CORE-050) + UX-FEAT-024-sprint26.md (31KB · §9.1 RN-10/12 backend justificadas) + UX-DESIGN-SYSTEM.md v1.1 · cobertura 7/7 US + 13/13 RNs UI · siguiente: Step 3 Architect
+[2026-04-27T11:12:51.876Z] [s26] [LESSON] [LA-024-01] Herencia LA-CORE-050 estructural: envolver cada pantalla nueva en shell .proto-screen completo (sidebar+header+main por pantalla), no inyectar secciones desnudas dentro del último main heredado
+[2026-04-27T11:13:24.214Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-2c · Step: 3 · Sprint 26

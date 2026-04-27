@@ -430,3 +430,47 @@ _SOFIA-CORE v2.7.3 · Importada: 2026-04-24T13:03:07.442Z_
 
 ---
 
+
+### LA-024-01 · ux-prototype-inheritance ⭐
+
+**Sprint:** 26 · **Step:** 2c · **Fecha:** 2026-04-27 · **Categoría:** UX/UI Designer Agent
+
+**Problema:**
+Al heredar el prototipo del sprint anterior (LA-CORE-050 PASO 0), inyectar las nuevas pantallas como `<section class="proto-screen">` desnudas dentro del último `<main>` del prototipo padre causa que sólo sean visibles cuando ese `<main>` está activo. Resultado en sprint 26: la pantalla `screen-savings-list` quedó vacía al abrir el prototipo, pese a tener `class="proto-screen active"` y `display:block`.
+
+**Causa raíz:**
+El patrón estructural del prototipo BankPortal envuelve cada pantalla en un bloque autónomo:
+
+```html
+<div class="proto-screen [active]" id="screen-X">
+  <div class="app-shell">
+    <div class="app-header">…</div>
+    <div class="app-layout">
+      <aside class="app-sidebar">…</aside>
+      <main class="app-content">CONTENIDO PANTALLA</main>
+    </div>
+  </div>
+</div>
+```
+
+Inyectar contenido como `<section>` dentro del `<main>` de **otra** pantalla rompe ese aislamiento: el toggle `.active` del padre la oculta junto con todo el contenido envolvente.
+
+**Corrección canónica:**
+
+1. **PASO 0 (LA-CORE-050)** — copiar el prototipo padre como base.
+2. **PASO 0.1 (NUEVO)** — extraer el shell completo (`<div class="app-shell">` … `<main class="app-content">` apertura + cierre `</main></div></div></div>`) y replicarlo por cada pantalla nueva.
+3. **PASO 0.2** — en el sidebar duplicado de cada pantalla nueva, marcar el item del módulo activo (`active` en su `<div class="sidebar-item">`).
+4. **PASO 0.3** — solo una pantalla puede tener `class="proto-screen active"` al inicio (la primera del módulo nuevo); las demás `class="proto-screen"`.
+5. **VALIDACIÓN obligatoria pre-G-2c:** balance de tags por bloque proto-screen (cada bloque debe tener `divs_open == divs_close`).
+
+**Evidencia:**
+- `docs/ux-ui/prototypes/PROTO-FEAT-024-sprint26.html` — refactor 130 KB → 143.5 KB, 11 pantallas heredadas + 5 savings, 16 main / 16 aside / 1026 div balanceados
+- Validación con `node -e` script comprobando balance por bloque proto-screen
+
+**Aplica a:**
+- UX/UI Designer Agent · Step 2c (todos los sprints futuros con prototipo heredado)
+- Cualquier extensión del prototipo de sprints previos al actual
+
+**Refs cruzadas:** LA-CORE-050 (herencia base), LA-CORE-067 (limit 6 KB MCP buffer — usado durante el fix con heredoc cat por chunks)
+
+---

@@ -4,8 +4,8 @@
   "client": "Banco Meridian",
   "generated_by": "FA-Agent — SOFIA v2.3",
   "last_updated": "2026-04-17T12:09:29.857Z",
-  "last_sprint": 26,
-  "total_functionalities": 108,
+  "last_sprint": 25,
+  "total_functionalities": 100,
   "notes": "S1-S15 RECONSTRUIDO. S16-S21 documentadas con evidencias directas.",
   "functionalities": [
     {
@@ -1789,176 +1789,6 @@
         "GDPR Art.6"
       ],
       "feat": "FEAT-023"
-    },
-    {
-      "id": "FA-SAV-001",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "module": "Objetivos de Ahorro (Savings)",
-      "name": "Creación de objetivo de ahorro con propósito",
-      "description": "El cliente Banco Meridian autenticado puede crear hasta 10 objetivos de ahorro activos simultáneamente. Cada objetivo se define con un nombre descriptivo, un importe target entre 100€ y 500.000€, una fecha límite entre 30 días y 30 años desde hoy, una categoría predefinida (Viaje, Hogar, Vehículo, Emergencia, Educación) o categoría personalizada (máximo 50 caracteres) y elementos visuales (icono y color) para identificarlo en el dashboard. La creación inicializa el objetivo en estado ACTIVE con importe reservado a cero. La feature posiciona BankPortal frente a competidores neobancarios (N26 Spaces, Revolut Goals, Monzo Pots) ofreciendo equivalencia funcional sin necesidad de apps de terceros.",
-      "actors": [
-        "Cliente Banco Meridian"
-      ],
-      "status": "PLANNED",
-      "business_rules": [
-        "RN-F024-01",
-        "RN-F024-02",
-        "RN-F024-07"
-      ],
-      "source": "SRS-FEAT-024-sprint26.md · US-024-01",
-      "regulations": [
-        "GDPR"
-      ],
-      "feat": "FEAT-024"
-    },
-    {
-      "id": "FA-SAV-002",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "module": "Objetivos de Ahorro (Savings)",
-      "name": "Listado de objetivos con progreso y proyección",
-      "description": "El cliente visualiza todos sus objetivos de ahorro activos con barra de progreso porcentual (importe reservado/target), proyección de fecha real de cumplimiento al ritmo actual de aportación e indicador visual de riesgo cuando la fecha proyectada supera la fecha límite establecida. En caso de proyección desfavorable el sistema sugiere automáticamente la aportación mensual recalculada necesaria para cumplir la meta en plazo. Los objetivos se ordenan por fecha de creación descendente. El cliente puede filtrar por estado (ACTIVE, PAUSED, CLOSED) cumpliendo GDPR Art.15 de derecho de acceso a histórico.",
-      "actors": [
-        "Cliente Banco Meridian"
-      ],
-      "status": "PLANNED",
-      "business_rules": [
-        "RN-F024-08"
-      ],
-      "source": "SRS-FEAT-024-sprint26.md · US-024-02",
-      "regulations": [
-        "GDPR"
-      ],
-      "feat": "FEAT-024"
-    },
-    {
-      "id": "FA-SAV-003",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "module": "Objetivos de Ahorro (Savings)",
-      "name": "Detalle de objetivo con histórico de aportaciones e hitos",
-      "description": "El cliente accede al detalle completo de cualquiera de sus objetivos de ahorro mostrando metadatos (nombre, target, fecha, categoría), histórico paginado de aportaciones realizadas (manuales y automáticas, ordenadas por fecha descendente), hitos alcanzados (25%, 50%, 75%, 100%) con su fecha de logro, y configuración de la regla de aportación automática si existe. El sistema impide acceso a objetivos de otros usuarios mediante enforcement de ownership devolviendo 403 sin revelar la existencia del recurso. La paginación del histórico de aportaciones soporta volúmenes superiores a 50 entradas.",
-      "actors": [
-        "Cliente Banco Meridian"
-      ],
-      "status": "PLANNED",
-      "business_rules": [
-        "RN-F024-10"
-      ],
-      "source": "SRS-FEAT-024-sprint26.md · US-024-03",
-      "regulations": [
-        "GDPR"
-      ],
-      "feat": "FEAT-024"
-    },
-    {
-      "id": "FA-SAV-004",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "module": "Objetivos de Ahorro (Savings)",
-      "name": "Aportación manual puntual a objetivo",
-      "description": "El cliente puede transferir un importe puntual entre 10€ y 5.000€ desde cualquiera de sus cuentas de origen elegibles hacia un objetivo de ahorro activo. La operación aplica segregación virtual de fondos: el importe reservado del objetivo aumenta, el saldo disponible (availableBalance) de la cuenta origen disminuye, pero el saldo contable (ledgerBalance) NO cambia. El sistema valida saldo suficiente antes de aceptar la operación, rechaza importes que harían superar el target del objetivo y normaliza signos en respuesta (siempre positivos en serialización JSON, aplicando Math.abs server-side conforme a LA-CORE-055). Toda aportación queda registrada en el audit log con actor, importe, cuenta origen y timestamp.",
-      "actors": [
-        "Cliente Banco Meridian"
-      ],
-      "status": "PLANNED",
-      "business_rules": [
-        "RN-F024-03",
-        "RN-F024-05",
-        "RN-F024-15"
-      ],
-      "source": "SRS-FEAT-024-sprint26.md · US-024-04",
-      "regulations": [
-        "GDPR"
-      ],
-      "feat": "FEAT-024"
-    },
-    {
-      "id": "FA-SAV-005",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "module": "Objetivos de Ahorro (Savings)",
-      "name": "Aportación automática mensual recurrente",
-      "description": "El cliente puede configurar para cada objetivo de ahorro una regla de aportación automática mensual indicando importe entre 10€ y 5.000€, día del mes (1-28 para evitar meses cortos) y cuenta origen. El scheduler del sistema ejecuta las reglas activas en ventana 02:00-06:00 UTC del día configurado, con garantía de idempotencia (una sola aportación efectiva por objetivo y mes mediante constraint UK goal_id+allocation_month). Ante saldo insuficiente la aportación se marca como FAILED, se notifica al cliente vía push y la regla sigue activa para el siguiente ciclo sin reintento inmediato. Ante fallo técnico (timeout corebanking) el sistema aplica reintentos con backoff exponencial 1m/5m/15m antes de marcar FAILED. Reutiliza el motor de aportaciones de FEAT-015 y elimina la configuración cuando el objetivo se cierra.",
-      "actors": [
-        "Cliente Banco Meridian",
-        "Sistema (scheduler)"
-      ],
-      "status": "PLANNED",
-      "business_rules": [
-        "RN-F024-04",
-        "RN-F024-13",
-        "RN-F024-14"
-      ],
-      "source": "SRS-FEAT-024-sprint26.md · US-024-05",
-      "regulations": [
-        "GDPR"
-      ],
-      "feat": "FEAT-024"
-    },
-    {
-      "id": "FA-SAV-006",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "module": "Objetivos de Ahorro (Savings)",
-      "name": "Edición pausa y cierre de objetivo con devolución",
-      "description": "El cliente puede modificar el nombre, importe target y fecha límite de un objetivo activo siempre que el nuevo target no sea inferior al importe ya reservado. Puede pausar la regla de aportación automática manteniendo el progreso, o cerrar el objetivo provocando la devolución íntegra del importe reservado a su cuenta origen original (o cuenta primaria si la original ya no existe). La devolución es t+0 (instantánea). Devoluciones superiores a 30€ requieren autenticación reforzada PSD2-SCA mediante segundo factor (FEAT-001 2FA), aplicando el principio de proporcionalidad regulatorio. Los objetivos cerrados se preservan 7 años por obligación contable y fiscal (no eliminación física), permaneciendo accesibles para ejercicio del derecho GDPR Art.15.",
-      "actors": [
-        "Cliente Banco Meridian"
-      ],
-      "status": "PLANNED",
-      "business_rules": [
-        "RN-F024-06",
-        "RN-F024-11",
-        "RN-F024-12"
-      ],
-      "source": "SRS-FEAT-024-sprint26.md · US-024-06",
-      "regulations": [
-        "PSD2-SCA",
-        "GDPR"
-      ],
-      "feat": "FEAT-024"
-    },
-    {
-      "id": "FA-SAV-007",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "module": "Objetivos de Ahorro (Savings)",
-      "name": "Notificaciones push de hitos de progreso",
-      "description": "El sistema emite notificaciones push (web push VAPID heredando FEAT-014) cuando el progreso de un objetivo cruza los hitos 25%, 50%, 75% y 100%. Cada hito se materializa en una entrada idempotente en la tabla de hitos (constraint UK goal_id+percent), garantizando que reaperturas o re-aportaciones que vuelvan a cruzar el umbral no generan duplicados. La notificación de hito 100% incluye un call-to-action específico que dirige al usuario al flujo de cierre con devolución de fondos. Si el cliente no tiene suscripción push activa se registra el hito en auditoría y se añade al historial de notificaciones (FEAT-004) sin emitir push, evitando ruido en logs. No hay retroactividad: hitos alcanzados antes de suscribirse no se reenvían.",
-      "actors": [
-        "Cliente Banco Meridian",
-        "Sistema (notificaciones)"
-      ],
-      "status": "PLANNED",
-      "business_rules": [
-        "RN-F024-09"
-      ],
-      "source": "SRS-FEAT-024-sprint26.md · US-024-07",
-      "regulations": [
-        "GDPR"
-      ],
-      "feat": "FEAT-024"
-    },
-    {
-      "id": "FA-SAV-008",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "module": "Objetivos de Ahorro (Savings)",
-      "name": "Widget Mi ahorro en dashboard",
-      "description": "El dashboard de inicio del cliente incorpora un widget Mi ahorro que muestra de forma agregada el importe total reservado en todos los objetivos activos, las aportaciones realizadas en el mes en curso, el número de objetivos activos y el próximo hito por alcanzar (objetivo y porcentaje). Si el cliente no tiene objetivos activos el widget muestra un call-to-action para crear el primero. El cliente puede ocultar el widget desde la configuración de dashboard sin afectar al resto de funcionalidades. El widget cumple WCAG 2.1 AA y tiene un objetivo de latencia p95 inferior a 200 ms para no degradar la carga del dashboard.",
-      "actors": [
-        "Cliente Banco Meridian"
-      ],
-      "status": "PLANNED",
-      "business_rules": [
-        "RN-F024-05",
-        "RN-F024-09"
-      ],
-      "source": "SRS-FEAT-024-sprint26.md · US-024-08",
-      "regulations": [],
-      "feat": "FEAT-024"
     }
   ],
   "business_rules": [
@@ -3201,96 +3031,6 @@
       "feature": "FEAT-023",
       "module": "PFM",
       "description": "El gráfico de distribución de gasto por categoría utiliza la paleta de colores del design system BankPortal definida en el prototipo UX aprobado en gate HITL PO+TL. El gráfico incluye valores numéricos en texto alternativo para cumplir WCAG 2.1 AA criterio 1.1.1."
-    },
-    {
-      "id": "RN-F024-01",
-      "feature": "FEAT-024",
-      "module": "Savings",
-      "description": "El importe target de un objetivo de ahorro debe estar comprendido entre 100€ y 500.000€. La fecha límite debe ser posterior al día actual más 30 días y anterior a 30 años."
-    },
-    {
-      "id": "RN-F024-02",
-      "feature": "FEAT-024",
-      "module": "Savings",
-      "description": "Cada cliente puede tener un máximo de 10 objetivos en estado ACTIVE simultáneamente. Los objetivos en estado PAUSED, CLOSED o COMPLETED no cuentan a este límite."
-    },
-    {
-      "id": "RN-F024-03",
-      "feature": "FEAT-024",
-      "module": "Savings",
-      "description": "El importe de una aportación manual debe estar comprendido entre 10€ y 5.000€. Importes fuera de este rango se rechazan con código AMOUNT_OUT_OF_RANGE."
-    },
-    {
-      "id": "RN-F024-04",
-      "feature": "FEAT-024",
-      "module": "Savings",
-      "description": "Si en una ejecución de aportación automática el saldo disponible de la cuenta origen es insuficiente, la aportación se marca como FAILED, se notifica al cliente y la regla sigue activa para el ciclo siguiente sin reintento inmediato en ese mes."
-    },
-    {
-      "id": "RN-F024-05",
-      "feature": "FEAT-024",
-      "module": "Savings",
-      "description": "Los fondos asignados a un objetivo se segregan virtualmente (decisión arquitectónica ADR-040, opción α). El importe reservado afecta al saldo disponible (availableBalance) de la cuenta origen pero NO al saldo contable (ledgerBalance). La cuenta sigue siendo legalmente del cliente y los fondos no constituyen depósito a plazo regulado."
-    },
-    {
-      "id": "RN-F024-06",
-      "feature": "FEAT-024",
-      "module": "Savings",
-      "description": "Al cerrar un objetivo el importe reservado se devuelve t+0 (instantáneo) a la cuenta de origen de la última aportación. Si esa cuenta ya no existe se utiliza la cuenta primaria del cliente."
-    },
-    {
-      "id": "RN-F024-07",
-      "feature": "FEAT-024",
-      "module": "Savings",
-      "description": "Las categorías de objetivo permitidas son: VIAJE, HOGAR, VEHICULO, EMERGENCIA, EDUCACION y OTROS. La categoría OTROS admite un texto personalizado customCategory de hasta 50 caracteres."
-    },
-    {
-      "id": "RN-F024-08",
-      "feature": "FEAT-024",
-      "module": "Savings",
-      "description": "La proyección de fecha de cumplimiento se calcula al ritmo actual de aportaciones (media móvil). Si la fecha proyectada supera la fecha límite el campo projectionRisk se marca true y la respuesta incluye suggestedMonthlyContribution recalculado para cumplir en plazo."
-    },
-    {
-      "id": "RN-F024-09",
-      "feature": "FEAT-024",
-      "module": "Savings",
-      "description": "Cada hito de progreso (25%, 50%, 75%, 100%) emite como máximo una notificación push por objetivo. La idempotencia se garantiza mediante constraint UNIQUE (goal_id, percent) en la tabla goal_milestones."
-    },
-    {
-      "id": "RN-F024-10",
-      "feature": "FEAT-024",
-      "module": "Savings",
-      "description": "Conforme a GDPR Art.15 (derecho de acceso) y Art.17 (derecho al olvido), los objetivos de ahorro y aportaciones se incluyen en el export de datos personales (FEAT-019). El cierre de un objetivo aplica soft-delete preservando el registro 7 años por obligación contable y fiscal."
-    },
-    {
-      "id": "RN-F024-11",
-      "feature": "FEAT-024",
-      "module": "Savings",
-      "description": "Toda devolución de fondos al cerrar un objetivo cuyo importe sea superior a 30€ requiere autenticación reforzada (Strong Customer Authentication) conforme a PSD2 Art.97, mediante segundo factor del sistema 2FA (FEAT-001)."
-    },
-    {
-      "id": "RN-F024-12",
-      "feature": "FEAT-024",
-      "module": "Savings",
-      "description": "Los objetivos en estado CLOSED se preservan en base de datos durante 7 años por obligación contable y fiscal. No se permite la eliminación física de objetivos cerrados antes de ese plazo."
-    },
-    {
-      "id": "RN-F024-13",
-      "feature": "FEAT-024",
-      "module": "Savings",
-      "description": "El scheduler de aportaciones automáticas se ejecuta en ventana horaria 02:00-06:00 UTC del día configurado en cada regla. El día del mes admisible para la regla está restringido al rango [1..28] para evitar inconsistencias en meses con menos de 31 días."
-    },
-    {
-      "id": "RN-F024-14",
-      "feature": "FEAT-024",
-      "module": "Savings",
-      "description": "Ante fallo técnico de comunicación con CoreBanking durante una aportación automática (timeouts, errores de red), el sistema aplica reintentos con backoff exponencial 1m/5m/15m. Si los tres reintentos fallan la aportación queda en estado FAILED con razón TECHNICAL_ERROR."
-    },
-    {
-      "id": "RN-F024-15",
-      "feature": "FEAT-024",
-      "module": "Savings",
-      "description": "El saldo disponible (availableBalance) de una cuenta resta de su saldo contable la suma de importes reservados de todos los objetivos ACTIVE que tengan esta cuenta como origen. Esta resta se calcula en tiempo real y se refleja en consultas de saldo y operaciones que validen disponibilidad."
     }
   ],
   "modules": [
@@ -3318,11 +3058,11 @@
     "SEPA-DD",
     "AML-KYC"
   ],
-  "total_business_rules": 246,
+  "total_business_rules": 231,
   "last_sprint_consolidated": 25,
-  "last_feat": "FEAT-024",
-  "updated_at": "2026-04-26T19:01:09.433926+00:00",
-  "doc_version": "0.11",
+  "last_feat": "FEAT-023",
+  "updated_at": "2026-04-17T12:09:46.028269+00:00",
+  "doc_version": "0.10",
   "doc_path": "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx",
   "doc_history": [
     {
@@ -3372,18 +3112,12 @@
       "date": "2026-04-17",
       "sprint": "S1–S25 / FEAT-023",
       "desc": "Actualización automática gate-8b. 100 func, 231 RN. Indice clickable v2.6. SOFIA v2.7."
-    },
-    {
-      "version": "0.11",
-      "date": "2026-04-26",
-      "sprint": "S1–S26 / FEAT-024",
-      "desc": "Actualización automática gate-8b. 108 func, 246 RN. Indice clickable v2.6. SOFIA v2.7."
     }
   ],
   "markdowns": [
     "docs/functional-analysis/FA-FEAT-021-sprint23.md"
   ],
-  "sprints_covered": "S1-S26",
-  "last_feature": "FEAT-024",
+  "sprints_covered": "S1-S24",
+  "last_feature": "FEAT-023",
   "last_feat_consolidated": "FEAT-023"
 }

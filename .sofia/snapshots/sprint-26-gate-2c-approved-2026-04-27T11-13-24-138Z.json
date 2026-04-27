@@ -732,16 +732,16 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-04-27T11:13:24.214Z",
-    "last_gate": "G-2c",
-    "last_step": "3",
+    "last_generated": "2026-04-27T09:19:24.866Z",
+    "last_gate": "HITL-PO-TL",
+    "last_step": "2c",
     "sprint": 26,
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
   "resume_next": "Sprint 26 · G-2c APROBADO · Step 2c CERRADO · siguiente: Step 3 Architect (HLD + LLD + ADR-040 segregación virtual α + ADR-041 @Scheduled vs Quartz + ADR-042 OpenAPI 3.1 springdoc · módulo savings hexagonal · 4 tablas Flyway V29 · 10 endpoints REST) · gate_pending=null",
   "sprint_closed": false,
-  "updated_at": "2026-04-27T11:13:24.214Z",
+  "updated_at": "2026-04-27T11:12:44.342Z",
   "fa_agent": {
     "last_gate": "2b",
     "last_updated": "2026-04-26T19:01:09.433926+00:00",
@@ -1052,18 +1052,18 @@
     {
       "gate": "HITL-PO-TL",
       "step": "2c",
+      "approved_at": "2026-04-27T09:19:24.866Z",
+      "sprint": 26,
+      "feature": "FEAT-024"
+    },
+    {
+      "gate": "HITL-PO-TL",
+      "step": "2c",
       "sprint": 26,
       "feature": "FEAT-024",
       "approved_at": "2026-04-27T11:12:44.342Z",
       "approver": "PO+TL",
       "comment": "UX-FEAT-024-sprint26 + PROTO-FEAT-024-sprint26.html (143.5KB · 5 pantallas envueltas en shell completo · 22 anotaciones) aprobados. Cobertura SRS 7/7 US visibles + US-024-08 widget diferido a Step 4 · 13/13 RNs aplicables visibles · RN-10/12 backend justificadas · Hereda PROTO-FEAT-023 (LA-CORE-050) · Sin nuevos tokens · WCAG 2.1 AA cumplido · Bug visual cards vacías corregido (refactor estructural shell por pantalla)"
-    },
-    {
-      "gate": "G-2c",
-      "step": "3",
-      "approved_at": "2026-04-27T11:13:24.214Z",
-      "sprint": 26,
-      "feature": "FEAT-024"
     }
   ],
   "lessons_learned": [

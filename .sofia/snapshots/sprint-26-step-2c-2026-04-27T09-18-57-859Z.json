@@ -1,13 +1,13 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "idle",
+  "status": "paused",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 26,
   "current_feature": "FEAT-024",
-  "current_step": "3",
-  "pipeline_step": "3",
+  "current_step": "2c",
+  "pipeline_step": "2c",
   "pipeline_step_name": "ux-ui-designer",
   "_completed_steps_note": "Array del sprint actual (current_sprint: 25). Se resetea al inicio de cada sprint. No acumula sprints anteriores — ver sprint_history para histórico.",
   "completed_steps": {
@@ -39,7 +39,7 @@
   ],
   "last_skill": "ux-ui-designer",
   "last_skill_output_path": "docs/ux-ui/prototypes/PROTO-FEAT-024-sprint26.html",
-  "gate_pending": null,
+  "gate_pending": "HITL-PO-TL",
   "release_blocked": false,
   "release_blocked_reason": null,
   "sprint_goal": "Extender banca inteligente de BankPortal mediante gestor de Objetivos de Ahorro (viajes, hogar, emergencia, educacion) con aportaciones manuales y automaticas, seguimiento de hitos y proyeccion. Consolidar contrato API backend mediante OpenAPI 3.1 como fuente de verdad para habilitar GR-SMOKE-001.",
@@ -463,9 +463,9 @@
       "Sprints cubiertos: S1-S26 — FEAT-024 Objetivos de Ahorro incorporado"
     ],
     "2c_s26": [
-      "docs/ux-ui/prototypes/PROTO-FEAT-024-sprint26.html (143.5 KB · 5 pantallas envueltas en shell completo · 22 anotaciones · LA-CORE-050)",
-      "docs/ux-ui/UX-FEAT-024-sprint26.md (30 KB · user flows + wireframes + 18 componentes Angular + WCAG 2.1 AA)",
-      "docs/ux-ui/UX-DESIGN-SYSTEM.md (v1.1 · anexo §7 FEAT-024 · 7 tokens semánticos · 14 clases CSS)"
+      "docs/ux-ui/prototypes/PROTO-FEAT-024-sprint26.html",
+      "docs/ux-ui/UX-FEAT-024-sprint26.md",
+      "docs/ux-ui/UX-DESIGN-SYSTEM.md (v1.1 · anexo §7 FEAT-024)"
     ]
   },
   "gates": {
@@ -732,16 +732,16 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-04-27T11:13:24.214Z",
-    "last_gate": "G-2c",
-    "last_step": "3",
+    "last_generated": "2026-04-26T19:05:11.967Z",
+    "last_gate": "G-2b",
+    "last_step": "2b",
     "sprint": 26,
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 · G-2c APROBADO · Step 2c CERRADO · siguiente: Step 3 Architect (HLD + LLD + ADR-040 segregación virtual α + ADR-041 @Scheduled vs Quartz + ADR-042 OpenAPI 3.1 springdoc · módulo savings hexagonal · 4 tablas Flyway V29 · 10 endpoints REST) · gate_pending=null",
+  "resume_next": "Sprint 26 · Step 2c COMPLETO · gate_pending HITL-PO-TL · artefactos: PROTO-FEAT-024-sprint26.html (130.6KB · 5 pantallas · 22 anotaciones · LA-CORE-050 herencia PROTO-FEAT-023) + UX-FEAT-024-sprint26.md (30KB) + UX-DESIGN-SYSTEM.md v1.1 · siguiente: aprobación G-2c → Step 3 Architect (HLD/LLD/ADR-040/041/042)",
   "sprint_closed": false,
-  "updated_at": "2026-04-27T11:13:24.214Z",
+  "updated_at": "2026-04-27T09:18:44.870Z",
   "fa_agent": {
     "last_gate": "2b",
     "last_updated": "2026-04-26T19:01:09.433926+00:00",
@@ -1046,22 +1046,6 @@
       "gate": "G-2b",
       "step": "2b",
       "approved_at": "2026-04-26T19:05:11.967Z",
-      "sprint": 26,
-      "feature": "FEAT-024"
-    },
-    {
-      "gate": "HITL-PO-TL",
-      "step": "2c",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "approved_at": "2026-04-27T11:12:44.342Z",
-      "approver": "PO+TL",
-      "comment": "UX-FEAT-024-sprint26 + PROTO-FEAT-024-sprint26.html (143.5KB · 5 pantallas envueltas en shell completo · 22 anotaciones) aprobados. Cobertura SRS 7/7 US visibles + US-024-08 widget diferido a Step 4 · 13/13 RNs aplicables visibles · RN-10/12 backend justificadas · Hereda PROTO-FEAT-023 (LA-CORE-050) · Sin nuevos tokens · WCAG 2.1 AA cumplido · Bug visual cards vacías corregido (refactor estructural shell por pantalla)"
-    },
-    {
-      "gate": "G-2c",
-      "step": "3",
-      "approved_at": "2026-04-27T11:13:24.214Z",
       "sprint": 26,
       "feature": "FEAT-024"
     }
@@ -1651,21 +1635,6 @@
       "source": "promoted",
       "sofia_core_version": "2.7.3",
       "imported_at": "2026-04-24T13:03:07.442Z"
-    },
-    {
-      "id": "LA-024-01",
-      "sprint": 26,
-      "step": "2c",
-      "date": "2026-04-27",
-      "category": "UX-prototype-inheritance",
-      "title": "Herencia LA-CORE-050: extraer y replicar el shell completo `<div class=\"proto-screen\">...</div>` por pantalla nueva",
-      "problem": "Inyectar nuevas pantallas como `<section class=\"proto-screen\">` desnudas dentro del último `<main>` del prototipo padre causa que solo sean visibles cuando ese main está activo. Resultado: pantallas inicialmente vacías al abrir el prototipo.",
-      "solution": "Cada pantalla nueva debe envolverse en `<div class=\"proto-screen\" id=\"screen-X\"><div class=\"app-shell\"><div class=\"app-header\">...</div><div class=\"app-layout\"><aside class=\"app-sidebar\">...</aside><main class=\"app-content\">CONTENIDO</main></div></div></div>` replicando el shell heredado del prototipo padre, con sidebar item activo correspondiente.",
-      "evidence": "docs/ux-ui/prototypes/PROTO-FEAT-024-sprint26.html (refactor 130KB→143.5KB · 5 pantallas envueltas · validación 16 main, 1026 div balanceados)",
-      "applies_to": [
-        "UX/UI Designer Agent · Step 2c",
-        "PROTO-FEAT-XXX-sprintYY.html en sprints futuros"
-      ]
     }
   ],
   "gate_history_pending": [
