@@ -836,9 +836,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 · Step 4 EN PROGRESO · Fases A+B+C+D+E completadas y AUDITADAS · 3 deudas registradas (DEBT-051 ShedLock wiring · DEBT-052 CRITICA CloseGoal no libera reserva · DEBT-053 paginacion scheduler S27) · Fase F Tests siguiente · DEBT-052 puede bloquear CloseGoalUseCaseTest",
+  "resume_next": "Sprint 26 · Step 4 EN PROGRESO · Fases A+B+C+D+E completadas (52 archivos persistidos · ~3200 lineas Java/SQL/YAML · DEBT-048 CLOSED) · Fases F+G+H pendientes · HANDOFF generado en docs/handoffs/HANDOFF-sprint26-step4-fase-f.md · siguiente sesion: leer handoff + arrancar Fase F Tests (~15 unit + 5-7 IT segun LLD §12)",
   "sprint_closed": false,
-  "updated_at": "2026-04-28T08:39:49.409Z",
+  "updated_at": "2026-04-27T15:18:00.000Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -911,51 +911,6 @@
       "registered_at": "2026-04-21T19:17:56.424Z",
       "status": "OPEN",
       "jira": "SCRUM-173"
-    },
-    {
-      "id": "DEBT-051",
-      "area": "Backend / scheduling",
-      "priority": "Alta",
-      "desc": "ShedLock no esta cableado pese a estar declarado en pom.xml + V18c__shedlock.sql + @SchedulerLock en AutoContributionScheduler. Falta @EnableSchedulerLock en alguna @Configuration y bean LockProvider (JdbcTemplateLockProvider). Sin esto, en arranque con N replicas el cron savings-auto-contribution se ejecuta N veces concurrentemente; la UK de allocation_month protege la idempotencia mensual a costa de N-1 INSERTs con conflicto, generando ruido de log y consumo BD. AutoContributionScheduler.java es el primer scheduler del proyecto que requiere lock distribuido (SseHeartbeatScheduler usa solo @Scheduled idempotente).",
-      "fix": "Crear apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/savings/infrastructure/scheduler/SchedulingConfig.java con @Configuration + @EnableSchedulerLock(defaultLockAtMostFor='PT30M') + @Bean LockProvider lockProvider(DataSource ds) usando JdbcTemplateLockProvider con usingDbTime(). Estimacion: ~25 lineas. Verificacion: arranque mostrara log 'shedlock initialized' y dos replicas no ejecutaran el cron simultaneamente.",
-      "sprint_target": "S26",
-      "sprint_target_phase": "H_g4b_guardrail",
-      "origin": "auditoria-fase-D-2026-04-28",
-      "registered_at": "2026-04-28T08:36:11.321Z",
-      "status": "OPEN",
-      "evidence": "grep -rln 'EnableSchedulerLock|LockProvider' apps/backend-2fa/src/main/java/ devolvio 0 resultados. pom.xml lineas 230-238 declaran shedlock-spring + shedlock-provider-jdbc-template. V18c__shedlock.sql crea la tabla. AutoContributionScheduler.java declara @SchedulerLock(name='savings-auto-contribution'). Sin wiring activo la anotacion se ignora silenciosamente (no falla, no advierte).",
-      "blocking": "G-4b si se ejecuta verificacion de integridad scheduler. No bloquea compile. No bloquea tests unitarios (Mockito skip). Si bloquea AutoContributionSchedulerIT con 2 instancias.",
-      "jira": null
-    },
-    {
-      "id": "DEBT-052",
-      "area": "Backend / domain - savings",
-      "priority": "Critica",
-      "desc": "CloseGoalUseCase incumple RN-F024-12 (liberar reserva al cerrar) y LLD seccion 6.3 (devolucion al cierre con SCA). El UC ejecuta soft-delete via GoalClosureService.close() (status=CLOSED + closedAt=now) y devuelve CloseResultDto con returnedAmount, pero NUNCA invoca accountReserve.release() ni accountReserve.transferReserved(). Resultado en runtime: account_balances.retained_balance queda inflado indefinidamente con el dinero del goal cerrado; el saldo disponible del cliente NO se restaura. Auditoria comparativa Fase D vs LLD seccion 6.3 detecto el gap durante revision del JpaAccountReserveAdapter.",
-      "fix": "En CloseGoalUseCase.execute(), antes del 'return new CloseResultDto(...)' final, anadir: 'if (returnedAmount.signum() > 0 && returnAccountId != null) { accountReserve.release(returnAccountId, returnedAmount); }'. Inyectar AccountReservePort por constructor. Variante COMPLETED (al alcanzar 100%): si status era COMPLETED previo al close, llamar transferReserved en lugar de release (LLD seccion 6.3 ultimo parrafo). Estimacion: ~10 lineas + 1 dependencia inyectada. Test asociado: CloseGoalUseCaseTest TC-F024-030..033 (planeado en handoff Fase F.3) lo cubre nativamente; sin el fix esos tests fallaran. Test IT crucial: SavingsGoalInvariantIT debe verificar 'SUM(reservedAmount activos) == retained_balance' tras secuencia de cierres.",
-      "sprint_target": "S26",
-      "sprint_target_phase": "F_tests",
-      "sprint_target_rationale": "Critica: tests Fase F lo cazaran inmediatamente. Decision PO 2026-04-28: parar Fase F si bloquea tests. Implica que si al escribir CloseGoalUseCaseTest el tester detecta que el UC no satisface el assert release()-fue-invocado, se aplica el fix antes de continuar con el resto de Fase F.",
-      "origin": "auditoria-fase-D-2026-04-28",
-      "registered_at": "2026-04-28T08:36:11.321Z",
-      "status": "OPEN",
-      "evidence": "grep '@Transactional|transferReserved|release' CloseGoalUseCase.java devolvio solo @Transactional linea 38. Lectura completa del archivo confirmo que UC calcula returnedAmount y returnAccountId pero solo invoca closureService.close(goalId) sin tocar accountReserve. LLD-backend seccion 6.3 secuencia diagrama UPDATE account_balances SET available += amount, retained -= amount es exactamente el paso ausente.",
-      "blocking": "F_tests (CloseGoalUseCaseTest fallara), G-4b si se incluye SavingsGoalInvariantIT, RN-F024-12 incumplido en runtime aunque compile.",
-      "jira": null
-    },
-    {
-      "id": "DEBT-053",
-      "area": "Backend / scheduling",
-      "priority": "Media",
-      "desc": "Drift LLD seccion 11 vs implementacion. LLD-backend-FEAT-024-sprint26.md seccion 11 prescribe que AutoContributionScheduler procese reglas con paginacion (PageRequest + while page.nextPageable()). La implementacion Fase D usa firma sin paginacion: List<GoalAutoRule> due = ruleRepo.findDueForExecution(start) y bucle for sobre toda la lista en memoria. AutoContributionScheduler.java javadoc reconoce la deuda explicitamente. Tambien esta sin alinear el nombre del metodo: el LLD dice findActiveDue, el codigo dice findDueForExecution.",
-      "fix": "Anadir overload paginado al puerto GoalAutoRuleRepositoryPort: Page<GoalAutoRule> findDueForExecution(Instant now, Pageable pageable). Implementar en JpaGoalAutoRuleAdapter delegando en JpaGoalAutoRuleRepository.findByActiveTrueAndNextExecutionAtLessThanEqual con Pageable. Refactorizar AutoContributionScheduler.runDueAutoContributions() para usar el bucle while con PageRequest.of(0, page-size de config). Estimacion: ~30 lineas + 1 metodo nuevo en cada capa.",
-      "sprint_target": "S27",
-      "origin": "auditoria-fase-D-2026-04-28",
-      "registered_at": "2026-04-28T08:36:11.321Z",
-      "status": "OPEN",
-      "evidence": "AutoContributionScheduler.java javadoc explicito declara la deuda. LLD-backend seccion 11 contradice el codigo en el nombre del metodo (findActiveDue) y en el patron de iteracion (page-by-page).",
-      "blocking": "Ninguno en S26: a la escala actual del proyecto la lectura no paginada cabe en memoria sin riesgo. Diferible a S27 sin impacto en G-4b.",
-      "jira": null
     }
   ],
   "jira_sprint": {
