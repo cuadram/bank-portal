@@ -39,6 +39,7 @@ jwt:
   secret: integration-test-jwt-secret-must-be-at-least-256-bits-long-for-hs256-ok
   pre-auth-secret: integration-test-pre-auth-secret-must-be-at-least-256-bits-long-ok
   pre-auth-ttl-seconds: 300
+  session-ttl-seconds: 28800
 
 bank:
   core:
@@ -56,6 +57,27 @@ bank:
       per-day: 2000
     request:
       ttl-hours: 24
+  savings:
+    max-active-goals-per-user: 10
+    target-amount:
+      min: 100
+      max: 500000
+    contribution:
+      min: 10
+      max: 5000
+    target-date:
+      min-days-ahead: 30
+      max-years-ahead: 30
+    auto:
+      cron: '0 0 2 * * *'
+      lock-max: 30m
+      lock-min: 1m
+      page-size: 200
+      retry:
+        max-attempts: 3
+        backoff: [60s, 300s, 900s]
+    closure:
+      sca-threshold: 30.00
 
 notifications:
   push:

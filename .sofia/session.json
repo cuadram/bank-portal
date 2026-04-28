@@ -547,6 +547,19 @@
       "DEUDA Fase H (G-4b smoke): verificar SecurityConfig permite /v3/api-docs/** y /swagger-ui/** sin JWT - probable que springdoc registre auto pero JWT filter puede interceptar",
       "DEBT-048 CLOSED en este artifact - sprint_target=S26 cumplido",
       "TOTAL Fase E: 3 nuevos + 2 modificados · ~330 lineas (Java + YAML + XML) · GR-GIT-001 PASS"
+    ],
+    "4_s26_phase_f_tests": [
+      "F.1+F.2+F.3 unit tests: 116/116 PASS (commit 2c6c258)",
+      "F.4 integration tests: 27/27 PASS (mvn-aislado docker maven:3.9-eclipse-temurin-21, postgres+redis del compose)",
+      "  - SavingsControllerIT 15 tests: 11 smoke 401 + 3 happy paths Bearer JWT + 1 ownership 403",
+      "  - JpaAccountReserveAdapterIT 5 tests: reserve OK + InsufficientFunds + release inverso + transferReserved + balance queries",
+      "  - SavingsFlywayIT 5 tests: V29 history + 4 tablas + UK parcial active=TRUE + UK goal+month + CHECK",
+      "  - AutoContributionSchedulerIT 1 test (light): regla DUE procesa, FUTURA ignora, allocation+reserved+balance+next_execution OK. NO testa @SchedulerLock (DEBT-051 Fase H).",
+      "  - MilestoneEmissionIT 1 test: 2 hilos evaluate(100%) concurrentes -> UK uk_goal_milestone atrapa carrera, 4 milestones unicos persistidos",
+      "TOTAL Fase F: 143 tests verde (116 unit + 27 IT)",
+      "apps/backend-2fa/src/test/resources/application-integration-compose.yml MODIFIED (+22 lineas) - prerrequisito F.4, fix bug Fase E (LA-026-07/DEBT-054)",
+      "apps/backend-2fa/src/test/resources/db/savings-test-fixtures.sql NUEVO (2 users + 2 accounts + 2 balances, idempotente)",
+      "apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/integration/SavingsIntegrationTestBase.java NUEVO (paralelo a BizumIntegrationTestBase)"
     ]
   },
   "gates": {
@@ -836,9 +849,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 - Step 4 EN PROGRESO - Fase F.1 PASS (51/51 tests verde mvn) + Fase F.2 en preparacion - DEBT-052 INVALIDATED (falso positivo cazado en setup F.2 - LA-026-06 registrada) - DEBT-051 reformulada CRITICA (afecta 3 schedulers S18-S26, tabla shedlock no existe en BD del entorno) - DEBT-053 sin cambios - siguiente: F.2 GoalClosureServiceTest",
+  "resume_next": "Sprint 26 - Step 4 EN PROGRESO - Fases A-E backend + F (143/143 tests verde: 116 unit commit 2c6c258 + 27 IT) COMMITEADAS. Fase F.4 cierra con 27 IT pattern BizumIntegrationTestBase contra postgres+redis del compose externo (NO Testcontainers - LA-026-08). 3 deudas nuevas: DEBT-054 yaml-deep-merge, DEBT-055 PfmControllerIT-falsified-PASS-S25, DEBT-056 surefire-no-include-IT. 2 LAs nuevas sofia_core_candidate: LA-026-07 yaml-no-deep-merge (GR-CONFIG-001), LA-026-08 testcontainers-docker-from-docker-macos (GR-IT-001). 4 observations_for_step5 en step4_progress.fase_F_integration_tests. SIGUIENTE: Fase G frontend (18 componentes Angular per LLD seccion 5 + LA-CORE-056 fidelidad bloqueante + LA-CORE-067 fragmentacion). Tras G: Fase H g4b_guardrail (DEBT-051 ShedLock fix + V18c apply manual + Docker rebuild + checklist fidelidad + commit final Step 4).",
   "sprint_closed": false,
-  "updated_at": "2026-04-28T09:01:08.532Z",
+  "updated_at": "2026-04-28T13:52:54.131Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -960,6 +973,54 @@
       "status": "OPEN",
       "evidence": "AutoContributionScheduler.java javadoc explicito declara la deuda. LLD-backend seccion 11 contradice el codigo en el nombre del metodo (findActiveDue) y en el patron de iteracion (page-by-page).",
       "blocking": "Ninguno en S26: a la escala actual del proyecto la lectura no paginada cabe en memoria sin riesgo. Diferible a S27 sin impacto en G-4b.",
+      "jira": null
+    },
+    {
+      "id": "DEBT-054",
+      "area": "Backend / config",
+      "priority": "Media",
+      "desc": "application.yml subarbol bank: y jwt: NO se fusionan profundamente con application-{profile}.yml en Spring Boot 3.3 cuando el profile redefine el subarbol. Anadir bank.savings.* en main no propago al perfil integration-compose; ITs preexistentes (BizumFlywayIT, BizumExpireIT, BizumAdapterIT, BizumPrecisionIT, SseNotificationControllerIT) quedaron rotos desde commit 2c6c258 hasta 2026-04-28.",
+      "fix": "GR-CONFIG-001: cuando se modifique application.yml main bajo top-level keys ya redefinidos en algun profile-yml (bank, jwt, spring), replicar el subarbol minimo en TODOS los profile-yml afectados en el mismo commit. Validacion automatica via .sofia/scripts/validate-yaml-profiles.js + bloqueo en G-4b. Alternativa estructural: application-shared.yml con spring.config.import.",
+      "sprint_target": "S27",
+      "sprint_target_phase": "governance",
+      "origin": "F.4 IT execution 2026-04-28",
+      "registered_at": "2026-04-28T13:52:54.131Z",
+      "status": "OPEN",
+      "evidence": "BizumFlywayIT antes del fix: error \"Could not resolve placeholder bank.savings.auto.cron\". Tras anadir bank.savings.* a application-integration-compose.yml: BizumFlywayIT 2/2 PASS y 27/27 ITs F.4 PASS.",
+      "blocking": "Resuelto en mismo commit que F.4. Pendiente solucion estructural Sprint 27.",
+      "jira": null,
+      "related_la": "LA-026-07"
+    },
+    {
+      "id": "DEBT-055",
+      "area": "QA governance",
+      "priority": "Alta",
+      "desc": "Reporte QA-FEAT-023 Sprint 25 declara TC-IT-005 PfmControllerIT como PASS pero el test estructuralmente NO arranca: @SpringBootTest sin classes= explicito + paquete pfm.* no descendiente de twofa.* produce IllegalStateException Unable to find a @SpringBootConfiguration. Verificado 2026-04-28: mvn test -Dtest=PfmControllerIT contra HEAD: 1 test, 1 error, 0 PASS. El reporte QA del S25 firmo PASS sin haberse ejecutado realmente. Implicaciones: G-6 Sprint 25 aprobado con evidencia falsificada.",
+      "fix": "Tres acciones: (a) anadir @SpringBootTest(classes=BackendTwoFactorApplication.class) explicito a PfmControllerIT (1 linea); (b) auditar resto de IT del proyecto buscando el mismo patron; (c) reforzar Step 6 QA Tester: el reporte QA debe incluir evidencia mvn (timestamp + tests count + checksum log) por cada IT declarado PASS - sin evidencia ejecutable, marcado BLOCKED no PASS. Promover a SOFIA-CORE GR-QA-002.",
+      "sprint_target": "S27",
+      "sprint_target_phase": "tests-audit",
+      "origin": "F.4 IT execution 2026-04-28 - hallazgo lateral durante PfmControllerIT comparison",
+      "registered_at": "2026-04-28T13:52:54.131Z",
+      "status": "OPEN",
+      "evidence": "docs/quality/QA-FEAT-023-sprint25.md linea 60 declara PASS contradice surefire-reports/com.experis.sofia.bankportal.pfm.PfmControllerIT.txt 2026-04-28T13:47Z: Tests run 1, Failures 0, Errors 1.",
+      "blocking": "No bloquea Sprint 26. Bloquea cualquier auditoria CMMI L3 retrospectiva del Sprint 25.",
+      "jira": null,
+      "sofia_core_candidate": true,
+      "related_la": "LA-026-08"
+    },
+    {
+      "id": "DEBT-056",
+      "area": "Build / Maven",
+      "priority": "Media",
+      "desc": "maven-surefire-plugin 3.2.5 con default include pattern (Test, Tests, TestCase) NO matchea IT.java - el patron historico Maven para tests de integracion. Resultado: todos los IT.java del proyecto (~20 archivos: PfmControllerIT, BizumFlywayIT, BizumExpireIT, BizumAdapterIT, etc.) son huerfanos del lifecycle Maven default - solo se ejecutan con -Dtest=Nombre explicito. mvn test no detectaria regresiones en ITs. mvn -Pintegration tampoco los matchea (perfil incluye Test, E2ETest, IntegrationTest pero no IT).",
+      "fix": "Anadir maven-failsafe-plugin con include all-IT.java + ejecucion en goal verify (no test). Patron Maven estandar: surefire ejecuta unit tests en fase test, failsafe ejecuta ITs en fase integration-test+verify. pom.xml debe declarar execution de failsafe + skipITs=true por defecto + perfil opcional -Pit que activa skipITs=false. G-4b correra mvn -Pit verify. Solucion temporal Sprint 26 Fase H: lista explicita -Dtest=A,B,C,D,E.",
+      "sprint_target": "S27",
+      "sprint_target_phase": "build",
+      "origin": "F.4 IT execution 2026-04-28",
+      "registered_at": "2026-04-28T13:52:54.131Z",
+      "status": "OPEN",
+      "evidence": "mvn test sin -Dtest sobre HEAD: 0 ITs ejecutados, BUILD SUCCESS. mvn -Pintegration test idem 0 ITs. mvn test -Dtest=SavingsControllerIT: 15/15 PASS forzado.",
+      "blocking": "Bloquea verificacion automatica G-4b si confia en mvn test. Solucion temporal Fase H: lista explicita.",
       "jira": null
     }
   ],
@@ -1253,6 +1314,58 @@
     }
   ],
   "lessons_learned": [
+    {
+      "id": "LA-026-08",
+      "sprint": 26,
+      "feature": "FEAT-024",
+      "step": "4-phase-F4-execution",
+      "type": "tooling/testcontainers/docker",
+      "severity": "media",
+      "scope": "SOFIA-CORE",
+      "title": "testcontainers-docker-from-docker-fails-in-docker-desktop-macos",
+      "problem": "mvn test ejecutado dentro de un contenedor Docker (patron LA-CORE-067 mvn-aislada via maven:3.9-eclipse-temurin-21) en host Docker Desktop macOS: ITs basados en Testcontainers fallan al inicializar con Could not find a valid Docker environment + UnixSocketClientProviderStrategy: BadRequestException Status 400 Info vacio. Causa: Docker Desktop macOS expone el daemon via socket proxy que responde a la API solo cuando el cliente nativo del host es invocador; cliente Java dentro de contenedor child con docker.sock bind-montado recibe 400 en /info y Testcontainers rechaza. IntegrationTestBase del proyecto hereda Testcontainers con withReuse(true) - rompe en patron mvn-aislada.",
+      "description": "Hallazgo lateral durante F.4. Consecuencia mas grave: TODOS los ITs del proyecto que heredan IntegrationTestBase (DashboardJpaAdapterIT, AccountRepositoryAdapterIT, LoginControllerIT, AccountUnlockControllerIT, LoginContextControllerIT, SseNotificationControllerIT, SecurityConfigHistoryControllerIT, StatementControllerIT, SpringContextIT) son inejecutables en patron canonico del proyecto. Solo ITs Bizum (BizumIntegrationTestBase + integration-compose contra postgres+redis externo) son ejecutables. Esto explica retroactivamente que QA-FEAT-023 incluyera PfmControllerIT como PASS sin haberse ejecutado (DEBT-055).",
+      "correction": "Tres acciones: (a) Sprint 27: migrar IntegrationTestBase-children al patron BizumIntegrationTestBase (compose externo + @Sql fixtures). ~13 archivos a refactorizar, no toca produccion. (b) Documentar limitacion docker-from-docker macOS y patron canonico de ITs en CLAUDE.md. (c) Promover SOFIA-CORE: ITs-via-Testcontainers solo funciona si mvn nativo en host. Para entornos contenerizados (CI Jenkins en Docker, Claude sofia-shell-aislada) preferir patron compose-externo.",
+      "registered_at": "2026-04-28T13:52:54.131Z",
+      "approved_by": "product-owner",
+      "hitl_approved": true,
+      "approved_at": "2026-04-28T13:52:54.131Z",
+      "sofia_core_candidate": true,
+      "guardrail_proposed": "GR-IT-001",
+      "related_las": [
+        "LA-CORE-067"
+      ],
+      "detected_at": "2026-04-28T13:52:54.131Z",
+      "evidence": "docker run maven:3.9-eclipse-temurin-21 -v docker.sock mvn test -Dtest=SavingsControllerSmokeIT-Testcontainers-version fallo: DockerClientFactory.getOrInitializeStrategy IllegalStateException Could not find a valid Docker environment. Tras refactorizar smoke a BizumIntegrationTestBase (compose externo): 1/1 PASS 15.5s.",
+      "promoted_to": null,
+      "promoted_at": null
+    },
+    {
+      "id": "LA-026-07",
+      "sprint": 26,
+      "feature": "FEAT-024",
+      "step": "4-phase-F4-execution",
+      "type": "tooling/spring-boot/config",
+      "severity": "media",
+      "scope": "SOFIA-CORE",
+      "title": "spring-boot-yaml-no-deep-merge-bank-and-jwt-blocks-between-profiles",
+      "problem": "Spring Boot 3.3: cuando un application-{profile}.yml redefine un subarbol top-level (bank:, jwt:) que tambien existe en application.yml main, el subarbol del profile NO se fusiona profundamente con el de main - reemplaza completamente el subtree visible. Sprint 26: anadir bank.savings.* a main en Fase E rompio silenciosamente application-integration-compose.yml porque ese yml ya tenia un bloque bank: con bank.core, bank.products, bank.bizum (sin bank.savings). ITs con @ActiveProfiles integration-compose fallaron desde commit 2c6c258 hasta 2026-04-28 con Could not resolve placeholder bank.savings.auto.cron. Mismo problema con jwt.session-ttl-seconds: ausente en profile-yml -> JwtProperties record bindea long primitive a 0 -> tokens generados via JwtTokenProvider.generate() expiran al instante.",
+      "description": "El comportamiento Spring Boot YAML profile-specific es no-intuitivo. Documentacion oficial 3.3 lo menciona pero no de forma destacada. Un cambio aparentemente seguro en main puede romper en silencio cualquier perfil que ya tenga el subarbol redefinido. Combinado con DEBT-056 (surefire no ejecuta IT.java en lifecycle), el bug puede vivir indefinidamente sin deteccion.",
+      "correction": "GR-CONFIG-001: cuando se modifique application.yml main anadiendo o cambiando subarboles bajo top-level keys ya redefinidos en algun profile-yml, el commit DEBE incluir replicacion del cambio en TODOS los profile-yml afectados. Validacion: .sofia/scripts/validate-yaml-profiles.js parsea profile-yml y verifica que top-level keys redefinidos tienen al menos las mismas subkeys que main. Bloquear pre-commit + G-4b. Alternativa estructural: application-shared.yml + spring.config.import.",
+      "registered_at": "2026-04-28T13:52:54.131Z",
+      "approved_by": "product-owner",
+      "hitl_approved": true,
+      "approved_at": "2026-04-28T13:52:54.131Z",
+      "sofia_core_candidate": true,
+      "guardrail_proposed": "GR-CONFIG-001",
+      "related_las": [
+        "LA-CORE-064"
+      ],
+      "detected_at": "2026-04-28T13:52:54.131Z",
+      "evidence": "BizumFlywayIT antes del fix: error Could not resolve placeholder bank.savings.auto.cron. Tras anadir bank.savings.* a application-integration-compose.yml: BizumFlywayIT 2/2 PASS y 27/27 ITs F.4 PASS. Commit 2c6c258 introdujo el cambio sin replicar en profiles - bug paso 7 dias inadvertido porque IT.java no se ejecuta en lifecycle Maven default.",
+      "promoted_to": null,
+      "promoted_at": null
+    },
     {
       "id": "LA-026-06",
       "sprint": 26,
@@ -1945,10 +2058,10 @@
       "B_domain_services",
       "C_application",
       "D_infrastructure",
-      "E_api"
+      "E_api",
+      "F_tests"
     ],
     "phases_remaining": [
-      "F_tests",
       "G_frontend",
       "H_g4b_guardrail"
     ],
@@ -1972,6 +2085,70 @@
       ".sofia/snapshots/session-sprint26-step4-phaseABC-2026-04-27T14-08-44-095Z.json (cierre A+B+C, integro)"
     ],
     "snapshot_phaseDE_intentionally_omitted": true,
-    "snapshot_phaseDE_rationale": "Ver LA-026-05: snapshot intermedio omitido porque (a) git history cubre reversa pre-cambios, (b) snapshot phaseABC cubre punto intermedio integro, (c) el mismo session.json antes de este write era fisicamente identico al estado post-A+B+C (sin cambios desde 2026-04-27T14:09:31)"
+    "snapshot_phaseDE_rationale": "Ver LA-026-05: snapshot intermedio omitido porque (a) git history cubre reversa pre-cambios, (b) snapshot phaseABC cubre punto intermedio integro, (c) el mismo session.json antes de este write era fisicamente identico al estado post-A+B+C (sin cambios desde 2026-04-27T14:09:31)",
+    "fase_F_unit_tests": {
+      "status": "COMPLETED",
+      "completed_at": "2026-04-28T09:23:24.788Z",
+      "commit": "2c6c258",
+      "phases": {
+        "F1_domain": {
+          "status": "PASS",
+          "tests": 51,
+          "files": 3,
+          "mvn_validated": true,
+          "time_seconds": 25.7
+        },
+        "F2_service": {
+          "status": "PASS",
+          "tests": 16,
+          "files": 1,
+          "mvn_validated": true,
+          "time_seconds": 11.6
+        },
+        "F3_use_cases": {
+          "status": "PASS",
+          "tests": 49,
+          "files": 9,
+          "mvn_validated": true,
+          "time_seconds": 12.1
+        }
+      },
+      "total_tests": 116,
+      "total_failures": 0,
+      "total_errors": 0,
+      "uncovered_use_cases": [
+        "GetGoalDetailUseCase"
+      ],
+      "uncovered_rationale": "Pure read/composition UC — orchestrates 4 repos to build composite DTO. Low test value vs Process/Contribute/Close. Covered by F.4 IT.",
+      "notes": "mvn aislada via docker maven:3.9-eclipse-temurin-21. Compile cruzado de Fases A-E PASS 3 veces sin errores en 559 sources main + 111 sources test."
+    },
+    "fase_F_integration_tests": {
+      "status": "COMPLETED",
+      "completed_at": "2026-04-28T13:52:54.131Z",
+      "total_tests": 27,
+      "total_failures": 0,
+      "total_errors": 0,
+      "files": [
+        "apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/integration/SavingsIntegrationTestBase.java",
+        "apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/savings/api/SavingsControllerIT.java (15 tests)",
+        "apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/account/JpaAccountReserveAdapterIT.java (5 tests)",
+        "apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/savings/SavingsFlywayIT.java (5 tests)",
+        "apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/savings/AutoContributionSchedulerIT.java (1 test)",
+        "apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/savings/MilestoneEmissionIT.java (1 test)",
+        "apps/backend-2fa/src/test/resources/db/savings-test-fixtures.sql",
+        "apps/backend-2fa/src/test/resources/application-integration-compose.yml (modified)"
+      ],
+      "pattern": "Hereda BizumIntegrationTestBase (postgres+redis del compose externo, sin Testcontainers - LA-026-08). @Sql precarga 2 users/accounts/balances.",
+      "coverage": "11 endpoints x 401 + 3 happy paths Bearer JWT + ownership 403 + 5 reserve scenarios + 5 Flyway scenarios + scheduler light + concurrencia milestone",
+      "mvn_validated": true,
+      "mvn_suite_time_seconds": 37.8,
+      "mvn_individual_time_avg_seconds": 16.5,
+      "observations_for_step5": [
+        "OBS-001: drift javadoc AccountReservePort vs JpaAccountReserveAdapter - corregir javadoc (adapter es coherente con UCs)",
+        "OBS-002: drift handoff totalActiveGoals vs DashboardWidgetDto.activeGoalsCount - test fixed",
+        "OBS-003: field naming smell SavingsController - listGoals campo y metodo HTTP comparten nombre",
+        "OBS-004: jwt.session-ttl-seconds anadida en application-integration-compose.yml; sin ella JwtTokenProvider.generate produce tokens expirados al instante. Marcado en DEBT-054."
+      ]
+    }
   }
 }
