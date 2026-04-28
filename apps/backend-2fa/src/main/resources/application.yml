@@ -122,7 +122,7 @@ logging:
     com.experis.sofia.bankportal: DEBUG
     org.springframework.security: WARN
 
-# Productos bancarios — FEAT-021 + DEBT-044
+# Productos bancarios — FEAT-021 + DEBT-044 + FEAT-024
 bank:
   products:
     deposit:
@@ -139,3 +139,34 @@ bank:
         ttl-hours: 24
     loan:
       tae: 6.95
+  # ── FEAT-024: Objetivos de Ahorro (Sprint 26) — LLD §10 ───────────────
+  savings:
+    max-active-goals-per-user: 10           # RN-F024-02
+    target-amount:
+      min: 100
+      max: 500000                           # RN-F024-01
+    contribution:
+      min: 10
+      max: 5000                             # RN-F024-03
+    target-date:
+      min-days-ahead: 30
+      max-years-ahead: 30                   # RN-F024-01
+    auto:
+      cron: ${BANK_SAVINGS_AUTO_CRON:0 0 2 * * *}    # ADR-041 · 02:00 UTC
+      lock-max: ${BANK_SAVINGS_AUTO_LOCK_MAX:30m}    # ShedLock lockAtMostFor
+      lock-min: ${BANK_SAVINGS_AUTO_LOCK_MIN:1m}     # ShedLock lockAtLeastFor
+      page-size: 200                                  # batch lectura reglas
+      retry:
+        max-attempts: 3
+        backoff: [60s, 300s, 900s]          # RN-F024-14
+    closure:
+      sca-threshold: 30.00                  # RN-F024-11
+
+# ── FEAT-024: OpenAPI / Swagger UI (ADR-042) ──────────────────────────────
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    enabled: true                           # override prod en application-prod.yml (ADR-042)
+    path: /swagger-ui.html

@@ -836,9 +836,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 - Step 4 EN PROGRESO - Fase F.1 PASS (51/51 tests verde mvn) + Fase F.2 en preparacion - DEBT-052 INVALIDATED (falso positivo cazado en setup F.2 - LA-026-06 registrada) - DEBT-051 reformulada CRITICA (afecta 3 schedulers S18-S26, tabla shedlock no existe en BD del entorno) - DEBT-053 sin cambios - siguiente: F.2 GoalClosureServiceTest",
+  "resume_next": "Sprint 26 · Step 4 EN PROGRESO · Fases A+B+C+D+E completadas y AUDITADAS · 3 deudas registradas (DEBT-051 ShedLock wiring · DEBT-052 CRITICA CloseGoal no libera reserva · DEBT-053 paginacion scheduler S27) · Fase F Tests siguiente · DEBT-052 puede bloquear CloseGoalUseCaseTest",
   "sprint_closed": false,
-  "updated_at": "2026-04-28T09:01:08.532Z",
+  "updated_at": "2026-04-28T08:39:49.409Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -915,19 +915,17 @@
     {
       "id": "DEBT-051",
       "area": "Backend / scheduling",
-      "priority": "Critica",
-      "desc": "ShedLock no esta cableado pese a estar declarado en pom.xml (shedlock-spring + shedlock-provider-jdbc-template 5.16.0) + V18c__shedlock.sql + @SchedulerLock en 3 schedulers (AutoContributionScheduler S26, SimulaCobroJob S18, ScheduledTransferJobService S18). Falta @EnableSchedulerLock en alguna @Configuration y bean LockProvider. ALCANCE AMPLIADO en investigacion 2026-04-28: el bug arrastra desde Sprint 18 (commit 768250a feat sprint18 step 4 FEAT-016) y ha pasado 7 sprints sin deteccion porque (a) en single-instance dev no se nota - @SchedulerLock se ignora silenciosamente y @Scheduled sigue funcionando; (b) la tabla shedlock NO existe en la BD del entorno actual (verificado via docker exec bankportal-postgres psql -c \"\\dt\" - solo aparece migracion V18 cards management aplicada, V18c shedlock NUNCA se aplico). Implicacion produccion: cualquier deploy multi-replica de los ultimos 7 sprints habria ejecutado los crons N veces concurrentemente sin proteccion; afortunadamente el deploy actual es single-instance.",
-      "fix": "3 acciones coordinadas: (a) Crear apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/scheduled/infrastructure/SchedulingConfig.java con @Configuration + @EnableSchedulerLock(defaultLockAtMostFor=PT30M) + @Bean LockProvider lockProvider(DataSource ds) usando JdbcTemplateLockProvider con usingDbTime(); (b) verificar en G-4b que docker compose up -d aplica V18c__shedlock.sql al rebuild (confirmar tabla shedlock existe via psql); (c) test IT que valide LockProvider esta cableado: @SpringBootTest + @Autowired LockProvider + assertNotNull. Estimacion: ~30 lineas Java + 1 test + verificacion smoke. Aplicable a los 3 schedulers en una sola tacada porque comparten el mismo wiring.",
+      "priority": "Alta",
+      "desc": "ShedLock no esta cableado pese a estar declarado en pom.xml + V18c__shedlock.sql + @SchedulerLock en AutoContributionScheduler. Falta @EnableSchedulerLock en alguna @Configuration y bean LockProvider (JdbcTemplateLockProvider). Sin esto, en arranque con N replicas el cron savings-auto-contribution se ejecuta N veces concurrentemente; la UK de allocation_month protege la idempotencia mensual a costa de N-1 INSERTs con conflicto, generando ruido de log y consumo BD. AutoContributionScheduler.java es el primer scheduler del proyecto que requiere lock distribuido (SseHeartbeatScheduler usa solo @Scheduled idempotente).",
+      "fix": "Crear apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/savings/infrastructure/scheduler/SchedulingConfig.java con @Configuration + @EnableSchedulerLock(defaultLockAtMostFor='PT30M') + @Bean LockProvider lockProvider(DataSource ds) usando JdbcTemplateLockProvider con usingDbTime(). Estimacion: ~25 lineas. Verificacion: arranque mostrara log 'shedlock initialized' y dos replicas no ejecutaran el cron simultaneamente.",
       "sprint_target": "S26",
       "sprint_target_phase": "H_g4b_guardrail",
       "origin": "auditoria-fase-D-2026-04-28",
       "registered_at": "2026-04-28T08:36:11.321Z",
       "status": "OPEN",
-      "evidence": "Investigacion 2026-04-28: (1) grep -rln \"EnableSchedulerLock|LockProvider\" apps/backend-2fa/src/main/ -> 0 resultados. (2) grep -rln \"@SchedulerLock\" -> 3 archivos (AutoContributionScheduler, SimulaCobroJob, ScheduledTransferJobService). (3) docker exec bankportal-postgres psql -c \"\\dt\" no lista tabla shedlock. (4) flyway_schema_history solo muestra V18 cards management - V18c shedlock no aplicada. (5) git log V18c__shedlock.sql -> commit 768250a feat sprint18 step 4 FEAT-016 (S18 hace ~7 sprints).",
-      "blocking": "Sprints 18-26 deploy single-instance ha enmascarado el bug. G-4b S26 si se ejecuta verificacion runtime con 2 instancias. Bloquea cualquier escalado horizontal del backend hasta resolverse.",
-      "jira": null,
-      "scope_extended_at": "2026-04-28T09:01:08.532Z",
-      "scope_extended_note": "Originalmente diagnosticada como bug nuevo del scheduler S26 (AutoContributionScheduler). Investigacion durante F.2 setup revelo que afecta a 3 schedulers desde S18 y la tabla shedlock no existe en la BD actual."
+      "evidence": "grep -rln 'EnableSchedulerLock|LockProvider' apps/backend-2fa/src/main/java/ devolvio 0 resultados. pom.xml lineas 230-238 declaran shedlock-spring + shedlock-provider-jdbc-template. V18c__shedlock.sql crea la tabla. AutoContributionScheduler.java declara @SchedulerLock(name='savings-auto-contribution'). Sin wiring activo la anotacion se ignora silenciosamente (no falla, no advierte).",
+      "blocking": "G-4b si se ejecuta verificacion de integridad scheduler. No bloquea compile. No bloquea tests unitarios (Mockito skip). Si bloquea AutoContributionSchedulerIT con 2 instancias.",
+      "jira": null
     },
     {
       "id": "DEBT-052",
@@ -940,13 +938,10 @@
       "sprint_target_rationale": "Critica: tests Fase F lo cazaran inmediatamente. Decision PO 2026-04-28: parar Fase F si bloquea tests. Implica que si al escribir CloseGoalUseCaseTest el tester detecta que el UC no satisface el assert release()-fue-invocado, se aplica el fix antes de continuar con el resto de Fase F.",
       "origin": "auditoria-fase-D-2026-04-28",
       "registered_at": "2026-04-28T08:36:11.321Z",
-      "status": "INVALIDATED",
+      "status": "OPEN",
       "evidence": "grep '@Transactional|transferReserved|release' CloseGoalUseCase.java devolvio solo @Transactional linea 38. Lectura completa del archivo confirmo que UC calcula returnedAmount y returnAccountId pero solo invoca closureService.close(goalId) sin tocar accountReserve. LLD-backend seccion 6.3 secuencia diagrama UPDATE account_balances SET available += amount, retained -= amount es exactamente el paso ausente.",
       "blocking": "F_tests (CloseGoalUseCaseTest fallara), G-4b si se incluye SavingsGoalInvariantIT, RN-F024-12 incumplido en runtime aunque compile.",
-      "jira": null,
-      "invalidated_at": "2026-04-28T09:01:08.532Z",
-      "invalidated_by": "product-owner+claude",
-      "invalidation_note": "Diagnostico erroneo en raiz - falso positivo. La auditoria F-D 2026-04-28 ejecuto grep en CloseGoalUseCase.java y concluyo que el UC no invocaba accountReserve.release(). Investigacion forense durante setup F.2 al leer GoalClosureService.java (servicio invocado por el UC) revelo que close() SI ejecuta accountReserve.release(sourceAccount, reserved) en lineas 78-82. La cadena CloseGoalUseCase -> closureService.close() -> accountReserve.release() satisface RN-F024-12 + LLD seccion 6.3. La indireccion via service explica por que el grep en el UC no encontro la invocacion. RN-F024-12 SE CUMPLE en runtime. El fix propuesto en la deuda original (anadir release directo en el UC) habria producido double-release y dejado el saldo inconsistente. Se descarta. Patron equivalente al de LA-025-11 (descartada en favor de LA-025-12 que captura el problema real). Lesion procesual capturada en LA-026-06."
+      "jira": null
     },
     {
       "id": "DEBT-053",
@@ -1253,33 +1248,6 @@
     }
   ],
   "lessons_learned": [
-    {
-      "id": "LA-026-06",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "step": "4-phase-D-audit",
-      "type": "process/governance/audit",
-      "severity": "media",
-      "scope": "SOFIA-CORE",
-      "title": "audit-must-follow-invocation-chain-not-just-grep-target-file",
-      "problem": "Durante la auditoria de Fase D del Step 4 Sprint 26 se diagnostico DEBT-052 (CRITICA) afirmando que CloseGoalUseCase no invocaba accountReserve.release() y por tanto incumplia RN-F024-12 + LLD seccion 6.3. La auditoria se ejecuto via grep \"@Transactional|transferReserved|release\" en CloseGoalUseCase.java y concluyo viendo solo @Transactional sin invocaciones a release. La realidad: el UC delega en closureService.close(goalId) que internamente SI invoca accountReserve.release() (lineas 78-82 de GoalClosureService.java). El bug NO existia. Si se hubiera persistido la deuda y aplicado el fix propuesto (anadir release directo en el UC), se habria introducido un double-release real (release del service + release del UC) que dejaria el retained_balance en negativo.",
-      "description": "Patron de auditoria insuficiente: grep en archivo objetivo del analisis sin seguir la cadena de invocacion. Analogo al patron de LA-025-11 (diagnostico arquitectonico erroneo: afirmaba separacion docs/code cuando en realidad apps/ habia sido borrado del working tree - causa real captada por LA-025-12). En ambos casos: la herramienta fue grep, el sesgo fue interpretar la ausencia de match como ausencia de comportamiento. Auditoria robusta requiere expandir el grep a callees: para cada metodo invocado en el archivo objetivo, abrir el receptor y verificar si el comportamiento esperado se ejecuta alli. En este caso: closureService.close(goalId) se invocaba en linea 50 del UC pero la auditoria no abrio GoalClosureService.java para ver que hacia close(). Tiempo desperdiciado: ~25min de session generando deuda + tests + diff conceptual erroneo.",
-      "correction": "REGLA SUGERIDA (GR-AUDIT-002): auditorias de cumplimiento de comportamiento (RN-XXX-XX, LLD secciones de flujo) NO deben concluir basadas en grep del archivo objetivo. Protocolo obligatorio: (1) identificar el comportamiento esperado del LLD (en este caso: \"liberar reserva al cerrar\"); (2) localizar el punto de entrada (CloseGoalUseCase.execute); (3) listar TODAS las invocaciones a metodos no triviales dentro del punto de entrada (closureService.close, otpValidation.validate, goalRepo.findById, etc.); (4) para cada invocacion, leer el codigo del callee y registrar si contribuye al comportamiento esperado; (5) solo concluir incumplimiento si NINGUN callee en la cadena ejecuta el comportamiento. Aplicable a: auditorias Fase D-E pre-G-4b, code reviews Step 5, security audits Step 5b, validaciones Architect en Step 3. Promover a SOFIA-CORE y referenciar desde la skill code-reviewer/SKILL.md.",
-      "registered_at": "2026-04-28T09:01:08.532Z",
-      "approved_by": "product-owner",
-      "hitl_approved": true,
-      "approved_at": "2026-04-28T09:01:08.532Z",
-      "sofia_core_candidate": true,
-      "guardrail_proposed": "GR-AUDIT-002: auditorias de comportamiento deben seguir cadena de invocacion (callees), no solo grep en archivo objetivo. Conclusion de incumplimiento solo valida si NINGUN callee en la cadena cumple el comportamiento esperado.",
-      "related_las": [
-        "LA-025-11",
-        "LA-025-12"
-      ],
-      "detected_at": "2026-04-28T09:01:08.532Z",
-      "evidence": "DEBT-052 invalidada (status=INVALIDATED) tras descubrir que GoalClosureService.close() invoca accountReserve.release() internamente. El UC delega correctamente. Auditoria original solo hizo grep en CloseGoalUseCase.java sin abrir el callee.",
-      "promoted_to": null,
-      "promoted_at": null
-    },
     {
       "id": "LA-026-05",
       "sprint": 26,

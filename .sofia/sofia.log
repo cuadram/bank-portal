@@ -713,3 +713,23 @@
 [2026-04-27T11:12:51.876Z] [s26] [GATE G-2c] [HITL-PO-TL] [APPROVED] PROTO-FEAT-024-sprint26.html (143.5KB · 5 pantallas · 22 anotaciones · LA-CORE-050) + UX-FEAT-024-sprint26.md (31KB · §9.1 RN-10/12 backend justificadas) + UX-DESIGN-SYSTEM.md v1.1 · cobertura 7/7 US + 13/13 RNs UI · siguiente: Step 3 Architect
 [2026-04-27T11:12:51.876Z] [s26] [LESSON] [LA-024-01] Herencia LA-CORE-050 estructural: envolver cada pantalla nueva en shell .proto-screen completo (sidebar+header+main por pantalla), no inyectar secciones desnudas dentro del último main heredado
 [2026-04-27T11:13:24.214Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-2c · Step: 3 · Sprint 26
+[2026-04-27T12:04:59.509Z] STEP_3_COMPLETED sprint=26 feature=FEAT-024 agent=architect artifacts=6 size=68.1KB gate_pending=G-3 role=tech-lead
+[2026-04-27T12:06:18.357Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-3-pending · Step: 3 · Sprint 26
+[2026-04-27T13:08:36.189Z] STEP_3_FIX_APPLIED option=b sprint=26 feature=FEAT-024 fix=lld-backend-3.2-3.3-trazabilidad-completa rn_coverage=15/15 size_delta=+1.2KB
+[2026-04-27T13:23:11.202Z] [G-3] [APPROVED] Tech Lead approved Step 3 Architect S26 FEAT-024 — HLD+LLD-back(28.3KB)+LLD-front+ADR-040/041/042 — 15/15 RNs cubiertas — siguiente: Step 3b AUTO
+[2026-04-27T13:23:17.650Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-3 · Step: 3 · Sprint 26
+[2026-04-27T13:26:28.308Z] [FA-VALIDATE] OK: total_functionalities: 108 ✓
+[2026-04-27T13:26:28.317Z] [FA-VALIDATE] OK: total_business_rules: 246 ✓
+[2026-04-27T13:26:28.317Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-27T13:26:28.317Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-27T13:26:28.317Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-27T13:26:28.317Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-27T13:26:28.318Z] [FA-VALIDATE] OK: last_sprint: 26 coincide con datos ✓
+[2026-04-27T13:26:28.318Z] [FA-VALIDATE] OK: FEAT-024: todas las RN referenciadas están definidas ✓
+[2026-04-27T13:26:28.320Z] [FA-VALIDATE] PASS — 108 funcionalidades, 246 reglas | sprint 26 | FEAT-024
+[2026-04-27T13:28:40.091Z] [G-3b] [APPROVED] AUTO Step 3b S26 FEAT-024 — validate-fa-index 8/8 (108 func/246 BRs) — FA-FEAT-024-sprint26.md enriquecido READY_FOR_REVIEW (17.8KB) — Confluence 19464193 — siguiente: Step 4 Developer
+[2026-04-27T13:28:40.165Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-3b · Step: 3b · Sprint 26
+[2026-04-27T14:09:42.132Z] [STEP-4] [PHASE-A] Fase A completada — DDL + Domain (19 Java + 1 SQL · 18.4KB · 4 modelos + 4 enums + 6 excepciones + 4 puertos + AccountReservePort NUEVO)
+[2026-04-27T14:09:42.132Z] [STEP-4] [PHASE-B] Fase B completada — Domain services (3 services · 274 nuevas lineas · GoalProjectionService + MilestoneEvaluator + GoalClosureService · SavingsGoal extendido §2.2)
+[2026-04-27T14:09:42.132Z] [STEP-4] [PHASE-C] Fase C completada — Application (1 DTOs file 13 records + 10 UCs · 925 lineas · 7 @Transactional + FIX aplicado en Create/UpdateGoal)
+[2026-04-27T14:09:42.132Z] [STEP-4] [HANDOFF] Step 4 PAUSADO tras Fase C · 30 archivos persistidos · HANDOFF generado · pendiente Fases D-H (~80 archivos · Infrastructure + API + Tests + Frontend + G-4b)

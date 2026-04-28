@@ -6,9 +6,9 @@
   "client": "Banco Meridian",
   "current_sprint": 26,
   "current_feature": "FEAT-024",
-  "current_step": "4",
-  "pipeline_step": "4",
-  "pipeline_step_name": "developer",
+  "current_step": "3",
+  "pipeline_step": "3",
+  "pipeline_step_name": "architect",
   "_completed_steps_note": "Array del sprint actual (current_sprint: 25). Se resetea al inicio de cada sprint. No acumula sprints anteriores — ver sprint_history para histórico.",
   "completed_steps": {
     "sprint": 26,
@@ -18,8 +18,7 @@
       "2",
       "2b",
       "2c",
-      "3",
-      "3b"
+      "3"
     ]
   },
   "pending_steps": [
@@ -39,9 +38,25 @@
     "8b",
     "9"
   ],
-  "last_skill": "fa-agent",
-  "last_skill_output_path": "docs/functional-analysis/FA-FEAT-024-sprint26.md",
-  "gate_pending": null,
+  "last_skill": "architect",
+  "last_skill_output_path": "docs/architecture/sprint-26/HLD-FEAT-024-sprint26.md",
+  "gate_pending": {
+    "gate": "G-3",
+    "step": "3",
+    "sprint": 26,
+    "feature": "FEAT-024",
+    "role": "tech-lead",
+    "created_at": "2026-04-27T12:04:59.509Z",
+    "artifacts": [
+      "docs/architecture/sprint-26/HLD-FEAT-024-sprint26.md",
+      "docs/architecture/sprint-26/LLD-backend-FEAT-024-sprint26.md",
+      "docs/architecture/sprint-26/LLD-frontend-FEAT-024-sprint26.md",
+      "docs/architecture/adr/ADR-040-savings-segregacion-virtual-alpha.md",
+      "docs/architecture/adr/ADR-041-savings-scheduled-shedlock.md",
+      "docs/architecture/adr/ADR-042-openapi-springdoc-2.3.md"
+    ],
+    "note": "Step 3 Architect completado. HLD + LLD backend + LLD frontend + ADR-040/041/042 persistidos. Pendiente revision Tech Lead para G-3."
+  },
   "release_blocked": false,
   "release_blocked_reason": null,
   "sprint_goal": "Extender banca inteligente de BankPortal mediante gestor de Objetivos de Ahorro (viajes, hogar, emergencia, educacion) con aportaciones manuales y automaticas, seguimiento de hitos y proyeccion. Consolidar contrato API backend mediante OpenAPI 3.1 como fuente de verdad para habilitar GR-SMOKE-001.",
@@ -471,82 +486,12 @@
     ],
     "3_s26": [
       "docs/architecture/sprint-26/HLD-FEAT-024-sprint26.md (10.1 KB)",
-      "docs/architecture/sprint-26/LLD-backend-FEAT-024-sprint26.md (28.3 KB · §3.2 soft-delete + §3.3 GDPR + §14 trazabilidad 15/15 RNs)",
+      "docs/architecture/sprint-26/LLD-backend-FEAT-024-sprint26.md (27.1 KB)",
       "docs/architecture/sprint-26/LLD-frontend-FEAT-024-sprint26.md (15.0 KB)",
       "docs/architecture/adr/ADR-040-savings-segregacion-virtual-alpha.md (6.4 KB)",
       "docs/architecture/adr/ADR-041-savings-scheduled-shedlock.md (5.8 KB)",
       "docs/architecture/adr/ADR-042-openapi-springdoc-2.3.md (5.2 KB)",
-      "TOTAL: 6 artefactos · 70.8 KB · ADR-040 reutiliza account_balances.retained_balance (V10) · cobertura 15/15 RNs en LLD §14"
-    ],
-    "3b_s26": [
-      "validate-fa-index PASS 8/8 — 108 func, 246 BRs — 2026-04-27T13:26:28.320Z",
-      "FA-FEAT-024-sprint26.md (17.8 KB · enriquecido §8 arquitectura + §9 trazabilidad 15/15 RNs + §10 estado · status READY_FOR_REVIEW)",
-      "Confluence HLD page 19464193 — Sprint 26 HLD FEAT-024 Objetivos de Ahorro (parent 229379, space 393220)"
-    ],
-    "4_s26_phase_a_domain_ddl": [
-      "V29__savings_goals.sql (3.4 KB · 67 lineas · 4 tablas + UKs DEFERRABLE + UK parcial WHERE active=TRUE + 4 COMMENTs · 21 constraints)",
-      "savings/domain/model: SavingsGoal (con metodos comportamiento §2.2: reserve/release/canBeClosed/progressPercent), GoalAllocation, GoalMilestone, GoalAutoRule",
-      "savings/domain/model: 4 enums (GoalStatus 4 valores, AllocationType MANUAL/AUTO, AllocationStatus PENDING/SUCCESS/FAILED, GoalCategory 6 valores)",
-      "savings/domain/exception: 6 excepciones (GoalNotFound, InsufficientFunds, MaxGoalsReached, MilestoneAlreadyEmitted, ReservedExceedsTarget, GoalAccessDenied)",
-      "savings/domain/repository: 4 puertos (SavingsGoalRepositoryPort 6 metodos · GoalAllocationRepositoryPort 4 · GoalMilestoneRepositoryPort 4 · GoalAutoRuleRepositoryPort 5)",
-      "account/domain/AccountReservePort.java NUEVO (5 metodos: reserve/release/transferReserved/availableBalance/retainedBalance) · ADR-040",
-      "TOTAL Fase A: 19 archivos Java + 1 SQL · ~18.4 KB · todos los packages OK · llaves balanceadas · imports limpios"
-    ],
-    "4_s26_phase_b_domain_services": [
-      "savings/domain/service/GoalProjectionService.java (84 lineas · projectedCompletionDate + suggestedMonthlyContribution + isAtRisk · RoundingMode HALF_UP/CEILING · null-safe)",
-      "savings/domain/service/MilestoneEvaluator.java (92 lineas · evaluate idempotente lectura+UK+catch DataIntegrityViolationException · THRESHOLDS={25,50,75,100} · thresholdsCrossed auditoria)",
-      "savings/domain/service/GoalClosureService.java (98 lineas · requiresSca configurable @Value bank.savings.closure.sca-threshold:30 · close idempotente · conserva reservedAmount para retencion 6 anios · NO maneja @Transactional, lo delega al UC)",
-      "SavingsGoal extendido in-place: +45 lineas (reserve, release, canBeClosed con guards null/signum/exceeds-target + transicion COMPLETED)",
-      "TOTAL Fase B: 3 services nuevos + 1 modelo extendido · 274 lineas nuevas · 3 @Service · constructor injection sin Lombok"
-    ],
-    "4_s26_phase_c_application": [
-      "savings/application/dto/SavingsDtos.java (143 lineas · 13 records: 12 top-level + 1 nested WidgetGoalSummary · 15 anotaciones jakarta.validation · rangos 100..500000 / 10..5000 / day 1..28)",
-      "savings/application/usecase/CreateGoalUseCase.java (73 lineas · @Transactional · max 10 ACTIVE check · setScale 2 HALF_UP)",
-      "savings/application/usecase/ListGoalsUseCase.java (53 lineas · readOnly · filtro status opcional)",
-      "savings/application/usecase/GetGoalDetailUseCase.java (98 lineas · readOnly · ownership check · 4 mappers DTO)",
-      "savings/application/usecase/UpdateGoalUseCase.java (77 lineas · @Transactional [FIX] · ownership check · valida nuevo target >= reservedAmount · status solo ACTIVE/PAUSED via PUT)",
-      "savings/application/usecase/CloseGoalUseCase.java (62 lineas · @Transactional · ownership check · OTP validation si requiresSca · CloseResultDto)",
-      "savings/application/usecase/ContributeManualUseCase.java (87 lineas · @Transactional · flujo §6.1: reserve→save SUCCESS allocationMonth=null→goal.reserve→evaluate milestones)",
-      "savings/application/usecase/ConfigureAutoRuleUseCase.java (81 lineas · @Transactional · desactiva regla previa antes de crear nueva (RN-F024-04 UK active=true) · computeNextExecution defensivo Math.min con lengthOfMonth)",
-      "savings/application/usecase/PauseAutoRuleUseCase.java (41 lineas · @Transactional · idempotente)",
-      "savings/application/usecase/GetDashboardWidgetUseCase.java (58 lineas · readOnly · top 3 por progressPercent desc · totales agregados)",
-      "savings/application/usecase/ProcessAutoRuleUseCase.java (148 lineas · @Transactional REQUIRES_NEW · idempotencia mensual UK · 3 razones FAILED · compensacion release si goal.reserve falla · updateRuleNextExecution siempre)",
-      "TOTAL Fase C: 11 archivos · 925 lineas · 7 @Transactional + 3 readOnly · 10 @Service · 6 ownership checks · 13 records validados",
-      "FIX aplicado: CreateGoalUseCase y UpdateGoalUseCase agregado @Transactional (LLD §9 lo exigia, faltaba)"
-    ],
-    "4_s26_phase_d_infrastructure": [
-      "savings/infrastructure/persistence/entity/SavingsGoalEntity.java (76 lineas · @Entity savings_goals · ADR-040 reservedAmount)",
-      "savings/infrastructure/persistence/entity/GoalAllocationEntity.java (60 lineas · @Entity goal_allocations · UK idempotencia mensual via allocation_month)",
-      "savings/infrastructure/persistence/entity/GoalMilestoneEntity.java (38 lineas · @Entity goal_milestones · percent int 25/50/75/100)",
-      "savings/infrastructure/persistence/entity/GoalAutoRuleEntity.java (50 lineas · @Entity goal_auto_rules · day_of_month int 1..28 · UK active=true parcial)",
-      "savings/infrastructure/persistence/jpa/JpaSavingsGoalRepository.java (Spring Data JPA · 3 metodos derivados)",
-      "savings/infrastructure/persistence/jpa/JpaGoalAllocationRepository.java (paginacion via PageRequest)",
-      "savings/infrastructure/persistence/jpa/JpaGoalMilestoneRepository.java (existsByGoalIdAndPercent · idempotencia)",
-      "savings/infrastructure/persistence/jpa/JpaGoalAutoRuleRepository.java (findByActiveTrueAndNextExecutionAtLessThanEqual · scheduler)",
-      "savings/infrastructure/persistence/adapter/JpaSavingsGoalAdapter.java (100 lineas · @Primary · 6 metodos puerto + toDomain/toEntity)",
-      "savings/infrastructure/persistence/adapter/JpaGoalAllocationAdapter.java (84 lineas · @Primary · traduce page/size→PageRequest)",
-      "savings/infrastructure/persistence/adapter/JpaGoalMilestoneAdapter.java (64 lineas · @Primary)",
-      "savings/infrastructure/persistence/adapter/JpaGoalAutoRuleAdapter.java (81 lineas · @Primary)",
-      "savings/infrastructure/scheduler/AutoContributionScheduler.java (71 lineas · @Scheduled cron config bank.savings.auto.cron · @SchedulerLock(name=savings-auto-contribution) · ADR-041 · try/catch defensivo RN-F024-04)",
-      "account/infrastructure/JpaAccountReserveAdapter.java (140 lineas · JdbcClient SQL nativo · @Transactional(MANDATORY) · 5 metodos puerto · LA-CORE-053 verificada V10 account_balances columnas reales DECIMAL(15,2))",
-      "DECISION PO opcion C: JPA Entity + Adapter delegado (LLD §1 literal) en savings/; SQL nativo en account/ por consistencia con JpaAccountRepositoryAdapter hermano",
-      "SKIPPED por decision PO §6 handoff fase-d: SavingsReserveAdapter (UCs Fase C inyectan AccountReservePort directo sin necesidad de wrapper)",
-      "TOTAL Fase D: 14 archivos · ~853 lineas Java · 5/5 puertos cubiertos (24 metodos) · GR-GIT-001 PASS"
-    ],
-    "4_s26_phase_e_api": [
-      "savings/api/exception/SavingsExceptionHandler.java (107 lineas · @RestControllerAdvice basePackages=savings · LA-TEST-003 · 10 mappers HTTP: GoalNotFound→404, GoalAccessDenied→403, MaxGoalsReached→409, InsufficientFunds→422, ReservedExceedsTarget→422, MilestoneAlreadyEmitted→409, InvalidOtp→401, IllegalState→409, IllegalArgument→400, MethodArgumentNotValid→400)",
-      "savings/api/controller/SavingsController.java (190 lineas · base /api/v1/savings · 11 endpoints LLD §8 100% cubierto · userId via request.getAttribute LA-TEST-001 · @Valid POST/PUT · X-OTP @RequestHeader → CloseGoalUC valida SCA · degradacion elegante widget LA-CORE-046)",
-      "src/main/resources/application.yml (MODIFIED +28 lineas dentro de bank: existente · bank.savings.{max-active-goals-per-user:10, target-amount.{min:100,max:500000}, contribution.{min:10,max:5000}, target-date.min-days-ahead:30, auto.{cron:'0 0 2 * * *',lock-max:30m,lock-min:1m,page-size:200,retry.max-attempts:3,retry.backoff:[60s,300s,900s]}, closure.sca-threshold:30.00} + nuevo bloque root springdoc.{api-docs.{path:/v3/api-docs,enabled:true},swagger-ui.{enabled:true,path:/swagger-ui.html}})",
-      "src/main/resources/application-prod.yml (NUEVO 13 lineas · ADR-042 endurecimiento · springdoc.api-docs.enabled=false + swagger-ui.enabled=false)",
-      "pom.xml (MODIFIED +8 lineas · org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0 · cierra DEBT-048 ADR-042 · compatible Spring Boot 3.3.4)",
-      "DECISION PO: springdoc 2.3.0 anadido en Fase E (no diferido)",
-      "DECISION PO: respuestas HTTP 201 POST creaciones (goals + contributions) · 204 DELETE auto-rule",
-      "DECISION PO: reutilizacion de GetGoalDetailUseCase para subrecursos (allocations, milestones) - evita 2 UCs sin valor diferencial",
-      "VERIFICACION: 11/11 endpoints LLD §8 · 10 mappers excepciones · 9/9 UCs Fase C invocados · sin handler global existente (scoped previene secuestro) · sin colision jerarquica (todas excepciones extends RuntimeException directo, InvalidOtp extends TwoFactorException pero scope savings la captura primero)",
-      "HALLAZGO MINOR (no bloqueante G-4b · posible feedback CR Step 5): campos UC y metodos HTTP del controller comparten nombre (ej. listGoals campo + listGoals metodo) - legal Java pero olor de estilo",
-      "DEUDA Fase H (G-4b smoke): verificar SecurityConfig permite /v3/api-docs/** y /swagger-ui/** sin JWT - probable que springdoc registre auto pero JWT filter puede interceptar",
-      "DEBT-048 CLOSED en este artifact - sprint_target=S26 cumplido",
-      "TOTAL Fase E: 3 nuevos + 2 modificados · ~330 lineas (Java + YAML + XML) · GR-GIT-001 PASS"
+      "TOTAL: 6 artefactos · 68.1 KB · ADR-040 reutiliza account_balances.retained_balance (V10)"
     ]
   },
   "gates": {
@@ -797,22 +742,6 @@
       "sprint": 26,
       "feature": "FEAT-024",
       "note": "validate-fa-index PASS 8/8 · FA v0.11 88.3KB · 108 func 246 BRs · S1-S26 · LA-025-02 v2.8"
-    },
-    "G-3_s26": {
-      "approved_by": "tech-lead",
-      "approved_at": "2026-04-27T13:23:06.688Z",
-      "step": "3",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "note": "HLD + LLD Backend (28.3KB §3.2 soft-delete + §3.3 GDPR + §14 trazabilidad 15/15 RNs) + LLD Frontend + ADR-040/041/042 aprobados. Post-review fix opcion (b) integrado."
-    },
-    "G-3b_s26": {
-      "approved_by": "auto",
-      "approved_at": "2026-04-27T13:28:14.464Z",
-      "step": "3b",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "note": "Step 3b AUTO: validate-fa-index PASS 8/8 · FA enriquecido (HLD/LLD/ADR-040/041/042 · 15/15 RNs trazadas) · Confluence HLD page 19464193 publicada"
     }
   },
   "security": {
@@ -829,19 +758,19 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-04-27T13:28:40.165Z",
-    "last_gate": "G-3b",
-    "last_step": "3b",
+    "last_generated": "2026-04-27T11:13:24.214Z",
+    "last_gate": "G-2c",
+    "last_step": "3",
     "sprint": 26,
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 - Step 4 EN PROGRESO - Fase F.1 PASS (51/51 tests verde mvn) + Fase F.2 en preparacion - DEBT-052 INVALIDATED (falso positivo cazado en setup F.2 - LA-026-06 registrada) - DEBT-051 reformulada CRITICA (afecta 3 schedulers S18-S26, tabla shedlock no existe en BD del entorno) - DEBT-053 sin cambios - siguiente: F.2 GoalClosureServiceTest",
+  "resume_next": "Sprint 26 · Step 3 Architect COMPLETADO · gate_pending=G-3 (Tech Lead) · siguiente: aprobacion HITL Tech Lead -> Step 3b automatico (Documentation Agent + FA-Agent enrich + Confluence HLD page + validate-fa-index 8/8)",
   "sprint_closed": false,
-  "updated_at": "2026-04-28T09:01:08.532Z",
+  "updated_at": "2026-04-27T12:04:59.509Z",
   "fa_agent": {
-    "last_gate": "3b",
-    "last_updated": "2026-04-27T13:28:14.464Z",
+    "last_gate": "2b",
+    "last_updated": "2026-04-26T19:01:09.433926+00:00",
     "last_feat": "FEAT-024",
     "doc_path": "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx",
     "doc_version": "0.11",
@@ -883,11 +812,7 @@
       "sprint_target": "S26",
       "origin": "GR-SMOKE-001 enablement",
       "registered_at": "2026-04-21T19:17:56.424Z",
-      "closed_at": "2026-04-27T15:14:00.000Z",
-      "closed_in_sprint": 26,
-      "closed_in_step": "4-phase-E",
-      "closure_evidence": "pom.xml +springdoc-openapi-starter-webmvc-ui:2.3.0 (ADR-042) + application.yml springdoc:* + application-prod.yml endurece api-docs+swagger-ui=false",
-      "status": "CLOSED",
+      "status": "OPEN",
       "jira": "SCRUM-171"
     },
     {
@@ -911,56 +836,6 @@
       "registered_at": "2026-04-21T19:17:56.424Z",
       "status": "OPEN",
       "jira": "SCRUM-173"
-    },
-    {
-      "id": "DEBT-051",
-      "area": "Backend / scheduling",
-      "priority": "Critica",
-      "desc": "ShedLock no esta cableado pese a estar declarado en pom.xml (shedlock-spring + shedlock-provider-jdbc-template 5.16.0) + V18c__shedlock.sql + @SchedulerLock en 3 schedulers (AutoContributionScheduler S26, SimulaCobroJob S18, ScheduledTransferJobService S18). Falta @EnableSchedulerLock en alguna @Configuration y bean LockProvider. ALCANCE AMPLIADO en investigacion 2026-04-28: el bug arrastra desde Sprint 18 (commit 768250a feat sprint18 step 4 FEAT-016) y ha pasado 7 sprints sin deteccion porque (a) en single-instance dev no se nota - @SchedulerLock se ignora silenciosamente y @Scheduled sigue funcionando; (b) la tabla shedlock NO existe en la BD del entorno actual (verificado via docker exec bankportal-postgres psql -c \"\\dt\" - solo aparece migracion V18 cards management aplicada, V18c shedlock NUNCA se aplico). Implicacion produccion: cualquier deploy multi-replica de los ultimos 7 sprints habria ejecutado los crons N veces concurrentemente sin proteccion; afortunadamente el deploy actual es single-instance.",
-      "fix": "3 acciones coordinadas: (a) Crear apps/backend-2fa/src/main/java/com/experis/sofia/bankportal/scheduled/infrastructure/SchedulingConfig.java con @Configuration + @EnableSchedulerLock(defaultLockAtMostFor=PT30M) + @Bean LockProvider lockProvider(DataSource ds) usando JdbcTemplateLockProvider con usingDbTime(); (b) verificar en G-4b que docker compose up -d aplica V18c__shedlock.sql al rebuild (confirmar tabla shedlock existe via psql); (c) test IT que valide LockProvider esta cableado: @SpringBootTest + @Autowired LockProvider + assertNotNull. Estimacion: ~30 lineas Java + 1 test + verificacion smoke. Aplicable a los 3 schedulers en una sola tacada porque comparten el mismo wiring.",
-      "sprint_target": "S26",
-      "sprint_target_phase": "H_g4b_guardrail",
-      "origin": "auditoria-fase-D-2026-04-28",
-      "registered_at": "2026-04-28T08:36:11.321Z",
-      "status": "OPEN",
-      "evidence": "Investigacion 2026-04-28: (1) grep -rln \"EnableSchedulerLock|LockProvider\" apps/backend-2fa/src/main/ -> 0 resultados. (2) grep -rln \"@SchedulerLock\" -> 3 archivos (AutoContributionScheduler, SimulaCobroJob, ScheduledTransferJobService). (3) docker exec bankportal-postgres psql -c \"\\dt\" no lista tabla shedlock. (4) flyway_schema_history solo muestra V18 cards management - V18c shedlock no aplicada. (5) git log V18c__shedlock.sql -> commit 768250a feat sprint18 step 4 FEAT-016 (S18 hace ~7 sprints).",
-      "blocking": "Sprints 18-26 deploy single-instance ha enmascarado el bug. G-4b S26 si se ejecuta verificacion runtime con 2 instancias. Bloquea cualquier escalado horizontal del backend hasta resolverse.",
-      "jira": null,
-      "scope_extended_at": "2026-04-28T09:01:08.532Z",
-      "scope_extended_note": "Originalmente diagnosticada como bug nuevo del scheduler S26 (AutoContributionScheduler). Investigacion durante F.2 setup revelo que afecta a 3 schedulers desde S18 y la tabla shedlock no existe en la BD actual."
-    },
-    {
-      "id": "DEBT-052",
-      "area": "Backend / domain - savings",
-      "priority": "Critica",
-      "desc": "CloseGoalUseCase incumple RN-F024-12 (liberar reserva al cerrar) y LLD seccion 6.3 (devolucion al cierre con SCA). El UC ejecuta soft-delete via GoalClosureService.close() (status=CLOSED + closedAt=now) y devuelve CloseResultDto con returnedAmount, pero NUNCA invoca accountReserve.release() ni accountReserve.transferReserved(). Resultado en runtime: account_balances.retained_balance queda inflado indefinidamente con el dinero del goal cerrado; el saldo disponible del cliente NO se restaura. Auditoria comparativa Fase D vs LLD seccion 6.3 detecto el gap durante revision del JpaAccountReserveAdapter.",
-      "fix": "En CloseGoalUseCase.execute(), antes del 'return new CloseResultDto(...)' final, anadir: 'if (returnedAmount.signum() > 0 && returnAccountId != null) { accountReserve.release(returnAccountId, returnedAmount); }'. Inyectar AccountReservePort por constructor. Variante COMPLETED (al alcanzar 100%): si status era COMPLETED previo al close, llamar transferReserved en lugar de release (LLD seccion 6.3 ultimo parrafo). Estimacion: ~10 lineas + 1 dependencia inyectada. Test asociado: CloseGoalUseCaseTest TC-F024-030..033 (planeado en handoff Fase F.3) lo cubre nativamente; sin el fix esos tests fallaran. Test IT crucial: SavingsGoalInvariantIT debe verificar 'SUM(reservedAmount activos) == retained_balance' tras secuencia de cierres.",
-      "sprint_target": "S26",
-      "sprint_target_phase": "F_tests",
-      "sprint_target_rationale": "Critica: tests Fase F lo cazaran inmediatamente. Decision PO 2026-04-28: parar Fase F si bloquea tests. Implica que si al escribir CloseGoalUseCaseTest el tester detecta que el UC no satisface el assert release()-fue-invocado, se aplica el fix antes de continuar con el resto de Fase F.",
-      "origin": "auditoria-fase-D-2026-04-28",
-      "registered_at": "2026-04-28T08:36:11.321Z",
-      "status": "INVALIDATED",
-      "evidence": "grep '@Transactional|transferReserved|release' CloseGoalUseCase.java devolvio solo @Transactional linea 38. Lectura completa del archivo confirmo que UC calcula returnedAmount y returnAccountId pero solo invoca closureService.close(goalId) sin tocar accountReserve. LLD-backend seccion 6.3 secuencia diagrama UPDATE account_balances SET available += amount, retained -= amount es exactamente el paso ausente.",
-      "blocking": "F_tests (CloseGoalUseCaseTest fallara), G-4b si se incluye SavingsGoalInvariantIT, RN-F024-12 incumplido en runtime aunque compile.",
-      "jira": null,
-      "invalidated_at": "2026-04-28T09:01:08.532Z",
-      "invalidated_by": "product-owner+claude",
-      "invalidation_note": "Diagnostico erroneo en raiz - falso positivo. La auditoria F-D 2026-04-28 ejecuto grep en CloseGoalUseCase.java y concluyo que el UC no invocaba accountReserve.release(). Investigacion forense durante setup F.2 al leer GoalClosureService.java (servicio invocado por el UC) revelo que close() SI ejecuta accountReserve.release(sourceAccount, reserved) en lineas 78-82. La cadena CloseGoalUseCase -> closureService.close() -> accountReserve.release() satisface RN-F024-12 + LLD seccion 6.3. La indireccion via service explica por que el grep en el UC no encontro la invocacion. RN-F024-12 SE CUMPLE en runtime. El fix propuesto en la deuda original (anadir release directo en el UC) habria producido double-release y dejado el saldo inconsistente. Se descarta. Patron equivalente al de LA-025-11 (descartada en favor de LA-025-12 que captura el problema real). Lesion procesual capturada en LA-026-06."
-    },
-    {
-      "id": "DEBT-053",
-      "area": "Backend / scheduling",
-      "priority": "Media",
-      "desc": "Drift LLD seccion 11 vs implementacion. LLD-backend-FEAT-024-sprint26.md seccion 11 prescribe que AutoContributionScheduler procese reglas con paginacion (PageRequest + while page.nextPageable()). La implementacion Fase D usa firma sin paginacion: List<GoalAutoRule> due = ruleRepo.findDueForExecution(start) y bucle for sobre toda la lista en memoria. AutoContributionScheduler.java javadoc reconoce la deuda explicitamente. Tambien esta sin alinear el nombre del metodo: el LLD dice findActiveDue, el codigo dice findDueForExecution.",
-      "fix": "Anadir overload paginado al puerto GoalAutoRuleRepositoryPort: Page<GoalAutoRule> findDueForExecution(Instant now, Pageable pageable). Implementar en JpaGoalAutoRuleAdapter delegando en JpaGoalAutoRuleRepository.findByActiveTrueAndNextExecutionAtLessThanEqual con Pageable. Refactorizar AutoContributionScheduler.runDueAutoContributions() para usar el bucle while con PageRequest.of(0, page-size de config). Estimacion: ~30 lineas + 1 metodo nuevo en cada capa.",
-      "sprint_target": "S27",
-      "origin": "auditoria-fase-D-2026-04-28",
-      "registered_at": "2026-04-28T08:36:11.321Z",
-      "status": "OPEN",
-      "evidence": "AutoContributionScheduler.java javadoc explicito declara la deuda. LLD-backend seccion 11 contradice el codigo en el nombre del metodo (findActiveDue) y en el patron de iteracion (page-by-page).",
-      "blocking": "Ninguno en S26: a la escala actual del proyecto la lectura no paginada cabe en memoria sin riesgo. Diferible a S27 sin impacto en G-4b.",
-      "jira": null
     }
   ],
   "jira_sprint": {
@@ -1215,98 +1090,9 @@
       "approved_at": "2026-04-27T11:13:24.214Z",
       "sprint": 26,
       "feature": "FEAT-024"
-    },
-    {
-      "gate": "G-3-pending",
-      "step": "3",
-      "approved_at": "2026-04-27T12:06:18.357Z",
-      "sprint": 26,
-      "feature": "FEAT-024"
-    },
-    {
-      "gate": "G-3",
-      "step": "3",
-      "approved_at": "2026-04-27T13:23:06.688Z",
-      "sprint": 26,
-      "feature": "FEAT-024"
-    },
-    {
-      "gate": "G-3",
-      "step": "3",
-      "approved_at": "2026-04-27T13:23:17.650Z",
-      "sprint": 26,
-      "feature": "FEAT-024"
-    },
-    {
-      "gate": "G-3b",
-      "step": "3b",
-      "approved_at": "2026-04-27T13:28:14.464Z",
-      "sprint": 26,
-      "feature": "FEAT-024"
-    },
-    {
-      "gate": "G-3b",
-      "step": "3b",
-      "approved_at": "2026-04-27T13:28:40.165Z",
-      "sprint": 26,
-      "feature": "FEAT-024"
     }
   ],
   "lessons_learned": [
-    {
-      "id": "LA-026-06",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "step": "4-phase-D-audit",
-      "type": "process/governance/audit",
-      "severity": "media",
-      "scope": "SOFIA-CORE",
-      "title": "audit-must-follow-invocation-chain-not-just-grep-target-file",
-      "problem": "Durante la auditoria de Fase D del Step 4 Sprint 26 se diagnostico DEBT-052 (CRITICA) afirmando que CloseGoalUseCase no invocaba accountReserve.release() y por tanto incumplia RN-F024-12 + LLD seccion 6.3. La auditoria se ejecuto via grep \"@Transactional|transferReserved|release\" en CloseGoalUseCase.java y concluyo viendo solo @Transactional sin invocaciones a release. La realidad: el UC delega en closureService.close(goalId) que internamente SI invoca accountReserve.release() (lineas 78-82 de GoalClosureService.java). El bug NO existia. Si se hubiera persistido la deuda y aplicado el fix propuesto (anadir release directo en el UC), se habria introducido un double-release real (release del service + release del UC) que dejaria el retained_balance en negativo.",
-      "description": "Patron de auditoria insuficiente: grep en archivo objetivo del analisis sin seguir la cadena de invocacion. Analogo al patron de LA-025-11 (diagnostico arquitectonico erroneo: afirmaba separacion docs/code cuando en realidad apps/ habia sido borrado del working tree - causa real captada por LA-025-12). En ambos casos: la herramienta fue grep, el sesgo fue interpretar la ausencia de match como ausencia de comportamiento. Auditoria robusta requiere expandir el grep a callees: para cada metodo invocado en el archivo objetivo, abrir el receptor y verificar si el comportamiento esperado se ejecuta alli. En este caso: closureService.close(goalId) se invocaba en linea 50 del UC pero la auditoria no abrio GoalClosureService.java para ver que hacia close(). Tiempo desperdiciado: ~25min de session generando deuda + tests + diff conceptual erroneo.",
-      "correction": "REGLA SUGERIDA (GR-AUDIT-002): auditorias de cumplimiento de comportamiento (RN-XXX-XX, LLD secciones de flujo) NO deben concluir basadas en grep del archivo objetivo. Protocolo obligatorio: (1) identificar el comportamiento esperado del LLD (en este caso: \"liberar reserva al cerrar\"); (2) localizar el punto de entrada (CloseGoalUseCase.execute); (3) listar TODAS las invocaciones a metodos no triviales dentro del punto de entrada (closureService.close, otpValidation.validate, goalRepo.findById, etc.); (4) para cada invocacion, leer el codigo del callee y registrar si contribuye al comportamiento esperado; (5) solo concluir incumplimiento si NINGUN callee en la cadena ejecuta el comportamiento. Aplicable a: auditorias Fase D-E pre-G-4b, code reviews Step 5, security audits Step 5b, validaciones Architect en Step 3. Promover a SOFIA-CORE y referenciar desde la skill code-reviewer/SKILL.md.",
-      "registered_at": "2026-04-28T09:01:08.532Z",
-      "approved_by": "product-owner",
-      "hitl_approved": true,
-      "approved_at": "2026-04-28T09:01:08.532Z",
-      "sofia_core_candidate": true,
-      "guardrail_proposed": "GR-AUDIT-002: auditorias de comportamiento deben seguir cadena de invocacion (callees), no solo grep en archivo objetivo. Conclusion de incumplimiento solo valida si NINGUN callee en la cadena cumple el comportamiento esperado.",
-      "related_las": [
-        "LA-025-11",
-        "LA-025-12"
-      ],
-      "detected_at": "2026-04-28T09:01:08.532Z",
-      "evidence": "DEBT-052 invalidada (status=INVALIDATED) tras descubrir que GoalClosureService.close() invoca accountReserve.release() internamente. El UC delega correctamente. Auditoria original solo hizo grep en CloseGoalUseCase.java sin abrir el callee.",
-      "promoted_to": null,
-      "promoted_at": null
-    },
-    {
-      "id": "LA-026-05",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "step": "4-phase-E-handoff",
-      "type": "process/governance/snapshots",
-      "severity": "baja",
-      "scope": "SOFIA-CORE",
-      "title": "snapshot-intermedio-redundante-cuando-git-history-cubre-reversa",
-      "problem": "Al cierre de Fase E del Step 4 Sprint 26 se intento generar un snapshot intermedio session-sprint26-step4-phaseDE-*.json analogo al snapshot phaseABC ya existente. Tres problemas afloraron: (a) duplicar 135KB de session.json en un unico tool call de write_file consume mucho contexto y compite con el resto del trabajo del turno (handoff, updates de session.json, verificacion); (b) si se opta por un snapshot reducido con solo metadatos + delta, el archivo NO pasa el test de un snapshot real (cp snapshot.json session.json no restaura el estado, rompe gen-global-dashboard.js que espera artifacts/gates/lessons_learned completos); (c) la justificacion original del snapshot phaseABC era cubrir un punto intermedio entre dos estados que git no veia, pero al cierre Fase E el session.json no se habia tocado desde 2026-04-27T14:09:31, por lo que el snapshot phaseABC + git HEAD ya cubrian la trazabilidad completa.",
-      "description": "El patron 'snapshot pre-update' establecido por phaseABC se trato como obligacion automatica al cierre de cada bloque de fases, sin reevaluar si el mecanismo de reversa ya estaba cubierto por otras vias. En este caso: (1) git HEAD = commit 1f63ee0 anterior a Step 4 cubre reversa total via 'git restore .sofia/session.json'; (2) snapshot phaseABC integro cubre el punto intermedio post-A+B+C; (3) el siguiente write a session.json al cierre Fase E sera commiteado y servira como snapshot implicito del cierre D+E. Anadir un cuarto snapshot manual phaseDE no aporta capacidad de reversa adicional - solo redundancia. Adicionalmente, el filesystem MCP de Claude no tiene primitiva user→user copy (solo write_file que requiere duplicar el contenido en el tool call, o sofia-shell con cp pero sin atomicidad transaccional con el resto del flow).",
-      "correction": "REGLA SUGERIDA (GR-SNAPSHOT-001): los snapshots manuales de session.json son OBLIGATORIOS solo en estos casos: (a) cierre de step completo (no fase intermedia); (b) cuando el siguiente write modificara campos que git no veria con claridad por mezclarse con cambios de otros campos; (c) cuando el branch no esta en git (ej. trabajo en clean room sin commit). En el resto de casos, git history (HEAD + commits posteriores) es el mecanismo canonico de reversa - cada commit de session.json ES un snapshot implicito. Para casos opcionales, registrar la decision en step_progress.snapshot_X_intentionally_omitted=true con rationale documentado. Aplicable a cualquier proyecto SOFIA con Git activo.",
-      "registered_at": "2026-04-27T15:18:00.000Z",
-      "approved_by": "product-owner",
-      "hitl_approved": true,
-      "approved_at": "2026-04-27T15:18:00.000Z",
-      "sofia_core_candidate": true,
-      "guardrail_proposed": "GR-SNAPSHOT-001: snapshots manuales de session.json obligatorios solo al cierre de step completo o cuando git history no cubre reversa con claridad; en otros casos documentar omision en step_progress.snapshot_X_intentionally_omitted con rationale",
-      "related_las": [
-        "LA-CORE-061",
-        "LA-CORE-067"
-      ],
-      "detected_at": "2026-04-27T15:18:00.000Z",
-      "evidence": "Step 4 Sprint 26 cierre Fase E - Angel decidio opcion 6 (sin snapshot, con LA documentada) tras reflexion conjunta sobre disponibilidad de mecanismos de reversa alternativos",
-      "promoted_to": null,
-      "promoted_at": null
-    },
     {
       "id": "LA-026-04",
       "sprint": 26,
@@ -1937,41 +1723,5 @@
       "sprint": 26,
       "feature": "FEAT-024"
     }
-  ],
-  "step4_progress": {
-    "status": "in_progress",
-    "phases_completed": [
-      "A_domain_ddl",
-      "B_domain_services",
-      "C_application",
-      "D_infrastructure",
-      "E_api"
-    ],
-    "phases_remaining": [
-      "F_tests",
-      "G_frontend",
-      "H_g4b_guardrail"
-    ],
-    "files_persisted": 52,
-    "estimated_files_remaining": 45,
-    "handoff_prepared_at": "2026-04-27T15:18:00.000Z",
-    "handoff_doc": "docs/handoffs/HANDOFF-sprint26-step4-fase-f.md",
-    "previous_handoffs": [
-      "docs/handoffs/HANDOFF-sprint26-step4-fase-d.md"
-    ],
-    "files_persisted_breakdown": {
-      "savings/": 47,
-      "account/AccountReservePort.java": 1,
-      "account/infrastructure/JpaAccountReserveAdapter.java": 1,
-      "V29__savings_goals.sql": 1,
-      "src/main/resources/application-prod.yml": 1,
-      "src/main/resources/application.yml": "modified",
-      "pom.xml": "modified"
-    },
-    "snapshots": [
-      ".sofia/snapshots/session-sprint26-step4-phaseABC-2026-04-27T14-08-44-095Z.json (cierre A+B+C, integro)"
-    ],
-    "snapshot_phaseDE_intentionally_omitted": true,
-    "snapshot_phaseDE_rationale": "Ver LA-026-05: snapshot intermedio omitido porque (a) git history cubre reversa pre-cambios, (b) snapshot phaseABC cubre punto intermedio integro, (c) el mismo session.json antes de este write era fisicamente identico al estado post-A+B+C (sin cambios desde 2026-04-27T14:09:31)"
-  }
+  ]
 }
