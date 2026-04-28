@@ -65,6 +65,37 @@ PASO 3 — Decidir flujo según status en disco
 - Cloud ID: 8898340d-94ed-45c2-8831-395d407a4e77
 - Paquete raíz Java: **com.experis.sofia.bankportal** (nunca es.meridian)
 
+## Arquitectura actual — modulith (no microservicios)
+
+BankPortal es un **monolito modular (modulith)** Spring Boot, NO una arquitectura de microservicios.
+
+- **Único deployable backend:** `apps/backend-2fa` (contenedor `bankportal-backend`, puerto 8081)
+- **24 módulos de dominio** en hexagonal estricto (api / application / domain / infrastructure):
+  account · audit · auth · beneficiary · bill · bizum · cards · dashboard · deposit · directdebit ·
+  export · kyc · loan · notification · pfm · privacy · profile · savings · scheduled · session ·
+  transaction · transfer · trusteddevice · twofa
+- **Infra compartida:** PostgreSQL 16 + Flyway · Redis 7 (SSE Pub/Sub, sesión blacklist) ·
+  MailHog SMTP · CoreBanking Mock (clientes en módulos `deposit`, `cards`, `bizum` y `loan` scoring)
+- **Cross-cutting:** JWT RS256 (ADR-005/015) · OTP/SCA reutilizable (FEAT-001) ·
+  ShedLock (ADR-026/028) · Actuator/Prometheus
+- **Saga local `@Transactional`** sobre core mock (ADR-016, Propuesto) — no saga distribuida
+
+### Histórico de la decisión (drift no formalizado)
+- **Sprint 1 — HLD-FEAT-001** etiquetó `backend-2fa` como *"Microservicio de autenticación 2FA"*
+  + `Auth Service` separado. **El `Auth Service` nunca se construyó**: el módulo `auth/`
+  (LoginController, AccountAndContextController, DevTokenController) se creó dentro de `backend-2fa`.
+- **Sprint 10 — ADR-016** descarta saga distribuida por sobreingeniería → primera decisión
+  formal contra microservicios (estado: Propuesto, sin promover a Aceptado).
+- **Sprint 13 — HLD-FEAT-013** introduce el término *"monolito modular"*.
+- **Sprint 20 — HLD-FEAT-018** lo consolida como lenguaje canónico.
+- **Pendiente:** ADR retroactivo que formalice la adopción de modulith y supersede el HLD-FEAT-001.
+
+### Implicación operativa para SOFIA
+Cualquier feature nueva añade un **módulo dentro de `backend-2fa`**, no un servicio nuevo.
+Si una feature exige un servicio independiente real, debe abrirse ADR explícito antes de Step 3.
+
+---
+
 ## Skills activos
 
 - Backend:  java-developer
