@@ -648,6 +648,29 @@
       "Verificacion: count savings .ts 21 -> 22 · GR-GIT-001 0 deletados · 5 ficheros balanceados",
       "Selectores resueltos: <app-savings-widget> declarado · routerLink=/objetivos resuelve SavingsModule",
       "Endpoint backend invocado: GET /api/v1/savings/dashboard-widget"
+    ],
+    "4_s26_phase_g_dot_5": [
+      "commit ESTE · cierre Fase G frontend completo · entrega de Step 4 a Fase H",
+      "docs/handoffs/HANDOFF-sprint26-step4-fase-h.md (17.9 KB · 11 secciones)",
+      "  Plan G-4b guardrail descompuesto en 5 sub-fases H.1..H.5",
+      "  H.1 mvn compile backend SUCCESS · 0 warnings nuevos",
+      "  H.2 ShedLock cableado (DEBT-051): SchedulingConfig + LockProvider + V18c apply + ShedLockEnabledIT",
+      "  H.3 SecurityConfig springdoc paths sin JWT (verificacion DEBT-048)",
+      "  H.4 validate-smoke-vs-openapi.js (DEBT-049)",
+      "  H.5 devops/SKILL.md checklist pre-G-7 (DEBT-050)",
+      "  Lista explicita -Dtest para G-4b (workaround DEBT-056 surefire-no-IT) documentada",
+      "  Trazabilidad de los 14 commits Fase G",
+      "  PASO 0 obligatorio para el nuevo chat (LA-018-01)",
+      "  11 LAs internas + 9 OBS para Step 5 Code Review documentadas en JSDoc",
+      "Resumen Fase G completa entregada:",
+      "  22 .ts savings frontend (5 G.0 + 7 G.1 dumb + 6 G.2 smart + 3 G.3 modales + 1 G.4 widget)",
+      "  4 ficheros integracion (app-routing + shell + dashboard.component + dashboard.module)",
+      "  ~209 KB TS source agregado en Fase G",
+      "  14 commits Fase G (a1dedca G.0 -> b00731d cierre G.4 + ESTE cierre G.5)",
+      "  Branch feature/FEAT-024-sprint26 sincronizada con origin",
+      "phases_completed actualizado: anade G_frontend al final del array",
+      "g_subphases_completed: [G.0, G.1, G.2, G.3, G.4, G.5] · g_subphases_remaining: []",
+      "Step 4 Developer: 100% codigo escrito · pendiente solo validacion guardrail Fase H"
     ]
   },
   "gates": {
@@ -937,9 +960,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 - Step 4 EN PROGRESO - Fase G.4 COMPLETA (SavingsWidget + integracion shell/dashboard/app-routing). 7 commits Fase G.2-G.4 (290f38b LOTE 2.1 · 9ef43ea LOTE 2.2 · cf80cd6 FIX auditoria · 9a8cf4e LOTE 2.3 cierre G.2 · 1a1bade chore cierre G.2 · cf29f9c LOTE G.3 · 386adfa LOTE G.4). Widget Mis Metas integrado en dashboard. Lazy /objetivos registrada. SIGUIENTE: Fase G.5 cierre Step 4 (persistencia final + cerrar fase G_frontend en phases_completed + handoff Fase H · G-4b guardrail). Tras G.5: Fase H (DEBT-051 ShedLock + DEBT-049/050 OpenAPI smoke + SecurityConfig springdoc + lista explicita -Dtest workaround DEBT-056).",
+  "resume_next": "Sprint 26 - Step 4 EN PROGRESO - Fase G COMPLETA (G.0-G.5) · entrega a Fase H pendiente. 14 commits Fase G en feature/FEAT-024-sprint26 sincronizada con origin. SIGUIENTE chat: Fase H (G-4b guardrail) descompuesta en 5 sub-fases H.1..H.5 documentadas en docs/handoffs/HANDOFF-sprint26-step4-fase-h.md. H.1 mvn compile backend · H.2 ShedLock cableado (DEBT-051) + V18c · H.3 SecurityConfig springdoc paths · H.4 validate-smoke-vs-openapi (DEBT-049) · H.5 devops SKILL.md checklist (DEBT-050). Tests Fase H usar lista explicita -Dtest (workaround DEBT-056). Tras Fase H -> cerrar Step 4 -> Step 5 Code Review HITL TL.",
   "sprint_closed": false,
-  "updated_at": "2026-05-07T18:39:54.932Z",
+  "updated_at": "2026-05-07T18:47:31.077Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -2277,13 +2300,14 @@
       "C_application",
       "D_infrastructure",
       "E_api",
-      "F_tests"
+      "F_tests",
+      "G_frontend"
     ],
     "phases_remaining": [
       "G_frontend",
       "H_g4b_guardrail"
     ],
-    "files_persisted": 78,
+    "files_persisted": 79,
     "estimated_files_remaining": 45,
     "handoff_prepared_at": "2026-04-27T15:18:00.000Z",
     "handoff_doc": "docs/handoffs/HANDOFF-sprint26-step4-fase-f.md",
@@ -2375,10 +2399,9 @@
       "G.1",
       "G.2",
       "G.3",
-      "G.4"
-    ],
-    "g_subphases_remaining": [
+      "G.4",
       "G.5"
-    ]
+    ],
+    "g_subphases_remaining": []
   }
 }
