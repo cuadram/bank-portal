@@ -574,6 +574,29 @@
       "Total: 7 dumb components · 23,731 bytes Java/TS source · 3 commits LOTE 1+2+3",
       "GR-GIT-001 PASS · sintaxis 7/7 ficheros braces/parens balanceados",
       "Fidelidad prototipo PROTO-FEAT-024-sprint26.html: extraccion 1:1 desde lineas 186-202 (CSS tokens), 1230-1322 (goal-card), 1452-1462 (auto-rule-summary), 1518-1525 (category-picker), 1477-1614 (create), 161 (empty-state)"
+    ],
+    "4_s26_phase_g_dot_2": [
+      "LOTE 2.1 (commit 290f38b · 9.7 KB · 2 components)",
+      "  SavingsPageComponent (1.0 KB · container router-outlet)",
+      "  GoalListComponent (8.7 KB · smart US-024-02 · sin filtro · OnPush+markForCheck)",
+      "LOTE 2.2 (commit 9ef43ea · 25.8 KB · 1 component)",
+      "  GoalCreateFormComponent (smart US-024-01 · ReactiveForm + icon-picker 12 + color-picker 8 + summary-box preview tiempo real + alert limite 10)",
+      "FIX auditoria PO (commit cf80cd6 · 4 bugs corregidos)",
+      "  Bug #1 OnPush+markForCheck en GoalList (CRITICO runtime)",
+      "  Bug #2 err.error.error campo correcto (NO code) en GoalCreateForm",
+      "  Bug #3 MAX_GOALS_REACHED es 409 CONFLICT (NO 422) en GoalCreateForm",
+      "  Bug #4 400 VALIDATION_FAILED usar backendMsg formato campo:msg",
+      "LOTE 2.3 (commit 9a8cf4e · 57.4 KB · 3 components + routing)",
+      "  GoalDetailComponent (26.4 KB · smart US-024-03 · pantalla 1325-1474 prototipo · OnPush+markForCheck · indexMilestones O(1))",
+      "  ContributionHistoryComponent (12.9 KB · smart paginado · GET /goals/:id/contributions sin @angular/cdk · timeline-row icons MANUAL/AUTO/FAILED)",
+      "  GoalEditFormComponent (18.2 KB · smart US-024-06 · prefill+belowReservedValidator RN-F024-12 · status ACTIVE/PAUSED only)",
+      "savings-routing.module.ts (1.9 KB · 4 rutas reales bajo SavingsPage outlet · goalOwnerGuard CanActivateFn)",
+      "savings.module.ts (declarations 10 -> 13)",
+      "TOTAL Fase G.2: 6 smart components (5 nuevos + 1 container) + routing real · 92.9 KB TS source",
+      "Decisiones documentadas para Step 5: GoalDetail no usa GoalProgressBar G.1 (proto height 12px) · GoalDetail no usa GoalProjectionBanner G.1 (sidebar vertical vs banner horizontal) · maskedAccount placeholder hasta backend enriquezca DTO · ContributionHistory NO mezcla milestones (contrato DTO los separa)",
+      "Endpoints invocados: GET /goals?status=ACTIVE · POST /goals · GET /goals/:id · PUT /goals/:id · GET /goals/:id/contributions · DELETE /goals/:id/auto-rule",
+      "Pendientes G.3: ContributionModal (US-024-04) + AutoRuleForm (US-024-05) + GoalCloseModal SCA (RN-F024-11) + 2 rutas /:id/aportar /:id/auto",
+      "Pendiente G.4: SavingsWidget + app-routing lazy + shell nav item + dashboard slot"
     ]
   },
   "gates": {
@@ -863,9 +886,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 - Step 4 EN PROGRESO - Fase G.1 COMPLETA (7/7 dumb components: CategoryIcon, GoalProgressBar, GoalProjectionBanner, CategoryPicker, SavingsEmptyState, AutoRuleSummary, GoalCard). 3 commits LOTE 1+2+3. SIGUIENTE: Fase G.2 smart screens (SavingsPage + GoalList + GoalCreateForm + GoalDetail + ContributionHistory + GoalEditForm) + completar savings-routing.module.ts con 6 rutas reales. Tras G.2: G.3 modales+SCA, G.4 widget+integracion shell, G.5 cierre+handoff Fase H.",
+  "resume_next": "Sprint 26 - Step 4 EN PROGRESO - Fase G.2 COMPLETA (6 smart components: SavingsPage + GoalList + GoalCreateForm + GoalDetail + ContributionHistory + GoalEditForm). 4 commits Fase G.2 (290f38b LOTE 2.1 · 9ef43ea LOTE 2.2 · cf80cd6 FIX auditoria PO 4 bugs · 9a8cf4e LOTE 2.3 cierre). Routing real con goalOwnerGuard. SIGUIENTE: Fase G.3 modales (ContributionModal US-024-04 + AutoRuleForm US-024-05 + GoalCloseModal SCA RN-F024-11) + 2 rutas /:id/aportar /:id/auto. Tras G.3: G.4 widget+integracion shell+dashboard. Tras G.4: G.5 cierre+handoff Fase H.",
   "sprint_closed": false,
-  "updated_at": "2026-05-07T15:16:31.759Z",
+  "updated_at": "2026-05-07T16:55:47.077Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -2209,7 +2232,7 @@
       "G_frontend",
       "H_g4b_guardrail"
     ],
-    "files_persisted": 64,
+    "files_persisted": 70,
     "estimated_files_remaining": 45,
     "handoff_prepared_at": "2026-04-27T15:18:00.000Z",
     "handoff_doc": "docs/handoffs/HANDOFF-sprint26-step4-fase-f.md",
@@ -2224,7 +2247,7 @@
       "src/main/resources/application-prod.yml": 1,
       "src/main/resources/application.yml": "modified",
       "pom.xml": "modified",
-      "savings/frontend/": "12 .ts (5 G.0 + 7 G.1 dumb components)"
+      "savings/frontend/": "18 .ts (5 G.0 + 7 G.1 dumb + 6 G.2 smart: SavingsPage container + GoalList + GoalCreateForm + GoalDetail + ContributionHistory + GoalEditForm) + savings-routing.module 4 rutas reales"
     },
     "snapshots": [
       ".sofia/snapshots/session-sprint26-step4-phaseABC-2026-04-27T14-08-44-095Z.json (cierre A+B+C, integro)"
@@ -2297,10 +2320,10 @@
     },
     "g_subphases_completed": [
       "G.0",
-      "G.1"
+      "G.1",
+      "G.2"
     ],
     "g_subphases_remaining": [
-      "G.2",
       "G.3",
       "G.4",
       "G.5"
