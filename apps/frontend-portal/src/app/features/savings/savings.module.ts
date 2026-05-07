@@ -5,7 +5,10 @@
  * Cargado desde app-routing.module.ts en /objetivos (registro pendiente Fase G.4).
  *
  * G.0: andamiaje (declarations vacio).
- * G.1: 7 componentes dumb. LOTE 1 = 3 primitivos. LOTE 2 = +CategoryPicker + EmptyState.
+ * G.1: 7 componentes dumb COMPLETO.
+ *   LOTE 1 = CategoryIcon + GoalProgressBar + GoalProjectionBanner.
+ *   LOTE 2 = CategoryPicker + SavingsEmptyState.
+ *   LOTE 3 = AutoRuleSummary + GoalCard (depende LOTE 1).
  * G.2..G.4: smart components, modales, widget.
  */
 import { NgModule } from '@angular/core';
@@ -20,6 +23,8 @@ import { GoalProgressBarComponent }         from './components/goal-progress-bar
 import { GoalProjectionBannerComponent }    from './components/goal-projection-banner/goal-projection-banner.component';
 import { CategoryPickerComponent }          from './components/category-picker/category-picker.component';
 import { SavingsEmptyStateComponent }       from './components/savings-empty-state/savings-empty-state.component';
+import { AutoRuleSummaryComponent }         from './components/auto-rule-summary/auto-rule-summary.component';
+import { GoalCardComponent }                from './components/goal-card/goal-card.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +32,9 @@ import { SavingsEmptyStateComponent }       from './components/savings-empty-sta
     GoalProgressBarComponent,
     GoalProjectionBannerComponent,
     CategoryPickerComponent,
-    SavingsEmptyStateComponent
+    SavingsEmptyStateComponent,
+    AutoRuleSummaryComponent,
+    GoalCardComponent
   ],
   imports: [
     CommonModule,

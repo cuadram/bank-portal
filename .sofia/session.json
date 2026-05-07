@@ -560,6 +560,20 @@
       "apps/backend-2fa/src/test/resources/application-integration-compose.yml MODIFIED (+22 lineas) - prerrequisito F.4, fix bug Fase E (LA-026-07/DEBT-054)",
       "apps/backend-2fa/src/test/resources/db/savings-test-fixtures.sql NUEVO (2 users + 2 accounts + 2 balances, idempotente)",
       "apps/backend-2fa/src/test/java/com/experis/sofia/bankportal/integration/SavingsIntegrationTestBase.java NUEVO (paralelo a BizumIntegrationTestBase)"
+    ],
+    "4_s26_phase_g_dot_1": [
+      "CategoryIconComponent (1820 bytes · RN-F024-07 · emoji 40x40 · WCAG aria-label)",
+      "GoalProgressBarComponent (2400 bytes · US-024-02/03/08 · variants ok/warn/full · clamping defensivo)",
+      "GoalProjectionBannerComponent (3327 bytes · RN-F024-08 · variants ok/warn · Intl es-ES)",
+      "CategoryPickerComponent (2927 bytes · RN-F024-07 · select tipado [(ngModel)] LA-CORE-057)",
+      "SavingsEmptyStateComponent (2312 bytes · UX · CTA primary · patron heredado PFM)",
+      "AutoRuleSummaryComponent (4414 bytes · US-024-05 · Intl es-ES amount+date · botonera condicional active)",
+      "GoalCardComponent (6431 bytes · US-024-02 · compone CategoryIcon + GoalProgressBar · keyboard-accessible LA-CORE-068)",
+      "savings.module.ts declarations: 7 componentes G.1 declarados",
+      "savings.models.ts GOAL_CATEGORY_ICON migrado de Material Icons strings a emoji unicode (decision PO P2)",
+      "Total: 7 dumb components · 23,731 bytes Java/TS source · 3 commits LOTE 1+2+3",
+      "GR-GIT-001 PASS · sintaxis 7/7 ficheros braces/parens balanceados",
+      "Fidelidad prototipo PROTO-FEAT-024-sprint26.html: extraccion 1:1 desde lineas 186-202 (CSS tokens), 1230-1322 (goal-card), 1452-1462 (auto-rule-summary), 1518-1525 (category-picker), 1477-1614 (create), 161 (empty-state)"
     ]
   },
   "gates": {
@@ -849,9 +863,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 - Step 4 EN PROGRESO - Fases A-E backend + F (143/143 tests verde: 116 unit commit 2c6c258 + 27 IT) COMMITEADAS. Fase F.4 cierra con 27 IT pattern BizumIntegrationTestBase contra postgres+redis del compose externo (NO Testcontainers - LA-026-08). 3 deudas nuevas: DEBT-054 yaml-deep-merge, DEBT-055 PfmControllerIT-falsified-PASS-S25, DEBT-056 surefire-no-include-IT. 2 LAs nuevas sofia_core_candidate: LA-026-07 yaml-no-deep-merge (GR-CONFIG-001), LA-026-08 testcontainers-docker-from-docker-macos (GR-IT-001). 4 observations_for_step5 en step4_progress.fase_F_integration_tests. SIGUIENTE: Fase G frontend (18 componentes Angular per LLD seccion 5 + LA-CORE-056 fidelidad bloqueante + LA-CORE-067 fragmentacion). Tras G: Fase H g4b_guardrail (DEBT-051 ShedLock fix + V18c apply manual + Docker rebuild + checklist fidelidad + commit final Step 4).",
+  "resume_next": "Sprint 26 - Step 4 EN PROGRESO - Fase G.1 COMPLETA (7/7 dumb components: CategoryIcon, GoalProgressBar, GoalProjectionBanner, CategoryPicker, SavingsEmptyState, AutoRuleSummary, GoalCard). 3 commits LOTE 1+2+3. SIGUIENTE: Fase G.2 smart screens (SavingsPage + GoalList + GoalCreateForm + GoalDetail + ContributionHistory + GoalEditForm) + completar savings-routing.module.ts con 6 rutas reales. Tras G.2: G.3 modales+SCA, G.4 widget+integracion shell, G.5 cierre+handoff Fase H.",
   "sprint_closed": false,
-  "updated_at": "2026-05-04T16:36:02.176Z",
+  "updated_at": "2026-05-07T15:16:31.759Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -2195,7 +2209,7 @@
       "G_frontend",
       "H_g4b_guardrail"
     ],
-    "files_persisted": 52,
+    "files_persisted": 64,
     "estimated_files_remaining": 45,
     "handoff_prepared_at": "2026-04-27T15:18:00.000Z",
     "handoff_doc": "docs/handoffs/HANDOFF-sprint26-step4-fase-f.md",
@@ -2209,7 +2223,8 @@
       "V29__savings_goals.sql": 1,
       "src/main/resources/application-prod.yml": 1,
       "src/main/resources/application.yml": "modified",
-      "pom.xml": "modified"
+      "pom.xml": "modified",
+      "savings/frontend/": "12 .ts (5 G.0 + 7 G.1 dumb components)"
     },
     "snapshots": [
       ".sofia/snapshots/session-sprint26-step4-phaseABC-2026-04-27T14-08-44-095Z.json (cierre A+B+C, integro)"
@@ -2279,6 +2294,16 @@
         "OBS-003: field naming smell SavingsController - listGoals campo y metodo HTTP comparten nombre",
         "OBS-004: jwt.session-ttl-seconds anadida en application-integration-compose.yml; sin ella JwtTokenProvider.generate produce tokens expirados al instante. Marcado en DEBT-054."
       ]
-    }
+    },
+    "g_subphases_completed": [
+      "G.0",
+      "G.1"
+    ],
+    "g_subphases_remaining": [
+      "G.2",
+      "G.3",
+      "G.4",
+      "G.5"
+    ]
   }
 }
