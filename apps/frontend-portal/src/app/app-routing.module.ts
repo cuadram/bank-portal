@@ -56,6 +56,11 @@ const routes: Routes = [
         path: 'pfm',
         loadChildren: () => import('./features/pfm/pfm.module').then(m => m.PfmModule)
       },
+      // FEAT-024 Sprint 26 — Objetivos de Ahorro (LA-FRONT-001): lazy module /objetivos
+      {
+        path: 'objetivos',
+        loadChildren: () => import('./features/savings/savings.module').then(m => m.SavingsModule)
+      },
       // FEAT-019 Sprint 21 — LA-FRONT-001: rutas registradas (DEBT-039 resuelto)
       {
         path: 'perfil',

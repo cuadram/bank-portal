@@ -52,6 +52,10 @@ import {
       <div class="pfm-widget-slot">
         <app-pfm-widget></app-pfm-widget>
       </div>
+      <!-- FEAT-024 Sprint 26 — Widget Mis Metas (US-024-08: GET /dashboard-widget · degradación elegante) -->
+      <div class="savings-widget-slot">
+        <app-savings-widget></app-savings-widget>
+      </div>
     </div>
   `,
   styles: [`
