@@ -10,7 +10,9 @@
  *   LOTE 2 = CategoryPicker + SavingsEmptyState.
  *   LOTE 3 = AutoRuleSummary + GoalCard (depende LOTE 1).
  * G.2 LOTE 2.1: SavingsPage (container) + GoalList (smart US-024-02).
- * G.2..G.4 restante: GoalCreateForm, GoalDetail, ContributionHistory, GoalEditForm, modales, widget.
+ * G.2 LOTE 2.2: GoalCreateForm (smart US-024-01 · ReactiveForm + icon-picker 12 + color-picker 8).
+ * G.2 LOTE 2.3: GoalDetail + ContributionHistory + GoalEditForm + routing real.
+ * G.3..G.4: modales (contribute, autorule, close+SCA) + widget dashboard.
  */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -28,6 +30,7 @@ import { AutoRuleSummaryComponent }         from './components/auto-rule-summary
 import { GoalCardComponent }                from './components/goal-card/goal-card.component';
 import { SavingsPageComponent }            from './components/savings-page/savings-page.component';
 import { GoalListComponent }               from './components/goal-list/goal-list.component';
+import { GoalCreateFormComponent }         from './components/goal-create-form/goal-create-form.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +42,8 @@ import { GoalListComponent }               from './components/goal-list/goal-lis
     AutoRuleSummaryComponent,
     GoalCardComponent,
     SavingsPageComponent,
-    GoalListComponent
+    GoalListComponent,
+    GoalCreateFormComponent
   ],
   imports: [
     CommonModule,
