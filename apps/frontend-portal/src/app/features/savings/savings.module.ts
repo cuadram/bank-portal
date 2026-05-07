@@ -9,7 +9,8 @@
  *   LOTE 1 = CategoryIcon + GoalProgressBar + GoalProjectionBanner.
  *   LOTE 2 = CategoryPicker + SavingsEmptyState.
  *   LOTE 3 = AutoRuleSummary + GoalCard (depende LOTE 1).
- * G.2..G.4: smart components, modales, widget.
+ * G.2 LOTE 2.1: SavingsPage (container) + GoalList (smart US-024-02).
+ * G.2..G.4 restante: GoalCreateForm, GoalDetail, ContributionHistory, GoalEditForm, modales, widget.
  */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -25,6 +26,8 @@ import { CategoryPickerComponent }          from './components/category-picker/c
 import { SavingsEmptyStateComponent }       from './components/savings-empty-state/savings-empty-state.component';
 import { AutoRuleSummaryComponent }         from './components/auto-rule-summary/auto-rule-summary.component';
 import { GoalCardComponent }                from './components/goal-card/goal-card.component';
+import { SavingsPageComponent }            from './components/savings-page/savings-page.component';
+import { GoalListComponent }               from './components/goal-list/goal-list.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +37,9 @@ import { GoalCardComponent }                from './components/goal-card/goal-ca
     CategoryPickerComponent,
     SavingsEmptyStateComponent,
     AutoRuleSummaryComponent,
-    GoalCardComponent
+    GoalCardComponent,
+    SavingsPageComponent,
+    GoalListComponent
   ],
   imports: [
     CommonModule,
