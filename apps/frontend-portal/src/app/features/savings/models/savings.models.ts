@@ -154,12 +154,12 @@ export interface Page<T> {
 // ---------------------------------------------------------------------------
 
 export const GOAL_CATEGORY_ICON: Record<GoalCategory, string> = {
-  VIAJE:      'flight',
-  HOGAR:      'home',
-  VEHICULO:   'directions_car',
-  EMERGENCIA: 'health_and_safety',
-  EDUCACION:  'school',
-  OTROS:      'savings'
+  VIAJE:      '✈️',
+  HOGAR:      '🏠',
+  VEHICULO:   '🚗',
+  EMERGENCIA: '🛡️',
+  EDUCACION:  '🎓',
+  OTROS:      '🎯'
 };
 
 export const GOAL_CATEGORY_COLOR: Record<GoalCategory, string> = {
