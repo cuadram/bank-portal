@@ -12,7 +12,7 @@
  * G.2 LOTE 2.1: SavingsPage (container) + GoalList (smart US-024-02).
  * G.2 LOTE 2.2: GoalCreateForm (smart US-024-01 · ReactiveForm + icon-picker 12 + color-picker 8).
  * G.2 LOTE 2.3: GoalDetail + ContributionHistory + GoalEditForm + routing real (CIERRE G.2).
- * G.3 pendiente: modales contribute + autorule-form + close+SCA.
+ * G.3: modales contribute (US-024-04) + autorule-form (US-024-05) + close+SCA (RN-F024-11 · OtpInputComponent standalone reutilizado).
  * G.4 pendiente: SavingsWidgetComponent dashboard + integracion shell + app-routing.
  */
 import { NgModule } from '@angular/core';
@@ -35,6 +35,12 @@ import { GoalCreateFormComponent }         from './components/goal-create-form/g
 import { GoalDetailComponent }             from './components/goal-detail/goal-detail.component';
 import { ContributionHistoryComponent }    from './components/contribution-history/contribution-history.component';
 import { GoalEditFormComponent }           from './components/goal-edit-form/goal-edit-form.component';
+import { ContributionModalComponent }      from './components/contribution-modal/contribution-modal.component';
+import { AutoRuleFormComponent }           from './components/auto-rule-form/auto-rule-form.component';
+import { GoalCloseModalComponent }         from './components/goal-close-modal/goal-close-modal.component';
+
+// Standalone component reutilizado para el flujo SCA RN-F024-11 (LLD §7)
+import { OtpInputComponent } from '../../shared/components/otp-input/otp-input.component';
 
 @NgModule({
   declarations: [
@@ -50,14 +56,18 @@ import { GoalEditFormComponent }           from './components/goal-edit-form/goa
     GoalCreateFormComponent,
     GoalDetailComponent,
     ContributionHistoryComponent,
-    GoalEditFormComponent
+    GoalEditFormComponent,
+    ContributionModalComponent,
+    AutoRuleFormComponent,
+    GoalCloseModalComponent
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
     RouterModule,
-    SavingsRoutingModule
+    SavingsRoutingModule,
+    OtpInputComponent
   ]
 })
 export class SavingsModule {}
