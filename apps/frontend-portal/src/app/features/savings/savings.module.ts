@@ -11,8 +11,9 @@
  *   LOTE 3 = AutoRuleSummary + GoalCard (depende LOTE 1).
  * G.2 LOTE 2.1: SavingsPage (container) + GoalList (smart US-024-02).
  * G.2 LOTE 2.2: GoalCreateForm (smart US-024-01 · ReactiveForm + icon-picker 12 + color-picker 8).
- * G.2 LOTE 2.3: GoalDetail + ContributionHistory + GoalEditForm + routing real.
- * G.3..G.4: modales (contribute, autorule, close+SCA) + widget dashboard.
+ * G.2 LOTE 2.3: GoalDetail + ContributionHistory + GoalEditForm + routing real (CIERRE G.2).
+ * G.3 pendiente: modales contribute + autorule-form + close+SCA.
+ * G.4 pendiente: SavingsWidgetComponent dashboard + integracion shell + app-routing.
  */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -31,6 +32,9 @@ import { GoalCardComponent }                from './components/goal-card/goal-ca
 import { SavingsPageComponent }            from './components/savings-page/savings-page.component';
 import { GoalListComponent }               from './components/goal-list/goal-list.component';
 import { GoalCreateFormComponent }         from './components/goal-create-form/goal-create-form.component';
+import { GoalDetailComponent }             from './components/goal-detail/goal-detail.component';
+import { ContributionHistoryComponent }    from './components/contribution-history/contribution-history.component';
+import { GoalEditFormComponent }           from './components/goal-edit-form/goal-edit-form.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +47,10 @@ import { GoalCreateFormComponent }         from './components/goal-create-form/g
     GoalCardComponent,
     SavingsPageComponent,
     GoalListComponent,
-    GoalCreateFormComponent
+    GoalCreateFormComponent,
+    GoalDetailComponent,
+    ContributionHistoryComponent,
+    GoalEditFormComponent
   ],
   imports: [
     CommonModule,
