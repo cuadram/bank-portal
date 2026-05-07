@@ -1,7 +1,7 @@
 # LESSONS LEARNED — bank-portal
 
-> Generado: 2026-04-24T13:03:07.451Z | Total: 42 LAs
-> LAs proyecto: 10 | LAs SOFIA-CORE integradas: 32
+> Generado: 2026-05-04T16:36:02.178Z | Total: 60 LAs
+> LAs proyecto: 11 | LAs SOFIA-CORE integradas: 49
 
 ## LAs del Proyecto
 
@@ -105,10 +105,56 @@ _Registrada: 2026-04-16T20:34:14.884Z_
 
 ---
 
+### LA-024-01 · 
+
+**Descripción:** 
+
+---
+
 ## LAs SOFIA-CORE Integradas
 
 > Estas LAs han sido promovidas desde otros proyectos y aprobadas por el PO.
 > Son de aplicación obligatoria en todos los proyectos SOFIA.
+
+### LA-026-08 · tooling/testcontainers/docker ⭐ CORE
+
+**Descripción:** Hallazgo lateral durante F.4. Consecuencia mas grave: TODOS los ITs del proyecto que heredan IntegrationTestBase (DashboardJpaAdapterIT, AccountRepositoryAdapterIT, LoginControllerIT, AccountUnlockControllerIT, LoginContextControllerIT, SseNotificationControllerIT, SecurityConfigHistoryControllerIT, StatementControllerIT, SpringContextIT) son inejecutables en patron canonico del proyecto. Solo ITs Bizum (BizumIntegrationTestBase + integration-compose contra postgres+redis externo) son ejecutables. Esto explica retroactivamente que QA-FEAT-023 incluyera PfmControllerIT como PASS sin haberse ejecutado (DEBT-055).
+
+**Corrección:** Tres acciones: (a) Sprint 27: migrar IntegrationTestBase-children al patron BizumIntegrationTestBase (compose externo + @Sql fixtures). ~13 archivos a refactorizar, no toca produccion. (b) Documentar limitacion docker-from-docker macOS y patron canonico de ITs en CLAUDE.md. (c) Promover SOFIA-CORE: ITs-via-Testcontainers solo funciona si mvn nativo en host. Para entornos contenerizados (CI Jenkins en Docker, Claude sofia-shell-aislada) preferir patron compose-externo.
+
+_SOFIA-CORE v? · Importada: ?_
+
+---
+
+### LA-026-07 · tooling/spring-boot/config ⭐ CORE
+
+**Descripción:** El comportamiento Spring Boot YAML profile-specific es no-intuitivo. Documentacion oficial 3.3 lo menciona pero no de forma destacada. Un cambio aparentemente seguro en main puede romper en silencio cualquier perfil que ya tenga el subarbol redefinido. Combinado con DEBT-056 (surefire no ejecuta IT.java en lifecycle), el bug puede vivir indefinidamente sin deteccion.
+
+**Corrección:** GR-CONFIG-001: cuando se modifique application.yml main anadiendo o cambiando subarboles bajo top-level keys ya redefinidos en algun profile-yml, el commit DEBE incluir replicacion del cambio en TODOS los profile-yml afectados. Validacion: .sofia/scripts/validate-yaml-profiles.js parsea profile-yml y verifica que top-level keys redefinidos tienen al menos las mismas subkeys que main. Bloquear pre-commit + G-4b. Alternativa estructural: application-shared.yml + spring.config.import.
+
+_SOFIA-CORE v? · Importada: ?_
+
+---
+
+### LA-026-06 · process/governance/audit ⭐ CORE
+
+**Descripción:** Patron de auditoria insuficiente: grep en archivo objetivo del analisis sin seguir la cadena de invocacion. Analogo al patron de LA-025-11 (diagnostico arquitectonico erroneo: afirmaba separacion docs/code cuando en realidad apps/ habia sido borrado del working tree - causa real captada por LA-025-12). En ambos casos: la herramienta fue grep, el sesgo fue interpretar la ausencia de match como ausencia de comportamiento. Auditoria robusta requiere expandir el grep a callees: para cada metodo invocado en el archivo objetivo, abrir el receptor y verificar si el comportamiento esperado se ejecuta alli. En este caso: closureService.close(goalId) se invocaba en linea 50 del UC pero la auditoria no abrio GoalClosureService.java para ver que hacia close(). Tiempo desperdiciado: ~25min de session generando deuda + tests + diff conceptual erroneo.
+
+**Corrección:** REGLA SUGERIDA (GR-AUDIT-002): auditorias de cumplimiento de comportamiento (RN-XXX-XX, LLD secciones de flujo) NO deben concluir basadas en grep del archivo objetivo. Protocolo obligatorio: (1) identificar el comportamiento esperado del LLD (en este caso: "liberar reserva al cerrar"); (2) localizar el punto de entrada (CloseGoalUseCase.execute); (3) listar TODAS las invocaciones a metodos no triviales dentro del punto de entrada (closureService.close, otpValidation.validate, goalRepo.findById, etc.); (4) para cada invocacion, leer el codigo del callee y registrar si contribuye al comportamiento esperado; (5) solo concluir incumplimiento si NINGUN callee en la cadena ejecuta el comportamiento. Aplicable a: auditorias Fase D-E pre-G-4b, code reviews Step 5, security audits Step 5b, validaciones Architect en Step 3. Promover a SOFIA-CORE y referenciar desde la skill code-reviewer/SKILL.md.
+
+_SOFIA-CORE v? · Importada: ?_
+
+---
+
+### LA-026-05 · process/governance/snapshots ⭐ CORE
+
+**Descripción:** El patron 'snapshot pre-update' establecido por phaseABC se trato como obligacion automatica al cierre de cada bloque de fases, sin reevaluar si el mecanismo de reversa ya estaba cubierto por otras vias. En este caso: (1) git HEAD = commit 1f63ee0 anterior a Step 4 cubre reversa total via 'git restore .sofia/session.json'; (2) snapshot phaseABC integro cubre el punto intermedio post-A+B+C; (3) el siguiente write a session.json al cierre Fase E sera commiteado y servira como snapshot implicito del cierre D+E. Anadir un cuarto snapshot manual phaseDE no aporta capacidad de reversa adicional - solo redundancia. Adicionalmente, el filesystem MCP de Claude no tiene primitiva user→user copy (solo write_file que requiere duplicar el contenido en el tool call, o sofia-shell con cp pero sin atomicidad transaccional con el resto del flow).
+
+**Corrección:** REGLA SUGERIDA (GR-SNAPSHOT-001): los snapshots manuales de session.json son OBLIGATORIOS solo en estos casos: (a) cierre de step completo (no fase intermedia); (b) cuando el siguiente write modificara campos que git no veria con claridad por mezclarse con cambios de otros campos; (c) cuando el branch no esta en git (ej. trabajo en clean room sin commit). En el resto de casos, git history (HEAD + commits posteriores) es el mecanismo canonico de reversa - cada commit de session.json ES un snapshot implicito. Para casos opcionales, registrar la decision en step_progress.snapshot_X_intentionally_omitted=true con rationale documentado. Aplicable a cualquier proyecto SOFIA con Git activo.
+
+_SOFIA-CORE v? · Importada: ?_
+
+---
 
 ### LA-026-04 · process/governance ⭐ CORE
 
@@ -430,47 +476,133 @@ _SOFIA-CORE v2.7.3 · Importada: 2026-04-24T13:03:07.442Z_
 
 ---
 
+### LA-CORE-075 · governance / tooling / process-isolation ⭐ CORE
 
-### LA-024-01 · ux-prototype-inheritance ⭐
+**Descripción:** create-file-tool-no-persiste-en-disco-real-en-sesiones-sofia-core: Durante la verificación independiente del sub-paso 1.6 Step 1 S02 (aud
 
-**Sprint:** 26 · **Step:** 2c · **Fecha:** 2026-04-27 · **Categoría:** UX/UI Designer Agent
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
-**Problema:**
-Al heredar el prototipo del sprint anterior (LA-CORE-050 PASO 0), inyectar las nuevas pantallas como `<section class="proto-screen">` desnudas dentro del último `<main>` del prototipo padre causa que sólo sean visibles cuando ese `<main>` está activo. Resultado en sprint 26: la pantalla `screen-savings-list` quedó vacía al abrir el prototipo, pese a tener `class="proto-screen active"` y `display:block`.
-
-**Causa raíz:**
-El patrón estructural del prototipo BankPortal envuelve cada pantalla en un bloque autónomo:
-
-```html
-<div class="proto-screen [active]" id="screen-X">
-  <div class="app-shell">
-    <div class="app-header">…</div>
-    <div class="app-layout">
-      <aside class="app-sidebar">…</aside>
-      <main class="app-content">CONTENIDO PANTALLA</main>
-    </div>
-  </div>
-</div>
-```
-
-Inyectar contenido como `<section>` dentro del `<main>` de **otra** pantalla rompe ese aislamiento: el toggle `.active` del padre la oculta junto con todo el contenido envolvente.
-
-**Corrección canónica:**
-
-1. **PASO 0 (LA-CORE-050)** — copiar el prototipo padre como base.
-2. **PASO 0.1 (NUEVO)** — extraer el shell completo (`<div class="app-shell">` … `<main class="app-content">` apertura + cierre `</main></div></div></div>`) y replicarlo por cada pantalla nueva.
-3. **PASO 0.2** — en el sidebar duplicado de cada pantalla nueva, marcar el item del módulo activo (`active` en su `<div class="sidebar-item">`).
-4. **PASO 0.3** — solo una pantalla puede tener `class="proto-screen active"` al inicio (la primera del módulo nuevo); las demás `class="proto-screen"`.
-5. **VALIDACIÓN obligatoria pre-G-2c:** balance de tags por bloque proto-screen (cada bloque debe tener `divs_open == divs_close`).
-
-**Evidencia:**
-- `docs/ux-ui/prototypes/PROTO-FEAT-024-sprint26.html` — refactor 130 KB → 143.5 KB, 11 pantallas heredadas + 5 savings, 16 main / 16 aside / 1026 div balanceados
-- Validación con `node -e` script comprobando balance por bloque proto-screen
-
-**Aplica a:**
-- UX/UI Designer Agent · Step 2c (todos los sprints futuros con prototipo heredado)
-- Cualquier extensión del prototipo de sprints previos al actual
-
-**Refs cruzadas:** LA-CORE-050 (herencia base), LA-CORE-067 (limit 6 KB MCP buffer — usado durante el fix con heredoc cat por chunks)
+_SOFIA-CORE v2.7.16 · Importada: 2026-05-04T16:36:02.168Z_
 
 ---
+
+### LA-CORE-091 · process/protocol · meta-regla ⭐ CORE
+
+**Descripción:** toda-alteracion-de-LA-debe-usar-flujo-canonico-contributions-JSON: Durante la ejecución de SC-35 (rescate de 3 LAs huérfanas: LA-CORE-001, LA-CORE-0
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.7.16 · Importada: 2026-05-04T16:36:02.168Z_
+
+---
+
+### LA-CORE-092 · governance / schema-evolution ⭐ CORE
+
+**Descripción:** gr-core-029-scope-clarification-not-applicable-in-core-sessions: Al arrancar Sprint S02 Mini B-full · Step 1 INIT, se detectó una contradicción oper
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.7.16 · Importada: 2026-05-04T16:36:02.168Z_
+
+---
+
+### LA-CORE-076 · step1-patch-session-json-debe-ser-idempotente-frente-a-retries-por-tools-down (governance/tooling/idempotency) - severity medium - 2.7.7 - sprint S02-Mini-B-full ⭐ CORE
+
+**Descripción:** 
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.7.16 · Importada: 2026-05-04T16:36:02.168Z_
+
+---
+
+### LA-CORE-077 · claude-agent-sdk-evaluacion-archivada-no-reabrir-sin-cambio-arquitectonico (governance/decision-archive) - severity medium - 2.7.8 - sprint S02-Mini-B-full ⭐ CORE
+
+**Descripción:** 
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.7.16 · Importada: 2026-05-04T16:36:02.168Z_
+
+---
+
+### LA-CORE-078 · post-merge-annotations-must-propagate-to-develop-via-pre-merge-commit-or-express (governance/propagation) - severity medium - 2.7.9 - sprint S02-Mini-B-full ⭐ CORE
+
+**Descripción:** 
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.7.16 · Importada: 2026-05-04T16:36:02.168Z_
+
+---
+
+### LA-CORE-084 · atlassian-locale-i18n-mapping-must-be-verified-pre-operation (process/protocol/i18n) - severity medium - 2.7.10 - sprint S02-Mini-B-full ⭐ CORE
+
+**Descripción:** 
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.7.16 · Importada: 2026-05-04T16:36:02.168Z_
+
+---
+
+### LA-CORE-085 · sprint-close-must-be-atomic-and-clean-residual-state-fields (process/protocol/sprint-close) - severity medium - 2.7.11 - sprint S02-Mini-B-full ⭐ CORE
+
+**Descripción:** 
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.7.16 · Importada: 2026-05-04T16:36:02.168Z_
+
+---
+
+### LA-CORE-087 · mcp-atlassian-no-expone-jira-agile-sprint-management (process/protocol+workaround) - severity medium - 2.7.12 - sprint S02-Mini-B-full ⭐ CORE
+
+**Descripción:** 
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.7.16 · Importada: 2026-05-04T16:36:02.168Z_
+
+---
+
+### LA-CORE-090 · boot-check-on-demand-antes-de-responder-sobre-estado-de-proyecto (governance/verification-discipline) - severity medium - 2.7.13 - sprint S02-Mini-B-full ⭐ CORE
+
+**Descripción:** 
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.7.16 · Importada: 2026-05-04T16:36:02.168Z_
+
+---
+
+### LA-CORE-093 · la-promotion-must-write-three-coordinated-locations-or-detect-empty-body (governance/quality-assurance/process-protocol) - severity medium - 2.7.14 - sprint S02-Mini-B-full ⭐ CORE
+
+**Descripción:** 
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.7.16 · Importada: 2026-05-04T16:36:02.168Z_
+
+---
+
+### LA-CORE-079 · process/tooling ⭐ CORE
+
+**Descripción:** regex-headers-markdown-debe-ser-anchor-explicito-con-negative-lookahead: toda regex sobre artefactos markdown que pretenda anclar a un nivel específico de heading DEBE usar negative lookahead (?!#) inmediatamente después de los # del nivel objetivo (severity:low · v2.7.15 · D-S02-Step5-30)
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.7.16 · Importada: 2026-05-04T16:36:02.168Z_
+
+---
+
+### LA-CORE-086 · technical/operational ⭐ CORE
+
+**Descripción:** mcp-schema-doc-drift-fallback-to-enum-authoritative: cuando un schema MCP rechaza un valor que la description inline indica como válido, considerarlo drift documentación/schema y aplicar fallback al valor del enum autoritativo (severity:low · v2.7.16 · D-S02-Step5-30)
+
+**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
+
+_SOFIA-CORE v2.7.16 · Importada: 2026-05-04T16:36:02.168Z_
+
+---
+

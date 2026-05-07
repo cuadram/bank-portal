@@ -851,7 +851,7 @@
   },
   "resume_next": "Sprint 26 - Step 4 EN PROGRESO - Fases A-E backend + F (143/143 tests verde: 116 unit commit 2c6c258 + 27 IT) COMMITEADAS. Fase F.4 cierra con 27 IT pattern BizumIntegrationTestBase contra postgres+redis del compose externo (NO Testcontainers - LA-026-08). 3 deudas nuevas: DEBT-054 yaml-deep-merge, DEBT-055 PfmControllerIT-falsified-PASS-S25, DEBT-056 surefire-no-include-IT. 2 LAs nuevas sofia_core_candidate: LA-026-07 yaml-no-deep-merge (GR-CONFIG-001), LA-026-08 testcontainers-docker-from-docker-macos (GR-IT-001). 4 observations_for_step5 en step4_progress.fase_F_integration_tests. SIGUIENTE: Fase G frontend (18 componentes Angular per LLD seccion 5 + LA-CORE-056 fidelidad bloqueante + LA-CORE-067 fragmentacion). Tras G: Fase H g4b_guardrail (DEBT-051 ShedLock fix + V18c apply manual + Docker rebuild + checklist fidelidad + commit final Step 4).",
   "sprint_closed": false,
-  "updated_at": "2026-04-28T13:52:54.131Z",
+  "updated_at": "2026-05-04T16:36:02.176Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -2019,6 +2019,136 @@
         "UX/UI Designer Agent · Step 2c",
         "PROTO-FEAT-XXX-sprintYY.html en sprints futuros"
       ]
+    },
+    {
+      "id": "LA-CORE-075",
+      "type": "governance / tooling / process-isolation",
+      "description": "create-file-tool-no-persiste-en-disco-real-en-sesiones-sofia-core: Durante la verificación independiente del sub-paso 1.6 Step 1 S02 (aud",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.16",
+      "imported_at": "2026-05-04T16:36:02.168Z"
+    },
+    {
+      "id": "LA-CORE-091",
+      "type": "process/protocol · meta-regla",
+      "description": "toda-alteracion-de-LA-debe-usar-flujo-canonico-contributions-JSON: Durante la ejecución de SC-35 (rescate de 3 LAs huérfanas: LA-CORE-001, LA-CORE-0",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.16",
+      "imported_at": "2026-05-04T16:36:02.168Z"
+    },
+    {
+      "id": "LA-CORE-092",
+      "type": "governance / schema-evolution",
+      "description": "gr-core-029-scope-clarification-not-applicable-in-core-sessions: Al arrancar Sprint S02 Mini B-full · Step 1 INIT, se detectó una contradicción oper",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.16",
+      "imported_at": "2026-05-04T16:36:02.168Z"
+    },
+    {
+      "id": "LA-CORE-076",
+      "type": "step1-patch-session-json-debe-ser-idempotente-frente-a-retries-por-tools-down (governance/tooling/idempotency) - severity medium - 2.7.7 - sprint S02-Mini-B-full",
+      "description": "",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.16",
+      "imported_at": "2026-05-04T16:36:02.168Z"
+    },
+    {
+      "id": "LA-CORE-077",
+      "type": "claude-agent-sdk-evaluacion-archivada-no-reabrir-sin-cambio-arquitectonico (governance/decision-archive) - severity medium - 2.7.8 - sprint S02-Mini-B-full",
+      "description": "",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.16",
+      "imported_at": "2026-05-04T16:36:02.168Z"
+    },
+    {
+      "id": "LA-CORE-078",
+      "type": "post-merge-annotations-must-propagate-to-develop-via-pre-merge-commit-or-express (governance/propagation) - severity medium - 2.7.9 - sprint S02-Mini-B-full",
+      "description": "",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.16",
+      "imported_at": "2026-05-04T16:36:02.168Z"
+    },
+    {
+      "id": "LA-CORE-084",
+      "type": "atlassian-locale-i18n-mapping-must-be-verified-pre-operation (process/protocol/i18n) - severity medium - 2.7.10 - sprint S02-Mini-B-full",
+      "description": "",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.16",
+      "imported_at": "2026-05-04T16:36:02.168Z"
+    },
+    {
+      "id": "LA-CORE-085",
+      "type": "sprint-close-must-be-atomic-and-clean-residual-state-fields (process/protocol/sprint-close) - severity medium - 2.7.11 - sprint S02-Mini-B-full",
+      "description": "",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.16",
+      "imported_at": "2026-05-04T16:36:02.168Z"
+    },
+    {
+      "id": "LA-CORE-087",
+      "type": "mcp-atlassian-no-expone-jira-agile-sprint-management (process/protocol+workaround) - severity medium - 2.7.12 - sprint S02-Mini-B-full",
+      "description": "",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.16",
+      "imported_at": "2026-05-04T16:36:02.168Z"
+    },
+    {
+      "id": "LA-CORE-090",
+      "type": "boot-check-on-demand-antes-de-responder-sobre-estado-de-proyecto (governance/verification-discipline) - severity medium - 2.7.13 - sprint S02-Mini-B-full",
+      "description": "",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.16",
+      "imported_at": "2026-05-04T16:36:02.168Z"
+    },
+    {
+      "id": "LA-CORE-093",
+      "type": "la-promotion-must-write-three-coordinated-locations-or-detect-empty-body (governance/quality-assurance/process-protocol) - severity medium - 2.7.14 - sprint S02-Mini-B-full",
+      "description": "",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.16",
+      "imported_at": "2026-05-04T16:36:02.168Z"
+    },
+    {
+      "id": "LA-CORE-079",
+      "type": "process/tooling",
+      "description": "regex-headers-markdown-debe-ser-anchor-explicito-con-negative-lookahead: toda regex sobre artefactos markdown que pretenda anclar a un nivel específico de heading DEBE usar negative lookahead (?!#) inmediatamente después de los # del nivel objetivo (severity:low · v2.7.15 · D-S02-Step5-30)",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.16",
+      "imported_at": "2026-05-04T16:36:02.168Z"
+    },
+    {
+      "id": "LA-CORE-086",
+      "type": "technical/operational",
+      "description": "mcp-schema-doc-drift-fallback-to-enum-authoritative: cuando un schema MCP rechaza un valor que la description inline indica como válido, considerarlo drift documentación/schema y aplicar fallback al valor del enum autoritativo (severity:low · v2.7.16 · D-S02-Step5-30)",
+      "correction": "Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.",
+      "scope": "SOFIA-CORE",
+      "source": "promoted",
+      "sofia_core_version": "2.7.16",
+      "imported_at": "2026-05-04T16:36:02.168Z"
     }
   ],
   "gate_history_pending": [
