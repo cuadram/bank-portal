@@ -626,6 +626,28 @@
       "OBS-009 Saldo disponible es placeholder hasta AccountBalanceService backend",
       "GoalCloseModal NO existe en prototipo - diseno basado en LLD seccion 7",
       "Endpoints invocados: GET/POST/DELETE /goals/:id/contributions · PUT/DELETE /goals/:id/auto-rule · DELETE /goals/:id (con/sin X-OTP)"
+    ],
+    "4_s26_phase_g_dot_4": [
+      "commit 386adfa · Fase G.4 widget + integracion completa",
+      "SavingsWidgetComponent (9.7 KB · NgModule classic · declarado en DashboardModule)",
+      "  US-024-08 GET /api/v1/savings/dashboard-widget",
+      "  Patron heredado de PfmWidgetComponent (vive en savings/, declarado en DashboardModule)",
+      "  LA-023-01: router.navigateByUrl(/objetivos)",
+      "  RN-F023-15 equivalente: degradacion elegante (loading/error/empty/data states)",
+      "  UI: header + KPI globalProgressPct + barra 8px + lista top 3 goals (icon + name + barra 4px + pct)",
+      "  empty state CTA: navega a /objetivos/nuevo",
+      "  click en goal -> router.navigate([objetivos, id])",
+      "  OnPush + cdr.markForCheck · sin signals · destroy$ + takeUntil",
+      "app-routing.module.ts: ruta lazy /objetivos -> SavingsModule (LA-FRONT-001) · posicion despues de /pfm",
+      "shell.component.ts: nav item 🎯 Mis Metas con routerLink=/objetivos · entre /pfm y divider",
+      "dashboard.component.ts: nuevo slot <app-savings-widget> debajo de pfm-widget-slot",
+      "dashboard.module.ts: import + declaration de SavingsWidgetComponent · 9 declarations totales",
+      "Decision arquitectonica: widget vive en savings/ pero se declara en DashboardModule (cross-module)",
+      "  Razon: DashboardModule es eager (no lazy), SavingsModule es lazy /objetivos. Declarar el widget",
+      "  en SavingsModule (lazy) impediria que DashboardModule lo use. Alternativa futura: standalone.",
+      "Verificacion: count savings .ts 21 -> 22 · GR-GIT-001 0 deletados · 5 ficheros balanceados",
+      "Selectores resueltos: <app-savings-widget> declarado · routerLink=/objetivos resuelve SavingsModule",
+      "Endpoint backend invocado: GET /api/v1/savings/dashboard-widget"
     ]
   },
   "gates": {
@@ -915,9 +937,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 - Step 4 EN PROGRESO - Fase G.3 COMPLETA (3 modal smart components: ContributionModal US-024-04 + AutoRuleForm US-024-05 + GoalCloseModal US-024-06+SCA RN-F024-11). 6 commits Fase G.2+G.3 (290f38b LOTE 2.1 · 9ef43ea LOTE 2.2 · cf80cd6 FIX auditoria · 9a8cf4e LOTE 2.3 cierre G.2 · 1a1bade chore cierre G.2 · cf29f9c LOTE G.3). Routing 7 rutas hijas con goalOwnerGuard. SIGUIENTE: Fase G.4 widget+integracion (SavingsWidgetComponent + app-routing.module.ts lazy /objetivos + shell.component.ts nav Mis Metas + dashboard.component.ts slot). Tras G.4: G.5 cierre + handoff Fase H.",
+  "resume_next": "Sprint 26 - Step 4 EN PROGRESO - Fase G.4 COMPLETA (SavingsWidget + integracion shell/dashboard/app-routing). 7 commits Fase G.2-G.4 (290f38b LOTE 2.1 · 9ef43ea LOTE 2.2 · cf80cd6 FIX auditoria · 9a8cf4e LOTE 2.3 cierre G.2 · 1a1bade chore cierre G.2 · cf29f9c LOTE G.3 · 386adfa LOTE G.4). Widget Mis Metas integrado en dashboard. Lazy /objetivos registrada. SIGUIENTE: Fase G.5 cierre Step 4 (persistencia final + cerrar fase G_frontend en phases_completed + handoff Fase H · G-4b guardrail). Tras G.5: Fase H (DEBT-051 ShedLock + DEBT-049/050 OpenAPI smoke + SecurityConfig springdoc + lista explicita -Dtest workaround DEBT-056).",
   "sprint_closed": false,
-  "updated_at": "2026-05-07T18:19:51.875Z",
+  "updated_at": "2026-05-07T18:39:54.932Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -2261,7 +2283,7 @@
       "G_frontend",
       "H_g4b_guardrail"
     ],
-    "files_persisted": 73,
+    "files_persisted": 78,
     "estimated_files_remaining": 45,
     "handoff_prepared_at": "2026-04-27T15:18:00.000Z",
     "handoff_doc": "docs/handoffs/HANDOFF-sprint26-step4-fase-f.md",
@@ -2276,7 +2298,8 @@
       "src/main/resources/application-prod.yml": 1,
       "src/main/resources/application.yml": "modified",
       "pom.xml": "modified",
-      "savings/frontend/": "21 .ts (5 G.0 + 7 G.1 dumb + 6 G.2 smart + 3 G.3 modales: ContributionModal + AutoRuleForm + GoalCloseModal) + savings-routing.module 7 rutas + savings.module 16 declarations + OtpInputComponent standalone import"
+      "savings/frontend/": "22 .ts (5 G.0 + 7 G.1 dumb + 6 G.2 smart + 3 G.3 modales + 1 G.4 widget) + savings-routing.module 7 rutas + savings.module 16 declarations + OtpInputComponent standalone",
+      "integration/": "app-routing.module.ts (ruta /objetivos lazy) + shell.component.ts (nav item Mis Metas) + dashboard.component.ts (slot widget) + dashboard.module.ts (declaration SavingsWidgetComponent)"
     },
     "snapshots": [
       ".sofia/snapshots/session-sprint26-step4-phaseABC-2026-04-27T14-08-44-095Z.json (cierre A+B+C, integro)"
@@ -2351,10 +2374,10 @@
       "G.0",
       "G.1",
       "G.2",
-      "G.3"
+      "G.3",
+      "G.4"
     ],
     "g_subphases_remaining": [
-      "G.4",
       "G.5"
     ]
   }
