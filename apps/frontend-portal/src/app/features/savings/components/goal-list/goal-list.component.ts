@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
@@ -192,7 +192,8 @@ export class GoalListComponent implements OnInit {
 
   constructor(
     private readonly savingsService: SavingsService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -217,9 +218,13 @@ export class GoalListComponent implements OnInit {
         this.errorMessage = 'No se pudieron cargar tus metas. Reintenta mas tarde.';
         return of([] as SavingsGoal[]);
       }),
-      finalize(() => { this.loading = false; })
+      finalize(() => {
+        this.loading = false;
+        this.cdr.markForCheck(); // OnPush requiere CD manual tras mutacion imperativa
+      })
     ).subscribe(list => {
       this.goals = list ?? [];
+      this.cdr.markForCheck();
     });
   }
 

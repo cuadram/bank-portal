@@ -39,11 +39,14 @@ import {
  *   - icon: opcional (12 predefinidos)
  *   - color: opcional (8 predefinidos)
  *
- * Manejo errores backend:
- *   - 422 MaxGoalsReached -> banner explicativo + redirige a lista
- *   - 422 ValidationError -> mensaje generico + log
- *   - 400 IllegalArgument -> mensaje generico
- *   - otros -> mensaje generico + boton Reintentar
+ * Manejo errores backend (contrato real SavingsExceptionHandler Fase E):
+ *   - 409 MAX_GOALS_REACHED -> banner contextual con limite (RN-F024-02)
+ *   - 422 INSUFFICIENT_FUNDS / RESERVED_EXCEEDS_TARGET -> mensaje del backend
+ *   - 400 VALIDATION_FAILED -> mensaje 'campo: descripcion' del backend
+ *   - 400 BAD_REQUEST -> mensaje del backend o generico
+ *   - 401 -> sesion caducada
+ *   - 0 -> sin conexion
+ *   - otros -> mensaje generico
  *
  * Decision LLD §5: usa <app-category-picker> G.1 (no <select> directo del prototipo).
  * El prototipo dibuja un <select> nativo pero el LLD obliga al componente picker
@@ -706,18 +709,46 @@ export class GoalCreateFormComponent implements OnInit, OnDestroy {
   // Mapeo errores backend -> mensaje usuario
   // -------------------------------------------------------------------------
 
+  /**
+   * Mapea HttpErrorResponse del backend (SavingsExceptionHandler.java Fase E)
+   * a mensaje localizado para el usuario.
+   *
+   * Contrato real backend (verificado contra SavingsExceptionHandler):
+   *   - body shape: { error: 'CODE', message: '...', timestamp: ..., path: ... }
+   *   - 409 CONFLICT  + error=MAX_GOALS_REACHED      -> RN-F024-02 (10 metas activas)
+   *   - 422 UNPROC.   + error=INSUFFICIENT_FUNDS     -> saldo insuficiente
+   *   - 422 UNPROC.   + error=RESERVED_EXCEEDS_TARGET-> reserva > objetivo
+   *   - 400 BAD_REQ.  + error=VALIDATION_FAILED      -> @Valid fallo (formato 'campo: descripcion')
+   *   - 400 BAD_REQ.  + error=BAD_REQUEST            -> IllegalArgumentException
+   *   - 403 FORBIDDEN + error=GOAL_ACCESS_DENIED     -> ownership (no aplicable en create)
+   *   - 401 UNAUTH.   + error=INVALID_OTP            -> SCA fallido (no aplicable en create)
+   *   - 401 UNAUTH.   global                          -> JWT caducado
+   *   - 0             -> sin conexion
+   */
   private mapErrorToMessage(err: HttpErrorResponse): string {
-    if (err.status === 422) {
-      const code = err.error?.code;
-      if (code === 'MAX_GOALS_REACHED') {
-        return `Has alcanzado el limite de ${this.maxActiveGoals} metas activas. Cierra alguna antes de crear otra.`;
-      }
-      if (code === 'VALIDATION_ERROR' || err.error?.message) {
-        return err.error?.message || 'Los datos del formulario no son validos.';
-      }
-      return 'No se ha podido crear la meta. Revisa los datos.';
+    const code: string | undefined = err.error?.error;
+    const backendMsg: string | undefined = err.error?.message;
+
+    // 409 CONFLICT - limite metas activas (contrato backend: NO 422)
+    if (err.status === 409 && code === 'MAX_GOALS_REACHED') {
+      return `Has alcanzado el limite de ${this.maxActiveGoals} metas activas. Cierra alguna antes de crear otra.`;
     }
-    if (err.status === 400) return 'Los datos del formulario no son validos.';
+
+    // 422 UNPROCESSABLE_ENTITY - saldo / consistencia (no aplicable a create-goal habitualmente,
+    // pero defensivo: si el backend evoluciona, mostramos el mensaje del backend)
+    if (err.status === 422) {
+      if (code === 'INSUFFICIENT_FUNDS')       return backendMsg || 'Saldo insuficiente para crear la meta.';
+      if (code === 'RESERVED_EXCEEDS_TARGET')  return backendMsg || 'El importe reservado supera el objetivo.';
+      return backendMsg || 'No se ha podido crear la meta. Revisa los datos.';
+    }
+
+    // 400 BAD_REQUEST - validacion @Valid o IllegalArgument
+    if (err.status === 400) {
+      // VALIDATION_FAILED viene con formato 'campo: mensaje', util para el usuario
+      if (code === 'VALIDATION_FAILED' && backendMsg) return backendMsg;
+      return backendMsg || 'Los datos del formulario no son validos.';
+    }
+
     if (err.status === 401) return 'Tu sesion ha caducado. Inicia sesion de nuevo.';
     if (err.status === 0)   return 'Sin conexion al servidor. Reintenta mas tarde.';
     return 'No se ha podido crear la meta. Reintenta mas tarde.';
