@@ -597,6 +597,35 @@
       "Endpoints invocados: GET /goals?status=ACTIVE · POST /goals · GET /goals/:id · PUT /goals/:id · GET /goals/:id/contributions · DELETE /goals/:id/auto-rule",
       "Pendientes G.3: ContributionModal (US-024-04) + AutoRuleForm (US-024-05) + GoalCloseModal SCA (RN-F024-11) + 2 rutas /:id/aportar /:id/auto",
       "Pendiente G.4: SavingsWidget + app-routing lazy + shell nav item + dashboard slot"
+    ],
+    "4_s26_phase_g_dot_3": [
+      "commit cf29f9c · 70.6 KB · 3 modal smart components + 3 rutas + standalone import OtpInput",
+      "ContributionModalComponent (25.4 KB · smart US-024-04 · pantalla 1614-1710 prototipo)",
+      "  ReactiveForm amount [10..5000] + sourceAccountId + quick-amount pills 50/100/500/1000",
+      "  Summary preview tiempo real con form.valueChanges + recomputePreview()",
+      "  Detecta hito 25/50/75/100% que cruza la aportacion (alert-success)",
+      "  Detecta wouldExceedTarget (warning UI + bloquea submit)",
+      "  POST /goals/:id/contributions · errores 422/404/403/400 mapeados",
+      "  OnPush + cdr.markForCheck",
+      "AutoRuleFormComponent (24.8 KB · smart US-024-05 · pantalla 1713-1830 prototipo)",
+      "  ReactiveForm amount + dayOfMonth (1,5,10,15,20,25,28 · RN-F024-13) + sourceAccountId",
+      "  Prefill desde detail.autoRule si existe",
+      "  Summary 3 proximas ejecuciones client-side + estimacion meses target",
+      "  PUT /goals/:id/auto-rule (Guardar) + DELETE /:id/auto-rule (Pausar)",
+      "  Pausar deshabilitado si !hasExistingRule + confirm() nativo",
+      "  OnPush + cdr.markForCheck",
+      "GoalCloseModalComponent (20.4 KB · smart US-024-06 · RN-F024-11 SCA · diseno propio NO en prototipo)",
+      "  Carga GET /goals/:id, bloquea si CLOSED/COMPLETED",
+      "  Resumen reservedAmount + warning/info segun requiresSca (>30€)",
+      "  Flujo SCA implementado: DELETE sin OTP -> 401 OTP_REQUIRED -> showOtp=true -> bp-otp-input -> DELETE con X-OTP -> 401 INVALID_OTP retry o 200 success",
+      "  Composicion: <bp-otp-input> standalone (importado en savings.module.imports[])",
+      "  success-card con CloseResult + redirect 1.5s con clearTimeout en destroy",
+      "savings-routing.module.ts (2.6 KB · 7 rutas hijas) + savings.module.ts (declarations 13->16 + OtpInputComponent en imports)",
+      "Patron NgModule + standalone: OtpInputComponent en imports[] (NO declarations[])",
+      "OBS-008 ContributionModal solo muestra goal.sourceAccountId (no multi-cuenta)",
+      "OBS-009 Saldo disponible es placeholder hasta AccountBalanceService backend",
+      "GoalCloseModal NO existe en prototipo - diseno basado en LLD seccion 7",
+      "Endpoints invocados: GET/POST/DELETE /goals/:id/contributions · PUT/DELETE /goals/:id/auto-rule · DELETE /goals/:id (con/sin X-OTP)"
     ]
   },
   "gates": {
@@ -886,9 +915,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 - Step 4 EN PROGRESO - Fase G.2 COMPLETA (6 smart components: SavingsPage + GoalList + GoalCreateForm + GoalDetail + ContributionHistory + GoalEditForm). 4 commits Fase G.2 (290f38b LOTE 2.1 · 9ef43ea LOTE 2.2 · cf80cd6 FIX auditoria PO 4 bugs · 9a8cf4e LOTE 2.3 cierre). Routing real con goalOwnerGuard. SIGUIENTE: Fase G.3 modales (ContributionModal US-024-04 + AutoRuleForm US-024-05 + GoalCloseModal SCA RN-F024-11) + 2 rutas /:id/aportar /:id/auto. Tras G.3: G.4 widget+integracion shell+dashboard. Tras G.4: G.5 cierre+handoff Fase H.",
+  "resume_next": "Sprint 26 - Step 4 EN PROGRESO - Fase G.3 COMPLETA (3 modal smart components: ContributionModal US-024-04 + AutoRuleForm US-024-05 + GoalCloseModal US-024-06+SCA RN-F024-11). 6 commits Fase G.2+G.3 (290f38b LOTE 2.1 · 9ef43ea LOTE 2.2 · cf80cd6 FIX auditoria · 9a8cf4e LOTE 2.3 cierre G.2 · 1a1bade chore cierre G.2 · cf29f9c LOTE G.3). Routing 7 rutas hijas con goalOwnerGuard. SIGUIENTE: Fase G.4 widget+integracion (SavingsWidgetComponent + app-routing.module.ts lazy /objetivos + shell.component.ts nav Mis Metas + dashboard.component.ts slot). Tras G.4: G.5 cierre + handoff Fase H.",
   "sprint_closed": false,
-  "updated_at": "2026-05-07T16:55:47.077Z",
+  "updated_at": "2026-05-07T18:19:51.875Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -2232,7 +2261,7 @@
       "G_frontend",
       "H_g4b_guardrail"
     ],
-    "files_persisted": 70,
+    "files_persisted": 73,
     "estimated_files_remaining": 45,
     "handoff_prepared_at": "2026-04-27T15:18:00.000Z",
     "handoff_doc": "docs/handoffs/HANDOFF-sprint26-step4-fase-f.md",
@@ -2247,7 +2276,7 @@
       "src/main/resources/application-prod.yml": 1,
       "src/main/resources/application.yml": "modified",
       "pom.xml": "modified",
-      "savings/frontend/": "18 .ts (5 G.0 + 7 G.1 dumb + 6 G.2 smart: SavingsPage container + GoalList + GoalCreateForm + GoalDetail + ContributionHistory + GoalEditForm) + savings-routing.module 4 rutas reales"
+      "savings/frontend/": "21 .ts (5 G.0 + 7 G.1 dumb + 6 G.2 smart + 3 G.3 modales: ContributionModal + AutoRuleForm + GoalCloseModal) + savings-routing.module 7 rutas + savings.module 16 declarations + OtpInputComponent standalone import"
     },
     "snapshots": [
       ".sofia/snapshots/session-sprint26-step4-phaseABC-2026-04-27T14-08-44-095Z.json (cierre A+B+C, integro)"
@@ -2321,10 +2350,10 @@
     "g_subphases_completed": [
       "G.0",
       "G.1",
-      "G.2"
+      "G.2",
+      "G.3"
     ],
     "g_subphases_remaining": [
-      "G.3",
       "G.4",
       "G.5"
     ]
