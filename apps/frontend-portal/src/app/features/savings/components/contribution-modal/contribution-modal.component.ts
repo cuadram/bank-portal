@@ -6,6 +6,7 @@ import { Subject, of } from 'rxjs';
 import { catchError, takeUntil } from 'rxjs/operators';
 
 import { SavingsService } from '../../services/savings.service';
+import { AccountService, AccountSummary } from '../../../accounts/services/account.service';
 import { ContributeRequest, GoalDetail, SavingsGoal } from '../../models/savings.models';
 
 /**
@@ -114,13 +115,16 @@ const QUICK_AMOUNTS: ReadonlyArray<number> = [50, 100, 500, 1000];
               <select id="contribute-account"
                       class="form-input"
                       formControlName="sourceAccountId">
-                <option [value]="goal.sourceAccountId || ''" *ngIf="goal.sourceAccountId">
-                  Cuenta principal
+                <option *ngIf="loadingAccounts" value="" disabled>Cargando cuentas…</option>
+                <option *ngIf="!loadingAccounts && accounts.length === 0" value="" disabled>
+                  No tienes cuentas disponibles
                 </option>
-                <option value="" *ngIf="!goal.sourceAccountId" disabled>
-                  Sin cuenta asignada — edita la meta primero
+                <option *ngFor="let acc of accounts; trackBy: trackByAccount"
+                        [value]="acc.accountId">
+                  {{ acc.alias }} · {{ acc.ibanMasked }} · Disponible {{ formatCurrency(acc.availableBalance) }}
                 </option>
               </select>
+              <div class="error" *ngIf="accountsError">{{ accountsError }}</div>
               <div class="error" *ngIf="showError('sourceAccountId', 'required')">
                 Debes seleccionar una cuenta origen
               </div>
@@ -189,17 +193,22 @@ const QUICK_AMOUNTS: ReadonlyArray<number> = [50, 100, 500, 1000];
 
             <hr class="summary-divider" />
 
-            <div class="summary-row">
+            <div class="summary-row" *ngIf="selectedAccount">
               <span>Saldo disponible actual</span>
-              <strong class="placeholder" title="Saldo real disponible cuando el backend exponga AccountBalanceService">—</strong>
+              <strong>{{ formatCurrency(selectedAccount.availableBalance) }}</strong>
             </div>
-            <div class="summary-row" *ngIf="contributionAmount > 0">
+            <div class="summary-row" *ngIf="selectedAccount && contributionAmount > 0">
               <span>Disponible tras aportar</span>
-              <strong class="placeholder">—</strong>
+              <strong [class.highlight-error]="selectedAccount.availableBalance - contributionAmount < 0">
+                {{ formatCurrency(selectedAccount.availableBalance - contributionAmount) }}
+              </strong>
             </div>
-            <div class="summary-row muted">
+            <div class="summary-row muted" *ngIf="selectedAccount">
               <span>Saldo contable</span>
               <strong>(sin cambio · ADR-040)</strong>
+            </div>
+            <div class="summary-row muted" *ngIf="!selectedAccount">
+              <span>Selecciona una cuenta para ver saldos</span>
             </div>
           </div>
 
@@ -471,11 +480,18 @@ export class ContributionModalComponent implements OnInit, OnDestroy {
   private goalId: string = '';
   private readonly destroy$ = new Subject<void>();
 
+  // OBS-008/OBS-009 (DR-S26-008, fix Step 7 Sprint 26):
+  // Lista de cuentas del usuario (multi-cuenta real, fidelidad prototipo HITL G-2c).
+  accounts: AccountSummary[] = [];
+  loadingAccounts = false;
+  accountsError: string | null = null;
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly savingsService: SavingsService,
+    private readonly accountService: AccountService,
     private readonly cdr: ChangeDetectorRef
   ) {}
 
@@ -488,6 +504,9 @@ export class ContributionModalComponent implements OnInit, OnDestroy {
     this.form.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.recomputePreview());
+
+    // OBS-008/OBS-009: cargar cuentas del usuario en paralelo a la meta.
+    this.loadAccounts();
 
     this.route.paramMap
       .pipe(takeUntil(this.destroy$))
@@ -525,15 +544,61 @@ export class ContributionModalComponent implements OnInit, OnDestroy {
     ).subscribe(detail => {
       if (detail?.goal) {
         this.goal = detail.goal;
-        // Prefill cuenta origen si existe
-        if (this.goal.sourceAccountId) {
-          this.form.controls['sourceAccountId'].setValue(this.goal.sourceAccountId);
-        }
+        this.applyDefaultAccountSelection();
         this.recomputePreview();
       }
       this.loading = false;
       this.cdr.markForCheck();
     });
+  }
+
+  /**
+   * OBS-008 (DR-S26-008, fix Step 7): carga la lista real de cuentas del usuario
+   * desde GET /api/v1/accounts. Reemplaza el shortcut anterior que mostraba una
+   * sola opción hard-coded "Cuenta principal".
+   *
+   * Si la carga falla, dejamos el select vacío y mostramos error UX (el form
+   * controla 'sourceAccountId' como required, así que el botón Confirmar quedará
+   * deshabilitado).
+   */
+  private loadAccounts(): void {
+    this.loadingAccounts = true;
+    this.accountsError = null;
+    this.accountService.getAccounts().pipe(
+      catchError((err: HttpErrorResponse) => {
+        this.accountsError = this.mapErrorToMessage(err, 'No se pudieron cargar tus cuentas.');
+        return of([] as AccountSummary[]);
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe(accs => {
+      this.accounts = accs;
+      this.loadingAccounts = false;
+      this.applyDefaultAccountSelection();
+      this.cdr.markForCheck();
+    });
+  }
+
+  /**
+   * Aplica la cuenta origen por defecto cuando ambas (goal + accounts) están cargadas.
+   * Prioridad: goal.sourceAccountId si está en la lista de cuentas; si no, primera cuenta.
+   */
+  private applyDefaultAccountSelection(): void {
+    if (this.form.controls['sourceAccountId'].value) return;
+    if (!this.goal || this.accounts.length === 0) return;
+    const preferred = this.goal.sourceAccountId
+      && this.accounts.some(a => a.accountId === this.goal!.sourceAccountId)
+      ? this.goal.sourceAccountId
+      : this.accounts[0].accountId;
+    this.form.controls['sourceAccountId'].setValue(preferred);
+  }
+
+  /**
+   * OBS-009 (DR-S26-008, fix Step 7): cuenta seleccionada actualmente para mostrar
+   * saldos disponibles en el summary-box (Disponible · Disponible tras aportar).
+   */
+  get selectedAccount(): AccountSummary | null {
+    const id = this.form?.controls['sourceAccountId']?.value;
+    return this.accounts.find(a => a.accountId === id) || null;
   }
 
   // -------------------------------------------------------------------------
@@ -547,6 +612,10 @@ export class ContributionModalComponent implements OnInit, OnDestroy {
 
   trackByValue(_: number, value: number): number {
     return value;
+  }
+
+  trackByAccount(_: number, acc: AccountSummary): string {
+    return acc.accountId;
   }
 
   onQuickAmount(preset: number): void {
@@ -683,6 +752,11 @@ export class ContributionModalComponent implements OnInit, OnDestroy {
     if (err.status === 400) {
       if (code === 'VALIDATION_FAILED' && backendMsg) return backendMsg;
       return backendMsg || 'Los datos enviados no son válidos.';
+    }
+    if (err.status === 409 && code === 'CONCURRENCY_CONFLICT') {
+      // BUG-S26-Q-008 / DR-S26-007 (B.4): tras 1 retry automatico en SavingsService,
+      // si persiste 409, mostramos mensaje UX inline. Deuda DEBT-Q-073.
+      return 'Conflicto de concurrencia detectado. Espera unos segundos y reintenta la aportación.';
     }
     if (err.status === 401) return 'Tu sesión ha caducado. Inicia sesión de nuevo.';
     if (err.status === 0)   return 'Sin conexión al servidor. Reintenta más tarde.';

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable, timer, throwError } from 'rxjs';
+import { retry } from 'rxjs/operators';
 import {
   SavingsGoal, GoalDetail, GoalStatus, Allocation, AutoRule, Milestone,
   CloseResult, SavingsWidget, Page,
@@ -62,8 +63,37 @@ export class SavingsService {
   // Contributions
   // -------------------------------------------------------------------------
 
+  /**
+   * Aporta a un objetivo de ahorro.
+   *
+   * BUG-S26-Q-008 / DR-S26-007 (B.4 quick patch Step 7 Sprint 26):
+   * Backend devuelve 409 CONCURRENCY_CONFLICT tras agotar 3 retries optimistas en colision
+   * de `@Version` sobre `SavingsGoalEntity`. La concurrencia adversarial midió 40% de
+   * 409 final en test (10 hilos POST mismo goal); la probabilidad real <0.05% en uso normal.
+   *
+   * Estrategia: 1 reintento automatico transparente con backoff 500ms SOLO para 409
+   * CONCURRENCY_CONFLICT. Si el segundo intento tambien falla, propagamos el error y el
+   * componente lo mapea a un mensaje UX inline ('Conflicto de concurrencia. Reintenta.').
+   *
+   * Otros errores (404, 422, 401, 0, etc.) NO se reintentan — el reintento solo tiene
+   * sentido para colisiones transitorias.
+   *
+   * Deuda formalizada: DEBT-Q-073 (refactor a patrón estándar en S27).
+   */
   contribute(goalId: string, req: ContributeRequest): Observable<Allocation> {
-    return this.http.post<Allocation>(`${this.base}/goals/${goalId}/contributions`, req);
+    return this.http.post<Allocation>(`${this.base}/goals/${goalId}/contributions`, req).pipe(
+      retry({
+        count: 1,
+        delay: (err: unknown) => {
+          if (err instanceof HttpErrorResponse
+              && err.status === 409
+              && (err.error?.error === 'CONCURRENCY_CONFLICT')) {
+            return timer(500);
+          }
+          return throwError(() => err);
+        }
+      })
+    );
   }
 
   contributionHistory(goalId: string, page = 0, size = 20): Observable<Page<Allocation>> {

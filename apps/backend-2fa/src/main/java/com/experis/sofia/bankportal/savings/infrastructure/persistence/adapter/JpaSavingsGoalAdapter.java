@@ -81,6 +81,7 @@ public class JpaSavingsGoalAdapter implements SavingsGoalRepositoryPort {
         g.setCreatedAt(e.getCreatedAt());
         g.setUpdatedAt(e.getUpdatedAt());
         g.setClosedAt(e.getClosedAt());
+        g.setVersion(e.getVersion());
         return g;
     }
 
@@ -101,6 +102,7 @@ public class JpaSavingsGoalAdapter implements SavingsGoalRepositoryPort {
         e.setCreatedAt(g.getCreatedAt());
         e.setUpdatedAt(g.getUpdatedAt());
         e.setClosedAt(g.getClosedAt());
+        e.setVersion(g.getVersion());
         return e;
     }
 }

@@ -25,6 +25,7 @@ public class SavingsGoal {
     private Instant createdAt;
     private Instant updatedAt;
     private Instant closedAt;
+    private Long version;
 
     public SavingsGoal() {}
 
@@ -58,6 +59,8 @@ public class SavingsGoal {
     public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
     public Instant getClosedAt() { return closedAt; }
     public void setClosedAt(Instant closedAt) { this.closedAt = closedAt; }
+    public Long getVersion() { return version; }
+    public void setVersion(Long version) { this.version = version; }
 
     /** Porcentaje de progreso 0..100 con 2 decimales (RN-F024-08). */
     public BigDecimal progressPercent() {

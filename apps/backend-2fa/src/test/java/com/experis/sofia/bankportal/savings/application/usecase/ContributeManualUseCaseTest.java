@@ -15,7 +15,10 @@ import com.experis.sofia.bankportal.savings.domain.model.SavingsGoal;
 import com.experis.sofia.bankportal.savings.domain.repository.GoalAllocationRepositoryPort;
 import com.experis.sofia.bankportal.savings.domain.repository.SavingsGoalRepositoryPort;
 import com.experis.sofia.bankportal.savings.domain.service.MilestoneEvaluator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -48,8 +51,18 @@ class ContributeManualUseCaseTest {
     @Mock GoalAllocationRepositoryPort allocationRepo;
     @Mock AccountReservePort accountReserve;
     @Mock MilestoneEvaluator milestoneEvaluator;
+    @Mock TransactionTemplate tx;
 
     @InjectMocks ContributeManualUseCase useCase;
+
+    @BeforeEach
+    void stubTxPassThrough() {
+        // Pass-through: la TransactionTemplate ejecuta el callback inline (no abre tx real)
+        when(tx.execute(any())).thenAnswer(inv -> {
+            TransactionCallback<?> cb = inv.getArgument(0);
+            return cb.doInTransaction(null);
+        });
+    }
 
     private final UUID userId = UUID.randomUUID();
     private final UUID goalId = UUID.randomUUID();

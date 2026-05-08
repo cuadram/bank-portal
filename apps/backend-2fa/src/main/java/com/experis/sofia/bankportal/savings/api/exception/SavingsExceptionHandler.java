@@ -5,6 +5,7 @@ import com.experis.sofia.bankportal.savings.domain.exception.GoalNotFoundExcepti
 import com.experis.sofia.bankportal.savings.domain.exception.InsufficientFundsException;
 import com.experis.sofia.bankportal.savings.domain.exception.MaxGoalsReachedException;
 import com.experis.sofia.bankportal.savings.domain.exception.MilestoneAlreadyEmittedException;
+import com.experis.sofia.bankportal.savings.domain.exception.OptimisticLockExhaustedException;
 import com.experis.sofia.bankportal.savings.domain.exception.ReservedExceedsTargetException;
 import com.experis.sofia.bankportal.twofa.domain.exception.InvalidOtpException;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ import java.util.Map;
  *   <li>{@link InsufficientFundsException}       → 422 UNPROCESSABLE_ENTITY</li>
  *   <li>{@link ReservedExceedsTargetException}   → 422 UNPROCESSABLE_ENTITY</li>
  *   <li>{@link MilestoneAlreadyEmittedException} → 409 CONFLICT (idempotencia)</li>
+ *   <li>{@link OptimisticLockExhaustedException} → 409 CONFLICT (concurrencia BUG-Q-008)</li>
  *   <li>{@link InvalidOtpException}              → 401 UNAUTHORIZED (SCA RN-F024-12)</li>
  *   <li>{@link IllegalStateException}            → 409 CONFLICT (transiciones invalidas)</li>
  *   <li>{@link IllegalArgumentException}         → 400 BAD_REQUEST</li>
@@ -78,6 +80,13 @@ public class SavingsExceptionHandler {
         // El controller traduce 'OTP_REQUIRED' (cuando body.otp == null) a 401 con
         // codigo OTP_REQUIRED. Aqui solo capturamos OTPs invalidos enviados.
         return error(HttpStatus.UNAUTHORIZED, "INVALID_OTP", e.getMessage());
+    }
+
+    @ExceptionHandler(OptimisticLockExhaustedException.class)
+    public ResponseEntity<Map<String, Object>> handleOptimisticLockExhausted(OptimisticLockExhaustedException e) {
+        // BUG-S26-Q-008 fix: tras retry agotado en concurrencia, devolvemos 409
+        log.warn("savings.concurrency.conflict {}", e.getMessage());
+        return error(HttpStatus.CONFLICT, "CONCURRENCY_CONFLICT", e.getMessage());
     }
 
     @ExceptionHandler(IllegalStateException.class)

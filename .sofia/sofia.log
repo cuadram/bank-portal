@@ -760,3 +760,8 @@
 [2026-05-08T09:38:41.668Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-6 · Step: 6 · Sprint 26
 [2026-05-08T09:54:31.168Z] [GATE-G-6] APPROVED-WITH-CONDITIONS by Angel de la Cuadra (PO+QA Lead) -> Step 7 DevOps READY · C1/C2 bloqueantes G-7 · C3 bloqueante release · C4/C5 operativas · 5 medios+1 bajo+2 GAPs diferidos a S27
 [2026-05-08T09:54:37.044Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-6 · Step: 7 · Sprint 26
+[2026-05-08T09:59:58.381Z] [STEP-7] [devops] STARTED -> C1+C2+C3 fixes + smoke v1.26 + checklist DEBT-050 + re-test C4
+[2026-05-08T10:00:19.312Z] [STEP-7] [devops] STARTED -> sprint 26 FEAT-024 v1.26.0 · ejecutando C1+C2+C3 + smoke v1.26 + checklist DEBT-050
+[2026-05-08T10:30:39.885Z] [STEP-7] [devops] WIP-PAUSE -> handoff escrito · 16 ficheros sin commitear · pendiente compile+test (Maven fuera de allowlist) + C4/C5/C6
+[2026-05-08T13:08:06.890Z] [STEP-7] [devops] COMPLETED · verdict=APPROVED · scope-ampliado=B.4+Hallazgo1+OBS-008/009 · DRs=DR-S26-007,DR-S26-008 · DEBT=DEBT-Q-073,DEBT-FE-074,DEBT-FE-075 · LA-candidates=GR-SHELL-002,GR-FE-002 · gate_pending=G-7 · pendiente Step 8b fa-index update
+[2026-05-08T13:09:31.028Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-7 · Step: 7 · Sprint 26

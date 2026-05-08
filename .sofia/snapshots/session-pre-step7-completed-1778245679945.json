@@ -1,7 +1,7 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "gate_pending",
+  "status": "in_progress",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 26,
@@ -77,36 +77,6 @@
         "status": "COMPLETED",
         "verdict": "APROBADO CON CONDICIONES",
         "timestamp": "2026-05-08T09:36:58.508Z"
-      },
-      {
-        "step": 7,
-        "feature": "FEAT-024",
-        "sprint": 26,
-        "completed_at": "2026-05-08T13:07:59.954Z",
-        "status": "COMPLETED",
-        "verdict": "APPROVED",
-        "scope": "DevOps + alcance ampliado (B.4 + Hallazgo 1 + OBS-008/009)",
-        "decision_records": [
-          "DR-S26-007",
-          "DR-S26-008"
-        ],
-        "new_debts": [
-          "DEBT-Q-073",
-          "DEBT-FE-074",
-          "DEBT-FE-075"
-        ],
-        "la_candidates": [
-          "GR-SHELL-001 (aplicada)",
-          "GR-SHELL-002",
-          "GR-FE-002"
-        ],
-        "evidence": [
-          "docs/quality/evidence/sprint-26/devops-step7-tests-21clases.log",
-          "docs/quality/evidence/sprint-26/qa-retest-step7-fixes.log",
-          "docs/quality/checklists/checklist-pre-G7-sprint26.md",
-          "infra/compose/smoke-test-v1.26.0.sh"
-        ],
-        "summary": "Step 7 DevOps · scope ampliado por hallazgos PO durante verificación visual · B.4 retry 409 + Hallazgo 1 auth guard + OBS-008/009 multi-cuenta · 147/147 backend tests · ng build OK · smoke 409 7×201+3×409 sin perdida · 11 items checklist-pre-G7 PASS · DEBT-Q-073/FE-074/FE-075 abiertas · LA candidatas GR-SHELL-002, GR-FE-002 · pendiente Step 8b para fa-index BR nuevas"
       }
     ]
   },
@@ -129,7 +99,7 @@
   ],
   "last_skill": "devops",
   "last_skill_output_path": "docs/quality/",
-  "gate_pending": "G-7",
+  "gate_pending": null,
   "release_blocked": false,
   "release_blocked_reason": null,
   "sprint_goal": "Extender banca inteligente de BankPortal mediante gestor de Objetivos de Ahorro (viajes, hogar, emergencia, educacion) con aportaciones manuales y automaticas, seguimiento de hitos y proyeccion. Consolidar contrato API backend mediante OpenAPI 3.1 como fuente de verdad para habilitar GR-SMOKE-001.",
@@ -1065,8 +1035,8 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-05-08T13:09:31.028Z",
-    "last_gate": "G-7",
+    "last_generated": "2026-05-08T09:54:37.044Z",
+    "last_gate": "G-6",
     "last_step": "7",
     "sprint": 26,
     "feature": "FEAT-024",
@@ -1074,7 +1044,7 @@
   },
   "resume_next": "Sprint 26 · Step 5b (Security Agent) COMPLETED · semáforo VERDE · 0 CVEs críticos · 0 mayores · 1 BAJO SEC-F024-01 (DEBT-059) · 2 LOW transitivos preexistentes (DEBT-060). Pipeline AUTO avanza a Step 6 (QA Tester · gate HITL QA G-6 · esperando arranque agente).",
   "sprint_closed": false,
-  "updated_at": "2026-05-08T13:09:31.028Z",
+  "updated_at": "2026-05-08T10:00:19.312Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -1617,13 +1587,6 @@
       "gate": "G-6",
       "step": "7",
       "approved_at": "2026-05-08T09:54:37.044Z",
-      "sprint": 26,
-      "feature": "FEAT-024"
-    },
-    {
-      "gate": "G-7",
-      "step": "7",
-      "approved_at": "2026-05-08T13:09:31.028Z",
       "sprint": 26,
       "feature": "FEAT-024"
     }
@@ -2716,6 +2679,5 @@
         "GAP specs Angular savings (.spec.ts faltantes)"
       ]
     }
-  ],
-  "last_updated": "2026-05-08T13:07:59.956Z"
+  ]
 }

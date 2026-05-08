@@ -73,4 +73,13 @@ public class SavingsGoalEntity {
 
     @Column(name = "closed_at")
     private Instant closedAt;
+
+    /**
+     * Optimistic lock JPA (BUG-S26-Q-008 · Sprint 26).
+     * Incrementado automaticamente por Hibernate en cada UPDATE.
+     * Lost-update en concurrencia -> OptimisticLockingFailureException -> retry en use case.
+     */
+    @Version
+    @Column(name = "version", nullable = false)
+    private Long version;
 }

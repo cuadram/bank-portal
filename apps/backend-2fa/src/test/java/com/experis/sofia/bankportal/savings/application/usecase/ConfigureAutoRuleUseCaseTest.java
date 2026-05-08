@@ -14,7 +14,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -28,14 +27,15 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
 /**
- * TC-F024-050..054 — ConfigureAutoRuleUseCase.
- * RN-F024-04 (UK active=true por goal — desactivar previa antes de crear).
+ * TC-F024-050..054 - ConfigureAutoRuleUseCase.
+ * RN-F024-04 (UK active=true por goal). TC-051 actualizado en Sprint 26 Step 7
+ * (BUG-Q-003 fix): upsert in-place mantiene id/createdAt y aplica nuevos valores
+ * en una sola operacion save, sin chocar contra uk_goal_active_rule.
  *
- * @author SOFIA Developer Agent · FEAT-024 Sprint 26 · Fase F.3
+ * @author SOFIA Developer Agent - FEAT-024 Sprint 26 - Fase F.3 + Step 7 C3
  */
 @ExtendWith(MockitoExtension.class)
 class ConfigureAutoRuleUseCaseTest {
@@ -81,31 +81,45 @@ class ConfigureAutoRuleUseCaseTest {
         verify(ruleRepo, times(1)).save(any());  // solo el INSERT, no UPDATE de previa
     }
 
-    @Test @DisplayName("TC-F024-051 — regla previa existe: desactiva ANTES de crear nueva (UK active=true)")
-    void existingRuleDeactivatedBeforeNew() {
+    @Test @DisplayName("TC-F024-051 - BUG-Q-003 fix: upsert in-place (1 save, mantiene id, actualiza valores)")
+    void existingRuleUpsertedInPlace() {
+        UUID prevId = UUID.randomUUID();
+        Instant prevCreatedAt = Instant.now().minusSeconds(86400);
         var prevRule = new GoalAutoRule();
-        prevRule.setId(UUID.randomUUID());
+        prevRule.setId(prevId);
         prevRule.setGoalId(goalId);
         prevRule.setActive(true);
         prevRule.setAmount(new BigDecimal("50.00"));
         prevRule.setDayOfMonth(1);
         prevRule.setSourceAccountId(accountId);
         prevRule.setNextExecutionAt(Instant.now().plusSeconds(86400));
-        prevRule.setCreatedAt(Instant.now());
+        prevRule.setCreatedAt(prevCreatedAt);
 
         when(goalRepo.findById(goalId)).thenReturn(Optional.of(goal(userId)));
         when(ruleRepo.findActiveByGoalId(goalId)).thenReturn(Optional.of(prevRule));
         when(ruleRepo.save(any(GoalAutoRule.class))).thenAnswer(inv -> inv.getArgument(0));
 
         var req = new AutoRuleRequest(new BigDecimal("200.00"), (short) 20, accountId);
-        useCase.execute(userId, goalId, req);
+        AutoRuleDto dto = useCase.execute(userId, goalId, req);
 
-        // 2 saves: 1) prev desactivada, 2) nueva activa
-        InOrder order = inOrder(ruleRepo);
-        order.verify(ruleRepo).save(argThat(r -> r.getId().equals(prevRule.getId()) && !r.isActive()));
-        order.verify(ruleRepo).save(argThat(r -> !r.getId().equals(prevRule.getId()) && r.isActive()));
+        // BUG-Q-003 fix: solo 1 save — la misma fila mutada, no INSERT + UPDATE.
+        // Esto evita la violacion de uk_goal_active_rule (UNIQUE PARTIAL active=true).
+        ArgumentCaptor<GoalAutoRule> cap = ArgumentCaptor.forClass(GoalAutoRule.class);
+        verify(ruleRepo, times(1)).save(cap.capture());
+        GoalAutoRule saved = cap.getValue();
 
-        assertThat(prevRule.isActive()).isFalse();
+        // Mantiene id y createdAt originales (es la misma fila mutada)
+        assertThat(saved.getId()).isEqualTo(prevId);
+        assertThat(saved.getCreatedAt()).isEqualTo(prevCreatedAt);
+        // Y aplica los nuevos valores del request
+        assertThat(saved.isActive()).isTrue();
+        assertThat(saved.getAmount()).isEqualByComparingTo("200.00");
+        assertThat(saved.getDayOfMonth()).isEqualTo(20);
+
+        // El DTO devuelto refleja los nuevos valores
+        assertThat(dto.amount()).isEqualByComparingTo("200.00");
+        assertThat(dto.dayOfMonth()).isEqualTo((short) 20);
+        assertThat(dto.active()).isTrue();
     }
 
     @Test @DisplayName("TC-F024-052 — ownership: otro userId lanza GoalAccessDenied")
