@@ -1,14 +1,14 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "idle",
+  "status": "gate_pending",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 26,
   "current_feature": "FEAT-024",
-  "current_step": "5b",
-  "pipeline_step": "5b",
-  "pipeline_step_name": "security-agent",
+  "current_step": 5,
+  "pipeline_step": "5",
+  "pipeline_step_name": "code-reviewer",
   "_completed_steps_note": "Array del sprint actual (current_sprint: 25). Se resetea al inicio de cada sprint. No acumula sprints anteriores — ver sprint_history para histórico.",
   "completed_steps": {
     "sprint": 26,
@@ -38,20 +38,6 @@
           "H_smoke"
         ],
         "summary": "Step 4 Developer · 8 fases (A..H) · 145 tests · ng build production OK · ShedLock cableado · OpenAPI sin JWT"
-      },
-      {
-        "step": 5,
-        "feature": "FEAT-024",
-        "sprint": 26,
-        "completed_at": "2026-05-08T07:06:04.988Z",
-        "status": "completed",
-        "gate_approved": "G-5",
-        "verdict": "APPROVED",
-        "blockers": 0,
-        "majors": 0,
-        "minors": 2,
-        "suggestions": 4,
-        "summary": "Step 5 Code Reviewer · veredicto APROBADO · diff Fase H 5 commits revisados · todos guardrails y checks automáticos PASS · LAs/GR/DEBT diferidos a Step 8b"
       }
     ]
   },
@@ -74,7 +60,7 @@
   ],
   "last_skill": "code-reviewer",
   "last_skill_output_path": "docs/deliverables/sprint-26-FEAT-024/STEP5-code-review-report.md",
-  "gate_pending": null,
+  "gate_pending": "G-5",
   "release_blocked": false,
   "release_blocked_reason": null,
   "sprint_goal": "Extender banca inteligente de BankPortal mediante gestor de Objetivos de Ahorro (viajes, hogar, emergencia, educacion) con aportaciones manuales y automaticas, seguimiento de hitos y proyeccion. Consolidar contrato API backend mediante OpenAPI 3.1 como fuente de verdad para habilitar GR-SMOKE-001.",
@@ -742,11 +728,11 @@
     },
     "G-5": {
       "approved_by": "tech-lead",
-      "approved_at": "2026-05-08T07:06:04.988Z",
+      "approved_at": "2026-04-14T15:27:18.000Z",
       "step": "5",
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "note": "Code Review APPROVED · 0 bloqueantes · 0 mayores · 2 menores · 4 sugerencias · LAs H1/H2/H3 + GR-CI-002 + DEBT-052 diferidos a Step 8b"
+      "sprint": 24,
+      "feature": "FEAT-022",
+      "note": "CR APPROVED 0 blocker 0 major 0 minor 2 sugerencias aplicadas"
     },
     "G-6": {
       "approved_by": "qa-lead+product-owner",
@@ -987,16 +973,16 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-05-08T07:06:09.930Z",
-    "last_gate": "G-5",
-    "last_step": "5",
+    "last_generated": "2026-05-08T06:13:49.968Z",
+    "last_gate": "G-4b",
+    "last_step": "4",
     "sprint": 26,
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 · G-5 APROBADO (Tech Lead) · pipeline avanza Step 5 -> Step 5b (Security Agent · AUTO con gate BLOQUEANTE si CVEs críticos > 0). Tras Step 5b -> Step 6 (QA Tester · HITL QA G-6). LAs H1/H2/H3 + GR-CI-002 + DEBT-052 diferidos a Step 8b para procesamiento formal.",
+  "resume_next": "Sprint 26 · Step 5 (Code Reviewer) COMPLETED · veredicto APROBADO · 0 bloqueantes · 0 mayores · 2 menores · 4 sugerencias · gate_pending=G-5 · esperando aprobación HITL TL (Angel). Reporte: docs/deliverables/sprint-26-FEAT-024/STEP5-code-review-report.md. Tras G-5 -> Step 5b (Security Agent · AUTO) -> Step 6 (QA Tester · HITL QA G-6).",
   "sprint_closed": false,
-  "updated_at": "2026-05-08T07:06:24.733Z",
+  "updated_at": "2026-05-08T06:47:56.757Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -1480,20 +1466,6 @@
         "47892e6"
       ],
       "tests_at_approval": "145/145 PASS"
-    },
-    {
-      "gate": "G-5",
-      "step": "5",
-      "approved_at": "2026-05-08T06:53:43.731Z",
-      "sprint": 26,
-      "feature": "FEAT-024"
-    },
-    {
-      "gate": "G-5",
-      "step": "5",
-      "approved_at": "2026-05-08T07:06:09.930Z",
-      "sprint": 26,
-      "feature": "FEAT-024"
     }
   ],
   "lessons_learned": [
@@ -2509,9 +2481,9 @@
     }
   },
   "last_gate_request_at": "2026-05-08T06:47:56.757Z",
-  "last_gate_approved": "G-5",
-  "last_gate_approved_at": "2026-05-08T07:06:04.988Z",
-  "last_gate_approved_by": "Tech Lead (Angel de la Cuadra · HITL)",
+  "last_gate_approved": "G-4b",
+  "last_gate_approved_at": "2026-05-08T06:14:11.815Z",
+  "last_gate_approved_by": "PO/Tech Lead (Angel de la Cuadra · HITL)",
   "stg_pre_check": {
     "executed_at": "2026-05-08T06:34:51.541Z",
     "errors": 0,

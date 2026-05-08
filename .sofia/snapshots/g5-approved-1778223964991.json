@@ -6,7 +6,7 @@
   "client": "Banco Meridian",
   "current_sprint": 26,
   "current_feature": "FEAT-024",
-  "current_step": "5b",
+  "current_step": 5,
   "pipeline_step": "5b",
   "pipeline_step_name": "security-agent",
   "_completed_steps_note": "Array del sprint actual (current_sprint: 25). Se resetea al inicio de cada sprint. No acumula sprints anteriores — ver sprint_history para histórico.",
@@ -987,7 +987,7 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-05-08T07:06:09.930Z",
+    "last_generated": "2026-05-08T06:53:43.731Z",
     "last_gate": "G-5",
     "last_step": "5",
     "sprint": 26,
@@ -996,7 +996,7 @@
   },
   "resume_next": "Sprint 26 · G-5 APROBADO (Tech Lead) · pipeline avanza Step 5 -> Step 5b (Security Agent · AUTO con gate BLOQUEANTE si CVEs críticos > 0). Tras Step 5b -> Step 6 (QA Tester · HITL QA G-6). LAs H1/H2/H3 + GR-CI-002 + DEBT-052 diferidos a Step 8b para procesamiento formal.",
   "sprint_closed": false,
-  "updated_at": "2026-05-08T07:06:24.733Z",
+  "updated_at": "2026-05-08T07:06:04.988Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -1485,13 +1485,6 @@
       "gate": "G-5",
       "step": "5",
       "approved_at": "2026-05-08T06:53:43.731Z",
-      "sprint": 26,
-      "feature": "FEAT-024"
-    },
-    {
-      "gate": "G-5",
-      "step": "5",
-      "approved_at": "2026-05-08T07:06:09.930Z",
       "sprint": 26,
       "feature": "FEAT-024"
     }

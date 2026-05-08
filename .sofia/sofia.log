@@ -744,3 +744,9 @@
 [2026-05-08T06:13:49.968Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-4b · Step: 4 · Sprint 26
 [2026-05-08T06:14:11.815Z] [GATE] [G-4b] APPROVED por PO/Tech Lead · pipeline avanza Step 4 -> Step 5 · 145/145 tests PASS · 6 commits Fase H · dashboard regenerado
 [2026-05-08T06:14:11.815Z] [STEP-5] [orchestrator] Step 5 (Code Reviewer) READY · gate_pending=null · status=idle · esperando arranque agente
+[2026-05-08T06:32:26.339Z] [HOUSEKEEPING] [orchestrator] session.json saneado · pipeline_step "4"->"5" · pipeline_step_name "developer"->"code-reviewer" · resume_next actualizado a Step 5 READY · backup .sofia/session.json.bak-pre-sanitize-2026-05-08T063149003 · last_gate_approved=G-4b ya persistido (no requería cambio)
+[2026-05-08T06:33:31.713Z] [STEP-5] [code-reviewer] STARTED → revisión Sprint 26 FEAT-024 · 5 commits Fase H · 13/13 criterios cierre · branch feature/FEAT-024-sprint26 HEAD 52e3d26
+[2026-05-08T06:47:56.757Z] [STEP-5] [code-reviewer] COMPLETED → docs/deliverables/sprint-26-FEAT-024/STEP5-code-review-report.md | veredicto=APPROVED · 0 bloqueantes · 0 mayores · 2 menores · 4 sugerencias · gate_pending=G-5 (HITL TL)
+[2026-05-08T06:53:43.731Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-5 · Step: 5 · Sprint 26
+[2026-05-08T07:06:04.988Z] [GATE] [G-5] APPROVED por Tech Lead (Angel) · Code Review veredicto APPROVED · pipeline avanza Step 5 -> Step 5b (Security Agent) · LAs y GR-CI-002 + DEBT-052 diferidos a Step 8b
+[2026-05-08T07:06:09.930Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-5 · Step: 5 · Sprint 26
