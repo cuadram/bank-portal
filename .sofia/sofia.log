@@ -758,3 +758,5 @@
 [2026-05-08T08:22:54.428Z] [STEP-6] [qa-tester] STARTED -> auditoria de IT + smoke + diseno TCs + ejecucion + reporte
 [2026-05-08T09:36:58.508Z] [STEP-6] [qa-tester] COMPLETED -> docs/quality/ · veredicto APROBADO CON CONDICIONES · 145/145 mvn + 6/6 e2e · 2 críticos + 1 alto + 4 medios + 1 bajo · gate_pending=G-6
 [2026-05-08T09:38:41.668Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-6 · Step: 6 · Sprint 26
+[2026-05-08T09:54:31.168Z] [GATE-G-6] APPROVED-WITH-CONDITIONS by Angel de la Cuadra (PO+QA Lead) -> Step 7 DevOps READY · C1/C2 bloqueantes G-7 · C3 bloqueante release · C4/C5 operativas · 5 medios+1 bajo+2 GAPs diferidos a S27
+[2026-05-08T09:54:37.044Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-6 · Step: 7 · Sprint 26

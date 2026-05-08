@@ -1,14 +1,14 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "gate_pending",
+  "status": "idle",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 26,
   "current_feature": "FEAT-024",
-  "current_step": 6,
-  "pipeline_step": "6",
-  "pipeline_step_name": "qa-tester",
+  "current_step": 7,
+  "pipeline_step": "7",
+  "pipeline_step_name": "devops",
   "_completed_steps_note": "Array del sprint actual (current_sprint: 25). Se resetea al inicio de cada sprint. No acumula sprints anteriores — ver sprint_history para histórico.",
   "completed_steps": {
     "sprint": 26,
@@ -99,7 +99,7 @@
   ],
   "last_skill": "qa-tester",
   "last_skill_output_path": "docs/quality/",
-  "gate_pending": "G-6",
+  "gate_pending": null,
   "release_blocked": false,
   "release_blocked_reason": null,
   "sprint_goal": "Extender banca inteligente de BankPortal mediante gestor de Objetivos de Ahorro (viajes, hogar, emergencia, educacion) con aportaciones manuales y automaticas, seguimiento de hitos y proyeccion. Consolidar contrato API backend mediante OpenAPI 3.1 como fuente de verdad para habilitar GR-SMOKE-001.",
@@ -1035,16 +1035,16 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-05-08T09:38:41.668Z",
+    "last_generated": "2026-05-08T09:54:37.044Z",
     "last_gate": "G-6",
-    "last_step": "6",
+    "last_step": "7",
     "sprint": 26,
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
   "resume_next": "Sprint 26 · Step 5b (Security Agent) COMPLETED · semáforo VERDE · 0 CVEs críticos · 0 mayores · 1 BAJO SEC-F024-01 (DEBT-059) · 2 LOW transitivos preexistentes (DEBT-060). Pipeline AUTO avanza a Step 6 (QA Tester · gate HITL QA G-6 · esperando arranque agente).",
   "sprint_closed": false,
-  "updated_at": "2026-05-08T09:38:41.668Z",
+  "updated_at": "2026-05-08T09:54:37.044Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -1580,6 +1580,13 @@
       "gate": "G-6",
       "step": "6",
       "approved_at": "2026-05-08T09:38:41.668Z",
+      "sprint": 26,
+      "feature": "FEAT-024"
+    },
+    {
+      "gate": "G-6",
+      "step": "7",
+      "approved_at": "2026-05-08T09:54:37.044Z",
       "sprint": 26,
       "feature": "FEAT-024"
     }
@@ -2597,9 +2604,9 @@
     }
   },
   "last_gate_request_at": "2026-05-08T06:47:56.757Z",
-  "last_gate_approved": "G-5",
-  "last_gate_approved_at": "2026-05-08T07:06:04.988Z",
-  "last_gate_approved_by": "Tech Lead (Angel de la Cuadra · HITL)",
+  "last_gate_approved": "G-6",
+  "last_gate_approved_at": "2026-05-08T09:54:31.168Z",
+  "last_gate_approved_by": "Product Owner + QA Lead (Angel de la Cuadra · HITL)",
   "stg_pre_check": {
     "executed_at": "2026-05-08T06:34:51.541Z",
     "errors": 0,
@@ -2644,5 +2651,33 @@
       "C6: Aceptar diferimiento S27 de BUG-Q-004/005/006/007/009 + GAPs cobertura"
     ],
     "completed_at": "2026-05-08T09:36:58.508Z"
-  }
+  },
+  "gates_history": [
+    {
+      "gate": "G-6",
+      "approved_at": "2026-05-08T09:54:31.168Z",
+      "approved_by": "Angel de la Cuadra (PO + QA Lead)",
+      "verdict": "APROBADO CON CONDICIONES",
+      "conditions_blocking_g7": [
+        "C1: fix BUG-Q-001 (V32 UPDATE category VIAJES -> VIAJE)",
+        "C2: fix BUG-Q-008 (@Version + retry + IT concurrencia)"
+      ],
+      "conditions_blocking_release_v1_26_0": [
+        "C3: fix BUG-Q-003 (upsert auto-rule)"
+      ],
+      "conditions_operational": [
+        "C4: re-test QA tras C1/C2/C3",
+        "C5: generar smoke-test-v1.26.sh (DEBT-049)"
+      ],
+      "deferred_to_s27": [
+        "BUG-Q-004 (RN-F024-13 dias catalogo)",
+        "BUG-Q-005 (cap @Max 5000 amount)",
+        "BUG-Q-006 (existence oracle)",
+        "BUG-Q-007 (widget degraded flag)",
+        "BUG-Q-009 (WCAG index.html)",
+        "GAP cobertura SavingsControllerIT 3/11 endpoints",
+        "GAP specs Angular savings (.spec.ts faltantes)"
+      ]
+    }
+  ]
 }
