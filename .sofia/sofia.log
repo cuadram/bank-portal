@@ -754,3 +754,4 @@
 [2026-05-08T07:17:56.987Z] [STEP-5b] [security-agent] COMPLETED → docs/security/SecurityReport-Sprint26-FEAT-024.md | semáforo=GREEN · 0 CVE críticos · 0 secrets · 1 BAJO (SEC-F024-01) · 2 LOW transitivos preexistentes · DEBT-059 + DEBT-060 registrados
 [2026-05-08T07:17:56.987Z] [STEP-5b] [orchestrator] Step 5b auto-cerrado (AUTO sin HITL) · pipeline avanza Step 5b -> Step 6 (QA Tester · HITL QA G-6 · READY)
 [2026-05-08T07:18:33.149Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-5 · Step: 5b · Sprint 26
+[2026-05-08T07:44:58.638Z] [HANDOFF] [orchestrator] HANDOFF generado para arranque Step 6 en chat nuevo · docs/handoffs/HANDOFF-sprint26-step6-qa-tester.md (21.2KB · 392 líneas) · session.json congelada en c86c50e
