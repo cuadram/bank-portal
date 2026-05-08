@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *       {@link JdbcTemplateLockProvider} (no {@code DefaultLockProvider} u
  *       otro fallback in-memory que invalidaria la garantia distribuida).</li>
  *   <li>Tabla {@code shedlock} presente en la BD del compose externo
- *       (V18c aplicada por Flyway en S18).</li>
+ *       (V31__shedlock.sql aplicada por Flyway en S26 Fase H.7, originalmente V18c).</li>
  * </ul>
  *
  * <p>Si alguno falla, el AutoContributionScheduler se ejecutaria sin lock o
@@ -46,7 +46,7 @@ class ShedLockEnabledIT extends SavingsIntegrationTestBase {
     }
 
     @Test
-    @DisplayName("IT-SHEDLOCK-002 - tabla shedlock existe en BD (V18c aplicada)")
+    @DisplayName("IT-SHEDLOCK-002 - tabla shedlock existe en BD (V31 aplicada)")
     void shedlockTable_exists() {
         Long count = jdbc.sql("""
                 SELECT COUNT(*)
@@ -57,7 +57,7 @@ class ShedLockEnabledIT extends SavingsIntegrationTestBase {
                 .query(Long.class)
                 .single();
         assertThat(count)
-                .as("Tabla shedlock debe existir (migracion V18c__shedlock.sql)")
+                .as("Tabla shedlock debe existir (migracion V31__shedlock.sql)")
                 .isEqualTo(1L);
     }
 }

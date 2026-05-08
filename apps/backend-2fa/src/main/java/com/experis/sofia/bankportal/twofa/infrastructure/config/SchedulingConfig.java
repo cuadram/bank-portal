@@ -14,7 +14,7 @@ import javax.sql.DataSource;
  *
  * <p>Activa el AOP de {@code @SchedulerLock} a nivel de aplicacion y expone
  * un {@link LockProvider} basado en JdbcTemplate sobre la tabla {@code shedlock}
- * (V18c). Esto garantiza que cualquier {@code @Scheduled @SchedulerLock} solo
+ * (V31, originalmente V18c). Esto garantiza que cualquier {@code @Scheduled @SchedulerLock} solo
  * se ejecute en una instancia simultaneamente, requisito de idempotencia para
  * AutoContributionScheduler (RN-F024-04 · FEAT-024 Sprint 26).</p>
  *

@@ -21,7 +21,7 @@ import java.util.List;
  * <p>Cada noche a las 02:00 UTC busca las reglas activas con
  * {@code next_execution_at <= now()} y delega cada una en
  * {@link ProcessAutoRuleUseCase}. La proteccion por replica viene de ShedLock
- * sobre la tabla {@code shedlock} (V18c).</p>
+ * sobre la tabla {@code shedlock} (V31, originalmente V18c).</p>
  *
  * <p><b>Diseno de iteracion:</b> el puerto
  * {@link GoalAutoRuleRepositoryPort#findDueForExecution(Instant)} devuelve

@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Verifica end-to-end que invocar manualmente runDueAutoContributions() procesa
  * solamente las reglas con next_execution_at <= now() (RN-F024-04 mensual).
  *
- * NO testa @SchedulerLock (DEBT-051 critica - sin LockProvider/V18c shedlock,
+ * NO testa @SchedulerLock (DEBT-051 critica - sin LockProvider/V31 shedlock,
  * el lock se ignora silenciosamente; cubierto en Fase H del Step 4).
  *
  * Patron: invocar el bean directamente (no esperar al cron). Setup via JdbcClient
