@@ -755,3 +755,6 @@
 [2026-05-08T07:17:56.987Z] [STEP-5b] [orchestrator] Step 5b auto-cerrado (AUTO sin HITL) · pipeline avanza Step 5b -> Step 6 (QA Tester · HITL QA G-6 · READY)
 [2026-05-08T07:18:33.149Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-5 · Step: 5b · Sprint 26
 [2026-05-08T07:44:58.638Z] [HANDOFF] [orchestrator] HANDOFF generado para arranque Step 6 en chat nuevo · docs/handoffs/HANDOFF-sprint26-step6-qa-tester.md (21.2KB · 392 líneas) · session.json congelada en c86c50e
+[2026-05-08T08:22:54.428Z] [STEP-6] [qa-tester] STARTED -> auditoria de IT + smoke + diseno TCs + ejecucion + reporte
+[2026-05-08T09:36:58.508Z] [STEP-6] [qa-tester] COMPLETED -> docs/quality/ · veredicto APROBADO CON CONDICIONES · 145/145 mvn + 6/6 e2e · 2 críticos + 1 alto + 4 medios + 1 bajo · gate_pending=G-6
+[2026-05-08T09:38:41.668Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-6 · Step: 6 · Sprint 26

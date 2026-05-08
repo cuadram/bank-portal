@@ -31,3 +31,17 @@ Thumbs.db
 
 # Paquetes de release SOFIA (binarios — no versionar)
 sofia-deploy-v*.zip
+
+# Playwright (added by QA Step 6 Sprint 26)
+apps/frontend-portal/test-results/
+apps/frontend-portal/playwright-results.json
+apps/frontend-portal/.angular/
+apps/frontend-portal/dist/
+
+# SOFIA QA evidence dir contains compiled logs only (intentionally tracked)
+# Keep docs/quality/evidence/ tracked
+
+# SOFIA temporales
+.sofia/tmp/
+.sofia/*.bak-*
+.sofia/sofia-config.json.bak-*
