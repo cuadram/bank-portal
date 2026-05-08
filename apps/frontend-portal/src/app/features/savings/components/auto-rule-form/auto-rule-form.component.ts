@@ -47,6 +47,8 @@ import { AutoRuleRequest, AutoRule, GoalDetail, SavingsGoal } from '../../models
  *
  * FEAT-024 Sprint 26.
  */
+interface UpcomingExecution { label: string; }
+
 const DAY_OPTIONS: ReadonlyArray<number> = [1, 5, 10, 15, 20, 25, 28];
 
 @Component({
@@ -440,8 +442,6 @@ const DAY_OPTIONS: ReadonlyArray<number> = [1, 5, 10, 15, 20, 25, 28];
     }
   `]
 })
-interface UpcomingExecution { label: string; }
-
 export class AutoRuleFormComponent implements OnInit, OnDestroy {
   readonly dayOptions = DAY_OPTIONS;
 
