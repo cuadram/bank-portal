@@ -741,3 +741,6 @@
 [2026-05-08T06:05:40.228Z] [STEP-4] [developer-agent] Fase H.6 hotfix ng build production (jwt-decode + AutoRuleFormComponent decorator) · commit 4e12abd
 [2026-05-08T06:05:40.228Z] [STEP-4] [developer-agent] Fase H.7 V18c->V31 rename Flyway + lista canonica 145/145 PASS · commit 8d4e0bd
 [2026-05-08T06:05:40.228Z] [STEP-4] [developer-agent] Step 4 COMPLETED · gate_pending=G-4b · 8 fases (A..H) · 145 tests · ng build OK · ShedLock cableado · OpenAPI sin JWT · 5 commits Fase H pushed
+[2026-05-08T06:13:49.968Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-4b · Step: 4 · Sprint 26
+[2026-05-08T06:14:11.815Z] [GATE] [G-4b] APPROVED por PO/Tech Lead · pipeline avanza Step 4 -> Step 5 · 145/145 tests PASS · 6 commits Fase H · dashboard regenerado
+[2026-05-08T06:14:11.815Z] [STEP-5] [orchestrator] Step 5 (Code Reviewer) READY · gate_pending=null · status=idle · esperando arranque agente
