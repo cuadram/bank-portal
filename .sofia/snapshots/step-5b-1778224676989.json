@@ -1025,16 +1025,16 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-05-08T07:18:33.149Z",
+    "last_generated": "2026-05-08T07:06:09.930Z",
     "last_gate": "G-5",
-    "last_step": "5b",
+    "last_step": "5",
     "sprint": 26,
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
   "resume_next": "Sprint 26 · Step 5b (Security Agent) COMPLETED · semáforo VERDE · 0 CVEs críticos · 0 mayores · 1 BAJO SEC-F024-01 (DEBT-059) · 2 LOW transitivos preexistentes (DEBT-060). Pipeline AUTO avanza a Step 6 (QA Tester · gate HITL QA G-6 · esperando arranque agente).",
   "sprint_closed": false,
-  "updated_at": "2026-05-08T07:18:33.149Z",
+  "updated_at": "2026-05-08T07:17:56.987Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -1556,13 +1556,6 @@
       "gate": "G-5",
       "step": "5",
       "approved_at": "2026-05-08T07:06:09.930Z",
-      "sprint": 26,
-      "feature": "FEAT-024"
-    },
-    {
-      "gate": "G-5",
-      "step": "5b",
-      "approved_at": "2026-05-08T07:18:33.149Z",
       "sprint": 26,
       "feature": "FEAT-024"
     }
