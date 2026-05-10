@@ -768,3 +768,5 @@
 [2026-05-10T10:17:09.781Z] [GATE] [G-7] APPROVED · sprint=26 · feature=FEAT-024 · step=7 · approver=HITL-DV (Angel de la Cuadra) · commit=31911dd
 [2026-05-10T10:17:09.781Z] [STEP-8] [documentation] STARTED · sprint=26 · feature=FEAT-024 · gate_target=G-8 (HITL-PM) · scope=paquete entregables canónico S25 (3 Excel + 17 Word) + CHANGELOG v1.26.0 · plan a proponer pre-generación
 [2026-05-10T10:17:57.259Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-7 · Step: 8 · Sprint 26
+[2026-05-10T10:55:49.001Z] [STEP-8] [documentation] LOTES_A-D_COMPLETED · 17 DOCX + 3 XLSX + 1 JSON + 1 generador (1163L) · LA-022-08 PASS · checklist pre-G-8 PASS · gate_pending=G-8
+[2026-05-10T10:55:54.051Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-7 · Step: 8 · Sprint 26

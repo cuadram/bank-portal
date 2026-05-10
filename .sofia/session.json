@@ -1,7 +1,7 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "in_progress",
+  "status": "gate_pending",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 26,
@@ -107,6 +107,35 @@
           "infra/compose/smoke-test-v1.26.0.sh"
         ],
         "summary": "Step 7 DevOps · scope ampliado por hallazgos PO durante verificación visual · B.4 retry 409 + Hallazgo 1 auth guard + OBS-008/009 multi-cuenta · 147/147 backend tests · ng build OK · smoke 409 7×201+3×409 sin perdida · 11 items checklist-pre-G7 PASS · DEBT-Q-073/FE-074/FE-075 abiertas · LA candidatas GR-SHELL-002, GR-FE-002 · pendiente Step 8b para fa-index BR nuevas"
+      },
+      {
+        "step": 8,
+        "feature": "FEAT-024",
+        "sprint": 26,
+        "completed_at": "2026-05-10T10:55:48.967Z",
+        "status": "GATE_PENDING",
+        "verdict": "PENDING_HITL_PM",
+        "scope": "Documentation Agent · Lotes A-B-C-D ejecutados · 17 DOCX + 3 XLSX + 1 JSON + 1 generador",
+        "artifacts": {
+          "word_dir": "docs/deliverables/sprint-26-FEAT-024/word/",
+          "word_count": 17,
+          "excel_dir": "docs/deliverables/sprint-26-FEAT-024/excel/",
+          "excel_count": 3,
+          "sprint_data_json": "docs/sprints/SPRINT-026-data.json",
+          "generator": "docs/deliverables/sprint-26-FEAT-024/gen-docs-sprint26.js",
+          "plan": "docs/deliverables/sprint-26-FEAT-024/STEP8-plan.md",
+          "release_notes": "docs/releases/RELEASE-NOTES-v1.26.0.md",
+          "runbook": "docs/runbooks/RUNBOOK-backend-2fa-v1.26.0.md"
+        },
+        "cmmi_bloqueantes_g8": "7/7 presentes (CMMI-Evidence, MEETING-MINUTES, PROJECT-PLAN, QUALITY-SUMMARY, RISK-REGISTER, TRACEABILITY, planning-doc)",
+        "la_022_08_validation": "PASS · 21 binarios > 0 KB · magic bytes ZIP correctos",
+        "checklist_pre_g8": "7/8 PASS · 1 N/A (diagramas Mermaid opcionales)",
+        "pending_actions": [
+          "G-8 HITL-PM approval",
+          "dashboard regeneration post-G-8",
+          "Step 8b FA-Agent posterior"
+        ],
+        "summary": "Step 8 Documentation Agent · Lotes A→B→C→D ejecutados en autonomía · 17 DOCX + 3 XLSX + 1 JSON + generador 1163L · checklist pre-G-8 PASS · pendiente aprobación HITL-PM (Angel)"
       }
     ]
   },
@@ -127,9 +156,9 @@
     "8b",
     "9"
   ],
-  "last_skill": "devops",
-  "last_skill_output_path": "docs/quality/",
-  "gate_pending": null,
+  "last_skill": "documentation-agent",
+  "last_skill_output_path": "docs/deliverables/sprint-26-FEAT-024/",
+  "gate_pending": "G-8",
   "release_blocked": false,
   "release_blocked_reason": null,
   "sprint_goal": "Extender banca inteligente de BankPortal mediante gestor de Objetivos de Ahorro (viajes, hogar, emergencia, educacion) con aportaciones manuales y automaticas, seguimiento de hitos y proyeccion. Consolidar contrato API backend mediante OpenAPI 3.1 como fuente de verdad para habilitar GR-SMOKE-001.",
@@ -1065,16 +1094,16 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-05-10T10:17:57.259Z",
+    "last_generated": "2026-05-10T10:55:54.051Z",
     "last_gate": "G-7",
     "last_step": "8",
     "sprint": 26,
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 · Step 8 (Documentation Agent) ARRANQUE · G-7 APROBADO HITL-DV · paquete entregables canónico S25 (3 Excel + 17 Word) · gate G-8 HITL-PM al cierre",
+  "resume_next": "Sprint 26 · Step 8 GATE_PENDING G-8 HITL-PM · 17 docx + 3 xlsx + 1 json generados · solicitar aprobación Angel para avanzar a Step 8b FA-Agent",
   "sprint_closed": false,
-  "updated_at": "2026-05-10T10:17:57.259Z",
+  "updated_at": "2026-05-10T10:55:54.051Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -1631,6 +1660,13 @@
       "gate": "G-7",
       "step": "8",
       "approved_at": "2026-05-10T10:17:57.259Z",
+      "sprint": 26,
+      "feature": "FEAT-024"
+    },
+    {
+      "gate": "G-7",
+      "step": "8",
+      "approved_at": "2026-05-10T10:55:54.051Z",
       "sprint": 26,
       "feature": "FEAT-024"
     }
@@ -2724,5 +2760,5 @@
       ]
     }
   ],
-  "last_updated": "2026-05-10T10:16:51.527Z"
+  "last_updated": "2026-05-10T10:55:48.967Z"
 }
