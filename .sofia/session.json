@@ -1171,7 +1171,7 @@
   },
   "resume_next": "Sprint 26 CERRADO (v1.26.0) post-G-9. Pendiente sesion: tag v1.26.0 + merges develop/main. Proxima sesion: Sprint 27 backlog grooming + planning PO (FEAT-025 TBD).",
   "sprint_closed": false,
-  "updated_at": "2026-05-10T15:50:33.040Z",
+  "updated_at": "2026-05-10T15:56:20.749Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1618,7 +1618,27 @@
       "git_tag": "v1.26.0",
       "git_tag_object": "72f415776d42d67010f917577a0d2699dac0724b",
       "git_tag_commit": "6088c7ee2b411ae8f84ce2c601eb61c840060ac7",
-      "git_tag_pushed_at": "2026-05-10T15:50:33.040Z"
+      "git_tag_pushed_at": "2026-05-10T15:50:33.040Z",
+      "merge_develop": {
+        "commit": "db8ffdb",
+        "parent_feature": "2ad05a3",
+        "parent_develop": "fee4522",
+        "message": "Merge feature/FEAT-024-sprint26 into develop · v1.26.0 · Sprint 26 closed",
+        "merged_at": "2026-05-10T15:56:20.749Z",
+        "strategy": "no-ff",
+        "files_changed": 271,
+        "insertions": 80085,
+        "deletions": 456
+      },
+      "merge_main": {
+        "commit": "ca09324",
+        "parent_main": "fee4522",
+        "parent_develop": "db8ffdb",
+        "message": "Merge develop into main · release v1.26.0 · Sprint 26",
+        "merged_at": "2026-05-10T15:56:20.749Z",
+        "strategy": "no-ff"
+      },
+      "active_branch_after_close": "develop"
     }
   },
   "repository": {
@@ -2960,5 +2980,6 @@
       ]
     }
   ],
-  "last_updated": "2026-05-10T15:50:33.040Z"
+  "last_updated": "2026-05-10T15:56:20.749Z",
+  "active_branch": "develop"
 }

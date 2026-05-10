@@ -798,3 +798,6 @@
 [2026-05-10T13:41:41.192Z] [DASHBOARD] [G-9] regenerado · last_gate=G-9 last_step=9 sprint=26 · 1..9 done verde · pendiente A11 tag v1.26.0 + A12 merges
 [2026-05-10T13:41:41.192Z] [SNAPSHOT] .sofia/backups/session-post-G9-S26-20260510.json (168 KB) creado
 [2026-05-10T15:50:33.040Z] [TAG] v1.26.0 created (annotated -F) on commit 6088c7e -> tag 72f4157 -> pushed to origin OK · LA-026-03 mitigada con git tag -F + 4 chunks 145+286+381+483 bytes
+[2026-05-10T15:56:20.749Z] [MERGE] develop <- feature/FEAT-024-sprint26 commit=db8ffdb (no-ff) · 271 files +80085/-456 · pushed origin OK
+[2026-05-10T15:56:20.749Z] [MERGE] main <- develop commit=ca09324 (no-ff) · pushed origin OK · sin branch protection bloqueante
+[2026-05-10T15:56:20.749Z] [STEP-9] [workflow-manager] A12 complete · v1.26.0 deployed to main · branch active: develop
