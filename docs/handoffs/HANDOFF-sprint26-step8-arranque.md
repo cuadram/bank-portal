@@ -74,10 +74,55 @@ Según `.sofia/skills/orchestrator/SKILL.md` y skill `documentation-agent/SKILL.
 - **README/HOWTO** actualizar si procede.
 - **Diagramas**: regenerar si hubo cambios estructurales (no esperados en Step 7).
 
-### 3.2 Excel de seguimiento entrega cliente
+### 3.2 Paquete entregables cliente — convención canónica S5–S25
 
-- Actualizar `docs/deliverables/sprint-26-FEAT-024/seguimiento-cliente.xlsx`
-  con métricas de cierre Sprint.
+CORRECCIÓN handoff inicial: la convención del proyecto NO es un único `seguimiento-cliente.xlsx`.
+El patrón consolidado durante 25 sprints es **3 Excel + 17 Word** por sprint, en:
+`docs/deliverables/sprint-26-FEAT-024/{excel,word}/`.
+
+#### 3.2.1 Carpeta `excel/` — 3 ficheros
+
+| Fichero | Hojas | Columnas |
+|---------|-------|----------|
+| `Quality-Dashboard-Sprint26.xlsx` | `Dashboard S24-S26` · `Velocidad` · `FA Analysis` | Métrica/S24/S25/S26/Target/Semáforo · Sprint/Feature/SP/Tests/Cov%/Release · Campo/Valor |
+| `Decision-Log-Sprint26.xlsx` | `Decisiones S26` | ID · Tipo · Título · Fecha · Aprobador · Referencias |
+| `NC-Tracker-Sprint26.xlsx` | `NC Tracker S26` | ID · Tipo · Severidad · Origen · Descripción · Estado · Resolución |
+
+Decisiones a registrar en Decision-Log S26 (mínimo): DR-S26-007 (B.4 quick patch 409),
+DR-S26-008 (auth guard + multi-cuenta), más ADRs/DRs previos del sprint que existan en
+`docs/decisions/` y `docs/architecture/adr/`. Step 8 debe escanear ambos directorios
+filtrando por sprint 26.
+
+NCs a registrar (mínimo): hallazgos Code Review Step 5 + RV-* + OBS-008/OBS-009
++ Hallazgo 1 auth guard (todos cerrados pre-G-7). Origen y resolución según evidencia
+en `docs/quality/evidence/sprint-26/`.
+
+#### 3.2.2 Carpeta `word/` — 17 documentos canónicos
+
+Replicar inventario S25 en S26 con nombres `*-FEAT-024-Sprint26.docx` o
+`*-Sprint26.docx` según corresponda:
+
+SRS, HLD, LLD-Backend, LLD-Frontend, Code-Review, QA-Report, Security-Report,
+Release-Notes (v1.26.0), Runbook (v1.26.0), CMMI-Evidence, Risk-Register,
+Project-Plan (v1.26), Quality-Summary, Sprint26-Report-PMC, Sprint26-Planning-Doc,
+Meeting-Minutes, Traceability.
+
+#### 3.2.3 Excepciones / criterio de proporcionalidad
+
+Si algún Word no aplica al sprint (p.ej. no hubo cambios de arquitectura → HLD se
+omite o se marca "sin cambios respecto a Sprint 25"), Documentation Agent debe
+documentarlo explícitamente en `DOC-INDEX-sprint26.md` con justificación. NO
+silenciar omisiones.
+
+#### 3.2.4 Generadores
+
+S25 usó `gen-docs-sprint25.js` como script de generación. Step 8 debe decidir:
+(a) replicar y adaptar a S26, o
+(b) generar manualmente con plantillas Word/Excel.
+
+Recomendación: revisar `gen-docs-sprint25.js` antes de empezar; si está parametrizable
+por sprint con coste bajo, reusar. Si requiere reescritura mayor, generación manual
+es más barata para 1 sprint.
 
 ### 3.3 Gate G-8 HITL PM
 
