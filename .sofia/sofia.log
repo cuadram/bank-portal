@@ -765,3 +765,6 @@
 [2026-05-08T10:30:39.885Z] [STEP-7] [devops] WIP-PAUSE -> handoff escrito · 16 ficheros sin commitear · pendiente compile+test (Maven fuera de allowlist) + C4/C5/C6
 [2026-05-08T13:08:06.890Z] [STEP-7] [devops] COMPLETED · verdict=APPROVED · scope-ampliado=B.4+Hallazgo1+OBS-008/009 · DRs=DR-S26-007,DR-S26-008 · DEBT=DEBT-Q-073,DEBT-FE-074,DEBT-FE-075 · LA-candidates=GR-SHELL-002,GR-FE-002 · gate_pending=G-7 · pendiente Step 8b fa-index update
 [2026-05-08T13:09:31.028Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-7 · Step: 7 · Sprint 26
+[2026-05-10T10:17:09.781Z] [GATE] [G-7] APPROVED · sprint=26 · feature=FEAT-024 · step=7 · approver=HITL-DV (Angel de la Cuadra) · commit=31911dd
+[2026-05-10T10:17:09.781Z] [STEP-8] [documentation] STARTED · sprint=26 · feature=FEAT-024 · gate_target=G-8 (HITL-PM) · scope=paquete entregables canónico S25 (3 Excel + 17 Word) + CHANGELOG v1.26.0 · plan a proponer pre-generación
+[2026-05-10T10:17:57.259Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-7 · Step: 8 · Sprint 26

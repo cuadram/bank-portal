@@ -1,14 +1,14 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "gate_pending",
+  "status": "in_progress",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 26,
   "current_feature": "FEAT-024",
-  "current_step": 7,
-  "pipeline_step": "7",
-  "pipeline_step_name": "devops",
+  "current_step": 8,
+  "pipeline_step": "8",
+  "pipeline_step_name": "documentation",
   "_completed_steps_note": "Array del sprint actual (current_sprint: 25). Se resetea al inicio de cada sprint. No acumula sprints anteriores — ver sprint_history para histórico.",
   "completed_steps": {
     "sprint": 26,
@@ -129,7 +129,7 @@
   ],
   "last_skill": "devops",
   "last_skill_output_path": "docs/quality/",
-  "gate_pending": "G-7",
+  "gate_pending": null,
   "release_blocked": false,
   "release_blocked_reason": null,
   "sprint_goal": "Extender banca inteligente de BankPortal mediante gestor de Objetivos de Ahorro (viajes, hogar, emergencia, educacion) con aportaciones manuales y automaticas, seguimiento de hitos y proyeccion. Consolidar contrato API backend mediante OpenAPI 3.1 como fuente de verdad para habilitar GR-SMOKE-001.",
@@ -1065,16 +1065,16 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-05-08T13:09:31.028Z",
+    "last_generated": "2026-05-10T10:17:57.259Z",
     "last_gate": "G-7",
-    "last_step": "7",
+    "last_step": "8",
     "sprint": 26,
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 · Step 5b (Security Agent) COMPLETED · semáforo VERDE · 0 CVEs críticos · 0 mayores · 1 BAJO SEC-F024-01 (DEBT-059) · 2 LOW transitivos preexistentes (DEBT-060). Pipeline AUTO avanza a Step 6 (QA Tester · gate HITL QA G-6 · esperando arranque agente).",
+  "resume_next": "Sprint 26 · Step 8 (Documentation Agent) ARRANQUE · G-7 APROBADO HITL-DV · paquete entregables canónico S25 (3 Excel + 17 Word) · gate G-8 HITL-PM al cierre",
   "sprint_closed": false,
-  "updated_at": "2026-05-08T13:09:31.028Z",
+  "updated_at": "2026-05-10T10:17:57.259Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -1624,6 +1624,13 @@
       "gate": "G-7",
       "step": "7",
       "approved_at": "2026-05-08T13:09:31.028Z",
+      "sprint": 26,
+      "feature": "FEAT-024"
+    },
+    {
+      "gate": "G-7",
+      "step": "8",
+      "approved_at": "2026-05-10T10:17:57.259Z",
       "sprint": 26,
       "feature": "FEAT-024"
     }
@@ -2641,9 +2648,9 @@
     }
   },
   "last_gate_request_at": "2026-05-08T06:47:56.757Z",
-  "last_gate_approved": "G-6",
-  "last_gate_approved_at": "2026-05-08T09:54:31.168Z",
-  "last_gate_approved_by": "Product Owner + QA Lead (Angel de la Cuadra · HITL)",
+  "last_gate_approved": "G-7",
+  "last_gate_approved_at": "2026-05-10T10:16:51.527Z",
+  "last_gate_approved_by": "HITL-DV (Angel de la Cuadra)",
   "stg_pre_check": {
     "executed_at": "2026-05-08T06:34:51.541Z",
     "errors": 0,
@@ -2717,5 +2724,5 @@
       ]
     }
   ],
-  "last_updated": "2026-05-08T13:07:59.956Z"
+  "last_updated": "2026-05-10T10:16:51.527Z"
 }
