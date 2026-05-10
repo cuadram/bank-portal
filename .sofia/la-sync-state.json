@@ -1,6 +1,6 @@
 {
-  "last_sync_at": "2026-04-20T19:55:00.000Z",
-  "last_core_version": "2.6.61",
+  "last_sync_at": "2026-05-04T16:36:02.249Z",
+  "last_core_version": "2.7.16",
   "imported_la_ids": [
     "LA-CORE-001",
     "LA-CORE-002",
@@ -63,48 +63,38 @@
     "LA-CORE-054",
     "LA-CORE-055",
     "LA-CORE-056",
-    "LA-CORE-057"
+    "LA-CORE-057",
+    "LA-CORE-058",
+    "LA-CORE-059",
+    "LA-CORE-060",
+    "LA-CORE-061",
+    "LA-CORE-062",
+    "LA-CORE-063",
+    "LA-CORE-064",
+    "LA-CORE-065",
+    "LA-CORE-066",
+    "LA-CORE-067",
+    "LA-CORE-068",
+    "LA-CORE-070",
+    "LA-CORE-071",
+    "LA-CORE-072",
+    "LA-CORE-073",
+    "LA-CORE-075",
+    "LA-CORE-091",
+    "LA-CORE-092",
+    "LA-CORE-076",
+    "LA-CORE-077",
+    "LA-CORE-078",
+    "LA-CORE-084",
+    "LA-CORE-085",
+    "LA-CORE-087",
+    "LA-CORE-090",
+    "LA-CORE-093",
+    "LA-CORE-079",
+    "LA-CORE-086"
   ],
   "skipped_la_ids": [],
   "sync_history": [
-    {
-      "synced_at": "2026-04-07T12:02:48.872Z",
-      "core_version": "2.6.29",
-      "new_las": [
-        "LA-CORE-001",
-        "LA-CORE-002",
-        "LA-CORE-003",
-        "LA-CORE-004",
-        "LA-CORE-005",
-        "LA-CORE-006",
-        "LA-CORE-007",
-        "LA-CORE-008",
-        "LA-CORE-009",
-        "LA-CORE-010",
-        "LA-CORE-011",
-        "LA-CORE-012",
-        "LA-CORE-013",
-        "LA-CORE-014",
-        "LA-CORE-015",
-        "LA-CORE-016",
-        "LA-CORE-019",
-        "LA-CORE-020",
-        "LA-CORE-021",
-        "LA-CORE-022",
-        "LA-CORE-023",
-        "LA-CORE-024",
-        "LA-CORE-025",
-        "LA-CORE-026",
-        "LA-CORE-027",
-        "LA-CORE-028",
-        "LA-CORE-029",
-        "LA-CORE-030",
-        "LA-CORE-031",
-        "LA-CORE-032"
-      ],
-      "skills_updated": [],
-      "mode": "delta"
-    },
     {
       "synced_at": "2026-04-07T12:10:53.626Z",
       "core_version": "2.6.31",
@@ -279,11 +269,65 @@
       "approved_by": "product-owner",
       "mode": "promotion",
       "note": "BankPortal S25 → SOFIA-CORE v2.6.59. 3 guardrails: GR-DASH-002 (dashboard schema), GR-ATLASSIAN-001 (sprint lifecycle gap), GR-GIT-001 (working-tree integrity)."
+    },
+    {
+      "synced_at": "2026-04-23T06:38:51.962Z",
+      "core_version": "2.6.68",
+      "new_las": [
+        "LA-CORE-058",
+        "LA-CORE-059",
+        "LA-CORE-060",
+        "LA-CORE-061",
+        "LA-CORE-062",
+        "LA-CORE-063",
+        "LA-CORE-064",
+        "LA-CORE-065",
+        "LA-CORE-066",
+        "LA-CORE-067",
+        "LA-CORE-068",
+        "LA-CORE-070"
+      ],
+      "skills_updated": [],
+      "mode": "delta"
+    },
+    {
+      "synced_at": "2026-04-24T13:03:07.442Z",
+      "core_version": "2.7.3",
+      "new_las": [
+        "LA-CORE-071",
+        "LA-CORE-072",
+        "LA-CORE-073"
+      ],
+      "skills_updated": [],
+      "mode": "delta"
+    },
+    {
+      "synced_at": "2026-05-04T16:36:02.168Z",
+      "core_version": "2.7.16",
+      "new_las": [
+        "LA-CORE-075",
+        "LA-CORE-091",
+        "LA-CORE-092",
+        "LA-CORE-076",
+        "LA-CORE-077",
+        "LA-CORE-078",
+        "LA-CORE-084",
+        "LA-CORE-085",
+        "LA-CORE-087",
+        "LA-CORE-090",
+        "LA-CORE-093",
+        "LA-CORE-079",
+        "LA-CORE-086"
+      ],
+      "skills_updated": [],
+      "mode": "delta"
+    },
+    {
+      "synced_at": "2026-05-04T16:36:02.249Z",
+      "core_version": "2.7.16",
+      "new_las": [],
+      "skills_updated": [],
+      "mode": "delta"
     }
-  ],
-  "promoted_la_ids": [
-    "LA-CORE-059",
-    "LA-CORE-060",
-    "LA-CORE-061"
   ]
 }

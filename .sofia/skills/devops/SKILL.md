@@ -850,6 +850,42 @@ al stage de deploy en PROD.
 
 ---
 
+## Checklist tecnica pre-G-7 — DEBT-050
+
+El devops-agent DEBE verificar todos los siguientes items antes de declarar G-7
+"listo para revision". Cualquier item en FAIL bloquea el gate y devuelve el
+pipeline al step correspondiente.
+
+| # | Item | Verificacion | Bloquea G-7 si FAIL |
+|---|------|--------------|---------------------|
+| 1 | mvn compile sin warnings nuevos | mvn -pl apps/backend-2fa compile -DskipTests · diff vs sprint anterior | si |
+| 2 | mvn test PASS (lista explicita) | mvn test -Dsurefire.failIfNoSpecifiedTests=false -Dtest=LISTA_CANONICA · workaround DEBT-056 | si |
+| 3 | docker compose up + actuator UP | docker compose -f infra/compose/docker-compose.yml up -d + curl /actuator/health -> status:UP | si |
+| 4 | Smoke tests del sprint PASS | bash infra/compose/smoke-test-vX.Y.Z.sh · 0 FAILs | si |
+| 5 | OpenAPI 3.1 expone endpoints del sprint | curl /v3/api-docs contiene los paths nuevos · validador node .sofia/scripts/validate-smoke-vs-openapi.js exit 0 | si |
+| 6 | SecurityConfig deja springdoc sin JWT | curl /v3/api-docs sin Authorization -> 200 OK | si |
+| 7 | Frontend ng build SUCCESS | cd apps/frontend-portal && ng build --configuration production · 0 errores | si |
+| 8 | Frontend ng test sin failures | cd apps/frontend-portal && ng test --watch=false · 0 failed | si |
+| 9 | Flyway schema_history actualizada | psql -c SELECT version, success FROM flyway_schema_history ORDER BY installed_rank DESC LIMIT 5 · todas success=t | si |
+| 10 | ShedLock LockProvider cableado | IT ShedLockEnabledIT PASS · evita scheduler split-brain en multi-replica | si |
+
+### Procedimiento operativo
+
+1. Ejecutar items 1-2 en local antes de levantar compose (fail rapido).
+2. Items 3-6 contra el compose externo del proyecto.
+3. Items 7-8 en apps/frontend-portal/.
+4. Items 9-10 contra la BD del compose ya en marcha.
+5. Si todos PASS: declarar G-7 listo y abrir handoff a Workflow Manager.
+6. Si algun FAIL: NO declarar G-7, registrar en sofia.log el item fallado y
+   devolver al step correspondiente (4 si compile/tests, 5 si code review,
+   etc.) con un handoff explicito.
+
+> Nota: este checklist es complementario al gate go/no-go pre-PROD
+> (release-manager) descrito mas arriba. El checklist pre-G-7 es **tecnico**
+> y lo ejecuta el devops-agent; el gate pre-PROD es **operativo** y lo
+> ejecuta el release-manager humano.
+
+---
 ## Referencias adicionales
 
 Para los Dockerfiles completos ejecutables por stack, leer:

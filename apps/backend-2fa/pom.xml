@@ -258,6 +258,14 @@
             <artifactId>spring-retry</artifactId>
         </dependency>
 
+        <!-- Springdoc OpenAPI — ADR-042 FEAT-024 Sprint 26 (cierra DEBT-048) -->
+        <!-- Incluye transitivamente springdoc-openapi-starter-webmvc-api -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -670,3 +670,131 @@
 [2026-04-21T18:32:20.143Z] SMOKE-TEST v1.2 — Ajustes post-S25 aplicados a infra/compose/smoke-test-v1.25.0.sh · SM-05 accountId · SM-09 acepta 409 · SM-14 reformulado (endpoint PUT /alert no existe en PfmController) · 17/17 PASS verificado via Node · bash -n OK · backup: smoke-test-v1.25.0.sh.bak-v1.1 · candidato LA-S26-SMK-01
 [2026-04-21T18:37:31.316Z] [LA-REGISTERED] LA-025-13 smoke-test-references-non-existent-endpoint · type:qa/devops/process · HITL PO=true · sofia_core_candidate=true · guardrail:GR-SMOKE-001 · artifact:infra/compose/smoke-test-v1.25.0.sh v1.2 · related:LA-019-07
 [2026-04-21T18:42:23.964Z] [LA-PROMOTED] LA-025-13 → LA-CORE-064 · guardrail:GR-SMOKE-001 · sofia_core_version:2.6.66 · HITL PO=true · MANIFEST JSON.parse OK · LESSONS_LEARNED_CORE.md appended · contributions/LA-CORE-064-*.json creado
+[2026-04-21T19:04:20.980Z] [SPRINT-26-OPEN] Sprint 26 arrancado · FEAT-024 Objetivos de Ahorro · capacity 24 SP (18 FEAT + 6 DEUDA OpenAPI) · branch feature/FEAT-024-sprint26 desde develop · planning SPRINT-026-planning.md 12.9KB · Step 1 completado · gate_pending G-1 · guardrails activos: GR-GIT-001 (pasada), LA-CORE-050/051/055/056/057, GR-SMOKE-001 (se implementa en DEBT-049)
+[2026-04-21T19:04:58.917Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-1-pending · Step: 1 · Sprint 26
+[2026-04-21T19:17:56.493Z] [JIRA] Sprint 26 · 11 issues creados (SCRUM-163..173) · 8 Story + 3 Task · labels sprint-26 FEAT-024 · links Blocks SCRUM-171→172→173 · sprint Jira lifecycle pendiente UI (GR-ATLASSIAN-001)
+[2026-04-21T19:17:56.495Z] [GATE] G-1_s26 aprobado PO · Step 1 CLOSED · avance atómico Step 2 (current_step+pipeline_step actualizados) · gate_pending=null · LA-CORE-051 respetada
+[2026-04-21T19:18:36.465Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-1 · Step: 1 · Sprint 26
+[2026-04-21T20:56:19.193Z] [STEP-2] SRS-FEAT-024-sprint26.md generado · 26KB · 8 US + 15 RNs + 7 RNFs + 39 Gherkin scenarios · RTM completa · 4 tablas BD · 10 endpoints · ADR-040/041/042 previstos · gate_pending G-2 (recovery post-MCP timeout: estrategia 5 fragmentos appendFileSync)
+[2026-04-21T20:56:41.810Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-2-pending · Step: 2 · Sprint 26
+[2026-04-22T05:26:55.051Z] [CMMI-HARDENING] 3 acciones ejecutadas: (1) LAs LA-026-01/02/03 registradas con HITL PO=true, sofia_core_candidate=true, guardrails GR-AUDIT-001/CMMI-001/MCP-001; (2) cmmi schema ampliado a 16 PAs canonicas L3 (9 project + 4 org + 3 engineering) con coverage_strategy y matriz docs/cmmi/CMMI-COVERAGE-MATRIX.md (6.6KB); (3) gate_history limpiado: 12 entradas -> 5 aprobadas unicas + 4 movidas a gate_history_pending + 3 duplicados eliminados. JSON.parse OK en cada paso.
+[2026-04-22T05:32:44.321Z] [LA-PROMOTED-BATCH] LA-026-01/02/03 → LA-CORE-065/066/067 · guardrails: GR-AUDIT-001, GR-CMMI-001, GR-MCP-001 · sofia_core_version 2.6.66 → 2.6.67 · core_la_count 37→40 · la_count 72→75 · guardrails_total 29→32 · HITL PO=true · MANIFEST JSON.parse OK · LESSONS_LEARNED_CORE.md +3 entradas · 3 contributions JSON creados · gate_pending G-2 intacto
+[2026-04-22T05:36:34.249Z] [GIT-COMMIT-PUSH] feature/FEAT-024-sprint26 actualizada: 3 commits atomicos (sprint-26 arranque · SRS Step 2 · cmmi hardening) · pushed a origin · working tree limpio (GR-GIT-001 verificado: 0 D files) · pipeline state intacto gate_pending=G-2
+[2026-04-22T05:37:55.908Z] [GATE] G-2_s26 aprobado PO · Step 2 CLOSED · avance atómico Step 2b (current_step+pipeline_step actualizados, gate_pending=null, status=paused) · LA-CORE-051 + GR-AUDIT-001 (LA-CORE-065) respetadas · gate_history limpio sin -pending
+[2026-04-22T05:37:56.042Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-2 · Step: 2 · Sprint 26
+[2026-04-26T18:58:18.609Z] [FA-VALIDATE] OK: total_functionalities: 108 ✓
+[2026-04-26T18:58:18.618Z] [FA-VALIDATE] OK: total_business_rules: 246 ✓
+[2026-04-26T18:58:18.618Z] [FA-VALIDATE] ERROR: Funcionalidades sin business_rules: FA-SAV-008
+[2026-04-26T18:58:18.618Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-26T18:58:18.618Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-26T18:58:18.618Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-26T18:58:18.618Z] [FA-VALIDATE] OK: last_sprint: 26 coincide con datos ✓
+[2026-04-26T18:58:18.620Z] [FA-VALIDATE] OK: FEAT-024: todas las RN referenciadas están definidas ✓
+[2026-04-26T18:58:18.621Z] [FA-VALIDATE] FAIL — 1 errores detectados
+[2026-04-26T18:59:00.909Z] [FA-VALIDATE] OK: total_functionalities: 108 ✓
+[2026-04-26T18:59:00.918Z] [FA-VALIDATE] OK: total_business_rules: 246 ✓
+[2026-04-26T18:59:00.919Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-26T18:59:00.919Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-26T18:59:00.919Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-26T18:59:00.919Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-26T18:59:00.919Z] [FA-VALIDATE] OK: last_sprint: 26 coincide con datos ✓
+[2026-04-26T18:59:00.920Z] [FA-VALIDATE] OK: FEAT-024: todas las RN referenciadas están definidas ✓
+[2026-04-26T18:59:00.921Z] [FA-VALIDATE] PASS — 108 funcionalidades, 246 reglas | sprint 26 | FEAT-024
+[2026-04-26T19:01:09.433926+00:00] [FA-AGENT] [GATE-8b] GENERATED → FA-bank-portal-Banco Meridian.docx v0.11 | 88.3KB | 108 func | 246 RN | TOC-hyperlinks | python-docx | SOFIA v2.7
+[2026-04-26T19:02:40.074Z] [FA-AGENT] [GATE-2b] APPROVED → FEAT-024 · FA v0.11 88.3KB · 108 func · 246 RN · validate-fa-index PASS 8/8 · LA-025-02 v2.8
+[2026-04-26T19:05:11.967Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-2b · Step: 2b · Sprint 26
+[2026-04-26T19:07:24.741Z] [ORCHESTRATOR] [PAUSE] Sprint 26 pausado tras G-2b · current_step=2c · sin gate pendiente
+
+[2026-04-27T09:18:52.858Z] [s26] [Step 2c] [ux-ui-designer] [PASS] PROTO-FEAT-024-sprint26.html (130.6KB · 5 pantallas · 22 anotaciones ANNOT-01..22 · hereda PROTO-FEAT-023-sprint25 LA-CORE-050) + UX-FEAT-024-sprint26.md (30KB · user flows + wireframes + 18 componentes Angular + WCAG 2.1 AA checklist) + UX-DESIGN-SYSTEM.md v1.1 (anexo §7 FEAT-024 · 7 tokens semánticos · 14 clases CSS) · gate_pending=HITL-PO-TL
+[2026-04-27T09:19:24.866Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: HITL-PO-TL · Step: 2c · Sprint 26
+
+[2026-04-27T09:32:51.891Z] [s26] [Step 2c FIX] Refactor estructural prototipo: 5 pantallas savings envueltas en shell .proto-screen completo (sidebar+header+main por pantalla, patrón heredado FEAT-023). Bug visual cards vacías corregido. HTML balanceado: 16 main, 16 aside, 1026 div, OK.
+
+[2026-04-27T11:12:51.876Z] [s26] [GATE G-2c] [HITL-PO-TL] [APPROVED] PROTO-FEAT-024-sprint26.html (143.5KB · 5 pantallas · 22 anotaciones · LA-CORE-050) + UX-FEAT-024-sprint26.md (31KB · §9.1 RN-10/12 backend justificadas) + UX-DESIGN-SYSTEM.md v1.1 · cobertura 7/7 US + 13/13 RNs UI · siguiente: Step 3 Architect
+[2026-04-27T11:12:51.876Z] [s26] [LESSON] [LA-024-01] Herencia LA-CORE-050 estructural: envolver cada pantalla nueva en shell .proto-screen completo (sidebar+header+main por pantalla), no inyectar secciones desnudas dentro del último main heredado
+[2026-04-27T11:13:24.214Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-2c · Step: 3 · Sprint 26
+[2026-04-27T12:04:59.509Z] STEP_3_COMPLETED sprint=26 feature=FEAT-024 agent=architect artifacts=6 size=68.1KB gate_pending=G-3 role=tech-lead
+[2026-04-27T12:06:18.357Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-3-pending · Step: 3 · Sprint 26
+[2026-04-27T13:08:36.189Z] STEP_3_FIX_APPLIED option=b sprint=26 feature=FEAT-024 fix=lld-backend-3.2-3.3-trazabilidad-completa rn_coverage=15/15 size_delta=+1.2KB
+[2026-04-27T13:23:11.202Z] [G-3] [APPROVED] Tech Lead approved Step 3 Architect S26 FEAT-024 — HLD+LLD-back(28.3KB)+LLD-front+ADR-040/041/042 — 15/15 RNs cubiertas — siguiente: Step 3b AUTO
+[2026-04-27T13:23:17.650Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-3 · Step: 3 · Sprint 26
+[2026-04-27T13:26:28.308Z] [FA-VALIDATE] OK: total_functionalities: 108 ✓
+[2026-04-27T13:26:28.317Z] [FA-VALIDATE] OK: total_business_rules: 246 ✓
+[2026-04-27T13:26:28.317Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-04-27T13:26:28.317Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-04-27T13:26:28.317Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-04-27T13:26:28.317Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-04-27T13:26:28.318Z] [FA-VALIDATE] OK: last_sprint: 26 coincide con datos ✓
+[2026-04-27T13:26:28.318Z] [FA-VALIDATE] OK: FEAT-024: todas las RN referenciadas están definidas ✓
+[2026-04-27T13:26:28.320Z] [FA-VALIDATE] PASS — 108 funcionalidades, 246 reglas | sprint 26 | FEAT-024
+[2026-04-27T13:28:40.091Z] [G-3b] [APPROVED] AUTO Step 3b S26 FEAT-024 — validate-fa-index 8/8 (108 func/246 BRs) — FA-FEAT-024-sprint26.md enriquecido READY_FOR_REVIEW (17.8KB) — Confluence 19464193 — siguiente: Step 4 Developer
+[2026-04-27T13:28:40.165Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-3b · Step: 3b · Sprint 26
+[2026-04-27T14:09:42.132Z] [STEP-4] [PHASE-A] Fase A completada — DDL + Domain (19 Java + 1 SQL · 18.4KB · 4 modelos + 4 enums + 6 excepciones + 4 puertos + AccountReservePort NUEVO)
+[2026-04-27T14:09:42.132Z] [STEP-4] [PHASE-B] Fase B completada — Domain services (3 services · 274 nuevas lineas · GoalProjectionService + MilestoneEvaluator + GoalClosureService · SavingsGoal extendido §2.2)
+[2026-04-27T14:09:42.132Z] [STEP-4] [PHASE-C] Fase C completada — Application (1 DTOs file 13 records + 10 UCs · 925 lineas · 7 @Transactional + FIX aplicado en Create/UpdateGoal)
+[2026-04-27T14:09:42.132Z] [STEP-4] [HANDOFF] Step 4 PAUSADO tras Fase C · 30 archivos persistidos · HANDOFF generado · pendiente Fases D-H (~80 archivos · Infrastructure + API + Tests + Frontend + G-4b)
+[2026-05-08T06:05:40.228Z] [STEP-4] [developer-agent] Fase H.1 mvn compile -> BUILD SUCCESS · 0 warnings nuevos
+[2026-05-08T06:05:40.228Z] [STEP-4] [developer-agent] Fase H.2 SchedulingConfig + ShedLockEnabledIT (DEBT-051) · commit f38c6ad
+[2026-05-08T06:05:40.228Z] [STEP-4] [developer-agent] Fase H.3 SecurityConfig springdoc /v3/api-docs sin JWT · commit bb32da5
+[2026-05-08T06:05:40.228Z] [STEP-4] [developer-agent] Fase H.4 validate-smoke-vs-openapi.js (DEBT-049 candidato GR-CI-002) · commit 20b64c1
+[2026-05-08T06:05:40.228Z] [STEP-4] [developer-agent] Fase H.5 SKILL.md devops checklist pre-G-7 (DEBT-050) · commit 20b64c1
+[2026-05-08T06:05:40.228Z] [STEP-4] [developer-agent] Fase H.6 hotfix ng build production (jwt-decode + AutoRuleFormComponent decorator) · commit 4e12abd
+[2026-05-08T06:05:40.228Z] [STEP-4] [developer-agent] Fase H.7 V18c->V31 rename Flyway + lista canonica 145/145 PASS · commit 8d4e0bd
+[2026-05-08T06:05:40.228Z] [STEP-4] [developer-agent] Step 4 COMPLETED · gate_pending=G-4b · 8 fases (A..H) · 145 tests · ng build OK · ShedLock cableado · OpenAPI sin JWT · 5 commits Fase H pushed
+[2026-05-08T06:13:49.968Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-4b · Step: 4 · Sprint 26
+[2026-05-08T06:14:11.815Z] [GATE] [G-4b] APPROVED por PO/Tech Lead · pipeline avanza Step 4 -> Step 5 · 145/145 tests PASS · 6 commits Fase H · dashboard regenerado
+[2026-05-08T06:14:11.815Z] [STEP-5] [orchestrator] Step 5 (Code Reviewer) READY · gate_pending=null · status=idle · esperando arranque agente
+[2026-05-08T06:32:26.339Z] [HOUSEKEEPING] [orchestrator] session.json saneado · pipeline_step "4"->"5" · pipeline_step_name "developer"->"code-reviewer" · resume_next actualizado a Step 5 READY · backup .sofia/session.json.bak-pre-sanitize-2026-05-08T063149003 · last_gate_approved=G-4b ya persistido (no requería cambio)
+[2026-05-08T06:33:31.713Z] [STEP-5] [code-reviewer] STARTED → revisión Sprint 26 FEAT-024 · 5 commits Fase H · 13/13 criterios cierre · branch feature/FEAT-024-sprint26 HEAD 52e3d26
+[2026-05-08T06:47:56.757Z] [STEP-5] [code-reviewer] COMPLETED → docs/deliverables/sprint-26-FEAT-024/STEP5-code-review-report.md | veredicto=APPROVED · 0 bloqueantes · 0 mayores · 2 menores · 4 sugerencias · gate_pending=G-5 (HITL TL)
+[2026-05-08T06:53:43.731Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-5 · Step: 5 · Sprint 26
+[2026-05-08T07:06:04.988Z] [GATE] [G-5] APPROVED por Tech Lead (Angel) · Code Review veredicto APPROVED · pipeline avanza Step 5 -> Step 5b (Security Agent) · LAs y GR-CI-002 + DEBT-052 diferidos a Step 8b
+[2026-05-08T07:06:09.930Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-5 · Step: 5 · Sprint 26
+[2026-05-08T07:09:24.220Z] [STEP-5b] [security-agent] STARTED → SAST + dependency check + secrets scan · alcance savings/ + diff Fase H · branch feature/FEAT-024-sprint26 HEAD 5d9cfd5
+[2026-05-08T07:17:56.987Z] [STEP-5b] [security-agent] COMPLETED → docs/security/SecurityReport-Sprint26-FEAT-024.md | semáforo=GREEN · 0 CVE críticos · 0 secrets · 1 BAJO (SEC-F024-01) · 2 LOW transitivos preexistentes · DEBT-059 + DEBT-060 registrados
+[2026-05-08T07:17:56.987Z] [STEP-5b] [orchestrator] Step 5b auto-cerrado (AUTO sin HITL) · pipeline avanza Step 5b -> Step 6 (QA Tester · HITL QA G-6 · READY)
+[2026-05-08T07:18:33.149Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-5 · Step: 5b · Sprint 26
+[2026-05-08T07:44:58.638Z] [HANDOFF] [orchestrator] HANDOFF generado para arranque Step 6 en chat nuevo · docs/handoffs/HANDOFF-sprint26-step6-qa-tester.md (21.2KB · 392 líneas) · session.json congelada en c86c50e
+[2026-05-08T08:22:54.428Z] [STEP-6] [qa-tester] STARTED -> auditoria de IT + smoke + diseno TCs + ejecucion + reporte
+[2026-05-08T09:36:58.508Z] [STEP-6] [qa-tester] COMPLETED -> docs/quality/ · veredicto APROBADO CON CONDICIONES · 145/145 mvn + 6/6 e2e · 2 críticos + 1 alto + 4 medios + 1 bajo · gate_pending=G-6
+[2026-05-08T09:38:41.668Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-6 · Step: 6 · Sprint 26
+[2026-05-08T09:54:31.168Z] [GATE-G-6] APPROVED-WITH-CONDITIONS by Angel de la Cuadra (PO+QA Lead) -> Step 7 DevOps READY · C1/C2 bloqueantes G-7 · C3 bloqueante release · C4/C5 operativas · 5 medios+1 bajo+2 GAPs diferidos a S27
+[2026-05-08T09:54:37.044Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-6 · Step: 7 · Sprint 26
+[2026-05-08T09:59:58.381Z] [STEP-7] [devops] STARTED -> C1+C2+C3 fixes + smoke v1.26 + checklist DEBT-050 + re-test C4
+[2026-05-08T10:00:19.312Z] [STEP-7] [devops] STARTED -> sprint 26 FEAT-024 v1.26.0 · ejecutando C1+C2+C3 + smoke v1.26 + checklist DEBT-050
+[2026-05-08T10:30:39.885Z] [STEP-7] [devops] WIP-PAUSE -> handoff escrito · 16 ficheros sin commitear · pendiente compile+test (Maven fuera de allowlist) + C4/C5/C6
+[2026-05-08T13:08:06.890Z] [STEP-7] [devops] COMPLETED · verdict=APPROVED · scope-ampliado=B.4+Hallazgo1+OBS-008/009 · DRs=DR-S26-007,DR-S26-008 · DEBT=DEBT-Q-073,DEBT-FE-074,DEBT-FE-075 · LA-candidates=GR-SHELL-002,GR-FE-002 · gate_pending=G-7 · pendiente Step 8b fa-index update
+[2026-05-08T13:09:31.028Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-7 · Step: 7 · Sprint 26
+[2026-05-10T10:17:09.781Z] [GATE] [G-7] APPROVED · sprint=26 · feature=FEAT-024 · step=7 · approver=HITL-DV (Angel de la Cuadra) · commit=31911dd
+[2026-05-10T10:17:09.781Z] [STEP-8] [documentation] STARTED · sprint=26 · feature=FEAT-024 · gate_target=G-8 (HITL-PM) · scope=paquete entregables canónico S25 (3 Excel + 17 Word) + CHANGELOG v1.26.0 · plan a proponer pre-generación
+[2026-05-10T10:17:57.259Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-7 · Step: 8 · Sprint 26
+[2026-05-10T10:55:49.001Z] [STEP-8] [documentation] LOTES_A-D_COMPLETED · 17 DOCX + 3 XLSX + 1 JSON + 1 generador (1163L) · LA-022-08 PASS · checklist pre-G-8 PASS · gate_pending=G-8
+[2026-05-10T10:55:54.051Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-7 · Step: 8 · Sprint 26
+[2026-05-10T11:04:35.593Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-7 · Step: 8 · Sprint 26
+[2026-05-10T11:06:11.392Z] [GATE] [G-8] APPROVED · sprint=26 · feature=FEAT-024 · step=8 · approver=HITL-PM (Angel de la Cuadra) · 17 DOCX + 3 XLSX + 1 JSON validados
+[2026-05-10T11:06:11.392Z] [DASH-FIX] [wrapper] dashboard-wrapper.js v3 · fix B1+B2+B3 (completedSteps flat / current_step string / GATE_PENDING NO marcado done) · pipeline steps colors corregidos
+[2026-05-10T11:06:11.392Z] [STEP-8B] [fa-agent] STARTED · sprint=26 · feature=FEAT-024 · scope=indexar RN-F024-16/17 en fa-index.json + regenerar FA Word + plan promoción LA-CORE GR-SHELL-002/GR-FE-002
+[2026-05-10T11:06:35.976Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-8 · Step: 8b · Sprint 26
+[2026-05-10T11:09:05.957Z] [FA-VALIDATE] OK: total_functionalities: 108 ✓
+[2026-05-10T11:09:05.966Z] [FA-VALIDATE] OK: total_business_rules: 248 ✓
+[2026-05-10T11:09:05.966Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-05-10T11:09:05.966Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-05-10T11:09:05.966Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-05-10T11:09:05.967Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-05-10T11:09:05.967Z] [FA-VALIDATE] OK: last_sprint: 26 coincide con datos ✓
+[2026-05-10T11:09:05.968Z] [FA-VALIDATE] OK: FEAT-024: todas las RN referenciadas están definidas ✓
+[2026-05-10T11:09:05.969Z] [FA-VALIDATE] PASS — 108 funcionalidades, 248 reglas | sprint 26 | FEAT-024
+[2026-05-10T11:09:16.860407+00:00] [FA-AGENT] [GATE-8b] GENERATED → FA-bank-portal-Banco Meridian.docx v0.13 | 88.7KB | 108 func | 248 RN | TOC-hyperlinks | python-docx | SOFIA v2.7
+[2026-05-10T11:10:54.965Z] [STEP-8B] [fa-agent] COMPLETED · sprint=26 · feature=FEAT-024 · BRs 246->248 (RN-F024-16/17) · FA Word v0.13 (88.7KB) · validate-fa-index 8/8 PASS · AUTO_APPROVED
+[2026-05-10T11:10:54.965Z] [STEP-9] [workflow-manager] STARTED · sprint=26 · feature=FEAT-024 · scope=cierre Sprint · Jira UI · git tag v1.26.0 · merge develop/main · LA-SYNC-REPORT · 3 LA candidatas pendientes promocion · gate_target=G-9 (HITL-PO)
+[2026-05-10T11:10:59.052Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-8 · Step: 9 · Sprint 26
+[2026-05-10T12:26:00.353Z] [STEP-9] [confluence] Page CREATED · id=24805378 · title="Sprint 26 — FEAT-024 Objetivos de Ahorro — Resultados" · spaceId=393220 · parentId=229379
+[2026-05-10T12:26:00.353Z] [STEP-9] [confluence] Page CREATED · id=24838145 · title="Sprint 26 — Retrospectiva" · spaceId=393220 · parentId=229379
+[2026-05-10T12:26:00.353Z] [STEP-9] [session] sprint_history.sprint_26 inicializado · confluence_page=24805378 · confluence_retro=24838145 · jira_sprint_id=497 · status=in_progress (pending G-9)
+[2026-05-10T12:43:52.456Z] [STEP-9] [claude-md] CLAUDE.md actualizado · header v2.6->v2.7+ · seccion Estado actual S26 insertada · rama activa develop (FEAT-021-sprint23 obsoleto) · LA-026-03 mitigada con fragmentacion 4 chunks 326+550+395+block(1)
+[2026-05-10T13:41:04.154Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-9 · Step: 9 · Sprint 26
+[2026-05-10T13:41:41.192Z] [GATE] [G-9] APPROVED · sprint=26 · feature=FEAT-024 · approver=HITL-PO (Angel de la Cuadra) · po_quote_verbatim="Apruebo G-9" · sprint cerrado v1.26.0
+[2026-05-10T13:41:41.192Z] [STEP-9] [workflow-manager] COMPLETED · sprint=26 · feature=FEAT-024 · 5 LAs candidatas + 2 guardrail-proposals + 2 paginas Confluence + CLAUDE.md updated · status=sprint_closed
+[2026-05-10T13:41:41.192Z] [DASHBOARD] [G-9] regenerado · last_gate=G-9 last_step=9 sprint=26 · 1..9 done verde · pendiente A11 tag v1.26.0 + A12 merges
+[2026-05-10T13:41:41.192Z] [SNAPSHOT] .sofia/backups/session-post-G9-S26-20260510.json (168 KB) creado
+[2026-05-10T15:50:33.040Z] [TAG] v1.26.0 created (annotated -F) on commit 6088c7e -> tag 72f4157 -> pushed to origin OK · LA-026-03 mitigada con git tag -F + 4 chunks 145+286+381+483 bytes

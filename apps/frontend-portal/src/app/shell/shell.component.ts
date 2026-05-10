@@ -44,6 +44,10 @@ import { Router } from '@angular/router';
           <a routerLink="/pfm" routerLinkActive="nav-active" class="nav-item">
             <span class="nav-icon">💰</span> <span class="nav-label">Mi Dinero</span>
           </a>
+          <!-- FEAT-024 Sprint 26 — Objetivos de Ahorro (LA-FRONT-001) -->
+          <a routerLink="/objetivos" routerLinkActive="nav-active" class="nav-item">
+            <span class="nav-icon">🎯</span> <span class="nav-label">Mis Metas</span>
+          </a>
           <div class="nav-divider"></div>
           <a routerLink="/perfil"       routerLinkActive="nav-active" class="nav-item">
             <span class="nav-icon">👤</span> <span class="nav-label">Mi Perfil</span>

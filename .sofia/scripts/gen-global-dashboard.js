@@ -307,7 +307,7 @@ const defects     = M.defects     || 0;
 const completedSprints = S.sprint_closed ? S.current_sprint : S.current_sprint - 1;
 
 // Gate history (from completed_steps)
-const completedSteps = S.completed_steps || [];
+const completedSteps = Array.isArray(S.completed_steps) ? S.completed_steps : (S.completed_steps && Array.isArray(S.completed_steps.steps) ? S.completed_steps.steps : []);
 const pendingSteps   = S.pending_steps   || [];
 
 // G1-FIX: pre-calcular acumulado real de tests (incremental→acumulado)

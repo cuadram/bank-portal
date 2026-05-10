@@ -1,0 +1,15 @@
+# ============================================================================
+# application-prod.yml
+# Profile: prod
+# Creado en Sprint 26 (FEAT-024) por la decisión ADR-042: el Swagger UI
+# nunca debe exponerse en producción. Resto de configuración prod se hereda
+# de application.yml + variables de entorno DB_URL/DB_USERNAME/DB_PASSWORD/
+# REDIS_URL/JWT_SECRET/etc.
+# ============================================================================
+
+# ── ADR-042: deshabilitar Swagger UI en producción ──────────────────────────
+springdoc:
+  api-docs:
+    enabled: false        # ocultar tambien el JSON de OpenAPI en prod
+  swagger-ui:
+    enabled: false

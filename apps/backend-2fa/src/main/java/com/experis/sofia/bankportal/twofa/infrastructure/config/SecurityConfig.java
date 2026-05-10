@@ -41,6 +41,8 @@ public class SecurityConfig {
                 .requestMatchers("/auth/login", "/2fa/verify",
                     "/actuator/health", "/actuator/health/**",  // liveness + readiness subpaths
                     "/actuator/info",
+                    "/v3/api-docs", "/v3/api-docs/**",
+                    "/swagger-ui/**", "/swagger-ui.html",
                     "/dev/**", "/error",
                     "/api/v1/deposits/simulate",
                     "/api/v1/loans/simulate").permitAll()
