@@ -770,3 +770,8 @@
 [2026-05-10T10:17:57.259Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-7 · Step: 8 · Sprint 26
 [2026-05-10T10:55:49.001Z] [STEP-8] [documentation] LOTES_A-D_COMPLETED · 17 DOCX + 3 XLSX + 1 JSON + 1 generador (1163L) · LA-022-08 PASS · checklist pre-G-8 PASS · gate_pending=G-8
 [2026-05-10T10:55:54.051Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-7 · Step: 8 · Sprint 26
+[2026-05-10T11:04:35.593Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-7 · Step: 8 · Sprint 26
+[2026-05-10T11:06:11.392Z] [GATE] [G-8] APPROVED · sprint=26 · feature=FEAT-024 · step=8 · approver=HITL-PM (Angel de la Cuadra) · 17 DOCX + 3 XLSX + 1 JSON validados
+[2026-05-10T11:06:11.392Z] [DASH-FIX] [wrapper] dashboard-wrapper.js v3 · fix B1+B2+B3 (completedSteps flat / current_step string / GATE_PENDING NO marcado done) · pipeline steps colors corregidos
+[2026-05-10T11:06:11.392Z] [STEP-8B] [fa-agent] STARTED · sprint=26 · feature=FEAT-024 · scope=indexar RN-F024-16/17 en fa-index.json + regenerar FA Word + plan promoción LA-CORE GR-SHELL-002/GR-FE-002
+[2026-05-10T11:06:35.976Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-8 · Step: 8b · Sprint 26

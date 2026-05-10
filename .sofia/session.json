@@ -1,14 +1,14 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "gate_pending",
+  "status": "in_progress",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 26,
   "current_feature": "FEAT-024",
-  "current_step": 8,
-  "pipeline_step": "8",
-  "pipeline_step_name": "documentation",
+  "current_step": "8b",
+  "pipeline_step": "8b",
+  "pipeline_step_name": "fa-agent",
   "_completed_steps_note": "Array del sprint actual (current_sprint: 25). Se resetea al inicio de cada sprint. No acumula sprints anteriores — ver sprint_history para histórico.",
   "completed_steps": {
     "sprint": 26,
@@ -113,8 +113,8 @@
         "feature": "FEAT-024",
         "sprint": 26,
         "completed_at": "2026-05-10T10:55:48.967Z",
-        "status": "GATE_PENDING",
-        "verdict": "PENDING_HITL_PM",
+        "status": "COMPLETED",
+        "verdict": "APPROVED",
         "scope": "Documentation Agent · Lotes A-B-C-D ejecutados · 17 DOCX + 3 XLSX + 1 JSON + 1 generador",
         "artifacts": {
           "word_dir": "docs/deliverables/sprint-26-FEAT-024/word/",
@@ -135,7 +135,9 @@
           "dashboard regeneration post-G-8",
           "Step 8b FA-Agent posterior"
         ],
-        "summary": "Step 8 Documentation Agent · Lotes A→B→C→D ejecutados en autonomía · 17 DOCX + 3 XLSX + 1 JSON + generador 1163L · checklist pre-G-8 PASS · pendiente aprobación HITL-PM (Angel)"
+        "summary": "Step 8 Documentation Agent · Lotes A→B→C→D ejecutados en autonomía · 17 DOCX + 3 XLSX + 1 JSON + generador 1163L · checklist pre-G-8 PASS · pendiente aprobación HITL-PM (Angel)",
+        "approved_at": "2026-05-10T11:05:49.533Z",
+        "approved_by": "HITL-PM (Angel de la Cuadra)"
       }
     ]
   },
@@ -158,7 +160,7 @@
   ],
   "last_skill": "documentation-agent",
   "last_skill_output_path": "docs/deliverables/sprint-26-FEAT-024/",
-  "gate_pending": "G-8",
+  "gate_pending": null,
   "release_blocked": false,
   "release_blocked_reason": null,
   "sprint_goal": "Extender banca inteligente de BankPortal mediante gestor de Objetivos de Ahorro (viajes, hogar, emergencia, educacion) con aportaciones manuales y automaticas, seguimiento de hitos y proyeccion. Consolidar contrato API backend mediante OpenAPI 3.1 como fuente de verdad para habilitar GR-SMOKE-001.",
@@ -1094,16 +1096,16 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-05-10T10:55:54.051Z",
-    "last_gate": "G-7",
-    "last_step": "8",
+    "last_generated": "2026-05-10T11:06:35.976Z",
+    "last_gate": "G-8",
+    "last_step": "8b",
     "sprint": 26,
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 · Step 8 GATE_PENDING G-8 HITL-PM · 17 docx + 3 xlsx + 1 json generados · solicitar aprobación Angel para avanzar a Step 8b FA-Agent",
+  "resume_next": "Sprint 26 · Step 8b FA-Agent · indexar RN-F024-16/17 en fa-index.json + regenerar Word FA + plan promoción LA-CORE candidatas",
   "sprint_closed": false,
-  "updated_at": "2026-05-10T10:55:54.051Z",
+  "updated_at": "2026-05-10T11:06:35.976Z",
   "fa_agent": {
     "last_gate": "3b",
     "last_updated": "2026-04-27T13:28:14.464Z",
@@ -1667,6 +1669,27 @@
       "gate": "G-7",
       "step": "8",
       "approved_at": "2026-05-10T10:55:54.051Z",
+      "sprint": 26,
+      "feature": "FEAT-024"
+    },
+    {
+      "gate": "G-7",
+      "step": "8",
+      "approved_at": "2026-05-10T11:04:35.593Z",
+      "sprint": 26,
+      "feature": "FEAT-024"
+    },
+    {
+      "gate": "G-8",
+      "step": "8",
+      "approved_at": "2026-05-10T11:05:49.533Z",
+      "sprint": 26,
+      "feature": "FEAT-024"
+    },
+    {
+      "gate": "G-8",
+      "step": "8b",
+      "approved_at": "2026-05-10T11:06:35.976Z",
       "sprint": 26,
       "feature": "FEAT-024"
     }
@@ -2684,9 +2707,9 @@
     }
   },
   "last_gate_request_at": "2026-05-08T06:47:56.757Z",
-  "last_gate_approved": "G-7",
-  "last_gate_approved_at": "2026-05-10T10:16:51.527Z",
-  "last_gate_approved_by": "HITL-DV (Angel de la Cuadra)",
+  "last_gate_approved": "G-8",
+  "last_gate_approved_at": "2026-05-10T11:05:49.533Z",
+  "last_gate_approved_by": "HITL-PM (Angel de la Cuadra)",
   "stg_pre_check": {
     "executed_at": "2026-05-08T06:34:51.541Z",
     "errors": 0,
@@ -2760,5 +2783,5 @@
       ]
     }
   ],
-  "last_updated": "2026-05-10T10:55:48.967Z"
+  "last_updated": "2026-05-10T11:05:49.533Z"
 }
