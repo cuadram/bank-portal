@@ -1,7 +1,7 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "in_progress",
+  "status": "sprint_closed",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 26,
@@ -173,6 +173,37 @@
           "procedimiento": "la-promote.js + sofia-contribute.py"
         },
         "summary": "Step 8b FA-Agent · 2 BR nuevas indexadas (246->248) · FA Word v0.12->v0.13 · 8/8 PASS · 3 LAs candidatas listadas para promoción Step 9"
+      },
+      {
+        "step": 9,
+        "feature": "FEAT-024",
+        "sprint": 26,
+        "completed_at": "2026-05-10T13:40:49.642Z",
+        "status": "COMPLETED",
+        "verdict": "APPROVED",
+        "approved_by": "HITL-PO (Angel de la Cuadra)",
+        "approved_at": "2026-05-10T13:40:49.642Z",
+        "scope": "Workflow Manager · cierre Sprint 26 · 5 LAs candidatas + 2 guardrail-proposals + 2 paginas Confluence + CLAUDE.md actualizado + handoff SOFIA-CORE",
+        "artifacts": {
+          "la_promotion_report": "docs/quality/LA-CORE-PROMOTION-REPORT-S26.md",
+          "la_promotion_json": ".sofia/la-promotion-request-S26.json",
+          "guardrail_proposals": [
+            "docs/guardrail-proposals/GR-SHELL-002.md",
+            "docs/guardrail-proposals/GR-FE-002.md"
+          ],
+          "handoff_sofia_core": "docs/handoffs/HANDOFF-sprint26-post-G9-sofia-core-actions.md",
+          "confluence_resultados": "24805378",
+          "confluence_retrospectiva": "24838145",
+          "claude_md_updated": true
+        },
+        "pending_async_post_g9": [
+          "tag git v1.26.0 (A11)",
+          "merge feature/FEAT-024-sprint26 -> develop -> main (A12)",
+          "cierre Jira sprint 497 via UI por PO",
+          "aceptar 5 LAs en SOFIA-CORE (sesion separada)",
+          "procesar 2 guardrail-proposals en S04 SOFIA-CORE"
+        ],
+        "summary": "Step 9 Workflow Manager COMPLETADO · G-9 aprobado HITL-PO 2026-05-10"
       }
     ]
   },
@@ -193,8 +224,8 @@
     "8b",
     "9"
   ],
-  "last_skill": "fa-agent",
-  "last_skill_output_path": "docs/functional-analysis/",
+  "last_skill": "workflow-manager",
+  "last_skill_output_path": "docs/quality/",
   "gate_pending": null,
   "release_blocked": false,
   "release_blocked_reason": null,
@@ -1131,16 +1162,16 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-05-10T11:10:59.052Z",
-    "last_gate": "G-8",
+    "last_generated": "2026-05-10T13:41:04.154Z",
+    "last_gate": "G-9",
     "last_step": "9",
     "sprint": 26,
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 · Step 9 Workflow Manager · cierre Sprint · Jira UI · git tag v1.26.0 · Confluence pages · merge develop/main · LA-SYNC-REPORT-S26 · G-9 HITL-PO",
+  "resume_next": "Sprint 26 CERRADO (v1.26.0) post-G-9. Pendiente sesion: tag v1.26.0 + merges develop/main. Proxima sesion: Sprint 27 backlog grooming + planning PO (FEAT-025 TBD).",
   "sprint_closed": false,
-  "updated_at": "2026-05-10T12:24:59.978Z",
+  "updated_at": "2026-05-10T13:41:04.154Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1504,7 +1535,7 @@
     "sprint_26": {
       "feature": "FEAT-024",
       "title": "Objetivos de Ahorro · \"Mis Metas\"",
-      "status": "in_progress",
+      "status": "completed",
       "sp": 24,
       "acum": 617,
       "tests": 147,
@@ -1517,7 +1548,7 @@
       "ncs": 0,
       "defects": 0,
       "rel": "v1.26.0",
-      "closed_at": null,
+      "closed_at": "2026-05-10",
       "confluence_page": "24805378",
       "confluence_retro": "24838145",
       "jira_issues": [
@@ -1581,7 +1612,9 @@
       ],
       "jira_sprint_id": 497,
       "jira_sprint_closed_at": null,
-      "confluence_pages_created_at": "2026-05-10T12:24:59.978Z"
+      "confluence_pages_created_at": "2026-05-10T12:24:59.978Z",
+      "g9_approved_at": "2026-05-10T13:40:49.642Z",
+      "g9_approved_by": "HITL-PO (Angel de la Cuadra)"
     }
   },
   "repository": {
@@ -1814,6 +1847,22 @@
       "gate": "G-8",
       "step": "9",
       "approved_at": "2026-05-10T11:10:59.052Z",
+      "sprint": 26,
+      "feature": "FEAT-024"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_at": "2026-05-10T13:40:49.642Z",
+      "approved_by": "HITL-PO (Angel de la Cuadra)",
+      "sprint": 26,
+      "feature": "FEAT-024",
+      "po_quote_verbatim": "Apruebo G-9"
+    },
+    {
+      "gate": "G-9",
+      "step": "9",
+      "approved_at": "2026-05-10T13:41:04.154Z",
       "sprint": 26,
       "feature": "FEAT-024"
     }
@@ -2831,9 +2880,9 @@
     }
   },
   "last_gate_request_at": "2026-05-08T06:47:56.757Z",
-  "last_gate_approved": "G-8",
-  "last_gate_approved_at": "2026-05-10T11:05:49.533Z",
-  "last_gate_approved_by": "HITL-PM (Angel de la Cuadra)",
+  "last_gate_approved": "G-9",
+  "last_gate_approved_at": "2026-05-10T13:40:49.642Z",
+  "last_gate_approved_by": "HITL-PO (Angel de la Cuadra)",
   "stg_pre_check": {
     "executed_at": "2026-05-08T06:34:51.541Z",
     "errors": 0,
@@ -2907,5 +2956,5 @@
       ]
     }
   ],
-  "last_updated": "2026-05-10T12:24:59.978Z"
+  "last_updated": "2026-05-10T13:40:49.642Z"
 }
