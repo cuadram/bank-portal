@@ -11,11 +11,13 @@ import { MonthComparisonComponent }  from './components/month-comparison/month-c
 import { BudgetAlertsComponent }     from './components/budget-alerts/budget-alerts.component';
 import { TopMerchantsComponent }     from './components/top-merchants/top-merchants.component';
 import { PfmWidgetComponent }        from '../pfm/components/pfm-widget/pfm-widget.component';
+import { SavingsWidgetComponent }    from '../savings/components/savings-widget/savings-widget.component';
 
 /**
  * DashboardModule — módulo lazy-loaded del dashboard analítico.
  * US-1101 FEAT-011 Sprint 13.
  * G1-FIX (2026-04-16): TopMerchantsComponent declarado e integrado.
+ * FEAT-024 Sprint 26: SavingsWidgetComponent declarado (widget Mis Metas en dashboard).
  */
 @NgModule({
   declarations: [
@@ -26,7 +28,8 @@ import { PfmWidgetComponent }        from '../pfm/components/pfm-widget/pfm-widg
     MonthComparisonComponent,
     BudgetAlertsComponent,
     TopMerchantsComponent,       // G1-FIX
-    PfmWidgetComponent            // FEAT-023 Sprint 25
+    PfmWidgetComponent,           // FEAT-023 Sprint 25
+    SavingsWidgetComponent        // FEAT-024 Sprint 26
   ],
   imports: [
     CommonModule,

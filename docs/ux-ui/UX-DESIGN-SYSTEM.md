@@ -365,13 +365,61 @@ $bp-xl:   1920px;   // > 1920px   ultrawide
 
 ---
 
-## 7. Historial de Versiones
+## 7. Anexo FEAT-024 · Mis Metas (Sprint 26)
+
+**Sin nuevos tokens base.** Reutiliza la paleta vigente y declara aliases semánticos para el módulo de Objetivos de Ahorro.
+
+### 7.1 Tokens semánticos
+
+```css
+/* === FEAT-024 Savings Goals · semantic aliases === */
+--savings-progress-ok:    var(--color-success);  /* #00897B */
+--savings-progress-warn:  var(--color-warning);  /* #F57F17 */
+--savings-progress-full:  var(--color-primary);  /* #1B5E99 */
+--savings-card-bg:        var(--color-white);
+--savings-card-border:    var(--color-border);
+
+/* Categoría → color icono */
+--savings-cat-viaje:       #009688;  /* alineado --pfm-viajes */
+--savings-cat-hogar:       #9C27B0;  /* alineado --pfm-hogar  */
+--savings-cat-vehiculo:    #795548;
+--savings-cat-emergencia:  #E53935;
+--savings-cat-educacion:   #3F51B5;  /* alineado --pfm-educacion */
+--savings-cat-otros:       #607D8B;
+```
+
+### 7.2 Componentes CSS nuevos (extraíbles a `_savings.scss`)
+
+| Clase | Propósito |
+|---|---|
+| `.goals-grid` | Grid responsive `auto-fill minmax(320px,1fr)` |
+| `.goal-card` | Card meta con hover lift + shadow |
+| `.goal-icon` | 40×40 redondeada · color por categoría |
+| `.goal-pbar` / `.goal-pfill` | Barra progreso 8px con gradient + transition 400ms |
+| `.milestone-strip` / `.milestone-dot` | 4 dots fila de hitos 25/50/75/100% |
+| `.goal-risk-badge` | Pill con `.ok` o `.risk` (proyección) |
+| `.timeline-row` / `.timeline-icon` | Filas histórico aportaciones |
+| `.icon-picker` / `.icon-pick` | Grid 6×2 selector iconos |
+| `.color-picker` / `.color-pick` | Paleta horizontal selector color |
+| `.alert-info` | Callout informativo (segregación virtual, Ley 10/2014) |
+| `.summary-box` / `.summary-row` | Resumen lateral con `font-variant-numeric:tabular-nums` |
+| `.freq-pill` | Pill quick-amount (50€/100€/500€/1000€) |
+| `.input-grid` | Grid 2 columnas para forms |
+
+### 7.3 Patrones tipográficos monetarios
+
+Heredados de FEAT-023 (LA-023-02): `.goal-amount`, `.summary-row strong`, `.timeline-amount` aplican `font-variant-numeric:tabular-nums` para alineación digital perfecta de columnas euro.
+
+---
+
+## 8. Historial de Versiones
 
 | Versión | Sprint | Cambios |
 |---------|--------|---------|
 | 1.0 | S20 | Versión inicial — Design System BankPortal documentado |
+| 1.1 | S26 | Anexo FEAT-024 · 7 tokens semánticos + 14 clases CSS módulo savings · sin cambios estructurales |
 
 ---
 
-*UX Design System v1.0 · BankPortal · Banco Meridian · 2026*  
-*SOFIA v2.3 · UX/UI Designer Agent · Experis ManpowerGroup*
+*UX Design System v1.1 · BankPortal · Banco Meridian · 2026*  
+*SOFIA v2.7 · UX/UI Designer Agent · Experis ManpowerGroup*

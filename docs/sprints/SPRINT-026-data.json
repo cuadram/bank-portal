@@ -1,0 +1,443 @@
+{
+  "sprint": 26,
+  "sp": 24,
+  "acum": 617,
+  "feat": "FEAT-024",
+  "titulo": "Objetivos de Ahorro · \"Mis Metas\"",
+  "rel": "v1.26.0",
+  "tests": 147,
+  "tests_e2e": 6,
+  "tests_acum": 1189,
+  "cov_instr": 84.3,
+  "cov_line": 87.2,
+  "cov_branch": 88.1,
+  "cov": 87.2,
+  "ncs": 0,
+  "defects": 0,
+  "date_closed": "2026-05-10",
+  "las_session": [
+    "LA-026-01",
+    "LA-026-02",
+    "LA-026-03",
+    "LA-026-04",
+    "LA-026-05",
+    "LA-026-06",
+    "LA-026-07",
+    "LA-026-08"
+  ],
+  "las_core_promoted": [
+    "GR-SHELL-001"
+  ],
+  "las_core_pending": [
+    "GR-SHELL-002",
+    "GR-FE-002"
+  ],
+  "guardrails_nuevos": [
+    "GR-SMOKE-001",
+    "GR-FE-002 (proposed)",
+    "GR-SHELL-002 (proposed)"
+  ],
+  "debt_closed": [
+    "DEBT-051",
+    "DEBT-048",
+    "DEBT-049",
+    "DEBT-050",
+    "DEBT-033 (formalizada cierre S27)"
+  ],
+  "debt_opened": [
+    "DEBT-Q-073",
+    "DEBT-FE-074",
+    "DEBT-FE-075",
+    "DEBT-059",
+    "DEBT-060"
+  ],
+  "hallazgos_step7": {
+    "total": 4,
+    "scope_step": "Step 7 DevOps · verificación visual PO",
+    "resolved_in_step7": 4,
+    "deferred": 0,
+    "root_causes": "Refactor parcial auth abandonado (DEBT-033) + E2E API-driven exclusivo no detecta UI + OBS inline sin escalado formal a DEBT",
+    "drs": [
+      "DR-S26-007",
+      "DR-S26-008"
+    ],
+    "debts_opened": [
+      "DEBT-Q-073",
+      "DEBT-FE-074",
+      "DEBT-FE-075"
+    ],
+    "las_generadas": [
+      "LA-026-01",
+      "LA-026-02",
+      "LA-026-03",
+      "LA-026-04",
+      "LA-026-05",
+      "LA-026-06",
+      "LA-026-07",
+      "LA-026-08"
+    ],
+    "la_candidates_core": [
+      "GR-SHELL-002",
+      "GR-FE-002"
+    ],
+    "la_core_applied": [
+      "GR-SHELL-001"
+    ],
+    "verified_at": "2026-05-08T13:07:59Z",
+    "verified_screens": [
+      "lista-metas",
+      "detalle-meta",
+      "modal-aportacion",
+      "widget-dashboard"
+    ]
+  },
+  "drs": [
+    {
+      "id": "DR-S26-007",
+      "titulo": "B.4 quick patch retry 409",
+      "detalle": "Frontend reintenta 1x con backoff 500ms ante 409 CONCURRENCY_CONFLICT; mensaje UX inline si persiste; DEBT-Q-073 abierta para refactor limpio en S27"
+    },
+    {
+      "id": "DR-S26-008",
+      "titulo": "Auth guard fix + multi-cuenta selector",
+      "detalle": "Hallazgo 1 (goalOwnerGuard redirigía a /login por refactor parcial DEBT-033) + OBS-008/OBS-009 (selector cuenta única hardcoded → multi-cuenta real); DEBT-FE-074 (auth refactor) y DEBT-FE-075 (E2E UI-driven) abiertas para S27"
+    }
+  ],
+  "adrs": [
+    {
+      "id": "ADR-040",
+      "decision": "Segregación virtual de fondos: reservedAmount NO mueve ledgerBalance",
+      "rationale": "Mantiene contabilidad inmutable y trazable; availableBalance refleja la reserva sin alterar saldos contables; coste cero en migración (β sub-cuentas reales aplazado)"
+    },
+    {
+      "id": "ADR-041",
+      "decision": "Concurrencia optimista con @Version + retry 3x",
+      "rationale": "Evita locks pesimistas y deadlocks; lleva a 409 CONCURRENCY_CONFLICT bajo carga; DR-S26-007 cierra el ciclo con backoff frontend (RN-F024-16)"
+    },
+    {
+      "id": "ADR-042",
+      "decision": "OpenAPI 3.1 vía springdoc como única fuente de verdad de contratos",
+      "rationale": "Habilita GR-SMOKE-001 (validate-smoke-vs-openapi); cierra DEBT-048..050; smoke tests dejan de divergir del backend real"
+    },
+    {
+      "id": "ADR-043",
+      "decision": "Selector multi-cuenta en aportación manual usa GET /api/v1/accounts",
+      "rationale": "La cuenta de aportación NO está fijada al sourceAccountId del objetivo; el cliente elige en el momento; consolida UX coherente con FEAT-007 (DR-S26-008, RN-F024-17)"
+    }
+  ],
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/api/v1/savings/goals",
+      "desc": "Listar objetivos del usuario con filtros (status, page, size)"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/savings/goals",
+      "desc": "Crear objetivo (max 10 ACTIVE)"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/savings/goals/{id}",
+      "desc": "Detalle objetivo con histórico y proyección"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/savings/goals/{id}",
+      "desc": "Editar título/importe/fecha/categoría/icono"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/savings/goals/{id}",
+      "desc": "Cerrar con devolución (X-OTP si > 30€)"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/savings/goals/{id}/contributions",
+      "desc": "Aportación manual (@Version retry, 409 si conflicto)"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/savings/goals/{id}/contributions",
+      "desc": "Histórico aportaciones paginado"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/savings/goals/{id}/auto-rule",
+      "desc": "Configurar regla automática mensual"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/savings/goals/{id}/auto-rule",
+      "desc": "Pausar regla automática"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/savings/goals/{id}/milestones",
+      "desc": "Hitos alcanzados"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/savings/dashboard-widget",
+      "desc": "Widget dashboard (top-3 + semáforo)"
+    },
+    {
+      "method": "GET",
+      "path": "/v3/api-docs",
+      "desc": "OpenAPI 3.1 contract (springdoc · DEBT-048)"
+    }
+  ],
+  "user_stories": [
+    {
+      "id": "US-024-01",
+      "title": "Crear objetivo de ahorro",
+      "sp": 3,
+      "priority": "MUST",
+      "summary": "POST /api/v1/savings/goals → creación atómica con reserva inicial; targetAmount 100€-500.000€; max 10 ACTIVE"
+    },
+    {
+      "id": "US-024-02",
+      "title": "Listar objetivos con progreso y proyección",
+      "sp": 2,
+      "priority": "MUST",
+      "summary": "GET /api/v1/savings/goals → barra progreso, fecha proyectada, filtros estado/orden"
+    },
+    {
+      "id": "US-024-03",
+      "title": "Detalle de objetivo con histórico",
+      "sp": 2,
+      "priority": "MUST",
+      "summary": "GET /api/v1/savings/goals/{id} → timeline aportaciones + hitos + auto-rule + estado reserva"
+    },
+    {
+      "id": "US-024-04",
+      "title": "Aportación manual a objetivo",
+      "sp": 3,
+      "priority": "MUST",
+      "summary": "POST /contributions desde cualquier cuenta propia; @Version retry 3x; 409 CONCURRENCY_CONFLICT con backoff frontend"
+    },
+    {
+      "id": "US-024-05",
+      "title": "Aportación automática mensual",
+      "sp": 3,
+      "priority": "MUST",
+      "summary": "PUT /auto-rule + scheduler ShedLock; reintentos saldo insuficiente; pausable sin perder configuración"
+    },
+    {
+      "id": "US-024-06",
+      "title": "Editar / pausar / cerrar objetivo con devolución",
+      "sp": 2,
+      "priority": "MUST",
+      "summary": "PUT/DELETE /goals/{id} → liberar reserva, ABONO trazable, OTP si > 30€ (SCA PSD2)"
+    },
+    {
+      "id": "US-024-07",
+      "title": "Alertas push de hitos",
+      "sp": 2,
+      "priority": "SHOULD",
+      "summary": "Hitos 25/50/75/100% → push VAPID (FEAT-014) + centro notificaciones (FEAT-004); deduplicación por (goalId, percent)"
+    },
+    {
+      "id": "US-024-08",
+      "title": "Widget \"Mi ahorro del mes\" en dashboard",
+      "sp": 1,
+      "priority": "SHOULD",
+      "summary": "GET /dashboard-widget → top-3 progreso + semáforo + CTA si vacío; degradación elegante"
+    }
+  ],
+  "business_rules": [
+    {
+      "id": "RN-F024-01",
+      "desc": "targetAmount ∈ [100€..500.000€]; targetDate ∈ [hoy+30d..hoy+30a]"
+    },
+    {
+      "id": "RN-F024-02",
+      "desc": "Máximo 10 objetivos ACTIVE simultáneos por usuario"
+    },
+    {
+      "id": "RN-F024-03",
+      "desc": "Aportación manual: importe ∈ [10€..5.000€]"
+    },
+    {
+      "id": "RN-F024-04",
+      "desc": "Aportación automática con saldo insuficiente → estado FAILED + notificación; NO bloquea ciclo del scheduler"
+    },
+    {
+      "id": "RN-F024-05",
+      "desc": "Fondos virtualmente segregados (ADR-040): reservedAmount afecta availableBalance, NO ledgerBalance"
+    },
+    {
+      "id": "RN-F024-06",
+      "desc": "Cierre con devolución t+0 a cuenta origen última aportación; si no hay, cuenta primaria del cliente"
+    },
+    {
+      "id": "RN-F024-07",
+      "desc": "Categorías estándar: VIAJE, HOGAR, VEHICULO, EMERGENCIA, EDUCACION, OTROS + customCategory (max 50 chars)"
+    },
+    {
+      "id": "RN-F024-08",
+      "desc": "Proyección: ritmo insuficiente → projectionRisk=true; suggestedMonthlyContribution = (target-reserved)/mesesHastaTarget"
+    },
+    {
+      "id": "RN-F024-09",
+      "desc": "Hitos: una notificación por (goalId, percent) — UK idempotente goal_milestones"
+    },
+    {
+      "id": "RN-F024-10",
+      "desc": "GDPR Art.15/17: objetivos+aportaciones incluidos en export FEAT-019; soft-delete preserva 7 años"
+    },
+    {
+      "id": "RN-F024-11",
+      "desc": "Cierre con devolución > 30€ requiere SCA PSD2 (FEAT-001 2FA con OTP)"
+    },
+    {
+      "id": "RN-F024-12",
+      "desc": "Objetivos CLOSED preservados 7 años (obligación contable/fiscal RDL 5/2018)"
+    },
+    {
+      "id": "RN-F024-13",
+      "desc": "Scheduler ejecuta 00:00-06:00 UTC; dayOfMonth ∈ [1..28] (evita ambigüedad meses cortos)"
+    },
+    {
+      "id": "RN-F024-14",
+      "desc": "Reintentos 3x backoff exponencial (1m/5m/15m) antes de marcar FAILED por fallo técnico"
+    },
+    {
+      "id": "RN-F024-15",
+      "desc": "availableBalance de la cuenta considera SUM(reservedAmount) de objetivos ACTIVE que la usan como origen"
+    },
+    {
+      "id": "RN-F024-16",
+      "desc": "Concurrencia POST contribución: tras 3 retries optimistas backend agotados → 409 CONCURRENCY_CONFLICT; frontend reintenta 1x con backoff 500ms; mensaje UX inline si persiste (DR-S26-007)"
+    },
+    {
+      "id": "RN-F024-17",
+      "desc": "Selector cuenta origen aportación manual: muestra todas las cuentas activas del usuario (GET /api/v1/accounts), prioridad goal.sourceAccountId si está, fallback primera cuenta (DR-S26-008)"
+    }
+  ],
+  "jira_issues": [
+    {
+      "key": "SCRUM-163",
+      "title": "SPRINT-026 Planning & Setup — Scrum Master",
+      "sp": 1,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-164",
+      "title": "US-024-01: Crear objetivo de ahorro",
+      "sp": 3,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-165",
+      "title": "US-024-02: Listar objetivos con progreso",
+      "sp": 2,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-166",
+      "title": "US-024-03: Detalle de objetivo con histórico",
+      "sp": 2,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-167",
+      "title": "US-024-04: Aportación manual a objetivo",
+      "sp": 3,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-168",
+      "title": "US-024-05: Aportación automática mensual",
+      "sp": 3,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-169",
+      "title": "US-024-06: Editar / pausar / cerrar objetivo",
+      "sp": 2,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-170",
+      "title": "US-024-07: Alertas push de hitos",
+      "sp": 2,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-171",
+      "title": "US-024-08: Widget Mi ahorro en dashboard",
+      "sp": 1,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-172",
+      "title": "DEBT-051: Cablear ShedLock",
+      "sp": 2,
+      "status": "Finalizada"
+    },
+    {
+      "key": "SCRUM-173",
+      "title": "SPRINT-026 Closure — Workflow Manager",
+      "sp": 3,
+      "status": "En curso"
+    }
+  ],
+  "flyway": {
+    "migrations": [
+      "V32__savings.sql",
+      "V33__savings_categories.sql"
+    ],
+    "tables": 4
+  },
+  "confluence": {
+    "hld_page": "pendiente Step 9",
+    "parent": 229379,
+    "lessons_learned": 10321921
+  },
+  "git": {
+    "tag": "v1.26.0",
+    "branch": "feature/FEAT-024-sprint26",
+    "status": "tag previsto post-G-9 Step 9"
+  },
+  "gates": [
+    "G-1",
+    "G-2",
+    "G-2b",
+    "G-2c",
+    "G-3",
+    "G-3b",
+    "G-4",
+    "G-5",
+    "G-5b",
+    "G-6",
+    "G-7"
+  ],
+  "gate_pending": "G-8",
+  "sprint_jira": {
+    "sprint_id": 497,
+    "board_id": 1,
+    "started": "2026-04-21",
+    "end_date_planned": "2026-06-16"
+  },
+  "security": {
+    "semaphore": "GREEN",
+    "cve_crit": 0,
+    "cve_high": 0,
+    "cve_low_transitive": 2,
+    "sast_low": 1,
+    "secrets": 0,
+    "pci_dss": true,
+    "gdpr": true
+  },
+  "risks": [
+    "RSK-S26-01 (auth refactor)",
+    "RSK-S26-02 (E2E UI)",
+    "RSK-S26-03 (OBS escalado)",
+    "RSK-S26-04 (concurrencia 409)",
+    "RSK-S26-05 (GR-CI-002 deferred)",
+    "RSK-S26-06 (shell VAR=val)",
+    "RSK-S26-07 (Jira sprint UI)",
+    "RSK-S26-08 (Tier-A sync)"
+  ]
+}
