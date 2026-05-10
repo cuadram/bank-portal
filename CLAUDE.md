@@ -1,4 +1,4 @@
-# SOFIA v2.6 — Software Factory IA de Experis
+# SOFIA v2.7+ — Software Factory IA de Experis
 # Proyecto: bank-portal | Cliente: Banco Meridian
 # SOFIA_REPO=/Users/cuadram/proyectos/bank-portal
 
@@ -119,6 +119,28 @@ Si una feature exige un servicio independiente real, debe abrirse ADR explícito
 ```
 
 ---
+
+## Estado actual del proyecto
+
+```
+Sprint 26 CERRADO · FEAT-024 Objetivos de Ahorro · v1.26.0 · 24/24 SP · 617 SP acumulados
+- Tests: 147 backend + 6 E2E PASS · 1.189 acumulados · cobertura 87,2% línea / 84,3% instrucciones
+- Defectos en producción: 0 (27 sprints consecutivos)
+- CMMI L3: 9/9 PAs evidenciadas · 17 DOCX + 3 XLSX + 1 JSON entregables Step 8
+- Hallazgos Step 7 (verificación visual PO): 4/4 resueltos en sprint · 0 deferred a S26 cliente
+  - DR-S26-007 (B.4 retry 409) · DR-S26-008 (auth guard + multi-cuenta selector)
+  - DEBT-Q-073 + DEBT-FE-074 + DEBT-FE-075 abiertas para S27
+- Lessons Learned: 8 LAs (LA-026-01..08)
+  - 3 promovidas a SOFIA-CORE (LA-CORE-065/066/067)
+  - 5 candidatas pendientes (JSON commiteado para sesión SOFIA-CORE asíncrona)
+  - 2 guardrail-proposals deferred S04 SOFIA-CORE (GR-SHELL-002, GR-FE-002)
+  - 1 fix dashboard sprint-level sin LA formal (commit c72461d)
+- Confluence: páginas 24805378 (Resultados) + 24838145 (Retrospectiva)
+- FA-Agent: FA Word v0.13 · 88,7 KB · 108 funcionalidades · 248 reglas de negocio · S1–S26
+- Jira sprint 497: cierre vía UI manual por PO (LA-025-10 / GR-ATLASSIAN-001)
+- Sprint 27 pendiente definición PO · FEAT-025 TBD
+  - Inputs ya identificados: DEBT-Q-073 + DEBT-FE-074 + DEBT-FE-075 + posible activación GR-CI-002
+```
 
 ## ⚠️ PROTOCOLO OBLIGATORIO — STEP 8b (FA-Agent Gate 8b)
 
@@ -252,7 +274,7 @@ Framework: /Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE
 - **Provider:** GitHub (public)
 - **Rama main:** main
 - **Rama develop:** develop
-- **Rama activa sprint:** feature/FEAT-021-sprint23
+- **Rama activa sprint:** develop (Sprint 26 cerrado · v1.26.0 release · próximo S27 abre rama feature/FEAT-025-sprint27 desde develop tras planning PO)
 - **Branching model:** feature/FEAT-XXX-sprintYY desde develop
 - **Guardrail:** GR-CORE-030 (Gate 1 bloqueante)
 
