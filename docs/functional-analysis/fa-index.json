@@ -3,7 +3,7 @@
   "project": "bank-portal",
   "client": "Banco Meridian",
   "generated_by": "FA-Agent — SOFIA v2.3",
-  "last_updated": "2026-04-17T12:09:29.857Z",
+  "last_updated": "2026-05-10T11:08:57.458Z",
   "last_sprint": 26,
   "total_functionalities": 108,
   "notes": "S1-S15 RECONSTRUIDO. S16-S21 documentadas con evidencias directas.",
@@ -3291,6 +3291,18 @@
       "feature": "FEAT-024",
       "module": "Savings",
       "description": "El saldo disponible (availableBalance) de una cuenta resta de su saldo contable la suma de importes reservados de todos los objetivos ACTIVE que tengan esta cuenta como origen. Esta resta se calcula en tiempo real y se refleja en consultas de saldo y operaciones que validen disponibilidad."
+    },
+    {
+      "id": "RN-F024-16",
+      "feature": "FEAT-024",
+      "module": "Savings",
+      "description": "Concurrencia POST contribución: tras 3 retries optimistas backend agotados, se devuelve 409 CONCURRENCY_CONFLICT. Frontend reintenta 1x con backoff 500ms; si persiste, mensaje UX inline \"Conflicto de concurrencia detectado. Espera unos segundos y reintenta la aportación.\" (DR-S26-007, ADR-041)"
+    },
+    {
+      "id": "RN-F024-17",
+      "feature": "FEAT-024",
+      "module": "Savings",
+      "description": "Selector cuenta origen en aportación manual: muestra todas las cuentas activas del usuario obtenidas de GET /api/v1/accounts, con prioridad de selección por defecto a goal.sourceAccountId si está en la lista, fallback a primera cuenta. (DR-S26-008, ADR-043)"
     }
   ],
   "modules": [
@@ -3318,11 +3330,11 @@
     "SEPA-DD",
     "AML-KYC"
   ],
-  "total_business_rules": 246,
-  "last_sprint_consolidated": 25,
+  "total_business_rules": 248,
+  "last_sprint_consolidated": 26,
   "last_feat": "FEAT-024",
-  "updated_at": "2026-04-27T13:26:28.319Z",
-  "doc_version": "0.11",
+  "updated_at": "2026-05-10T11:09:16.860407+00:00",
+  "doc_version": "0.13",
   "doc_path": "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx",
   "doc_history": [
     {
@@ -3378,6 +3390,20 @@
       "date": "2026-04-26",
       "sprint": "S1–S26 / FEAT-024",
       "desc": "Actualización automática gate-8b. 108 func, 246 RN. Indice clickable v2.6. SOFIA v2.7."
+    },
+    {
+      "version": "0.12",
+      "updated_at": "2026-05-10T11:08:57.458Z",
+      "sprint": 26,
+      "feat": "FEAT-024",
+      "note": "S26 Step 8b · añadidas RN-F024-16 (concurrencia 409 retry) y RN-F024-17 (selector multi-cuenta) tras DR-S26-007/008",
+      "business_rules_total": 248
+    },
+    {
+      "version": "0.13",
+      "date": "2026-05-10",
+      "sprint": "S1–S26 / FEAT-024",
+      "desc": "Actualización automática gate-8b. 108 func, 248 RN. Indice clickable v2.6. SOFIA v2.7."
     }
   ],
   "markdowns": [
@@ -3385,5 +3411,5 @@
   ],
   "sprints_covered": "S1-S26",
   "last_feature": "FEAT-024",
-  "last_feat_consolidated": "FEAT-023"
+  "last_feat_consolidated": "FEAT-024"
 }

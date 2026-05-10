@@ -6,9 +6,9 @@
   "client": "Banco Meridian",
   "current_sprint": 26,
   "current_feature": "FEAT-024",
-  "current_step": "8b",
-  "pipeline_step": "8b",
-  "pipeline_step_name": "fa-agent",
+  "current_step": 9,
+  "pipeline_step": "9",
+  "pipeline_step_name": "workflow-manager",
   "_completed_steps_note": "Array del sprint actual (current_sprint: 25). Se resetea al inicio de cada sprint. No acumula sprints anteriores — ver sprint_history para histórico.",
   "completed_steps": {
     "sprint": 26,
@@ -138,6 +138,41 @@
         "summary": "Step 8 Documentation Agent · Lotes A→B→C→D ejecutados en autonomía · 17 DOCX + 3 XLSX + 1 JSON + generador 1163L · checklist pre-G-8 PASS · pendiente aprobación HITL-PM (Angel)",
         "approved_at": "2026-05-10T11:05:49.533Z",
         "approved_by": "HITL-PM (Angel de la Cuadra)"
+      },
+      {
+        "step": "8b",
+        "feature": "FEAT-024",
+        "sprint": 26,
+        "completed_at": "2026-05-10T11:10:05.786Z",
+        "status": "COMPLETED",
+        "verdict": "AUTO_APPROVED",
+        "scope": "FA-Agent · indexar RN-F024-16/17 + regenerar Word FA + plan promoción LA-CORE",
+        "fa_index": {
+          "total_functionalities": 108,
+          "total_business_rules": 248,
+          "doc_version": "0.13",
+          "doc_path": "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx",
+          "doc_size_kb": 88.7,
+          "last_sprint_consolidated": 26,
+          "last_feat_consolidated": "FEAT-024"
+        },
+        "business_rules_added": [
+          "RN-F024-16",
+          "RN-F024-17"
+        ],
+        "validation": "8/8 PASS validate-fa-index.js",
+        "la_core_promotion_plan": {
+          "aplicada_previa": [
+            "GR-SHELL-001"
+          ],
+          "pendientes_step9": [
+            "GR-SHELL-002",
+            "GR-FE-002",
+            "LA-026-09 (dashboard fix)"
+          ],
+          "procedimiento": "la-promote.js + sofia-contribute.py"
+        },
+        "summary": "Step 8b FA-Agent · 2 BR nuevas indexadas (246->248) · FA Word v0.12->v0.13 · 8/8 PASS · 3 LAs candidatas listadas para promoción Step 9"
       }
     ]
   },
@@ -158,8 +193,8 @@
     "8b",
     "9"
   ],
-  "last_skill": "documentation-agent",
-  "last_skill_output_path": "docs/deliverables/sprint-26-FEAT-024/",
+  "last_skill": "fa-agent",
+  "last_skill_output_path": "docs/functional-analysis/",
   "gate_pending": null,
   "release_blocked": false,
   "release_blocked_reason": null,
@@ -1096,31 +1131,31 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-05-10T11:06:35.976Z",
+    "last_generated": "2026-05-10T11:10:59.052Z",
     "last_gate": "G-8",
-    "last_step": "8b",
+    "last_step": "9",
     "sprint": 26,
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 · Step 8b FA-Agent · indexar RN-F024-16/17 en fa-index.json + regenerar Word FA + plan promoción LA-CORE candidatas",
+  "resume_next": "Sprint 26 · Step 9 Workflow Manager · cierre Sprint · Jira UI · git tag v1.26.0 · Confluence pages · merge develop/main · LA-SYNC-REPORT-S26 · G-9 HITL-PO",
   "sprint_closed": false,
-  "updated_at": "2026-05-10T11:06:35.976Z",
+  "updated_at": "2026-05-10T11:10:59.052Z",
   "fa_agent": {
-    "last_gate": "3b",
-    "last_updated": "2026-04-27T13:28:14.464Z",
+    "last_gate": "8b",
+    "last_updated": "2026-05-10T11:09:16.860407+00:00",
     "last_feat": "FEAT-024",
     "doc_path": "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx",
-    "doc_version": "0.11",
+    "doc_version": "0.13",
     "index_path": "docs/functional-analysis/fa-index.json",
     "functionalities": 108,
-    "business_rules": 246,
+    "business_rules": 248,
     "last_sprint_consolidated": 26,
     "skill_version": "2.8",
     "active": true,
     "sprints_covered": "S1-S26",
     "docx_verified": true,
-    "docx_size_kb": 88.3,
+    "docx_size_kb": 88.7,
     "generator": "python-docx"
   },
   "metrics": {
@@ -1690,6 +1725,13 @@
       "gate": "G-8",
       "step": "8b",
       "approved_at": "2026-05-10T11:06:35.976Z",
+      "sprint": 26,
+      "feature": "FEAT-024"
+    },
+    {
+      "gate": "G-8",
+      "step": "9",
+      "approved_at": "2026-05-10T11:10:59.052Z",
       "sprint": 26,
       "feature": "FEAT-024"
     }
@@ -2783,5 +2825,5 @@
       ]
     }
   ],
-  "last_updated": "2026-05-10T11:05:49.533Z"
+  "last_updated": "2026-05-10T11:10:05.786Z"
 }

@@ -775,3 +775,16 @@
 [2026-05-10T11:06:11.392Z] [DASH-FIX] [wrapper] dashboard-wrapper.js v3 · fix B1+B2+B3 (completedSteps flat / current_step string / GATE_PENDING NO marcado done) · pipeline steps colors corregidos
 [2026-05-10T11:06:11.392Z] [STEP-8B] [fa-agent] STARTED · sprint=26 · feature=FEAT-024 · scope=indexar RN-F024-16/17 en fa-index.json + regenerar FA Word + plan promoción LA-CORE GR-SHELL-002/GR-FE-002
 [2026-05-10T11:06:35.976Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-8 · Step: 8b · Sprint 26
+[2026-05-10T11:09:05.957Z] [FA-VALIDATE] OK: total_functionalities: 108 ✓
+[2026-05-10T11:09:05.966Z] [FA-VALIDATE] OK: total_business_rules: 248 ✓
+[2026-05-10T11:09:05.966Z] [FA-VALIDATE] OK: Todas las funcionalidades tienen business_rules ✓
+[2026-05-10T11:09:05.966Z] [FA-VALIDATE] OK: Todas las referencias RN-XXX apuntan a reglas existentes ✓
+[2026-05-10T11:09:05.966Z] [FA-VALIDATE] OK: Sin IDs de funcionalidad duplicados ✓
+[2026-05-10T11:09:05.967Z] [FA-VALIDATE] OK: Sin IDs de business_rule duplicados ✓
+[2026-05-10T11:09:05.967Z] [FA-VALIDATE] OK: last_sprint: 26 coincide con datos ✓
+[2026-05-10T11:09:05.968Z] [FA-VALIDATE] OK: FEAT-024: todas las RN referenciadas están definidas ✓
+[2026-05-10T11:09:05.969Z] [FA-VALIDATE] PASS — 108 funcionalidades, 248 reglas | sprint 26 | FEAT-024
+[2026-05-10T11:09:16.860407+00:00] [FA-AGENT] [GATE-8b] GENERATED → FA-bank-portal-Banco Meridian.docx v0.13 | 88.7KB | 108 func | 248 RN | TOC-hyperlinks | python-docx | SOFIA v2.7
+[2026-05-10T11:10:54.965Z] [STEP-8B] [fa-agent] COMPLETED · sprint=26 · feature=FEAT-024 · BRs 246->248 (RN-F024-16/17) · FA Word v0.13 (88.7KB) · validate-fa-index 8/8 PASS · AUTO_APPROVED
+[2026-05-10T11:10:54.965Z] [STEP-9] [workflow-manager] STARTED · sprint=26 · feature=FEAT-024 · scope=cierre Sprint · Jira UI · git tag v1.26.0 · merge develop/main · LA-SYNC-REPORT · 3 LA candidatas pendientes promocion · gate_target=G-9 (HITL-PO)
+[2026-05-10T11:10:59.052Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-8 · Step: 9 · Sprint 26
