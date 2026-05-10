@@ -1140,7 +1140,7 @@
   },
   "resume_next": "Sprint 26 · Step 9 Workflow Manager · cierre Sprint · Jira UI · git tag v1.26.0 · Confluence pages · merge develop/main · LA-SYNC-REPORT-S26 · G-9 HITL-PO",
   "sprint_closed": false,
-  "updated_at": "2026-05-10T11:10:59.052Z",
+  "updated_at": "2026-05-10T12:24:59.978Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1159,9 +1159,9 @@
     "generator": "python-docx"
   },
   "metrics": {
-    "total_sp": 593,
-    "total_tests": 1042,
-    "coverage": 89,
+    "total_sp": 617,
+    "total_tests": 1189,
+    "coverage": 87.2,
     "defects": 0,
     "ncs_last_sprint": 0
   },
@@ -1500,6 +1500,88 @@
       ],
       "jira_sprint_closed_at": "2026-04-17T13:13:55.434Z",
       "jira_sprint_id": 464
+    },
+    "sprint_26": {
+      "feature": "FEAT-024",
+      "title": "Objetivos de Ahorro · \"Mis Metas\"",
+      "status": "in_progress",
+      "sp": 24,
+      "acum": 617,
+      "tests": 147,
+      "tests_e2e": 6,
+      "tests_acum": 1189,
+      "cov": 87.2,
+      "cov_instr": 84.3,
+      "cov_line": 87.2,
+      "cov_branch": 88.1,
+      "ncs": 0,
+      "defects": 0,
+      "rel": "v1.26.0",
+      "closed_at": null,
+      "confluence_page": "24805378",
+      "confluence_retro": "24838145",
+      "jira_issues": [
+        "SCRUM-163",
+        "SCRUM-164",
+        "SCRUM-165",
+        "SCRUM-166",
+        "SCRUM-167",
+        "SCRUM-168",
+        "SCRUM-169",
+        "SCRUM-170",
+        "SCRUM-171",
+        "SCRUM-172",
+        "SCRUM-173"
+      ],
+      "las_session": [
+        "LA-026-01",
+        "LA-026-02",
+        "LA-026-03",
+        "LA-026-04",
+        "LA-026-05",
+        "LA-026-06",
+        "LA-026-07",
+        "LA-026-08"
+      ],
+      "las_core_promoted": [
+        "LA-CORE-065",
+        "LA-CORE-066",
+        "LA-CORE-067"
+      ],
+      "las_core_pending": [
+        "LA-026-04",
+        "LA-026-05",
+        "LA-026-06",
+        "LA-026-07",
+        "LA-026-08"
+      ],
+      "guardrails_applied_in_sprint": [
+        "GR-SHELL-001"
+      ],
+      "guardrails_proposals_deferred_S04_core": [
+        "GR-SHELL-002",
+        "GR-FE-002"
+      ],
+      "hallazgos_step7": {
+        "total": 4,
+        "resolved_in_step7": 4,
+        "deferred_to_s27": 0,
+        "debts_opened": [
+          "DEBT-Q-073",
+          "DEBT-FE-074",
+          "DEBT-FE-075"
+        ]
+      },
+      "debt_closed": [
+        "DEBT-051",
+        "DEBT-048",
+        "DEBT-049",
+        "DEBT-050",
+        "DEBT-033 (formalizada cierre S27)"
+      ],
+      "jira_sprint_id": 497,
+      "jira_sprint_closed_at": null,
+      "confluence_pages_created_at": "2026-05-10T12:24:59.978Z"
     }
   },
   "repository": {
@@ -2825,5 +2907,5 @@
       ]
     }
   ],
-  "last_updated": "2026-05-10T11:10:05.786Z"
+  "last_updated": "2026-05-10T12:24:59.978Z"
 }
