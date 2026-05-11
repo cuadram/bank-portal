@@ -1915,8 +1915,9 @@
       ],
       "detected_at": "2026-04-28T13:52:54.131Z",
       "evidence": "docker run maven:3.9-eclipse-temurin-21 -v docker.sock mvn test -Dtest=SavingsControllerSmokeIT-Testcontainers-version fallo: DockerClientFactory.getOrInitializeStrategy IllegalStateException Could not find a valid Docker environment. Tras refactorizar smoke a BizumIntegrationTestBase (compose externo): 1/1 PASS 15.5s.",
-      "promoted_to": null,
-      "promoted_at": null
+      "promoted_to": "LA-CORE-099",
+      "promoted_at": "2026-05-10T16:34:17.650782Z",
+      "sofia_core_version": "2.7.19"
     },
     {
       "id": "LA-026-07",
@@ -1941,8 +1942,9 @@
       ],
       "detected_at": "2026-04-28T13:52:54.131Z",
       "evidence": "BizumFlywayIT antes del fix: error Could not resolve placeholder bank.savings.auto.cron. Tras anadir bank.savings.* a application-integration-compose.yml: BizumFlywayIT 2/2 PASS y 27/27 ITs F.4 PASS. Commit 2c6c258 introdujo el cambio sin replicar en profiles - bug paso 7 dias inadvertido porque IT.java no se ejecuta en lifecycle Maven default.",
-      "promoted_to": null,
-      "promoted_at": null
+      "promoted_to": "LA-CORE-100",
+      "promoted_at": "2026-05-10T16:35:12.014399Z",
+      "sofia_core_version": "2.7.20"
     },
     {
       "id": "LA-026-06",
@@ -1968,8 +1970,9 @@
       ],
       "detected_at": "2026-04-28T09:01:08.532Z",
       "evidence": "DEBT-052 invalidada (status=INVALIDATED) tras descubrir que GoalClosureService.close() invoca accountReserve.release() internamente. El UC delega correctamente. Auditoria original solo hizo grep en CloseGoalUseCase.java sin abrir el callee.",
-      "promoted_to": null,
-      "promoted_at": null
+      "promoted_to": "LA-CORE-101",
+      "promoted_at": "2026-05-10T16:36:08.840968Z",
+      "sofia_core_version": "2.7.21"
     },
     {
       "id": "LA-026-05",
@@ -1995,8 +1998,9 @@
       ],
       "detected_at": "2026-04-27T15:18:00.000Z",
       "evidence": "Step 4 Sprint 26 cierre Fase E - Angel decidio opcion 6 (sin snapshot, con LA documentada) tras reflexion conjunta sobre disponibilidad de mecanismos de reversa alternativos",
-      "promoted_to": null,
-      "promoted_at": null
+      "promoted_to": "LA-CORE-098",
+      "promoted_at": "2026-05-10T16:30:36.703281Z",
+      "sofia_core_version": "2.7.18"
     },
     {
       "id": "LA-026-04",
@@ -2020,9 +2024,9 @@
         "LA-CORE-029"
       ],
       "detected_at": "2026-04-22T06:31:24.645Z",
-      "promoted_to": null,
-      "promoted_at": null,
-      "sofia_core_version": null,
+      "promoted_to": "LA-CORE-097",
+      "promoted_at": "2026-05-10T16:27:49.177680Z",
+      "sofia_core_version": "2.7.17",
       "guardrail_official": null
     },
     {

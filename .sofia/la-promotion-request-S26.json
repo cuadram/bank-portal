@@ -6,7 +6,7 @@
   "generated_at": "2026-05-10T12:04:54.079Z",
   "po_review_required": true,
   "po_reviewer": "Angel de la Cuadra (Product Owner)",
-  "status": "PENDING_PO_REVIEW",
+  "status": "COMPLETED",
   "sofia_core_path": "/Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE",
   "candidates": [
     {
@@ -24,10 +24,10 @@
         "BLOCKER_GATE",
         "MULTI_SKILL"
       ],
-      "promotion_status": "pending_po_approval",
-      "po_decision": null,
+      "promotion_status": "approved",
+      "po_decision": "ACCEPTED",
       "po_notes": null,
-      "po_decided_at": null
+      "po_decided_at": "2026-05-10T16:27:49.182186Z"
     },
     {
       "id": "LA-026-05",
@@ -43,10 +43,10 @@
         "BLOCKER_GATE",
         "MULTI_SKILL"
       ],
-      "promotion_status": "pending_po_approval",
-      "po_decision": null,
+      "promotion_status": "approved",
+      "po_decision": "ACCEPTED",
       "po_notes": null,
-      "po_decided_at": null
+      "po_decided_at": "2026-05-10T16:30:36.707314Z"
     },
     {
       "id": "LA-026-08",
@@ -61,10 +61,10 @@
         "SCOPE_CORE",
         "MULTI_SKILL"
       ],
-      "promotion_status": "pending_po_approval",
-      "po_decision": null,
+      "promotion_status": "approved",
+      "po_decision": "ACCEPTED",
       "po_notes": null,
-      "po_decided_at": null
+      "po_decided_at": "2026-05-10T16:34:17.654376Z"
     },
     {
       "id": "LA-026-07",
@@ -79,10 +79,10 @@
         "SCOPE_CORE",
         "MULTI_SKILL"
       ],
-      "promotion_status": "pending_po_approval",
-      "po_decision": null,
+      "promotion_status": "approved",
+      "po_decision": "ACCEPTED",
       "po_notes": null,
-      "po_decided_at": null
+      "po_decided_at": "2026-05-10T16:35:12.018057Z"
     },
     {
       "id": "LA-026-06",
@@ -97,10 +97,10 @@
         "SCOPE_CORE",
         "MULTI_SKILL"
       ],
-      "promotion_status": "pending_po_approval",
-      "po_decision": null,
+      "promotion_status": "approved",
+      "po_decision": "ACCEPTED",
       "po_notes": null,
-      "po_decided_at": null
+      "po_decided_at": "2026-05-10T16:36:08.845348Z"
     }
   ],
   "skipped": [
