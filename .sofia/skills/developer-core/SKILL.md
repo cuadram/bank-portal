@@ -10,6 +10,9 @@ description: >
   agentes java-developer, dotnet-developer, angular-developer, react-developer y
   nodejs-developer antes de implementar. SIEMPRE consultar este core cuando se
   implementa código en cualquier stack de SOFIA.
+model: claude-sonnet-4-6
+reasoning_effort: high
+tier: B
 ---
 
 # Developer Core — SOFIA Software Factory

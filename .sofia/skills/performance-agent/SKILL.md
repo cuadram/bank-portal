@@ -1,3 +1,9 @@
+---
+model: claude-haiku-4-5
+reasoning_effort: medium
+tier: C
+---
+
 # Performance Agent — SOFIA Software Factory v1.7
 # Agente especializado en performance testing — Skill #19
 

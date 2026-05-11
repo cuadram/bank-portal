@@ -4,6 +4,9 @@ sofia_version: "2.6"
 version: "1.13"
 updated: "2026-04-04"
 changelog: "v1.13 (2026-04-04) — Generico: lee config desde sofia-config.json. Sin hardcoding de proyecto/cloudId/JQL. | v1.12 (2026-04-02) — LA-022-07: verificar Step 3b en completed_steps pre-Step4. LA-022-02: regenerar LESSONS_LEARNED.md en Step 9. LA-022-08: verificar extensiones doc agent. | v1.11 — Dashboard Global como entregable en cada gate. Paso 7b obligatorio. Persistence Protocol actualizado con {proyecto}-global-dashboard.html."
+model: claude-haiku-4-5
+reasoning_effort: medium
+tier: C
 ---
 
 ## Verificacion sofia-shell al inicio de sesion (GR-014)

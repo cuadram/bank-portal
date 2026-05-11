@@ -3,6 +3,9 @@ name: security-agent
 sofia_version: "2.6"
 updated: "2026-03-24"
 changelog: "v1.9 — CVSS tracking mejorado, patrones RS256/HMAC, DEBT blocker patterns, Step 5b formalizado en pipeline"
+model: claude-sonnet-4-6
+reasoning_effort: high
+tier: B
 ---
 
 # Security Agent — SOFIA Software Factory v1.9

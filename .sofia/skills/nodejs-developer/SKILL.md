@@ -12,6 +12,9 @@ description: >
   servicio de notificaciones, integración con APIs externas, escribir tests Jest para
   NestJS, o cuando el stack del pipeline sea Node.js. También activa para bugfix,
   refactor y mantenimiento de servicios NestJS existentes.
+model: claude-sonnet-4-6
+reasoning_effort: high
+tier: B
 ---
 
 # Node.js Developer — SOFIA Software Factory

@@ -11,6 +11,9 @@ description: >
   el Orchestrator indiquen stack .Net, C#, ASP.NET Core, o cuando se pida: implementar
   microservicio .Net, crear endpoint REST en C#, escribir tests xUnit, crear entidad EF
   Core, configurar ASP.NET Identity, bugfix, refactor o mantenimiento de servicios .Net.
+model: claude-sonnet-4-6
+reasoning_effort: high
+tier: B
 ---
 
 # .Net Developer — SOFIA Software Factory

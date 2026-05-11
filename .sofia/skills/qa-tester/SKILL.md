@@ -1,7 +1,31 @@
 ---
-sofia_version: "2.6"
-updated: "2026-04-02"
+# --- SOFIA tier matrix (SC-41 · LA-CORE-074 Fase 1 · pulled-back B0.8.2 S04) ---
+tier: B
+model: claude-sonnet-4-6
+reasoning_effort: high
+assigned_in: SC-41 (S03 Step 3 sub-paso 3.6 · Fase 1)
+promoted_la: LA-CORE-074
+# --- Escalation rules (LA-CORE-074 + GR-CORE-037 · incorporado desde et 2026-04-28) ---
+recommended_model: sonnet-4.6
+escalation_rules:
+  enabled: true
+  escalated_model: opus-4.7
+  config_source: "sofia-config.json:qa_tester_escalation"
+  decision_field: "session.json:qa_model_decision"
+  reference: "LA-CORE-074 + GR-CORE-037"
 name: qa-tester
+sofia_version: "2.7"
+version: "2.8"
+updated: "2026-05-11"
+changelog: |
+  v2.8 (2026-05-11) — Pull-back desde et + frontmatter F2 SOFIA tier matrix.
+    B0.8.2 S04 · D-S04-F3-Q9 firmada · incorpora escalation_rules block
+    (LA-CORE-074 + GR-CORE-037) y body 2249B más rico que estaba en et pero
+    no en CORE. Frontmatter Tier B reaplicado preservando escalation rules.
+  v2.7 (2026-04-28) — LA-CORE-074 + GR-CORE-037: tier B (Sonnet 4.6 default)
+    con escalado condicional a Opus 4.7 en dominios criticos. La decision la
+    toma el orchestrator en step 6 leyendo sofia-config.json:qa_tester_escalation
+    y se persiste en session.json:qa_model_decision. Aprobado PO 2026-04-28.
 description: >
   Agente de aseguramiento de calidad de SOFIA — Software Factory IA de Experis.
   Verifica y valida que la implementación cumple los criterios de aceptación
@@ -25,6 +49,50 @@ Verificar (VER) y validar (VAL) que la implementación cumple los criterios de
 aceptación de las User Stories, los RNF documentados en el SRS, y los estándares
 de seguridad y accesibilidad de SOFIA. Gestionar el ciclo de defectos con
 trazabilidad CMMI completa en Jira via Workflow Manager.
+
+## Modelo LLM y escalado condicional (LA-CORE-074 / GR-CORE-037)
+
+Este agente opera por defecto con **Sonnet 4.6** (Tier B). El orchestrator escala a
+**Opus 4.7** cuando el feature toca dominios criticos. La decision se toma en step 6
+ANTES de delegar a este agente, se persiste en `session.json.qa_model_decision` y
+queda trazable para auditoria CMMI.
+
+### Reglas de escalado (en orden de precedencia)
+
+1. **Override explicito a Opus** — Issue Jira con label `qa-critical` -> Opus 4.7,
+   sin importar otras reglas.
+2. **Override explicito a Sonnet** — Issue Jira con label `qa-standard-override` ->
+   Sonnet 4.6, ignora keywords de dominio critico (escape para falsos positivos).
+3. **Match por dominio critico** — Si `feat_id`, `feat_title`, `labels` o
+   `components` del feature contienen alguno de los `critical_domains` definidos
+   en `sofia-config.json:qa_tester_escalation.critical_domains` -> Opus 4.7.
+4. **Default** — Sonnet 4.6.
+
+### Trazabilidad obligatoria (CMMI L3)
+
+El orchestrator escribe en `session.json` antes de delegar:
+
+```json
+"qa_model_decision": {
+  "feat_id": "FEAT-024",
+  "model": "sonnet-4.6",
+  "reason": "default | label:qa-critical | matched_keywords:[auth,jwt]",
+  "matched_keywords": [],
+  "decided_at": "2026-04-28T17:00:00Z",
+  "decided_by": "orchestrator-v2.9+"
+}
+```
+
+Sin este campo, el QA report del step 6 NO es valido para Gate G-6.
+
+### Lista canonica de dominios criticos
+
+Definida en `sofia-config.json:qa_tester_escalation.critical_domains`. La lista
+NO se duplica aqui — el agente la lee del config para evitar drift. A dia de hoy
+incluye 25 keywords agrupadas en: auth/identidad, payments, security/crypto,
+multi-tenancy, privacidad/regulatorio, BFSI (KYC/AML/IBAN/SEPA).
+
+---
 
 ## Input esperado del Orchestrator
 ```

@@ -2,66 +2,46 @@
 
 | Campo | Valor |
 |---|---|
-| Timestamp | 2026-05-04T16:36:02.179Z |
+| Timestamp | 2026-05-11T12:34:03.265Z |
 | Proyecto | bank-portal |
-| SOFIA-CORE versión | 2.7.16 |
-| LAs CORE disponibles | 85 |
-| LAs nuevas importadas | 13 |
+| SOFIA-CORE versión | 2.7.21 |
+| LAs CORE disponibles | 93 |
+| LAs nuevas importadas | 8 |
 | Skills actualizados | 0 |
 | Modo | DELTA |
 
 ## LAs Importadas
 
-### LA-CORE-075 · governance / tooling / process-isolation
-- **Descripción:** create-file-tool-no-persiste-en-disco-real-en-sesiones-sofia-core: Durante la verificación independiente del sub-paso 1.
+### LA-CORE-094 · governance/agent-tier-model/phase-2
+- **Descripción:** LA-CORE-074 Fase 1 (Tier A · 6 agentes Opus 4.7) cerrada en SC-41 S03 con persistencia material en MANIFEST.agent_model_
 - **Compliance check:** UNKNOWN: Sin check automático para este tipo
 
-### LA-CORE-091 · process/protocol · meta-regla
-- **Descripción:** toda-alteracion-de-LA-debe-usar-flujo-canonico-contributions-JSON: Durante la ejecución de SC-35 (rescate de 3 LAs huérf
+### LA-CORE-095 · governance/quality-assurance/canonical-promotion
+- **Descripción:** LA-CORE-093 (S02) define que toda LA promovida al corpus canónico SOFIA-CORE debe estar en 3 lugares sincronizados: (a) 
 - **Compliance check:** UNKNOWN: Sin check automático para este tipo
 
-### LA-CORE-092 · governance / schema-evolution
-- **Descripción:** gr-core-029-scope-clarification-not-applicable-in-core-sessions: Al arrancar Sprint S02 Mini B-full · Step 1 INIT, se de
+### LA-CORE-096 · technical/operational/macos-pipe-buf
+- **Descripción:** Durante SC-39 apply #1 (Step 3 S03 sub-paso 3.3), check post-apply ejecutó subprocess.run(['node','scripts/validate-mani
 - **Compliance check:** UNKNOWN: Sin check automático para este tipo
 
-### LA-CORE-076 · step1-patch-session-json-debe-ser-idempotente-frente-a-retries-por-tools-down (governance/tooling/idempotency) - severity medium - 2.7.7 - sprint S02-Mini-B-full
-- **Descripción:** 
+### LA-CORE-097 · process/governance
+- **Descripción:** desde bank-portal Sprint 26 (orig LA-026-04) — MANIFEST.la_core_index acumuló 8 entradas espurias con prefijo de ID loca
 - **Compliance check:** UNKNOWN: Sin check automático para este tipo
 
-### LA-CORE-077 · claude-agent-sdk-evaluacion-archivada-no-reabrir-sin-cambio-arquitectonico (governance/decision-archive) - severity medium - 2.7.8 - sprint S02-Mini-B-full
-- **Descripción:** 
+### LA-CORE-098 · process/governance/snapshots
+- **Descripción:** desde bank-portal Sprint 26 (orig LA-026-05) — El patron 'snapshot pre-update' establecido por phaseABC se trato como ob
 - **Compliance check:** UNKNOWN: Sin check automático para este tipo
 
-### LA-CORE-078 · post-merge-annotations-must-propagate-to-develop-via-pre-merge-commit-or-express (governance/propagation) - severity medium - 2.7.9 - sprint S02-Mini-B-full
-- **Descripción:** 
+### LA-CORE-099 · tooling/testcontainers/docker
+- **Descripción:** desde bank-portal Sprint 26 (orig LA-026-08) — Hallazgo lateral durante F.4. Consecuencia mas grave: TODOS los ITs del p
 - **Compliance check:** UNKNOWN: Sin check automático para este tipo
 
-### LA-CORE-084 · atlassian-locale-i18n-mapping-must-be-verified-pre-operation (process/protocol/i18n) - severity medium - 2.7.10 - sprint S02-Mini-B-full
-- **Descripción:** 
+### LA-CORE-100 · tooling/spring-boot/config
+- **Descripción:** desde bank-portal Sprint 26 (orig LA-026-07) — El comportamiento Spring Boot YAML profile-specific es no-intuitivo. Docu
 - **Compliance check:** UNKNOWN: Sin check automático para este tipo
 
-### LA-CORE-085 · sprint-close-must-be-atomic-and-clean-residual-state-fields (process/protocol/sprint-close) - severity medium - 2.7.11 - sprint S02-Mini-B-full
-- **Descripción:** 
-- **Compliance check:** UNKNOWN: Sin check automático para este tipo
-
-### LA-CORE-087 · mcp-atlassian-no-expone-jira-agile-sprint-management (process/protocol+workaround) - severity medium - 2.7.12 - sprint S02-Mini-B-full
-- **Descripción:** 
-- **Compliance check:** UNKNOWN: Sin check automático para este tipo
-
-### LA-CORE-090 · boot-check-on-demand-antes-de-responder-sobre-estado-de-proyecto (governance/verification-discipline) - severity medium - 2.7.13 - sprint S02-Mini-B-full
-- **Descripción:** 
-- **Compliance check:** UNKNOWN: Sin check automático para este tipo
-
-### LA-CORE-093 · la-promotion-must-write-three-coordinated-locations-or-detect-empty-body (governance/quality-assurance/process-protocol) - severity medium - 2.7.14 - sprint S02-Mini-B-full
-- **Descripción:** 
-- **Compliance check:** UNKNOWN: Sin check automático para este tipo
-
-### LA-CORE-079 · process/tooling
-- **Descripción:** regex-headers-markdown-debe-ser-anchor-explicito-con-negative-lookahead: toda regex sobre artefactos markdown que preten
-- **Compliance check:** UNKNOWN: Sin check automático para este tipo
-
-### LA-CORE-086 · technical/operational
-- **Descripción:** mcp-schema-doc-drift-fallback-to-enum-authoritative: cuando un schema MCP rechaza un valor que la description inline ind
+### LA-CORE-101 · process/governance/audit
+- **Descripción:** desde bank-portal Sprint 26 (orig LA-026-06) — Patron de auditoria insuficiente: grep en archivo objetivo del analisis s
 - **Compliance check:** UNKNOWN: Sin check automático para este tipo
 
 ---

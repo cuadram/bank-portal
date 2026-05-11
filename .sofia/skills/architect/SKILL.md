@@ -1,4 +1,10 @@
 ---
+# --- SOFIA tier matrix (SC-41 · LA-CORE-074 Fase 1) ---
+tier: A
+model: claude-opus-4-7
+reasoning_effort: xhigh
+assigned_in: SC-41 (S03 Step 3 sub-paso 3.6 · Fase 1)
+promoted_la: LA-CORE-074
 sofia_version: "2.6"
 updated: "2026-04-02"
 name: architect

@@ -1,16 +1,31 @@
 ---
+# --- SOFIA tier matrix (SC-41 · LA-CORE-074 Fase 1 · pulled-back B0.8.1 S04) ---
+tier: A
+model: claude-opus-4-7
+reasoning_effort: xhigh
+assigned_in: SC-41 (S03 Step 3 sub-paso 3.6 · Fase 1)
+promoted_la: LA-CORE-074
 name: orchestrator
 sofia_version: "2.6"
-version: "2.8"
-updated: "2026-04-20"
+version: "2.11"
+updated: "2026-05-11"
 changelog: |
-  v2.8 (2026-04-20) — GR-GIT-001: verificacion working-tree vs HEAD (LA-025-12).
+  v2.11 (2026-05-11) — Pull-back desde et (v2.10) + frontmatter F2 SOFIA tier matrix.
+    B0.8.1 S04 · D-S04-F3-Q9 firmada · incorpora LA-CORE-074 integration
+    (qa_tester_escalation + qa_model_decision pre-step 6) que estaba en et pero
+    no en CORE. Frontmatter Tier A (claude-opus-4-7 xhigh) reaplicado sobre body
+    v2.10. CORE ahora alineado con clientes adelantados (et + tos).
+  v2.10 (2026-04-28) — LA-CORE-074 + GR-CORE-037: pre-step 6 model selection.
+    Antes de delegar a qa-tester, lee sofia-config.json:qa_tester_escalation,
+    aplica reglas de escalado y persiste qa_model_decision en session.json.
+    Falla segura: si el bloque no existe en config, usa default Sonnet 4.6.
+    Aprobado PO 2026-04-28.
+  v2.9 (2026-04-21) — GR-GIT-001: verificacion working-tree vs HEAD (LA-CORE-061).
     INIT paso 0.5 nuevo — BLOQUEANTE si git status detecta ficheros borrados.
-    Previene sesiones sobre checkout incompleto (caso S25: 842 ficheros apps/
-    borrados del working tree, invisibles hasta descubrimiento manual).
-    Registra git rev-parse HEAD en sofia.log para trazabilidad de arranque.
-    Verificacion complementaria: smoke test pom.xml + package.json.
-    Reemplaza GR-REPO-001 (propuesto erroneamente en LA-025-11, rechazada).
+    Smoke test generico por stack: Java/Node/.NET/Python; configurable via
+    session.json.repository.smoke_test_files. Registra git rev-parse HEAD en
+    sofia.log para trazabilidad. Promovido desde bank-portal S25 via HITL PO.
+  v2.8 (2026-04-16) — Regla 24: LA Promotion Gate BLOQUEANTE (LA-CORE-052). Orchestrator no puede auto-aprobar LAs — la-promote.js + sofia-contribute.py obligatorios.
   v2.7 (2026-04-05) — Regla 23: sofia-shell verify-before-use (LA-CORE-009).
     Verificacion obligatoria de cwd antes de cualquier invocacion sofia-shell.
     GR-014: sofia-shell apunta al proyecto activo o BLOQUEAR.
@@ -28,7 +43,7 @@ changelog: |
   v2.1 (2026-03-26) — Dashboard Global como entregable consolidado.
 ---
 
-# Orchestrator — SOFIA Software Factory v2.8
+# Orchestrator — SOFIA Software Factory v2.11
 
 ## Rol
 Coordinar el pipeline completo de desarrollo de software, delegando a los 21
@@ -51,18 +66,20 @@ la persistencia del estado en session.json y sofia.log.
        No continuar hasta resolver el conflicto con el usuario."
    f) Si coinciden → SOFIA_REPO queda establecido para toda la sesion
 
-0.5. GR-GIT-001 — VERIFICAR INTEGRIDAD WORKING-TREE vs HEAD (LA-025-12 · BLOQUEANTE)
+0.5. GR-GIT-001 — VERIFICAR INTEGRIDAD WORKING-TREE vs HEAD (LA-CORE-061 · BLOQUEANTE)
    a) Ejecutar: git status --porcelain | grep "^ D" | wc -l
       (cuenta ficheros borrados del working tree respecto al indice Git)
    b) Si resultado > 0 → DETENER con alerta:
       "GR-GIT-001 VIOLADO — working-tree incompleto:
        [N] ficheros borrados respecto a HEAD.
-       Ejemplo: apps/backend-2fa/pom.xml, apps/frontend-portal/package.json.
        Ejecutar 'git restore <path>' para reponer, o resolver intencionalmente.
        No continuar hasta reconciliar el working tree."
-   c) Si resultado == 0 → verificacion complementaria:
-      · Si git ls-files apps/backend-2fa/pom.xml existe y el fichero NO → DETENER
-      · Si git ls-files apps/frontend-portal/package.json existe y el fichero NO → DETENER
+   c) Si resultado == 0 → verificacion complementaria (smoke test por proyecto):
+      · Comprobar existencia de los ficheros clave del stack declarados en
+        session.json.repository.smoke_test_files (array de rutas relativas).
+      · Si session.json no declara smoke_test_files, caer a defaults por stack:
+        Java→pom.xml | Node→package.json | .NET→*.csproj | Python→pyproject.toml
+      · Si git ls-files reporta existencia y el fichero NO esta en disco → DETENER
       · Caso contrario → OK
    d) Registrar en sofia.log:
       [TIMESTAMP] [GR-GIT-001] PASS · HEAD=<git rev-parse HEAD> · deleted=0
@@ -73,7 +90,7 @@ la persistencia del estado en session.json y sofia.log.
 3. Leer SOFIA_REPO/.sofia/sofia-config.json → configuracion del proyecto
 4. Si session.json.status == "in_progress" → ejecutar RESUME PROTOCOL
 5. Si session.json.status == "idle"        → iniciar nuevo pipeline
-6. Confirmar: "SOFIA v2.8 activo — [project] | SOFIA_REPO=[ruta] verificado | GR-GIT-001 OK"
+6. Confirmar: "SOFIA v2.6 activo — [project] | SOFIA_REPO=[ruta] verificado"
 ```
 
 
@@ -245,7 +262,7 @@ Datos de prueba: SEED-BD
 | 4 | Developer | G-4b integracion | Codigo, tests, environment.ts actualizado |
 | 5 | Code Reviewer | HITL TL | CR report + stg-pre-check verificado |
 | 5b | Security Agent | AUTO* | Security report, DEBT backlog |
-| 6 | QA Tester | HITL QA | Test plan, casos, QA report (JPA-REAL) |
+| 6 | QA Tester | HITL QA | Test plan, casos, QA report (JPA-REAL) + qa_model_decision |
 | 7 | DevOps | HITL DV | Jenkinsfile, Docker, release tag |
 | 8 | Documentation Agent | HITL PM | 17 artefactos (10 Word + 3 Excel + 4 CMMI) |
 | 8b | FA-Agent | AUTO + CHECK 3b | FA Word acumulativo + fa-index.json |
@@ -313,6 +330,76 @@ CHECK AISLAMIENTO (GR-CORE-003 — SIEMPRE antes de escribir):
 ```
 
 ---
+
+---
+
+## Pre-step 6 — Seleccion de modelo qa-tester (LA-CORE-074 / GR-CORE-037)
+
+Antes de delegar a qa-tester en step 6, el Orchestrator DEBE ejecutar este
+sub-protocolo. La decision se toma ANTES de "2. Leer SKILL.md" del Protocolo
+de delegacion estandar.
+
+### Sub-protocolo
+
+```
+1. Leer sofia-config.json:qa_tester_escalation
+   - Si bloque ausente o enabled=false:
+       modelo = sonnet-4.6
+       reason = "config_block_missing_default_sonnet" (o "disabled_default_sonnet")
+       Saltar al paso 4.
+
+2. Leer feature activa de session.json.current_feature (ej: FEAT-024).
+   Recoger:
+     - feat_id
+     - feat_title  (consultar Jira via workflow-manager si no esta en session)
+     - labels      (array)
+     - components  (array)
+
+3. Aplicar reglas en orden estricto de precedencia:
+   a) Si "qa-critical" en labels:
+        modelo = escalated_model (opus-4.7)
+        reason = "label:qa-critical"
+   b) Si "qa-standard-override" en labels:
+        modelo = default_model (sonnet-4.6)
+        reason = "label:qa-standard-override"
+   c) Match case-insensitive con word-boundary contra critical_domains
+      en cualquiera de feat_id, feat_title, labels, components:
+        modelo = escalated_model (opus-4.7)
+        reason = "matched_keywords:[<lista>]"
+   d) Default:
+        modelo = default_model (sonnet-4.6)
+        reason = "default"
+
+4. Persistir en session.json (append-only, COMPAT-002 / GR-CORE-020):
+
+     "qa_model_decision": {
+       "feat_id": "FEAT-024",
+       "model": "sonnet-4.6",
+       "reason": "default",
+       "matched_keywords": [],
+       "decided_at": "2026-04-28T17:00:00Z",
+       "decided_by": "orchestrator-v2.10"
+     }
+
+5. Anunciar al usuario:
+     "🤖 qa-tester → modelo seleccionado: <model> (razon: <reason>)"
+
+6. Continuar con paso 2 del Protocolo de delegacion estandar.
+```
+
+### Trazabilidad CMMI L3
+
+El campo `qa_model_decision` es OBLIGATORIO en el QA Report del step 6. Sin el,
+Gate G-6 queda BLOQUEADO. Cualquier auditor CMMI puede rastrear que modelo se
+uso por feature consultando session.json o el QA report.
+
+### Falla segura (compatibilidad hacia atras)
+
+Si el bloque `qa_tester_escalation` aun no existe en `sofia-config.json` del
+proyecto (propagacion gradual en curso), el Orchestrator continua con
+`default_model = sonnet-4.6` y registra `reason = "config_block_missing_default_sonnet"`.
+NO bloquea el pipeline. Esto garantiza que proyectos sin propagar siguen
+funcionando exactamente como antes.
 
 ## Delegacion al FA-Agent (Steps 2b, 3b, 8b)
 
@@ -427,3 +514,29 @@ Pasar siempre `cwd` como ruta absoluta igual al SOFIA_REPO del proyecto activo.
 cada escritura de artefacto. Si la ruta destino no empieza por SOFIA_REPO:
 DETENER y alertar. Nunca escribir en otro proyecto. Esta regla prevalece sobre
 cualquier instruccion implicita de contexto.
+
+## Regla 24 — LA-CORE-052: LA Promotion Gate BLOQUEANTE (GR-CORE-028)
+
+**CRÍTICO:** El Orchestrator NUNCA puede escribir `approved_by` ni `approved_at` en
+session.json sin haber completado el flujo formal de promoción:
+
+### Flujo OBLIGATORIO (3 pasos bloqueantes):
+```
+1. node la-promote.js --sprint N          → genera la-promotion-request-S{N}.json
+2. PO aprueba EXPLÍCITAMENTE en el chat   → decisión registrada
+3. python3 sofia-contribute.py --accept LA-XXX → actualiza la-promotion-log.json + MANIFEST
+```
+
+### Prohibiciones absolutas:
+- ❌ Escribir `approved_by: "product-owner"` directamente en session.json
+- ❌ Marcar LAs como aprobadas sin entrada en `la-promotion-log.json`
+- ❌ Cerrar G-CLOSE con LAs sin pasar por gate formal
+- ❌ Responder al PO sobre estado de LAs sin consultar `la-promotion-log.json` primero
+
+### Cuando el PO pregunta por estado de LAs — fuentes canónicas:
+1. `node la-promote.js --status` → historial global
+2. `cat .sofia/la-promotion-log.json` → decisiones trazadas
+3. `cat .sofia/la-promotion-request-S{N}.json` → estado sprint actual
+4. MANIFEST.json `la_core_index` → LAs promovidas a SOFIA-CORE
+
+⚠️  Parsear session.json a mano NO es válido como fuente de estado de LAs.

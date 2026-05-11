@@ -19,6 +19,9 @@ description: >
   servicio Angular, implementar guard o interceptor, o cuando el Orchestrator indique
   stack Angular en el pipeline. También activa para bugfix, refactor y mantenimiento
   de aplicaciones Angular existentes.
+model: claude-sonnet-4-6
+reasoning_effort: high
+tier: B
 ---
 
 # Angular Developer — SOFIA Software Factory

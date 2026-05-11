@@ -12,6 +12,9 @@ description: >
   entidad JPA, configurar Spring Security, o cuando el Orchestrator indique
   stack Java en el pipeline. También activa para bugfix, refactor y mantenimiento
   de servicios Java existentes.
+model: claude-sonnet-4-6
+reasoning_effort: high
+tier: B
 ---
 
 # Java Developer — SOFIA Software Factory

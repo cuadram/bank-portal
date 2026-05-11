@@ -1,3 +1,9 @@
+---
+model: claude-sonnet-4-6
+reasoning_effort: high
+tier: B
+---
+
 # UX/UI Designer Agent — SKILL.md v2.1
 # SOFIA v2.3 · Experis · BankPortal · Banco Meridian
 

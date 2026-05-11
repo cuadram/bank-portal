@@ -11,6 +11,9 @@ description: >
   componente React, desarrollar feature React, escribir tests React, configurar Redux,
   crear custom hook, o cuando el Orchestrator indique stack React en el pipeline.
   También activa para bugfix, refactor y mantenimiento de aplicaciones React existentes.
+model: claude-sonnet-4-6
+reasoning_effort: high
+tier: B
 ---
 
 # React Developer — SOFIA Software Factory

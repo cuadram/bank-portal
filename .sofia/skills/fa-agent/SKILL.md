@@ -42,6 +42,9 @@ description: >
   (post-Delivery).
 generator: "python-docx"
 generator_script: ".sofia/scripts/gen-fa-document.py"
+model: claude-sonnet-4-6
+reasoning_effort: high
+tier: B
 ---
 
 # FA-Agent — Functional Analyst Agent (SOFIA v2.2)

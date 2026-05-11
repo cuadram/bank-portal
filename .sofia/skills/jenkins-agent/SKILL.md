@@ -9,6 +9,9 @@ description: >
   o cualquier operación CI/CD sobre Jenkins. También activa este skill cuando se mencione: pipeline,
   stage, Jenkinsfile, build fallido, trigger, webhook, agente Jenkins, nodo Jenkins, o Blue Ocean.
   Entorno objetivo: macOS + Homebrew, Jenkins LTS en localhost:8080, PROJECT_REPO configurado.
+model: claude-haiku-4-5
+reasoning_effort: medium
+tier: C
 ---
 
 # Jenkins Agent — SOFIA CI/CD

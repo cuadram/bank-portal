@@ -16,6 +16,9 @@ description: >
   el Product Owner, Project Manager u Orchestrator inicien una solicitud de
   análisis. También activa para revisión y actualización de requerimientos
   existentes, gestión de cambios de alcance y ambigüedades escaladas.
+model: claude-sonnet-4-6
+reasoning_effort: high
+tier: B
 ---
 
 # Requirements Analyst — SOFIA Software Factory

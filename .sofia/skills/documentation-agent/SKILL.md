@@ -13,6 +13,9 @@ changelog: |
     Los 7 documentos CMMI son BLOQUEANTES para Gate G-8 desde Sprint 22.
     Checklist G-8 actualizado con verificación de los 17 archivos.
   v1.9 (2026-03-24) — Sprint data JSON para Dashboard Global, validado en BankPortal (154 docs S2-S16)
+model: claude-sonnet-4-6
+reasoning_effort: high
+tier: B
 ---
 
 # Documentation Agent — SOFIA Software Factory v1.9

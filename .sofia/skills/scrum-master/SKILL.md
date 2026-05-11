@@ -16,6 +16,9 @@ description: >
   en backlog, o cuando el Orchestrator inicie un nuevo pipeline y necesite
   planificación del trabajo. También activa para reportes de progreso, alertas
   de riesgo, gestión de impedimentos y cambios de alcance mid-sprint.
+model: claude-sonnet-4-6
+reasoning_effort: high
+tier: B
 ---
 
 # Scrum Master / PM — SOFIA Software Factory
