@@ -1,0 +1,447 @@
+{
+  "project": "bank-portal",
+  "branch": "develop",
+  "skills_count": 30,
+  "skills": [
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-24",
+      "model_in_block_1": [
+        20,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 14,
+      "truly_broken": false,
+      "skill": "angular-developer",
+      "path": ".sofia/skills/angular-developer/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-24",
+      "model_in_block_1": [
+        2,
+        "claude-opus-4-7"
+      ],
+      "tier_in_block_1": "A",
+      "second_yaml_block": false,
+      "naive_delim_count": 17,
+      "truly_broken": false,
+      "skill": "architect",
+      "path": ".sofia/skills/architect/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-8",
+      "model_in_block_1": [
+        4,
+        "claude-haiku-4-5"
+      ],
+      "tier_in_block_1": "C",
+      "second_yaml_block": false,
+      "naive_delim_count": 7,
+      "truly_broken": false,
+      "skill": "atlassian-agent",
+      "path": ".sofia/skills/atlassian-agent/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-24",
+      "model_in_block_1": [
+        2,
+        "claude-opus-4-7"
+      ],
+      "tier_in_block_1": "A",
+      "second_yaml_block": false,
+      "naive_delim_count": 20,
+      "truly_broken": false,
+      "skill": "code-reviewer",
+      "path": ".sofia/skills/code-reviewer/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-15",
+      "model_in_block_1": [
+        11,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 20,
+      "truly_broken": false,
+      "skill": "developer-core",
+      "path": ".sofia/skills/developer-core/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-20",
+      "model_in_block_1": null,
+      "tier_in_block_1": null,
+      "second_yaml_block": false,
+      "naive_delim_count": 21,
+      "truly_broken": true,
+      "skill": "devops",
+      "path": ".sofia/skills/devops/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-18",
+      "model_in_block_1": [
+        14,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 10,
+      "truly_broken": false,
+      "skill": "documentation-agent",
+      "path": ".sofia/skills/documentation-agent/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-30",
+      "model_in_block_1": [
+        26,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 16,
+      "truly_broken": false,
+      "skill": "documentation-intake-agent",
+      "path": ".sofia/skills/documentation-intake-agent/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-16",
+      "model_in_block_1": [
+        12,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 15,
+      "truly_broken": false,
+      "skill": "dotnet-developer",
+      "path": ".sofia/skills/dotnet-developer/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-47",
+      "model_in_block_1": [
+        43,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 17,
+      "truly_broken": false,
+      "skill": "fa-agent",
+      "path": ".sofia/skills/fa-agent/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-33",
+      "model_in_block_1": [
+        2,
+        "claude-opus-4-7"
+      ],
+      "tier_in_block_1": "A",
+      "second_yaml_block": false,
+      "naive_delim_count": 27,
+      "truly_broken": false,
+      "skill": "fa-reverse-agent",
+      "path": ".sofia/skills/fa-reverse-agent/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-32",
+      "model_in_block_1": [
+        2,
+        "claude-opus-4-7"
+      ],
+      "tier_in_block_1": "A",
+      "second_yaml_block": false,
+      "naive_delim_count": 30,
+      "truly_broken": false,
+      "skill": "governance-gap-agent",
+      "path": ".sofia/skills/governance-gap-agent/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-28",
+      "model_in_block_1": [
+        24,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 26,
+      "truly_broken": false,
+      "skill": "inventory-agent",
+      "path": ".sofia/skills/inventory-agent/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-17",
+      "model_in_block_1": [
+        13,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 12,
+      "truly_broken": false,
+      "skill": "java-developer",
+      "path": ".sofia/skills/java-developer/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-14",
+      "model_in_block_1": [
+        10,
+        "claude-haiku-4-5"
+      ],
+      "tier_in_block_1": "C",
+      "second_yaml_block": false,
+      "naive_delim_count": 14,
+      "truly_broken": false,
+      "skill": "jenkins-agent",
+      "path": ".sofia/skills/jenkins-agent/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-17",
+      "model_in_block_1": [
+        13,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 16,
+      "truly_broken": false,
+      "skill": "nodejs-developer",
+      "path": ".sofia/skills/nodejs-developer/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-43",
+      "model_in_block_1": [
+        2,
+        "claude-opus-4-7"
+      ],
+      "tier_in_block_1": "A",
+      "second_yaml_block": false,
+      "naive_delim_count": 11,
+      "truly_broken": false,
+      "skill": "orchestrator",
+      "path": ".sofia/skills/orchestrator/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-4",
+      "model_in_block_1": [
+        0,
+        "claude-haiku-4-5"
+      ],
+      "tier_in_block_1": "C",
+      "second_yaml_block": false,
+      "naive_delim_count": 11,
+      "truly_broken": false,
+      "skill": "performance-agent",
+      "path": ".sofia/skills/performance-agent/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-12",
+      "model_in_block_1": [
+        2,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 2,
+      "truly_broken": false,
+      "skill": "php-developer",
+      "path": ".sofia/skills/php-developer/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-14",
+      "model_in_block_1": [
+        2,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 2,
+      "truly_broken": false,
+      "skill": "php-legacy-reverse",
+      "path": ".sofia/skills/php-legacy-reverse/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-42",
+      "model_in_block_1": [
+        2,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 18,
+      "truly_broken": false,
+      "skill": "qa-tester",
+      "path": ".sofia/skills/qa-tester/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-31",
+      "model_in_block_1": [
+        27,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 28,
+      "truly_broken": false,
+      "skill": "quality-baseline-agent",
+      "path": ".sofia/skills/quality-baseline-agent/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-16",
+      "model_in_block_1": [
+        12,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 5,
+      "truly_broken": false,
+      "skill": "react-developer",
+      "path": ".sofia/skills/react-developer/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-21",
+      "model_in_block_1": [
+        17,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 11,
+      "truly_broken": false,
+      "skill": "requirements-analyst",
+      "path": ".sofia/skills/requirements-analyst/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-21",
+      "model_in_block_1": [
+        17,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 15,
+      "truly_broken": false,
+      "skill": "scrum-master",
+      "path": ".sofia/skills/scrum-master/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-8",
+      "model_in_block_1": [
+        4,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 10,
+      "truly_broken": false,
+      "skill": "security-agent",
+      "path": ".sofia/skills/security-agent/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-32",
+      "model_in_block_1": [
+        2,
+        "claude-opus-4-7"
+      ],
+      "tier_in_block_1": "A",
+      "second_yaml_block": false,
+      "naive_delim_count": 27,
+      "truly_broken": false,
+      "skill": "stabilization-planner",
+      "path": ".sofia/skills/stabilization-planner/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-4",
+      "model_in_block_1": [
+        0,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 14,
+      "truly_broken": false,
+      "skill": "ux-ui-designer",
+      "path": ".sofia/skills/ux-ui-designer/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-4",
+      "model_in_block_1": [
+        0,
+        "claude-sonnet-4-6"
+      ],
+      "tier_in_block_1": "B",
+      "second_yaml_block": false,
+      "naive_delim_count": 17,
+      "truly_broken": false,
+      "skill": "ux-ui-minimal-designer",
+      "path": ".sofia/skills/ux-ui-minimal-designer/SKILL.md"
+    },
+    {
+      "has_frontmatter": true,
+      "frontmatter_lines": "0-9",
+      "model_in_block_1": [
+        5,
+        "claude-haiku-4-5"
+      ],
+      "tier_in_block_1": "C",
+      "second_yaml_block": false,
+      "naive_delim_count": 10,
+      "truly_broken": false,
+      "skill": "workflow-manager",
+      "path": ".sofia/skills/workflow-manager/SKILL.md"
+    }
+  ],
+  "stats": {
+    "truly_broken": 1,
+    "has_second_yaml_block": 0,
+    "ok": 29,
+    "no_frontmatter": 0
+  },
+  "nested_anomalies": [
+    ".sofia/skills/qa-tester/qa-tester/SKILL.md",
+    ".sofia/skills/devops/devops/SKILL.md",
+    ".sofia/skills/java-developer/java-developer/SKILL.md",
+    ".sofia/skills/nodejs-developer/nodejs-developer/SKILL.md",
+    ".sofia/skills/dotnet-developer/dotnet-developer/SKILL.md",
+    ".sofia/skills/workflow-manager/workflow-manager/SKILL.md",
+    ".sofia/skills/requirements-analyst/requirements-analyst/SKILL.md",
+    ".sofia/skills/scrum-master/scrum-master/SKILL.md",
+    ".sofia/skills/architect/architect/SKILL.md",
+    ".sofia/skills/developer-core/developer-core/SKILL.md",
+    ".sofia/skills/code-reviewer/code-reviewer/SKILL.md",
+    ".sofia/skills/react-developer/react-developer/SKILL.md",
+    ".sofia/skills/angular-developer/angular-developer/SKILL.md",
+    ".sofia/skills/orchestrator/orchestrator/SKILL.md"
+  ],
+  "nested_count": 14
+}
