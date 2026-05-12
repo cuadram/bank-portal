@@ -7,9 +7,20 @@ assigned_in: SC-41 (S03 Step 3 sub-paso 3.6 · Fase 1)
 promoted_la: LA-CORE-074
 name: orchestrator
 sofia_version: "2.6"
-version: "2.11"
-updated: "2026-05-11"
+version: "2.12"
+updated: "2026-05-12"
 changelog: |
+  v2.12 (2026-05-12) — LA-094 paso 6 · routing-real (Pre-step N · agent model selection).
+    Sub-protocolo generico ANTES de cada delegacion: resuelve model/reasoning_effort/tier
+    desde frontmatter SKILL.md del proyecto activo (overlay-aware via ADR-009 R1),
+    con cross-check soft contra MANIFEST.agent_model_assignment. Persiste decision en
+    session.json.agent_model_decisions (append-only · LA-CORE-073). Fallback soft a
+    CORE tier matrix con WARNING si frontmatter R1 incumplida (compat hacia atras).
+    Cierra LA-CORE-094 step 6 (deferred S04 G-7 · D-S04-defer-routing-real). Firma
+    PO D-S05-F4-arranque (Q-F4-1..6 = α-α-α-α-α-α). Refinamiento PO D-S05-F4-Q7-
+    gamma-prime: resolved_from admite 3 valores legitimos (core | overlay:<p>/<a>
+    con markers ADR-009 | local:<p>/<a> propagacion la-sync sin markers) para
+    trazabilidad CMMI L3 auditable. Sprint S05 F4 SC-55.
   v2.11 (2026-05-11) — Pull-back desde et (v2.10) + frontmatter F2 SOFIA tier matrix.
     B0.8.1 S04 · D-S04-F3-Q9 firmada · incorpora LA-CORE-074 integration
     (qa_tester_escalation + qa_model_decision pre-step 6) que estaba en et pero
@@ -43,7 +54,7 @@ changelog: |
   v2.1 (2026-03-26) — Dashboard Global como entregable consolidado.
 ---
 
-# Orchestrator — SOFIA Software Factory v2.11
+# Orchestrator — SOFIA Software Factory v2.12
 
 ## Rol
 Coordinar el pipeline completo de desarrollo de software, delegando a los 21
@@ -330,6 +341,151 @@ CHECK AISLAMIENTO (GR-CORE-003 — SIEMPRE antes de escribir):
 ```
 
 ---
+
+---
+
+## Pre-step N — Seleccion de modelo agentico (LA-CORE-094 paso 6 · ADR-009 R1)
+
+**Aplica ANTES de cada delegacion** (paso 0 del Protocolo de delegacion estandar,
+ejecutado antes de "1. Anunciar: Iniciando Step N"). Cierra LA-CORE-094 paso 6:
+el Orchestrator consume `agent_model_assignment` en routing decisions reales
+en lugar de heredar el modelo de la sesion Claude Desktop activa.
+
+### Fuente de verdad (Q-F4-2 = α · firmada D-S05-F4-arranque)
+
+El `model`, `reasoning_effort` y `tier` por agente se resuelven leyendo el
+**frontmatter del SKILL.md del proyecto activo** (resolucion directa). Esta fuente
+es nativamente overlay-aware: una skill overlay declarada (ADR-009 R1) preserva
+la tier matrix CORE en su frontmatter, asi que la resolucion funciona igual para
+CORE y para overlays sin logica especial.
+
+El `MANIFEST.agent_model_assignment` actua como **cross-check soft**: si el tier
+resuelto desde frontmatter difiere del tier declarado en MANIFEST, se emite
+WARNING en sofia.log (no bloquea pipeline · valida que el validator pre-runtime
+ADR-009 R6 cumple su rol).
+
+### Clasificacion del origen (Q-F4-7 = γ' · firmada D-S05-F4-Q7-gamma-prime)
+
+El campo `resolved_from` admite **3 valores legitimos**, alineados con la doctrina
+ADR-009 y con la realidad operativa de `la-sync.js --skills`:
+
+| Valor | Significado | Frecuencia operativa (S05) |
+|---|---|---|
+| `core` | SKILL.md leido desde el path CORE (proyecto activo = SOFIA-CORE, o fallback por overlay no encontrado) | habitual cuando se opera sobre SOFIA-CORE |
+| `overlay:<project>/<agent>` | SKILL.md en path proyecto **con markers ADR-009 declarados** (`overlay_of` + `overlay_reason` + `overlay_decision_id`) + R1+R5 cumplidas | raro · hoy solo `bank_portal/devops` |
+| `local:<project>/<agent>` | SKILL.md en path proyecto **propagado via la-sync** (sin markers ADR-009 · byte-identical o pulled desde CORE) | habitual cross-project (~85 instancias hoy entre bp+et+tos+IMESAPI) |
+
+La clasificacion se determina **en runtime** leyendo el frontmatter: si los 3
+markers ADR-009 estan presentes y el agente esta declarado en
+`MANIFEST.validation_exclusions.excluded_skills_per_project`, la fuente es
+`overlay:...`; si la skill esta en el path del proyecto pero sin markers, la
+fuente es `local:...`; en ausencia de SKILL.md en el proyecto, fallback a `core`.
+
+Las 3 categorias son **legitimas y validas** desde el punto de vista del routing:
+todas garantizan tier matrix correcta (ADR-009 R1 nativamente para overlay;
+byte-identical para local la-sync; CORE directo). La distincion es **trazabilidad
+CMMI L3 + auditabilidad**: un auditor puede verificar de un vistazo que skill
+file se uso por agent + step + proyecto.
+
+### Sub-protocolo
+
+```
+1. Resolver project context y clasificar fuente (γ'):
+   - project = session.json.current_project (o SOFIA-CORE si null)
+   - Si project = SOFIA-CORE/core:
+       skill_path = skills/<agent>/SKILL.md       · resolved_from = "core"
+   - Si project ≠ core:
+       project_skill_path = <project>/.sofia/skills/<agent>/SKILL.md
+       Si project_skill_path existe:
+           tras parsear frontmatter (paso 2):
+             markers_present = overlay_of && overlay_reason && overlay_decision_id
+             resolved_from = markers_present
+                 ? "overlay:<project>/<agent>"
+                 : "local:<project>/<agent>"
+           skill_path = project_skill_path
+       Si NO existe:
+           skill_path = skills/<agent>/SKILL.md   · resolved_from = "core" (fallback)
+
+2. Leer frontmatter YAML del SKILL.md resuelto:
+   - Parser estricto delimitadores --- (ignora horizontal rules Markdown del cuerpo)
+   - Extraer: model, reasoning_effort, tier
+   - Si overlay declarado (ADR-009): tambien overlay_of, overlay_reason, overlay_decision_id
+
+3. Cross-check soft contra MANIFEST.agent_model_assignment:
+   - Buscar agent en tier_a.agents | tier_b.agents | tier_c.agents
+   - Si tier_resolved ≠ tier_manifest → WARNING en sofia.log (no bloquear)
+     "[routing-real] {agent}: tier frontmatter={X} ≠ MANIFEST={Y} · validator
+      pre-runtime debio haberlo detectado (ADR-009 R6)"
+
+4. Behavior degradado (R1 incumplida · pre-runtime debio fallar · Q-F4-3=α):
+   - Si frontmatter no tiene model/reasoning_effort/tier:
+       → fallback CORE tier matrix lookup:
+         model_fallback     = MANIFEST.agent_model_assignment.tier_{A|B|C}.model
+                              donde agent esta listado
+         reasoning_fallback = "high" (Tier A/B) | "low" (Tier C)
+         tier_fallback      = tier donde agent esta listado en MANIFEST
+       → WARNING critico en sofia.log:
+         "[routing-real] {agent} en {project}: frontmatter sin tier matrix
+          (R1 ADR-009 incumplida) · usando fallback CORE · model={X} tier={Y}"
+       → Persistir reason = "frontmatter_missing_using_CORE_fallback"
+   - NO bloquear pipeline (compat hacia atras · analogo Pre-step 6 actual)
+   - Si agent no esta en MANIFEST tampoco → error duro:
+       "[routing-real] {agent}: no en frontmatter ni en MANIFEST · imposible
+        resolver model · pipeline BLOQUEADO"
+
+5. Persistir decision en session.json (append-only · LA-CORE-073 · COMPAT-002):
+
+     "agent_model_decisions": [
+       {
+         "agent": "architect",
+         "step": 3,
+         "model": "claude-opus-4-7",
+         "reasoning_effort": "high",
+         "tier": "A",
+         "resolved_from": "core",            // o "overlay:bp/devops" o "local:bp/architect" (γ')
+         "skill_sha16": "...",
+         "manifest_crosscheck": "ok",         // o "tier_mismatch_warning"
+         "decided_at": "2026-05-12T10:00:00Z",
+         "decided_by": "orchestrator-v2.12"
+       }
+     ]
+
+   Append puro: NO sobrescribe decisiones previas (CMMI L3 audit trail).
+
+6. Anunciar al usuario:
+     "🤖 <agent> → modelo seleccionado: <model> · tier <T> · from <core|overlay|local>"
+
+7. Caso especial qa-tester step 6:
+   - Pre-step N resuelve PRIMERO model_base desde frontmatter (sonnet-4.6 tier B)
+   - Pre-step 6 (LA-CORE-074 / GR-CORE-037 · seccion siguiente) puede SOBRESCRIBIR
+     a opus-4.7 segun keyword matching critical_domains o label qa-critical
+   - Compatibilidad total: Pre-step N es ortogonal al escalado qa-tester
+
+8. Continuar con paso 1 del Protocolo de delegacion estandar (anunciar step N).
+```
+
+### Trazabilidad CMMI L3
+
+El campo `agent_model_decisions` en session.json es **append-only** y permite a
+cualquier auditor CMMI rastrear que modelo se uso por step y por feature.
+Combinado con `qa_model_decision` (Pre-step 6 qa-tester), forma el dossier
+completo de decisiones de modelo del sprint.
+
+### Falla segura (compat hacia atras · Q-F4-3 = α firmada)
+
+Si el frontmatter de una skill no tiene tier matrix (caso teorico · validator
+pre-runtime ADR-009 R6 deberia haberlo detectado), el sub-protocolo aplica
+fallback CORE + WARNING, NO bloquea el pipeline. Esto garantiza compat hacia
+atras durante propagacion gradual a proyectos cliente (Q-F4-1 = α · scope CORE
+only en F4 · propagacion canary diferida a sprints siguientes).
+
+### Cross-references
+
+- LA-CORE-094 (LL_CORE inmutable · paso 6 "update orchestrator para consumir agent_model_assignment en routing decisions reales")
+- ADR-009 v1 ACCEPTED · R1 tier matrix CORE preservada en overlays
+- D-S04-defer-routing-real (ADR-008 v2 §2) · diferimiento S04 → S05
+- D-S05-F4-arranque (esta firma) · Q-F4-1..6 = α-α-α-α-α-α
+- Pre-step 6 (seccion siguiente) · escalado qa-tester · ortogonal y compatible
 
 ---
 
