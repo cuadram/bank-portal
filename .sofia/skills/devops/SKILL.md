@@ -18,6 +18,18 @@ description: >
   o cuando QA haya aprobado con doble gate (QA Lead + PO) y el pipeline
   continúe a release. También activa para hotfix deployments, análisis de
   incidentes y procedimientos de rollback.
+model: claude-sonnet-4-6
+reasoning_effort: high
+tier: B
+# ADR-009 · Skill Local Overlay Pattern · marcadores overlay (R2+R3+R5 met)
+overlay_of: skills/devops/SKILL.md
+overlay_reason: >
+  Contenido específico-cliente BankPortal: DEBT-050 checklist (10 items canónicos)
+  + sección "Agente especializado Jenkins — Delegación obligatoria" con delegación
+  a jenkins-agent SKILL local. Extensión legítima de cuerpo +33 líneas vs CORE.
+  Tier matrix heredada de CORE: claude-sonnet-4-6 · high · B.
+  Validator awareness ADR-009 reconoce este overlay (overlays_declared_count++).
+overlay_decision_id: D-S04-F3-Q12-Q13
 ---
 
 # DevOps / CI-CD — SOFIA Software Factory
