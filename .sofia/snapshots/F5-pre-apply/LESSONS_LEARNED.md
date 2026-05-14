@@ -1,7 +1,7 @@
 # LESSONS LEARNED — bank-portal
 
-> Generado: 2026-05-13T08:19:00.557Z | Total: 118 LAs
-> LAs proyecto: 11 | LAs SOFIA-CORE integradas: 107
+> Generado: 2026-05-12T18:14:22.126Z | Total: 116 LAs
+> LAs proyecto: 11 | LAs SOFIA-CORE integradas: 105
 
 ## LAs del Proyecto
 
@@ -1163,26 +1163,6 @@ _SOFIA-CORE v2.7.21 · Importada: 2026-05-12T18:14:22.114Z_
 **Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
 
 _SOFIA-CORE v2.7.21 · Importada: 2026-05-12T18:14:22.114Z_
-
----
-
-### LA-CORE-103 · governance/agent-tier-model/promotion ⭐ CORE
-
-**Descripción:** php-legacy-reverse promoted from Tier B (sonnet-4-6 high) to Tier A (opus-4-7 xhigh) in SC-61 S06 F4 via Q-F4-2 sub-firma intra-G-7 (D-S06-F4-Q4-2-TIER-A · PO quote verbatim 2026-05-13: 'Apruebo β Promover Tier A (+ LA-CORE-095 candidate)'). Stub original SC-51 S04 F1 firmó Tier B con tier_reassessment_pending:true por prudencia conservadora; post-content-drafting analysis confirmó FA real (Functional Archaeology · análogo arquitectónico canónico fa-reverse-agent Tier A SC-41 S03). Consumidor previsto IMESAPI es regulado (FACE/FACEB2B/AEAT). Status: candidate · pending RETRO F5 formal promotion via LA-CORE-018 flujo HITL. NOTA: PO quote menciona 'LA-CORE-095' pero ese ID estaba ocupado en la_core_index (governance/quality-assurance/canonical-promotion · S03) · ID corregido a LA-CORE-103 por gap conflict (LA-CORE-090 disk supersedes memory) · MANIFEST sync firmada por PO con D-S06-F4-Q4-2-MANIFEST-UPDATE ('Apruebo α'). Sprint S06 (canonized desde D-S06-F4-Q4-2-TIER-A · pending RETRO F5 final acceptance).
-
-**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
-
-_SOFIA-CORE v2.7.21 · Importada: 2026-05-13T08:19:00.547Z_
-
----
-
-### LA-CORE-104 · governance/cross-project-sync/skill-local-overlay ⭐ CORE
-
-**Descripción:** la-sync.js v1.1.0 hotfix S06 F3 ADR-009 R5/R7 Skill Local Overlay awareness implementation. Pre-hotfix la-sync.js sobreescribía skills cliente con contenido CORE perdiendo overlay local (bloques marcados con `<!-- SKILL_LOCAL_OVERLAY -->`). Hotfix: (a) detección de overlay markers antes de sobreescribir; (b) merge selectivo preservando bloques marcados; (c) defense-in-depth refactor con tests unitarios T1-T5 garantizando idempotencia + overlay preservation; (d) la-sync.js v1.1.0 ACTIVE. Resuelve finding HIGH H-S06-F3-1. Aprobado D-S06-F3-G9-CLOSE 2026-05-12 (G-5 APPROVED · firma cierre F3). Canonización formal vía contribution F5.1 firmada D-S06-F5-F5.1-DERIVADA-LA104-APPROVED ('procedemos con α').
-
-**Corrección:** Ver LESSONS_LEARNED_CORE.md en SOFIA-CORE para corrección completa.
-
-_SOFIA-CORE v2.7.21 · Importada: 2026-05-13T08:19:00.547Z_
 
 ---
 
