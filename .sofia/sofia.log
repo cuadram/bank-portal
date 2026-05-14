@@ -801,3 +801,4 @@
 [2026-05-10T15:56:20.749Z] [MERGE] develop <- feature/FEAT-024-sprint26 commit=db8ffdb (no-ff) · 271 files +80085/-456 · pushed origin OK
 [2026-05-10T15:56:20.749Z] [MERGE] main <- develop commit=ca09324 (no-ff) · pushed origin OK · sin branch protection bloqueante
 [2026-05-10T15:56:20.749Z] [STEP-9] [workflow-manager] A12 complete · v1.26.0 deployed to main · branch active: develop
+[2026-05-14T07:04:06.349Z] [S27-TRANSITION] [INFO] session.json reconciled S26->S27. Mutated: current_sprint 26->27, current_feature FEAT-024->null, current_step 9->null, pipeline_step "9"->null, pipeline_step_name workflow-manager->null, status sprint_closed->idle, sprint_closed false->true, last_skill workflow-manager->null, last_skill_output_path docs/quality/->null. Backup: .sofia/session.json.bak-pre-S27-reconcile-2026-05-14T07-03-52-575Z. Verification: PASS.

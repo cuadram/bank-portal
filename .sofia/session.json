@@ -1,14 +1,14 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "sprint_closed",
+  "status": "idle",
   "project": "bank-portal",
   "client": "Banco Meridian",
-  "current_sprint": 26,
-  "current_feature": "FEAT-024",
-  "current_step": 9,
-  "pipeline_step": "9",
-  "pipeline_step_name": "workflow-manager",
+  "current_sprint": 27,
+  "current_feature": null,
+  "current_step": null,
+  "pipeline_step": null,
+  "pipeline_step_name": null,
   "_completed_steps_note": "Array del sprint actual (current_sprint: 25). Se resetea al inicio de cada sprint. No acumula sprints anteriores — ver sprint_history para histórico.",
   "completed_steps": {
     "sprint": 26,
@@ -224,8 +224,8 @@
     "8b",
     "9"
   ],
-  "last_skill": "workflow-manager",
-  "last_skill_output_path": "docs/quality/",
+  "last_skill": null,
+  "last_skill_output_path": null,
   "gate_pending": null,
   "release_blocked": false,
   "release_blocked_reason": null,
@@ -1170,8 +1170,8 @@
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
   "resume_next": "Sprint 26 CERRADO (v1.26.0) post-G-9. Pendiente sesion: tag v1.26.0 + merges develop/main. Proxima sesion: Sprint 27 backlog grooming + planning PO (FEAT-025 TBD).",
-  "sprint_closed": false,
-  "updated_at": "2026-05-13T08:19:00.556Z",
+  "sprint_closed": true,
+  "updated_at": "2026-05-14T07:03:52.587Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -3660,7 +3660,7 @@
       ]
     }
   ],
-  "last_updated": "2026-05-10T15:56:20.749Z",
+  "last_updated": "2026-05-14T07:03:52.587Z",
   "active_branch": "develop",
   "audit_log": [
     {
