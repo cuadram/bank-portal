@@ -1,7 +1,7 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "idle",
+  "status": "audit-in-progress",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 27,
@@ -1169,9 +1169,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 CERRADO (v1.26.0) - tag + merges develop/main + Jira sprint 497 cierre UI todos consolidados. Housekeeping 2026-05-20: DEBT-049/050/051 cerradas formalmente (resueltas en S26 Fase H sin closure formal), DEBT-047/048 purgadas de open_debts -> closed_debts. Proxima sesion: Sprint 27 backlog grooming. Backlog real: 1 Alta (DEBT-055 auditoria QA), 3 Medias (DEBT-053/054/056), 2 Bajas (DEBT-059/060). Pendientes async S26: 5 LAs en SOFIA-CORE + 2 guardrail-proposals (GR-SHELL-002 + GR-FE-002).",
+  "resume_next": "Sprint 27 planning BLOQUEADO por NC-CMMI-001 (audit retrospectivo QA S18-S26). Branch activa: hotfix/qa-audit-s18-s26. Fase 0 (Setup) completada 2026-05-20. Siguiente: Fase 1 hotfix tests rotos main (DEBT-061 - 7 archivos, triage pragmatico).",
   "sprint_closed": true,
-  "updated_at": "2026-05-20T06:15:16.797Z",
+  "updated_at": "2026-05-20T06:25:28.265Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1305,7 +1305,7 @@
     {
       "id": "DEBT-055",
       "area": "QA governance",
-      "priority": "Alta",
+      "priority": "Critica",
       "desc": "Reporte QA-FEAT-023 Sprint 25 declara TC-IT-005 PfmControllerIT como PASS pero el test estructuralmente NO arranca: @SpringBootTest sin classes= explicito + paquete pfm.* no descendiente de twofa.* produce IllegalStateException Unable to find a @SpringBootConfiguration. Verificado 2026-04-28: mvn test -Dtest=PfmControllerIT contra HEAD: 1 test, 1 error, 0 PASS. El reporte QA del S25 firmo PASS sin haberse ejecutado realmente. Implicaciones: G-6 Sprint 25 aprobado con evidencia falsificada.",
       "fix": "Tres acciones: (a) anadir @SpringBootTest(classes=BackendTwoFactorApplication.class) explicito a PfmControllerIT (1 linea); (b) auditar resto de IT del proyecto buscando el mismo patron; (c) reforzar Step 6 QA Tester: el reporte QA debe incluir evidencia mvn (timestamp + tests count + checksum log) por cada IT declarado PASS - sin evidencia ejecutable, marcado BLOCKED no PASS. Promover a SOFIA-CORE GR-QA-002.",
       "sprint_target": "S27",
@@ -1317,7 +1317,18 @@
       "blocking": "No bloquea Sprint 26. Bloquea cualquier auditoria CMMI L3 retrospectiva del Sprint 25.",
       "jira": null,
       "sofia_core_candidate": true,
-      "related_la": "LA-026-08"
+      "related_la": "LA-026-08",
+      "priority_history": [
+        {
+          "from": "Alta",
+          "to": "Critica",
+          "at": "2026-05-20T06:25:28.265Z",
+          "rationale": "Auditoria HEAD 2026-05-20 reprodujo el fallo y extendio el alcance: 11 ITs huerfanos del lifecycle Maven default (no solo PfmControllerIT). Patron sistemico S18-S26."
+        }
+      ],
+      "scope_extended_at": "2026-05-20T06:25:28.265Z",
+      "scope_extended_note": "Reproduccion 2026-05-20 commit 5f6803f: mvn test sobre HEAD ejecuta 11/22 ITs (50% huerfanos). PfmControllerIT confirmado: 1/5 tests, 0 PASS, 1 ERROR estructural. Reporte QA-FEAT-023-sprint25.md linea 60 firmo \"5 ITs PASS\" sin haberse ejecutado. Hallazgo nuevo: mvn test arroja 2 Failures + 5 Errors en unit tests no documentados (-> DEBT-061).",
+      "audit_nc": "NC-CMMI-001"
     },
     {
       "id": "DEBT-056",
@@ -1359,6 +1370,40 @@
       "jira": null,
       "cvss": "3.1",
       "cve_ref": "CVE-2025-22233+CVE-2024-38820"
+    },
+    {
+      "id": "DEBT-061",
+      "area": "Backend / tests",
+      "priority": "Critica",
+      "desc": "mvn test sobre HEAD 5f6803f (commit housekeeping post-S26 cierre) arroja 642 tests · 2 Failures · 5 Errors · 11 Skipped. Tests afectados: AmortizationCalculatorTest (2F), PfmControllerIT (1E - DEBT-055), RequestMoneyUseCaseTest (1E), DeletionRequestServiceTest (1E NPE LocalDateTime), OpenDepositUseCaseTest (1E), DataExportServiceTest (2E Mockito strict stubbing). main esta roja y no ha sido reportado en ningun QA report S18-S26.",
+      "fix": "Triage pragmatico Fase 1 hotfix/qa-audit-s18-s26: fix donde < 30 lineas o @Disabled + DEBT individual por test no arreglable. mvn test debe salir 0 Failures / 0 Errors antes de Sprint 27 planning.",
+      "sprint_target": "S27-pre",
+      "sprint_target_phase": "hotfix-Phase1",
+      "origin": "audit-2026-05-20-DEBT-055-DEBT-056",
+      "registered_at": "2026-05-20T06:25:28.265Z",
+      "status": "OPEN",
+      "evidence": "apps/backend-2fa/target/surefire-reports/ tras mvn test 2026-05-20T06:18Z",
+      "blocking": "Bloquea Sprint 27 planning y G-4b futuros. Bloquea NC-CMMI-001 closure.",
+      "audit_nc": "NC-CMMI-001",
+      "jira": null
+    },
+    {
+      "id": "DEBT-062",
+      "area": "Build / Maven · QA governance",
+      "priority": "Critica",
+      "desc": "11 IT.java huerfanos del lifecycle Maven default verificado empiricamente 2026-05-20: find apps/backend-2fa/src/test -name \"*IT.java\" devuelve 22 archivos, mvn test ejecuta solo 11. Los 11 huerfanos son: BizumAdapterIT, BizumExpireIT, BizumFlywayIT (en target pero no consistente), BizumPrecisionIT, SpringContextIT, AccountRepositoryAdapterIT, LoginControllerIT, DashboardJpaAdapterIT, SseNotificationControllerIT, LoginContextControllerIT, AccountUnlockControllerIT, SecurityConfigHistoryControllerIT, StatementControllerIT. Causa raiz: maven-surefire-plugin 3.2.5 include patterns (Test, E2ETest, IntegrationTest) no matchean *IT.java. DEBT-056 lo describio teoricamente; este registro lo cuantifica.",
+      "fix": "Fase 3 hotfix: anadir maven-failsafe-plugin con include **/*IT.java + goal verify (no test). Perfil -Pit activa skipITs=false. Test G-4b futuros: mvn -Pit verify cubre los 22 ITs sin lista explicita.",
+      "sprint_target": "S27-pre",
+      "sprint_target_phase": "hotfix-Phase3",
+      "origin": "audit-2026-05-20-DEBT-055-DEBT-056",
+      "registered_at": "2026-05-20T06:25:28.265Z",
+      "status": "OPEN",
+      "evidence": "22 archivos IT.java fisicos vs 11 surefire-reports/*IT.txt tras mvn test.",
+      "blocking": "Cualquier auditoria CMMI L3 de Sprints 18-26 (gap historico). G-4b futuros si confian en mvn test.",
+      "related_debt": "DEBT-056",
+      "audit_nc": "NC-CMMI-001",
+      "sofia_core_candidate": true,
+      "jira": null
     }
   ],
   "jira_sprint": {
@@ -3651,7 +3696,7 @@
       ]
     }
   ],
-  "last_updated": "2026-05-20T06:15:16.797Z",
+  "last_updated": "2026-05-20T06:25:28.265Z",
   "active_branch": "develop",
   "audit_log": [
     {
@@ -3782,6 +3827,34 @@
       "actor": "HITL-PO (Angel de la Cuadra)",
       "decision": "criterio C - retencion temporal",
       "rationale": "CMMI L3: auditabilidad reciente vs histórico depurado. DEBT-049/050/051 (S26 reciente) permanecen visibles en open_debts[] con evidence. DEBT-047/048 (S25, >=1 sprint cerrado) ya purgadas en housekeeping previo."
+    },
+    {
+      "event": "phase-0-setup-audit-s18-s26",
+      "timestamp": "2026-05-20T06:25:28.265Z",
+      "actor": "HITL-PO (Angel de la Cuadra)",
+      "nc_id": "NC-CMMI-001",
+      "changes": {
+        "debts_added": [
+          "DEBT-061",
+          "DEBT-062"
+        ],
+        "debts_reclassified": [
+          "DEBT-055 (Alta -> Critica)"
+        ],
+        "nc_opened": "NC-CMMI-001",
+        "branch_created": "hotfix/qa-audit-s18-s26",
+        "folder_created": "docs/audit/QA-AUDIT-S18-S26/",
+        "pipeline_status": "idle -> audit-in-progress"
+      },
+      "decisions": {
+        "D1": "(c) Auditoria completa S18-S26",
+        "D2": "(b) No reabrir gates firmados, registrar NC + LA + corrective action",
+        "D3": "(a) Notificacion proactiva cliente Banco Meridian",
+        "D4": "(a) Hotfix obligatorio main antes de S27",
+        "S1": "(a) Branch separada hotfix/qa-audit-s18-s26",
+        "S2": "(a) Triage pragmatico tests rotos (<30 lineas fix vs @Disabled+DEBT)"
+      },
+      "backup": ".sofia/session.json.bak-phase0-audit-2026-05-20"
     }
   ],
   "closed_debts": [
@@ -3816,5 +3889,43 @@
       "purged_by": "claude-housekeeping-2026-05-20"
     }
   ],
-  "_open_debts_retention_policy": "Criterio temporal (decidido 2026-05-20, HITL-PO): las deudas CLOSED del sprint actual o anterior se mantienen en open_debts[] con evidence visible para auditoria proxima (CMMI L3). Las CLOSED de sprints antiguos (>=2 sprints atras) se purgan a closed_debts[]. INVALIDATED se mantiene en open_debts[] hasta el sprint siguiente para trazabilidad. Migracion entre arrays se hace en housekeeping al inicio de cada sprint."
+  "_open_debts_retention_policy": "Criterio temporal (decidido 2026-05-20, HITL-PO): las deudas CLOSED del sprint actual o anterior se mantienen en open_debts[] con evidence visible para auditoria proxima (CMMI L3). Las CLOSED de sprints antiguos (>=2 sprints atras) se purgan a closed_debts[]. INVALIDATED se mantiene en open_debts[] hasta el sprint siguiente para trazabilidad. Migracion entre arrays se hace en housekeeping al inicio de cada sprint.",
+  "cmmi_nc": [
+    {
+      "id": "NC-CMMI-001",
+      "opened_at": "2026-05-20T06:25:28.265Z",
+      "opened_by": "HITL-PO (Angel de la Cuadra)",
+      "classification": "Major",
+      "cmmi_practices_impacted": [
+        "PP/QPM SP1.2 (collect and analyze process and product measurements)",
+        "VER SP3.2 (analyze verification results)",
+        "CM SP3.2 (perform configuration audits)"
+      ],
+      "finding": "Auditoria interna 2026-05-20 detecto reporte QA-FEAT-023-sprint25.md (G-6 S25) declara \"TC-IT-005 PASS — 5 ITs @SpringBootTest\" sin evidencia ejecutable. Reproduccion en HEAD: 1/5 tests, 0 PASS, 1 ERROR estructural. Adicional: 11 IT.java del proyecto son huerfanos del lifecycle Maven default (no ejecutados por mvn test) sin haberse documentado en ningun reporte QA S18-S26.",
+      "root_cause": "(a) Step 6 QA Tester acepta declaraciones PASS sin evidence ejecutable (surefire-reports + commit SHA + timestamp). (b) maven-surefire-plugin 3.2.5 no matchea *IT.java por defecto y nadie configuro failsafe-plugin. (c) Cultura \"trust the report\" sin verificacion cruzada en gates G-6.",
+      "scope": "Sprints 18-26 (9 sprints). Alcance exacto pendiente de Fase 2 auditoria retrospectiva.",
+      "production_impact": "NULO. 0 defectos produccion 27 sprints consecutivos confirmado. El gap es de proceso, no de producto.",
+      "related_debts": [
+        "DEBT-055",
+        "DEBT-056",
+        "DEBT-061",
+        "DEBT-062"
+      ],
+      "corrective_action": "Hotfix Fase 1 (DEBT-061) + Fix estructural Fase 3 (DEBT-062) + Audit retrospectiva Fase 2.",
+      "preventive_action": "GR-QA-002 + actualizacion SKILL qa-tester + checklist pre-G-6 con mvn -Pit verify.",
+      "ecd": "2026-05-27",
+      "status": "OPEN",
+      "audit_folder": "docs/audit/QA-AUDIT-S18-S26/",
+      "branch": "hotfix/qa-audit-s18-s26"
+    }
+  ],
+  "audit_context": {
+    "nc_id": "NC-CMMI-001",
+    "started_at": "2026-05-20T06:25:28.265Z",
+    "branch": "hotfix/qa-audit-s18-s26",
+    "phases_total": 6,
+    "phases_completed": [],
+    "current_phase": 0,
+    "current_phase_name": "Setup"
+  }
 }
