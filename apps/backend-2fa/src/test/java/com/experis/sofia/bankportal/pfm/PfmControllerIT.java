@@ -1,5 +1,6 @@
 package com.experis.sofia.bankportal.pfm;
 
+import com.experis.sofia.bankportal.twofa.BackendTwoFactorApplication;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * LA-019-04: IT smoke test obligatorio por feature.
  * FEAT-023 Sprint 25.
  *
+ * Fix DEBT-055 / NC-CMMI-001 (2026-05-20):
+ *   - Anadido classes = BackendTwoFactorApplication.class (sin esto Spring no
+ *     localiza @SpringBootConfiguration porque PfmControllerIT esta en paquete
+ *     com.experis.sofia.bankportal.pfm fuera del subpaquete twofa.*).
+ *   - Cambiado perfil "test" -> "integration-compose" alineado con patron S26
+ *     (SavingsIntegrationTestBase, BizumIntegrationTestBase): perfil test estaba
+ *     pensado para Testcontainers que no se usan en este proyecto.
+ *   - El test es smoke de seguridad (5 endpoints x 401 sin token), no requiere
+ *     fixture de datos; integration-compose ya provee PG/Redis del Docker Compose.
+ *
  * @author SOFIA Developer Agent — FEAT-023 Sprint 25
+ * @author SOFIA QA Audit S18-S26 — fix DEBT-055 / NC-CMMI-001
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+    classes = BackendTwoFactorApplication.class,
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+)
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ActiveProfiles("integration-compose")
 class PfmControllerIT {
 
     @Autowired MockMvc mvc;

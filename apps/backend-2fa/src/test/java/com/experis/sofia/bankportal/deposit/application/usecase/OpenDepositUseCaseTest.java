@@ -54,7 +54,7 @@ class OpenDepositUseCaseTest {
             new BigDecimal("325.00"), new BigDecimal("61.75"),
             new BigDecimal("263.25"), new BigDecimal("10263.25")
         );
-        when(simulatorService.calcular(any(), anyInt())).thenReturn(sim);
+        lenient().when(simulatorService.calcular(any(), anyInt())).thenReturn(sim);  // Fix DEBT-061: otpInvalidoNoGuarda early-return
 
         Deposit saved = new Deposit();
         saved.setId(UUID.randomUUID());
@@ -66,7 +66,7 @@ class OpenDepositUseCaseTest {
         saved.setRenovacion(RenewalInstruction.RENEW_MANUAL);
         saved.setFechaApertura(LocalDate.now());
         saved.setFechaVencimiento(LocalDate.now().plusMonths(12));
-        when(depositRepo.save(any())).thenReturn(saved);
+        lenient().when(depositRepo.save(any())).thenReturn(saved);  // Fix DEBT-061: otpInvalidoNoGuarda early-return
     }
 
     @Test

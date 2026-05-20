@@ -1169,9 +1169,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 27 planning BLOQUEADO por NC-CMMI-001 (audit retrospectivo QA S18-S26). Branch activa: hotfix/qa-audit-s18-s26. Fase 0 (Setup) completada 2026-05-20. Siguiente: Fase 1 hotfix tests rotos main (DEBT-061 - 7 archivos, triage pragmatico).",
+  "resume_next": "Branch hotfix/qa-audit-s18-s26. Fase 1 hotfix COMPLETADA (mvn test 642/0F/0E/13S BUILD SUCCESS). DEBT-061 CLOSED. DEBT-063 NUEVA Alta abierta (ambiguedad TIN/TAE simulador prestamos - requiere decision PO+legal). Siguiente: Fase 2 audit retrospectiva S18-S26 (matrix sprint x IT).",
   "sprint_closed": true,
-  "updated_at": "2026-05-20T06:25:28.265Z",
+  "updated_at": "2026-05-20T07:46:33.623Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1381,11 +1381,18 @@
       "sprint_target_phase": "hotfix-Phase1",
       "origin": "audit-2026-05-20-DEBT-055-DEBT-056",
       "registered_at": "2026-05-20T06:25:28.265Z",
-      "status": "OPEN",
+      "status": "CLOSED",
       "evidence": "apps/backend-2fa/target/surefire-reports/ tras mvn test 2026-05-20T06:18Z",
       "blocking": "Bloquea Sprint 27 planning y G-4b futuros. Bloquea NC-CMMI-001 closure.",
       "audit_nc": "NC-CMMI-001",
-      "jira": null
+      "jira": null,
+      "closed_at": "2026-05-20T07:46:33.623Z",
+      "closed_in_phase": "Phase 1 hotfix",
+      "closed_by": "HITL-PO (Angel de la Cuadra)",
+      "closure_evidence": "mvn test post-Phase1: 642 tests, 0 Failures, 0 Errors, 13 Skipped, BUILD SUCCESS. 6 archivos fix: PfmControllerIT (5/5), DataExportServiceTest (4/4), DeletionRequestServiceTest (5/5), RequestMoneyUseCaseTest (4/4), OpenDepositUseCaseTest (5/5), AmortizationCalculatorTest (4/6 + 2 @Disabled -> DEBT-063). 0 archivos produccion modificados.",
+      "related_debts_derived": [
+        "DEBT-063"
+      ]
     },
     {
       "id": "DEBT-062",
@@ -1403,6 +1410,27 @@
       "related_debt": "DEBT-056",
       "audit_nc": "NC-CMMI-001",
       "sofia_core_candidate": true,
+      "jira": null
+    },
+    {
+      "id": "DEBT-063",
+      "area": "Backend / loan domain · ambiguedad financiera",
+      "priority": "Alta",
+      "desc": "AmortizationCalculator: ambiguedad TIN vs TAE en parametro taeAnual. Codigo implementa r = taeAnual/12/100 (interpretacion TIN nominal anual con composicion mensual). Para P=10000 plazo=12 taeAnual=6.50: codigo devuelve cuota=862.96, test esperaba 861.35 (interpretacion TAE compuesta efectiva). Riesgo regulatorio Directiva 2008/48/CE / Ley 16/2011: si el producto se vende como \"TAE 6.50%\" al cliente y la cuota real corresponde a TIN 6.50%, la TAE realmente cobrada es ~6.70% efectiva anual. Discrepancia ~1.85eur/mes en simulaciones (no en produccion: solo simulador).",
+      "fix": "Decision PO + analisis legal cliente Banco Meridian. Dos opciones: (A) Renombrar parametro a tinAnual + actualizar bank.products.loan.tin en application.yml + comunicar a cliente que se vende TIN no TAE; (B) Refactorizar calculator a r = pow(1+TAE, 1/12) - 1 para producir cuota acorde a TAE compuesta + ajustar tests + revisar simulaciones historicas. Tests TC-LOAN-001 y TC-LOAN-004 deshabilitados @Disabled hasta decision.",
+      "sprint_target": "S27-legal-review",
+      "origin": "audit-2026-05-20-Phase1-item4",
+      "registered_at": "2026-05-20T07:42:13.984Z",
+      "status": "OPEN",
+      "evidence": "Calculo manual: P=10000, r=0.0054166..., (1+r)^12=1.066971, cuota=862.96 (correcto para TIN). TAE compuesta 6.50% real: r=(1.065)^(1/12)-1=0.005262, cuota=861.35 (lo que esperaba el test). ADR-034 no desambigua. Codigo unico commit 4863667.",
+      "blocking": "No bloquea hotfix Fase 1 (tests @Disabled). Bloquea cualquier loan promotion a produccion sin clarificar.",
+      "related_debts": [
+        "DEBT-055",
+        "DEBT-061"
+      ],
+      "cmmi_practice": "REQM SP1.3 (manage requirement changes)",
+      "audit_nc": "NC-CMMI-001",
+      "requires_legal_review": true,
       "jira": null
     }
   ],
@@ -3696,7 +3724,7 @@
       ]
     }
   ],
-  "last_updated": "2026-05-20T06:25:28.265Z",
+  "last_updated": "2026-05-20T07:46:33.623Z",
   "active_branch": "develop",
   "audit_log": [
     {
@@ -3855,6 +3883,25 @@
         "S2": "(a) Triage pragmatico tests rotos (<30 lineas fix vs @Disabled+DEBT)"
       },
       "backup": ".sofia/session.json.bak-phase0-audit-2026-05-20"
+    },
+    {
+      "event": "phase-1-hotfix-main-tests-completed",
+      "timestamp": "2026-05-20T07:46:33.623Z",
+      "actor": "HITL-PO (Angel de la Cuadra)",
+      "nc_id": "NC-CMMI-001",
+      "phase": 1,
+      "changes": {
+        "debt_closed": "DEBT-061",
+        "debt_added": "DEBT-063",
+        "tests_fixed": 6,
+        "tests_disabled_with_motive": 2,
+        "production_files_modified": 0
+      },
+      "verification": {
+        "mvn_test_before": "Tests run: 642, Failures: 2, Errors: 5, Skipped: 11 - BUILD FAILURE",
+        "mvn_test_after": "Tests run: 642, Failures: 0, Errors: 0, Skipped: 13 - BUILD SUCCESS",
+        "no_regression_principle": "enforced - 0 production files touched"
+      }
     }
   ],
   "closed_debts": [
@@ -3907,16 +3954,26 @@
       "production_impact": "NULO. 0 defectos produccion 27 sprints consecutivos confirmado. El gap es de proceso, no de producto.",
       "related_debts": [
         "DEBT-055",
-        "DEBT-056",
+        "DEBT-063",
         "DEBT-061",
-        "DEBT-062"
+        "DEBT-062",
+        "DEBT-056"
       ],
       "corrective_action": "Hotfix Fase 1 (DEBT-061) + Fix estructural Fase 3 (DEBT-062) + Audit retrospectiva Fase 2.",
       "preventive_action": "GR-QA-002 + actualizacion SKILL qa-tester + checklist pre-G-6 con mvn -Pit verify.",
       "ecd": "2026-05-27",
       "status": "OPEN",
       "audit_folder": "docs/audit/QA-AUDIT-S18-S26/",
-      "branch": "hotfix/qa-audit-s18-s26"
+      "branch": "hotfix/qa-audit-s18-s26",
+      "derived_findings": [
+        {
+          "id": "DEBT-063",
+          "severity": "Alta",
+          "discovered_in_phase": "Phase 1 item 4 (AmortizationCalculatorTest)",
+          "discovered_at": "2026-05-20T07:42:13.984Z",
+          "note": "Ambiguedad regulatoria TIN/TAE en simulador prestamos. Requiere decision PO+legal."
+        }
+      ]
     }
   ],
   "audit_context": {
@@ -3924,8 +3981,12 @@
     "started_at": "2026-05-20T06:25:28.265Z",
     "branch": "hotfix/qa-audit-s18-s26",
     "phases_total": 6,
-    "phases_completed": [],
-    "current_phase": 0,
-    "current_phase_name": "Setup"
+    "phases_completed": [
+      0,
+      1
+    ],
+    "current_phase": 2,
+    "current_phase_name": "Retrospective audit S18-S26",
+    "phase_1_completed_at": "2026-05-20T07:46:33.623Z"
   }
 }
