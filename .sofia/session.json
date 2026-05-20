@@ -1169,9 +1169,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 26 CERRADO (v1.26.0) post-G-9. Pendiente sesion: tag v1.26.0 + merges develop/main. Proxima sesion: Sprint 27 backlog grooming + planning PO (FEAT-025 TBD).",
+  "resume_next": "Sprint 26 CERRADO (v1.26.0) - tag + merges develop/main + Jira sprint 497 cierre UI todos consolidados. Housekeeping 2026-05-20: DEBT-049/050/051 cerradas formalmente (resueltas en S26 Fase H sin closure formal), DEBT-047/048 purgadas de open_debts -> closed_debts. Proxima sesion: Sprint 27 backlog grooming. Backlog real: 1 Alta (DEBT-055 auditoria QA), 3 Medias (DEBT-053/054/056), 2 Bajas (DEBT-059/060). Pendientes async S26: 5 LAs en SOFIA-CORE + 2 guardrail-proposals (GR-SHELL-002 + GR-FE-002).",
   "sprint_closed": true,
-  "updated_at": "2026-05-14T07:03:52.587Z",
+  "updated_at": "2026-05-20T06:15:16.797Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1198,32 +1198,6 @@
   },
   "open_debts": [
     {
-      "id": "DEBT-047",
-      "area": "Backend",
-      "priority": "Media",
-      "desc": "findTopMerchants consulta solo bill_payments — excluye transacciones generales",
-      "sprint_target": "S25",
-      "origin": "coherence-audit-dashboard-S24",
-      "registered_at": "2026-04-16T06:20:00.895915Z",
-      "status": "CLOSED",
-      "jira": "SCRUM-153"
-    },
-    {
-      "id": "DEBT-048",
-      "area": "Backend",
-      "priority": "Media",
-      "desc": "Generar OpenAPI 3.1 completo via springdoc",
-      "sprint_target": "S26",
-      "origin": "GR-SMOKE-001 enablement",
-      "registered_at": "2026-04-21T19:17:56.424Z",
-      "closed_at": "2026-04-27T15:14:00.000Z",
-      "closed_in_sprint": 26,
-      "closed_in_step": "4-phase-E",
-      "closure_evidence": "pom.xml +springdoc-openapi-starter-webmvc-ui:2.3.0 (ADR-042) + application.yml springdoc:* + application-prod.yml endurece api-docs+swagger-ui=false",
-      "status": "CLOSED",
-      "jira": "SCRUM-171"
-    },
-    {
       "id": "DEBT-049",
       "area": "SOFIA governance",
       "priority": "Alta",
@@ -1231,8 +1205,13 @@
       "sprint_target": "S26",
       "origin": "LA-CORE-064",
       "registered_at": "2026-04-21T19:17:56.424Z",
-      "status": "OPEN",
-      "jira": "SCRUM-172"
+      "status": "CLOSED",
+      "jira": "SCRUM-172",
+      "closed_at": "2026-05-20T06:13:25.433Z",
+      "closed_in_sprint": 26,
+      "closed_in_step": "4-phase-H",
+      "closure_evidence": ".sofia/scripts/validate-smoke-vs-openapi.js creado 2026-05-10 (ejecutable, 6980 bytes) — implementa GR-SMOKE-001",
+      "closed_by": "HITL-PO (Angel de la Cuadra)"
     },
     {
       "id": "DEBT-050",
@@ -1242,8 +1221,13 @@
       "sprint_target": "S26",
       "origin": "LA-CORE-064",
       "registered_at": "2026-04-21T19:17:56.424Z",
-      "status": "OPEN",
-      "jira": "SCRUM-173"
+      "status": "CLOSED",
+      "jira": "SCRUM-173",
+      "closed_at": "2026-05-20T06:13:25.433Z",
+      "closed_in_sprint": 26,
+      "closed_in_step": "4-phase-H",
+      "closure_evidence": ".sofia/skills/devops/SKILL.md seccion \"Checklist tecnica pre-G-7 — DEBT-050\" (linea 865) incluye item 5 que invoca node .sofia/scripts/validate-smoke-vs-openapi.js exit 0",
+      "closed_by": "HITL-PO (Angel de la Cuadra)"
     },
     {
       "id": "DEBT-051",
@@ -1255,12 +1239,19 @@
       "sprint_target_phase": "H_g4b_guardrail",
       "origin": "auditoria-fase-D-2026-04-28",
       "registered_at": "2026-04-28T08:36:11.321Z",
-      "status": "OPEN",
+      "status": "CLOSED",
       "evidence": "Investigacion 2026-04-28: (1) grep -rln \"EnableSchedulerLock|LockProvider\" apps/backend-2fa/src/main/ -> 0 resultados. (2) grep -rln \"@SchedulerLock\" -> 3 archivos (AutoContributionScheduler, SimulaCobroJob, ScheduledTransferJobService). (3) docker exec bankportal-postgres psql -c \"\\dt\" no lista tabla shedlock. (4) flyway_schema_history solo muestra V18 cards management - V18c shedlock no aplicada. (5) git log V18c__shedlock.sql -> commit 768250a feat sprint18 step 4 FEAT-016 (S18 hace ~7 sprints).",
       "blocking": "Sprints 18-26 deploy single-instance ha enmascarado el bug. G-4b S26 si se ejecuta verificacion runtime con 2 instancias. Bloquea cualquier escalado horizontal del backend hasta resolverse.",
       "jira": null,
       "scope_extended_at": "2026-04-28T09:01:08.532Z",
-      "scope_extended_note": "Originalmente diagnosticada como bug nuevo del scheduler S26 (AutoContributionScheduler). Investigacion durante F.2 setup revelo que afecta a 3 schedulers desde S18 y la tabla shedlock no existe en la BD actual."
+      "scope_extended_note": "Originalmente diagnosticada como bug nuevo del scheduler S26 (AutoContributionScheduler). Investigacion durante F.2 setup revelo que afecta a 3 schedulers desde S18 y la tabla shedlock no existe en la BD actual.",
+      "closed_at": "2026-05-20T06:13:25.433Z",
+      "closed_in_sprint": 26,
+      "closed_in_step": "4-phase-H",
+      "closure_evidence": "SchedulingConfig.java creado en twofa/infrastructure/config/ con @EnableSchedulerLock(PT10M) + @Bean LockProvider (JdbcTemplateLockProvider + usingDbTime()). Migracion renombrada V18c -> V31__shedlock.sql, aplicada en BD bankportal (flyway_schema_history version=31 description=shedlock success=true installed_on=2026-05-08 08:23:54). Tabla shedlock existe en public schema. Test ShedLockEnabledIT.java presente en savings/infrastructure/scheduler/. Commits trazables: f38c6ad (Fase H.2 SchedulingConfig + ShedLockEnabledIT) + 8d4e0bd (Fase H.7 V18c->V31 rename).",
+      "closed_by": "HITL-PO (Angel de la Cuadra)",
+      "verified_at": "2026-05-20T06:13:25.433Z",
+      "verified_by": "claude-housekeeping-2026-05-20"
     },
     {
       "id": "DEBT-052",
@@ -3660,7 +3651,7 @@
       ]
     }
   ],
-  "last_updated": "2026-05-14T07:03:52.587Z",
+  "last_updated": "2026-05-20T06:15:16.797Z",
   "active_branch": "develop",
   "audit_log": [
     {
@@ -3763,6 +3754,67 @@
           }
         ]
       }
+    },
+    {
+      "event": "housekeeping-open-debts",
+      "timestamp": "2026-05-20T06:13:25.433Z",
+      "actor": "HITL-PO (Angel de la Cuadra)",
+      "executed_by": "claude-sofia-housekeeping",
+      "sprint_context": 27,
+      "changes": {
+        "debts_closed_formally": [
+          "DEBT-049",
+          "DEBT-050",
+          "DEBT-051"
+        ],
+        "debts_purged_to_history": [
+          "DEBT-047",
+          "DEBT-048"
+        ],
+        "resume_next_reconciled": true
+      },
+      "rationale": "session.json registraba como OPEN tres deudas (049/050/051) cuya resolucion material fue verificada en codigo/BD/commits durante S26 Fase H. DEBT-047/048 mantenian status=CLOSED dentro de open_debts[] sin purgar a closed_debts. Reconciliacion sin impacto en codigo ni gates aprobados.",
+      "backup": ".sofia/session.json.bak-housekeeping-debts-2026-05-20"
+    },
+    {
+      "event": "retention-policy-formalized",
+      "timestamp": "2026-05-20T06:15:16.797Z",
+      "actor": "HITL-PO (Angel de la Cuadra)",
+      "decision": "criterio C - retencion temporal",
+      "rationale": "CMMI L3: auditabilidad reciente vs histórico depurado. DEBT-049/050/051 (S26 reciente) permanecen visibles en open_debts[] con evidence. DEBT-047/048 (S25, >=1 sprint cerrado) ya purgadas en housekeeping previo."
     }
-  ]
+  ],
+  "closed_debts": [
+    {
+      "id": "DEBT-047",
+      "area": "Backend",
+      "priority": "Media",
+      "desc": "findTopMerchants consulta solo bill_payments — excluye transacciones generales",
+      "sprint_target": "S25",
+      "origin": "coherence-audit-dashboard-S24",
+      "registered_at": "2026-04-16T06:20:00.895915Z",
+      "status": "CLOSED",
+      "jira": "SCRUM-153",
+      "purged_from_open_at": "2026-05-20T06:13:25.433Z",
+      "purged_by": "claude-housekeeping-2026-05-20"
+    },
+    {
+      "id": "DEBT-048",
+      "area": "Backend",
+      "priority": "Media",
+      "desc": "Generar OpenAPI 3.1 completo via springdoc",
+      "sprint_target": "S26",
+      "origin": "GR-SMOKE-001 enablement",
+      "registered_at": "2026-04-21T19:17:56.424Z",
+      "closed_at": "2026-04-27T15:14:00.000Z",
+      "closed_in_sprint": 26,
+      "closed_in_step": "4-phase-E",
+      "closure_evidence": "pom.xml +springdoc-openapi-starter-webmvc-ui:2.3.0 (ADR-042) + application.yml springdoc:* + application-prod.yml endurece api-docs+swagger-ui=false",
+      "status": "CLOSED",
+      "jira": "SCRUM-171",
+      "purged_from_open_at": "2026-05-20T06:13:25.433Z",
+      "purged_by": "claude-housekeeping-2026-05-20"
+    }
+  ],
+  "_open_debts_retention_policy": "Criterio temporal (decidido 2026-05-20, HITL-PO): las deudas CLOSED del sprint actual o anterior se mantienen en open_debts[] con evidence visible para auditoria proxima (CMMI L3). Las CLOSED de sprints antiguos (>=2 sprints atras) se purgan a closed_debts[]. INVALIDATED se mantiene en open_debts[] hasta el sprint siguiente para trazabilidad. Migracion entre arrays se hace en housekeeping al inicio de cada sprint."
 }
