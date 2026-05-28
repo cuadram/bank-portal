@@ -107,7 +107,7 @@ Reporte `QA-FEAT-023-sprint25.md` G-6 S25 declaraba `TC-IT-005 PASS — 5 ITs @S
 4. Deudas residuales identificadas, priorizadas y diferidas con sprint target y razón documentada (no son riesgo de recurrencia de la NC; son refactors estructurales).
 5. Trazabilidad CMMI L3 íntegra; impacto producto NULO mantenido.
 
-**Pendiente F6:** comunicación al cliente Banco Meridian (decisión D3 de la apertura: notificación proactiva en línea con transparencia L3).
+**F6 COMPLETADA 2026-05-28:** comunicación al cliente Banco Meridian enviada por HITL-PO a `daniel@nemtec.es` con variante A (Transparencia proactiva) + anexo `07-client-communication.md`. Decisión D3 de la apertura cumplida: notificación proactiva en línea con transparencia L3.
 
 ## 10. Firmas
 
@@ -115,6 +115,6 @@ Reporte `QA-FEAT-023-sprint25.md` G-6 S25 declaraba `TC-IT-005 PASS — 5 ITs @S
 |---|---|---|---|
 | HITL-PO | Angel de la Cuadra | (decisión registrada en session.json `cmmi_nc[0].closed_by`) | 2026-05-28 |
 | QA Lead | (mismo PO en estructura HITL única SOFIA BankPortal) | — | 2026-05-28 |
-| Cliente Banco Meridian | (pendiente F6) | — | F6 |
+| Cliente Banco Meridian (notificado) | daniel@nemtec.es | email enviado por HITL-PO con variante A + anexo `07-client-communication.md` | 2026-05-28 |
 
 *NC-CMMI-001 Fase 5 · cierre formal · SOFIA · BankPortal · Banco Meridian*

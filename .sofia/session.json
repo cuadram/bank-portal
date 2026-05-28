@@ -1,7 +1,7 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "audit-closed",
+  "status": "audit-completed",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 27,
@@ -1169,9 +1169,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "NC-CMMI-001 Fase 6: HITL-PO elige variante (A/B/C) de 08-client-comm-variants.md, envia email offline a Banco Meridian con anexo 07-client-communication.md. Tras envio: actualizar tabla 'Estado de envio' en 08-client-comm-variants.md + firma en 06-nc-closure.md seccion 10, commit de cierre F6 marcando phase_6_status=SENT y status global=audit-completed. Tras cierre F6: merge hotfix/qa-audit-s18-s26 -> develop, luego Step 1 Scrum Master Sprint 27 (issues Jira para DEBT-063/064/065 + 21 BUG-PO diferidos + nuevas US). Pendiente paralelo: promocion LA-026-09/10/11 a SOFIA-CORE cuando ese repo este limpio.",
+  "resume_next": "NC-CMMI-001 CERRADA end-to-end (6/6 fases). Siguiente: (1) push de la rama hotfix/qa-audit-s18-s26 (7 commits, sin push), (2) merge a develop, (3) Step 1 Scrum Master para Sprint 27 (issues Jira para DEBT-063/064/065 + 21 BUG-PO diferidos + nuevas US), (4) sesion dedicada promocion LA-026-09/10/11 a SOFIA-CORE cuando ese repo este limpio (sofia-contribute.py --accept).",
   "sprint_closed": true,
-  "updated_at": "2026-05-28T21:40:00.000Z",
+  "updated_at": "2026-05-28T21:45:00.000Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -4149,7 +4149,9 @@
           "phase_3_partA_failsafe_config": "4d8fc59",
           "phase_3_partB_it_matrix_triage": "d38cbe2",
           "phase_4_GR_QA_002_SKILL_qa_tester": "99779c4",
-          "phase_5a_LAs_NC_closure": "PENDING_THIS_COMMIT"
+          "phase_5a_LAs_NC_closure": "7440544",
+          "phase_6_client_draft": "f0d5a40",
+          "phase_6_client_sent": "PENDING_THIS_COMMIT"
         },
         "metrics": {
           "it_classes_total": 22,
@@ -4195,7 +4197,16 @@
           "GR-QA-002": ".sofia/GUARDRAILS.md (BLOQUEANTE G-6)",
           "SKILL qa-tester edits": ".sofia/skills/qa-tester/SKILL.md (Paso 2b + Exit Criteria + Plantilla output)"
         },
-        "promotion_to_sofia_core": "DEFERRED to dedicated session when SOFIA-CORE working tree is clean (currently feature/sprint-arq-S14 in-flight). LA-026-09/10/11 registered as sofia_core_candidate=true."
+        "promotion_to_sofia_core": "DEFERRED to dedicated session when SOFIA-CORE working tree is clean (currently feature/sprint-arq-S14 in-flight). LA-026-09/10/11 registered as sofia_core_candidate=true.",
+        "client_notification": {
+          "channel": "email",
+          "recipient": "daniel@nemtec.es",
+          "variant": "A - Transparencia proactiva",
+          "attachment": "docs/audit/QA-AUDIT-S18-S26/07-client-communication.md",
+          "sent_at": "2026-05-28T21:45:00.000Z",
+          "sent_by": "HITL-PO (Angel de la Cuadra)",
+          "rationale": "Decision D3 de la apertura NC cumplida (notificacion proactiva en linea con transparencia CMMI L3)"
+        }
       }
     }
   ],
@@ -4210,10 +4221,11 @@
       2,
       3,
       4,
-      5
+      5,
+      6
     ],
-    "current_phase": 6,
-    "current_phase_name": "Fase 6 - comunicacion cliente Banco Meridian (draft + firma HITL-PO)",
+    "current_phase": null,
+    "current_phase_name": "ALL PHASES COMPLETED - NC-CMMI-001 CLOSED end-to-end",
     "phase_1_completed_at": "2026-05-20T07:46:33.623Z",
     "phase_2_completed_at": "2026-05-28T09:15:27.000Z",
     "phase_commits": {
@@ -4227,8 +4239,16 @@
     "phase_3_partB_commit": "d38cbe2",
     "phase_5_completed_at": "2026-05-28T21:32:00.000Z",
     "phase_5_note": "3 LAs registradas (LA-026-09/10/11) con sofia_core_candidate=true. NC-CMMI-001 CLOSED formalmente. DEBT-055 CLOSED. Promocion SOFIA-CORE DEFERIDA a sesion dedicada (SOFIA-CORE en feature/sprint-arq-S14 in-flight, working tree no limpio).",
-    "phase_6_status": "DRAFT_READY",
+    "phase_6_status": "SENT",
     "phase_6_draft_ready_at": "2026-05-28T21:40:00.000Z",
-    "phase_6_note": "07-client-communication.md (anexo tecnico, 9.8KB, despersonalizado) + 08-client-comm-variants.md (3 variantes carta ejecutiva: A Transparencia proactiva [recomendada], B Resultados y garantias, C Compromiso CMMI L3). Pendiente: HITL-PO elige variante, envia email offline, registra timestamp y destinatarios en 08-client-comm-variants.md + firma en 06-nc-closure.md seccion 10, commit de cierre F6."
+    "phase_6_note": "07-client-communication.md (anexo tecnico, 9.8KB, despersonalizado) + 08-client-comm-variants.md (3 variantes carta ejecutiva: A Transparencia proactiva [recomendada], B Resultados y garantias, C Compromiso CMMI L3). Pendiente: HITL-PO elige variante, envia email offline, registra timestamp y destinatarios en 08-client-comm-variants.md + firma en 06-nc-closure.md seccion 10, commit de cierre F6.",
+    "phase_6_variant_chosen": "A - Transparencia proactiva",
+    "phase_6_variant_chosen_at": "2026-05-28T21:43:00.000Z",
+    "phase_6_variant_chosen_by": "HITL-PO (Angel de la Cuadra)",
+    "phase_6_sent_at": "2026-05-28T21:45:00.000Z",
+    "phase_6_sent_by": "HITL-PO (Angel de la Cuadra)",
+    "phase_6_recipient": "daniel@nemtec.es",
+    "phase_6_variant_sent": "A - Transparencia proactiva",
+    "phase_6_attachment": "docs/audit/QA-AUDIT-S18-S26/07-client-communication.md"
   }
 }

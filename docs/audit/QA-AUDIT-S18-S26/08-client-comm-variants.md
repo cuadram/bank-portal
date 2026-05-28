@@ -163,7 +163,7 @@ Adjunto común a las tres: `07-client-communication.md` (informe técnico, 9.8 K
 
 | Variante | Elegida | Enviada | Timestamp | Destinatarios |
 |---|---|---|---|---|
-| A — Transparencia proactiva | ☐ | ☐ | — | — |
+| A — Transparencia proactiva | ☑ (2026-05-28 HITL-PO) | ☑ (2026-05-28T21:45:00Z HITL-PO) | 2026-05-28T21:45:00Z | daniel@nemtec.es |
 | B — Resultados y garantías | ☐ | ☐ | — | — |
 | C — Compromiso CMMI L3 | ☐ | ☐ | — | — |
 
