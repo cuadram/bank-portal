@@ -132,6 +132,76 @@ grep -oh "public [^ ]* get\w*()" apps/backend-2fa/src/main/java/com/experis/sofi
 
 ---
 
+## GR-QA-001 — Reservado (placeholder NC-CMMI-001)
+
+Numeración reservada por NC-CMMI-001 (auditoría QA S18-S26, 2026-05-20). Sin contenido funcional. No actuar sobre este GR; será asignado en una acción correctiva posterior si emerge un guardrail de QA previo al G-6 distinto del cubierto por GR-QA-002.
+
+---
+
+## GR-QA-002 — Evidencia ejecutable para claims PASS (BLOQUEANTE · QA Tester · G-6)
+
+**Origen:** NC-CMMI-001 Fase 4 (acción preventiva). Cierra DEBT-056.
+
+**Qué exige:** todo `*Test` y `*IT` declarado **PASS** en el QA Report debe ir acompañado de evidencia ejecutable verificable por terceros. Sin evidencia, el claim se marca **BLOCKED**, nunca PASS, y G-6 queda BLOQUEADO.
+
+**Evidencia mínima por clase declarada PASS:**
+
+```
+[ ] Ruta del XML: target/{surefire|failsafe}-reports/TEST-{FQCN}.xml (presente en disco al cierre del run)
+[ ] commit SHA en HEAD al ejecutar (git rev-parse HEAD)
+[ ] timestamp ISO-8601 del cierre del run
+[ ] conteo del XML: tests / failures / errors / skipped
+[ ] perfil Maven activo (ej. `-Pintegration`) o `default` si surefire
+```
+
+**Comando canónico (backend):**
+
+```bash
+# Unit tests (surefire)
+mvn test
+# Integration tests (failsafe, perfil integration -> incluye **/*IT.java)
+mvn verify -Pintegration
+```
+
+**Checklist pre-G-6 (QA Tester, BLOQUEANTE):**
+
+```bash
+# 1. HEAD limpio + commit SHA capturado
+git status --porcelain | grep -q . && echo "BLOQUEADO: working tree sucio" && exit 1
+git rev-parse HEAD > .sofia/tmp/qa-evidence-sha.txt
+
+# 2. Ejecutar surefire + failsafe (perfil integration explícito)
+python3 .sofia/tmp/run-mvn.py test
+python3 .sofia/tmp/run-mvn.py verify -Pintegration
+
+# 3. Cada claim PASS en el QA Report referencia un XML existente
+python3 -c "
+import re,glob,sys
+report=open('docs/qa/QA-FEAT-XXX-sprintYY.md').read()
+claims=re.findall(r'([A-Za-z][A-Za-z0-9_]+(?:Test|IT))\s*[:|]\s*PASS', report)
+xmls={p.rsplit('/',1)[-1].replace('TEST-','').replace('.xml','').split('.')[-1]
+      for p in glob.glob('apps/backend-2fa/target/*-reports/TEST-*.xml')}
+missing=[c for c in claims if c not in xmls]
+if missing: print('BLOQUEADO claims sin XML:',missing); sys.exit(1)
+print('OK',len(claims),'claims con evidencia')
+"
+```
+
+**Cómo detecta el reviewer / Workflow Manager:**
+
+```bash
+# Buscar claims PASS sin XML adjunto en el QA Report
+grep -E "[A-Za-z]+(Test|IT)\s*[:|]\s*PASS" docs/qa/QA-FEAT-*.md > /tmp/claims.txt
+# Para cada claim, comprobar XML en target/*-reports/. Falta uno -> BLOQUEANTE.
+```
+
+**Antipatrón histórico cubierto (DEBT-055 + NC-CMMI-001):**
+Reporte G-6 S25 declaraba "TC-IT-005 PASS — 5 ITs @SpringBootTest" para `PfmControllerIT`. Reproducción en HEAD ese sprint: 0 PASS / 1 ERROR estructural (failsafe-plugin ausente, 22/22 `*IT.java` huérfanos del lifecycle). Con failsafe configurado (Fase 3 Parte A) + perfil `integration-compose` operativo: 5/5 PASS reproducible (Fase 3 Parte B, commit `d38cbe2`). El claim era correcto en intención pero **no ejecutable** entonces. GR-QA-002 evita que esta clase de claim pase G-6 sin evidencia.
+
+**Status:** registrado en BankPortal. Candidato a promoción SOFIA-CORE en Fase 5 (LA-026-09).
+
+---
+
 ## Ejecución automática — script unificado
 
 ```bash

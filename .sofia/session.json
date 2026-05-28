@@ -1169,9 +1169,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "NC-CMMI-001 Fase 4: GR-QA-002 + actualizar SKILL qa-tester (exigir evidencia ejecutable surefire/failsafe-reports + commit SHA en claims PASS) + checklist pre-G-6 con 'mvn verify -Pintegration'. Doc 05-corrective-actions.md. Luego Fase 5 (LA-026-09/10/11 + cierre formal NC) y Fase 6 (comunicacion cliente Banco Meridian, firma HITL-PO). Pendientes paralelos: DEBT-064 (migrar 4 IT a integration-compose S27), DEBT-065 (renombrar 5 WebMvcTest a *Test S27), DEBT-063 (TIN/TAE, gate legal offline).",
+  "resume_next": "NC-CMMI-001 Fase 5: promover LA-026-09 (GR-QA-002), LA-026-10 (matriz IT real como evidencia G-6), LA-026-11 (CI profile alignment) a SOFIA-CORE via sofia-contribute.py. Cerrar formalmente NC-CMMI-001 (cmmi_nc[0].status=CLOSED) y confirmar cierre DEBT-055. Luego Fase 6 (comunicacion cliente Banco Meridian, firma HITL-PO). Pendientes paralelos: DEBT-064, DEBT-065, DEBT-063 (TIN/TAE gate legal offline).",
   "sprint_closed": true,
-  "updated_at": "2026-05-28T18:45:00.000Z",
+  "updated_at": "2026-05-28T20:55:00.000Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1340,10 +1340,12 @@
       "sprint_target_phase": "build",
       "origin": "F.4 IT execution 2026-04-28",
       "registered_at": "2026-04-28T13:52:54.131Z",
-      "status": "OPEN",
+      "status": "CLOSED",
       "evidence": "mvn test sin -Dtest sobre HEAD: 0 ITs ejecutados, BUILD SUCCESS. mvn -Pintegration test idem 0 ITs. mvn test -Dtest=SavingsControllerIT: 15/15 PASS forzado.",
       "blocking": "Bloquea verificacion automatica G-4b si confia en mvn test. Solucion temporal Fase H: lista explicita.",
-      "jira": null
+      "jira": null,
+      "closed_at": "2026-05-28T20:55:00.000Z",
+      "closure_reason": "Cubierto por GR-QA-002 (BLOQUEANTE G-6) + AP-2 SKILL qa-tester ediciones Paso 2b/Exit Criteria/Plantilla output. Failsafe-plugin configurado en F3A (commit 4d8fc59) confirma que el sufijo *IT.java se ejecuta; GR-QA-002 impide claims PASS sin XML de evidencia."
     },
     {
       "id": "DEBT-059",
@@ -4038,7 +4040,7 @@
         "DEBT-065"
       ],
       "corrective_action": "Hotfix Fase 1 (DEBT-061) + Fix estructural Fase 3 (DEBT-062) + Audit retrospectiva Fase 2.",
-      "preventive_action": "GR-QA-002 + actualizacion SKILL qa-tester + checklist pre-G-6 con mvn -Pit verify.",
+      "preventive_action": "GR-QA-002 (.sofia/GUARDRAILS.md, BLOQUEANTE G-6) + 3 ediciones SKILL qa-tester (Paso 2b + Exit Criteria New Feature + Plantilla output evidencia ejecutable IT). Documentado en docs/audit/QA-AUDIT-S18-S26/05-corrective-actions.md.",
       "ecd": "2026-05-27",
       "status": "OPEN",
       "audit_folder": "docs/audit/QA-AUDIT-S18-S26/",
@@ -4072,10 +4074,11 @@
       0,
       1,
       2,
-      3
+      3,
+      4
     ],
-    "current_phase": 4,
-    "current_phase_name": "Fase 4 - politica Step 6 (GR-QA-002 + SKILL qa-tester + checklist pre-G-6 mvn verify -Pintegration)",
+    "current_phase": 5,
+    "current_phase_name": "Fase 5 - LAs (LA-026-09/10/11) + cierre formal NC-CMMI-001",
     "phase_1_completed_at": "2026-05-20T07:46:33.623Z",
     "phase_2_completed_at": "2026-05-28T09:15:27.000Z",
     "phase_commits": {
@@ -4083,6 +4086,9 @@
       "phase_3_partA": "4d8fc59"
     },
     "phase_3_completed_at": "2026-05-28T18:45:00.000Z",
-    "phase_3_partB_note": "22 IT ejecutados via failsafe. 13 PASS (44 @Test) / 9 @Disabled (DEBT-064 x4 Testcontainers, DEBT-065 x5 WebMvcTest). Build verde 0 fail/0 err. PfmControllerIT 5/5 -> DEBT-055 cerrable."
+    "phase_3_partB_note": "22 IT ejecutados via failsafe. 13 PASS (44 @Test) / 9 @Disabled (DEBT-064 x4 Testcontainers, DEBT-065 x5 WebMvcTest). Build verde 0 fail/0 err. PfmControllerIT 5/5 -> DEBT-055 cerrable.",
+    "phase_4_completed_at": "2026-05-28T20:55:00.000Z",
+    "phase_4_note": "GR-QA-002 en GUARDRAILS.md (BLOQUEANTE G-6). SKILL qa-tester: 3 ediciones (Paso 2b + Exit Criteria + Plantilla output). 05-corrective-actions.md creado. DEBT-056 cubierta por GR-QA-002 -> CLOSED.",
+    "phase_3_partB_commit": "d38cbe2"
   }
 }

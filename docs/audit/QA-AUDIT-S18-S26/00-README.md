@@ -41,8 +41,8 @@ Durante housekeeping post-S26 (commit `5f6803f`) se reproduce empiricamente el p
 | 0 | Setup (branch + folder + NC + DEBTs) | Este README + `session.json` | DONE 2026-05-20 |
 | 1 | Hotfix tests rotos main (DEBT-061) | `01-hotfix-main-tests.md` + commit | DONE 2026-05-20 (commit 184e185) |
 | 2 | Audit retrospectiva S18-S26 | `02-retrospective-matrix.md` + `03-falsified-evidence-list.md` | DONE 2026-05-28 (alcance 11->22) |
-| 3 | Fix estructural Maven failsafe (DEBT-062) | `04-build-fix-failsafe.md` + commit | PARTIAL 2026-05-28 (Parte A: config aplicada; Parte B: matriz IT diferida) |
-| 4 | Politica Step 6 (GR-QA-002 + SKILL update) | `05-corrective-actions.md` + GR proposal | PENDING |
+| 3 | Fix estructural Maven failsafe (DEBT-062) | `04-build-fix-failsafe.md` + commits | DONE 2026-05-28 (Parte A: 4d8fc59 · Parte B: d38cbe2 · 13 PASS / 9 @Disabled / 0 fail / 0 err) |
+| 4 | Politica Step 6 (GR-QA-002 + SKILL update) | `05-corrective-actions.md` + GR-QA-002 en GUARDRAILS.md + SKILL qa-tester | DONE 2026-05-28 |
 | 5 | LAs + cierre formal NC | LA-026-09/10/11 + NC closure record | PENDING |
 | 6 | Comunicacion cliente Banco Meridian | Email/Confluence draft (firma HITL-PO requerida) | PENDING |
 
@@ -53,7 +53,10 @@ Durante housekeeping post-S26 (commit `5f6803f`) se reproduce empiricamente el p
 | DEBT-055 | Critica (was Alta) | Reporte QA con evidencia falsificada (S25 PfmControllerIT) | S27-pre |
 | DEBT-056 | Media | maven-surefire 3.2.5 no matchea IT.java (teorico) | S27 |
 | DEBT-061 | Critica | Tests rotos main no documentados (2F+5E) | S27-pre |
-| DEBT-062 | Critica | 11 ITs huerfanos del lifecycle Maven default (empirico) | S27-pre |
+| DEBT-062 | Critica | 22 ITs huerfanos del lifecycle Maven default (empirico; alcance corregido en F2: 22/100%) | S27-pre |
+| DEBT-063 | Alta | Ambiguedad TIN/TAE en AmortizationCalculator (descubierta en F1) | S27-legal-review |
+| DEBT-064 | Alta | 4 IT Testcontainers inejecutables (TC 1.20.1 vs daemon 29.4.1) | S27 |
+| DEBT-065 | Media | 5 @WebMvcTest mal clasificados como *IT | S27 |
 
 ## ECD
 
