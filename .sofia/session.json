@@ -1169,9 +1169,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Branch hotfix/qa-audit-s18-s26. Fase 1 hotfix COMPLETADA (mvn test 642/0F/0E/13S BUILD SUCCESS). DEBT-061 CLOSED. DEBT-063 NUEVA Alta abierta (ambiguedad TIN/TAE simulador prestamos - requiere decision PO+legal). Siguiente: Fase 2 audit retrospectiva S18-S26 (matrix sprint x IT).",
+  "resume_next": "Branch hotfix/qa-audit-s18-s26. Fase 2 audit retrospectiva COMPLETADA (02-retrospective-matrix.md + 03-falsified-evidence-list.md). Alcance corregido 11->22 ITs huerfanos. Siguiente: Fase 3 fix estructural Maven failsafe-plugin (DEBT-062). DEBT-063 encolada S27 (Opcion B, legal offline pendiente).",
   "sprint_closed": true,
-  "updated_at": "2026-05-20T07:46:33.623Z",
+  "updated_at": "2026-05-28T09:15:27.000Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1398,7 +1398,7 @@
       "id": "DEBT-062",
       "area": "Build / Maven · QA governance",
       "priority": "Critica",
-      "desc": "11 IT.java huerfanos del lifecycle Maven default verificado empiricamente 2026-05-20: find apps/backend-2fa/src/test -name \"*IT.java\" devuelve 22 archivos, mvn test ejecuta solo 11. Los 11 huerfanos son: BizumAdapterIT, BizumExpireIT, BizumFlywayIT (en target pero no consistente), BizumPrecisionIT, SpringContextIT, AccountRepositoryAdapterIT, LoginControllerIT, DashboardJpaAdapterIT, SseNotificationControllerIT, LoginContextControllerIT, AccountUnlockControllerIT, SecurityConfigHistoryControllerIT, StatementControllerIT. Causa raiz: maven-surefire-plugin 3.2.5 include patterns (Test, E2ETest, IntegrationTest) no matchean *IT.java. DEBT-056 lo describio teoricamente; este registro lo cuantifica.",
+      "desc": "11 IT.java huerfanos del lifecycle Maven default verificado empiricamente 2026-05-20: find apps/backend-2fa/src/test -name \"*IT.java\" devuelve 22 archivos, mvn test ejecuta solo 11. Los 11 huerfanos son: BizumAdapterIT, BizumExpireIT, BizumFlywayIT (en target pero no consistente), BizumPrecisionIT, SpringContextIT, AccountRepositoryAdapterIT, LoginControllerIT, DashboardJpaAdapterIT, SseNotificationControllerIT, LoginContextControllerIT, AccountUnlockControllerIT, SecurityConfigHistoryControllerIT, StatementControllerIT. Causa raiz: maven-surefire-plugin 3.2.5 include patterns (Test, E2ETest, IntegrationTest) no matchean *IT.java. DEBT-056 lo describio teoricamente; este registro lo cuantifica. [CORREGIDO Fase 2 2026-05-28: alcance real 22/22 ITs huerfanos (100%), no 11. Ningun perfil incluye *IT.java; falta failsafe-plugin.]",
       "fix": "Fase 3 hotfix: anadir maven-failsafe-plugin con include **/*IT.java + goal verify (no test). Perfil -Pit activa skipITs=false. Test G-4b futuros: mvn -Pit verify cubre los 22 ITs sin lista explicita.",
       "sprint_target": "S27-pre",
       "sprint_target_phase": "hotfix-Phase3",
@@ -1410,7 +1410,8 @@
       "related_debt": "DEBT-056",
       "audit_nc": "NC-CMMI-001",
       "sofia_core_candidate": true,
-      "jira": null
+      "jira": null,
+      "scope_corrected": "22/22 (era 11)"
     },
     {
       "id": "DEBT-063",
@@ -1418,7 +1419,7 @@
       "priority": "Alta",
       "desc": "AmortizationCalculator: ambiguedad TIN vs TAE en parametro taeAnual. Codigo implementa r = taeAnual/12/100 (interpretacion TIN nominal anual con composicion mensual). Para P=10000 plazo=12 taeAnual=6.50: codigo devuelve cuota=862.96, test esperaba 861.35 (interpretacion TAE compuesta efectiva). Riesgo regulatorio Directiva 2008/48/CE / Ley 16/2011: si el producto se vende como \"TAE 6.50%\" al cliente y la cuota real corresponde a TIN 6.50%, la TAE realmente cobrada es ~6.70% efectiva anual. Discrepancia ~1.85eur/mes en simulaciones (no en produccion: solo simulador).",
       "fix": "Decision PO + analisis legal cliente Banco Meridian. Dos opciones: (A) Renombrar parametro a tinAnual + actualizar bank.products.loan.tin en application.yml + comunicar a cliente que se vende TIN no TAE; (B) Refactorizar calculator a r = pow(1+TAE, 1/12) - 1 para producir cuota acorde a TAE compuesta + ajustar tests + revisar simulaciones historicas. Tests TC-LOAN-001 y TC-LOAN-004 deshabilitados @Disabled hasta decision.",
-      "sprint_target": "S27-legal-review",
+      "sprint_target": "S27",
       "origin": "audit-2026-05-20-Phase1-item4",
       "registered_at": "2026-05-20T07:42:13.984Z",
       "status": "OPEN",
@@ -1431,7 +1432,14 @@
       "cmmi_practice": "REQM SP1.3 (manage requirement changes)",
       "audit_nc": "NC-CMMI-001",
       "requires_legal_review": true,
-      "jira": null
+      "jira": null,
+      "resolution_decision": "Opcion B (refactor a TAE efectiva compuesta: r=(1+TAE/100)^(1/12)-1)",
+      "decision_by": "HITL-PO (Angel de la Cuadra)",
+      "decision_at": "2026-05-28T07:06:46.000Z",
+      "sprint_target_phase": "S27-legal-review",
+      "legal_gate": "PENDING (gestion offline PO + Banco Meridian; reporta cuando resuelto)",
+      "queued": true,
+      "pending_dr": "DR-S27-001"
     }
   ],
   "jira_sprint": {
@@ -3902,6 +3910,16 @@
         "mvn_test_after": "Tests run: 642, Failures: 0, Errors: 0, Skipped: 13 - BUILD SUCCESS",
         "no_regression_principle": "enforced - 0 production files touched"
       }
+    },
+    {
+      "at": "2026-05-28T07:06:46.000Z",
+      "event": "DEBT-063 decision registrada",
+      "detail": "Opcion B aprobada por PO. Gate legal offline. Encolada como tarea S27-legal-review. No bloquea auditoria NC-CMMI-001 Fase 2."
+    },
+    {
+      "at": "2026-05-28T09:15:27.000Z",
+      "event": "Fase 2 COMPLETADA",
+      "detail": "Audit retrospectiva S18-S26. 2 artefactos canonicos: 02-retrospective-matrix.md, 03-falsified-evidence-list.md. Hallazgo: 22/22 ITs huerfanos (100 metodos @Test, 0 ejecutados). 6 sprints con claims IT no respaldados; S25 unico FALSIFICADO con evidencia directa (DEBT-055). S20/S23 limpios. Alcance NC corregido 11->22. Siguiente: Fase 3 failsafe."
     }
   ],
   "closed_debts": [
@@ -3950,7 +3968,7 @@
       ],
       "finding": "Auditoria interna 2026-05-20 detecto reporte QA-FEAT-023-sprint25.md (G-6 S25) declara \"TC-IT-005 PASS — 5 ITs @SpringBootTest\" sin evidencia ejecutable. Reproduccion en HEAD: 1/5 tests, 0 PASS, 1 ERROR estructural. Adicional: 11 IT.java del proyecto son huerfanos del lifecycle Maven default (no ejecutados por mvn test) sin haberse documentado en ningun reporte QA S18-S26.",
       "root_cause": "(a) Step 6 QA Tester acepta declaraciones PASS sin evidence ejecutable (surefire-reports + commit SHA + timestamp). (b) maven-surefire-plugin 3.2.5 no matchea *IT.java por defecto y nadie configuro failsafe-plugin. (c) Cultura \"trust the report\" sin verificacion cruzada en gates G-6.",
-      "scope": "Sprints 18-26 (9 sprints). Alcance exacto pendiente de Fase 2 auditoria retrospectiva.",
+      "scope": "Sprints 18-26 (9 sprints). Alcance IT huerfanos CORREGIDO en Fase 2: 22/22 (100%), no 11/50%. Ningun perfil Maven incluye sufijo *IT.java.",
       "production_impact": "NULO. 0 defectos produccion 27 sprints consecutivos confirmado. El gap es de proceso, no de producto.",
       "related_debts": [
         "DEBT-055",
@@ -3973,6 +3991,15 @@
           "discovered_at": "2026-05-20T07:42:13.984Z",
           "note": "Ambiguedad regulatoria TIN/TAE en simulador prestamos. Requiere decision PO+legal."
         }
+      ],
+      "scope_corrections": [
+        {
+          "at": "2026-05-28T09:15:27.000Z",
+          "by": "HITL-PO (Angel de la Cuadra)",
+          "from": "11 IT huerfanos (50%)",
+          "to": "22 IT huerfanos (100%)",
+          "evidence": "pom.xml: includes default=**/*Test.java; perfil integration=+E2ETest+IntegrationTest; *IT.java en ningun include; sin failsafe-plugin."
+        }
       ]
     }
   ],
@@ -3983,10 +4010,12 @@
     "phases_total": 6,
     "phases_completed": [
       0,
-      1
+      1,
+      2
     ],
-    "current_phase": 2,
-    "current_phase_name": "Retrospective audit S18-S26",
-    "phase_1_completed_at": "2026-05-20T07:46:33.623Z"
+    "current_phase": 3,
+    "current_phase_name": "Fix estructural Maven failsafe (DEBT-062)",
+    "phase_1_completed_at": "2026-05-20T07:46:33.623Z",
+    "phase_2_completed_at": "2026-05-28T09:15:27.000Z"
   }
 }

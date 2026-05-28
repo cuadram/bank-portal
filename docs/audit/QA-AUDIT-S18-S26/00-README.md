@@ -40,7 +40,7 @@ Durante housekeeping post-S26 (commit `5f6803f`) se reproduce empiricamente el p
 |---|---|---|---|
 | 0 | Setup (branch + folder + NC + DEBTs) | Este README + `session.json` | DONE 2026-05-20 |
 | 1 | Hotfix tests rotos main (DEBT-061) | `01-hotfix-main-tests.md` + commit | PENDING |
-| 2 | Audit retrospectiva S18-S26 | `02-retrospective-matrix.md` + `03-falsified-evidence-list.md` | PENDING |
+| 2 | Audit retrospectiva S18-S26 | `02-retrospective-matrix.md` + `03-falsified-evidence-list.md` | DONE 2026-05-28 (alcance 11->22) |
 | 3 | Fix estructural Maven failsafe (DEBT-062) | `04-build-fix-failsafe.md` + commit | PENDING |
 | 4 | Politica Step 6 (GR-QA-002 + SKILL update) | `05-corrective-actions.md` + GR proposal | PENDING |
 | 5 | LAs + cierre formal NC | LA-026-09/10/11 + NC closure record | PENDING |
