@@ -3,6 +3,7 @@ package com.experis.sofia.bankportal.integration.auth;
 import com.experis.sofia.bankportal.integration.config.IntegrationTestBase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.http.MediaType;
 
 import static org.hamcrest.Matchers.*;
@@ -15,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * DEBT-030 — detecta errores de configuración de SecurityConfig en tiempo de build.
  */
 @DisplayName("LoginController — Integration Tests")
+@Disabled("DEBT-064 (NC-CMMI-001 F3B): Testcontainers 1.20.1 incompatible con daemon Docker Desktop 29.4.1 (Status 400). Migrar a perfil integration-compose en S27.")
 class LoginControllerIT extends IntegrationTestBase {
 
     @Test

@@ -1,7 +1,8 @@
 # Fase 3 — Fix estructural Maven failsafe (DEBT-062)
 
 **NC-CMMI-001** · Fase 3 · Branch `hotfix/qa-audit-s18-s26`
-**Parte A (este commit):** corrección estructural de configuración. **Ejecución de matriz IT diferida a sesión dedicada (handoff).**
+**Parte A (commit `4d8fc59`):** corrección estructural de configuración.
+**Parte B (este commit):** ejecución de matriz IT real + triage S2 + remediación.
 
 ## Diagnóstico confirmado (empírico)
 
@@ -32,12 +33,59 @@ Ningún pipeline CI ejecutaba los 22 IT. El `post{}` del Jenkinsfile (línea 204
 
 Decisión nomenclatura: consolidar en `integration` (descartada opción `it`/`integration-tests` por fragmentación nominal — docs QA históricas FEAT-001/008 ya usan `-Pintegration`).
 
-## Pendiente (Parte B — sesión dedicada)
+## Parte B — Ejecución real y matriz (2026-05-28)
 
-- Ejecutar `mvn verify -Pintegration` con infra (Postgres vía Testcontainers; Redis `localhost:6379` sin password requerido por `IntegrationTestBase` — fricción con compose canónico que usa `--requirepass` en 6380).
-- Capturar matriz real PASS/FAIL/ERROR de los 22 IT (incl. `PfmControllerIT` / DEBT-055).
-- Triage S2: fix <30 líneas vs `@Disabled`+DEBT por cada IT que falle.
-- Validar 3 clases base (`IntegrationTestBase`, `SavingsIntegrationTestBase`, `BizumIntegrationTestBase`).
+### Infraestructura levantada
+Los 22 IT NO son homogéneos. Tres familias con infra distinta:
+
+| Familia | Nº | Profile | Postgres | Redis |
+|---|---|---|---|---|
+| `@WebMvcTest` (slice) | 5 | — | no | no |
+| `IntegrationTestBase` | 4 | `test` | Testcontainers | `localhost:6379` sin pw |
+| `integration-compose` (Savings/Bizum/Pfm) | 13 | `integration-compose` | compose `5433` | compose `6380` con pw |
+
+Levantado: compose canónico (`postgres` 5433 + `redis` 6380 con `--requirepass`) + contenedor Redis efímero `6379` sin password para `IntegrationTestBase`. JAVA_HOME 21 vía `.sofia/tmp/run-mvn.py`.
+
+### Matriz real PASS/FAIL/ERROR — 22 IT (failsafe ejecuta el 100%)
+
+| IT | Familia | @Test | Resultado |
+|---|---|---|---|
+| AutoContributionSchedulerIT | compose | 1 | ✅ PASS |
+| BizumAdapterIT | compose | 2 | ✅ PASS |
+| BizumExpireIT | compose | 2 | ✅ PASS |
+| BizumFlywayIT | compose | 2 | ✅ PASS |
+| BizumPrecisionIT | compose | 2 | ✅ PASS |
+| ConfigureAutoRuleIdempotencyIT | compose | 1 | ✅ PASS |
+| ContributeManualConcurrencyIT | compose | 1 | ✅ PASS |
+| JpaAccountReserveAdapterIT | compose | 5 | ✅ PASS |
+| MilestoneEmissionIT | compose | 1 | ✅ PASS |
+| **PfmControllerIT** | compose | 5 | ✅ **PASS (DEBT-055 reproducido verde)** |
+| SavingsControllerIT | compose | 15 | ✅ PASS |
+| SavingsFlywayIT | compose | 5 | ✅ PASS |
+| ShedLockEnabledIT | compose | 2 | ✅ PASS |
+| SpringContextIT | TestcontainersBase | 1 | ⛔ @Disabled → DEBT-064 |
+| DashboardJpaAdapterIT | TestcontainersBase | 1 | ⛔ @Disabled → DEBT-064 |
+| AccountRepositoryAdapterIT | TestcontainersBase | 1 | ⛔ @Disabled → DEBT-064 |
+| LoginControllerIT | TestcontainersBase | 1 | ⛔ @Disabled → DEBT-064 |
+| AccountUnlockControllerIT | WebMvcTest | 1 | ⛔ @Disabled → DEBT-065 |
+| LoginContextControllerIT | WebMvcTest | 1 | ⛔ @Disabled → DEBT-065 |
+| SecurityConfigHistoryControllerIT | WebMvcTest | 1 | ⛔ @Disabled → DEBT-065 |
+| SseNotificationControllerIT | WebMvcTest | 1 | ⛔ @Disabled → DEBT-065 |
+| StatementControllerIT | WebMvcTest | 1 | ⛔ @Disabled → DEBT-065 |
+
+**Resultado post-remediación:** 13 clases PASS (44 @Test verdes) · 9 @Disabled · **0 fail / 0 error**. Build `mvn verify -Pintegration` VERDE.
+
+### DEBT-055 — cierre
+`PfmControllerIT` declarado en G-6 S25 "5 ITs PASS" sin evidencia ejecutable (reproducción S25: 0 PASS/1 ERROR). Con failsafe configurado + perfil `integration-compose` operativo: **5/5 PASS reproducible**. El claim S25 era correcto en intención pero no ejecutable entonces (failsafe ausente). DEBT-055 cerrable con esta evidencia.
+
+### Triage S2 — diagnóstico empírico de los 9 ERROR
+
+Causa raíz inicial común: `Unable to find a @SpringBootConfiguration` (resuelto por failsafe). Al ejecutar, afloran DOS causas estructurales distintas, **ninguna fix <30 líneas**:
+
+- **DEBT-064 (4 IT, Grupo Testcontainers):** las 3 estrategias de Testcontainers 1.20.1 fallan con `Status 400` contra el daemon Docker Desktop 29.4.1 (`Could not find a valid Docker environment`). No resoluble por env (`DOCKER_HOST`/socket override/Ryuk disabled probados). Es la misma razón por la que Savings/Bizum migraron a `integration-compose`. Remediación S27: migrar estos 4 a `integration-compose`.
+- **DEBT-065 (5 IT, Grupo WebMvcTest):** son slices HTTP puros mal nombrados `*IT`. Prueba empírica con `@ContextConfiguration(classes=BackendTwoFactorApplication.class)` carga la app completa en un slice sin JPA → `NoSuchBeanDefinitionException: entityManagerFactory` (cadena `kycAuthorizationFilter→kycVerificationRepository→entityManagerFactory`). Remediación S27: renombrar a `*Test` (vuelven a surefire como slices).
+
+Decisión HITL-PO: ambos a `@Disabled` + DEBT, corrección estructural diferida a S27 (proporcionalidad CMMI L3: no ampliar alcance de un hotfix de auditoría con migraciones/renames sobre clase guardrail GR-003).
 
 ## Reconciliaciones de configuración (este commit)
 

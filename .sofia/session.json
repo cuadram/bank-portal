@@ -1169,9 +1169,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "NC-CMMI-001 Fase 3 Parte B: levantar Redis localhost:6379 sin password + mvn verify -Pintegration -> capturar matriz 22 IT -> triage S2 (fix<30L vs @Disabled+DEBT) -> actualizar 04-build-fix-failsafe.md + commit. Luego Fase 4 (GR-QA-002, SKILL qa-tester, checklist pre-G-6 mvn -Pintegration verify).",
+  "resume_next": "NC-CMMI-001 Fase 4: GR-QA-002 + actualizar SKILL qa-tester (exigir evidencia ejecutable surefire/failsafe-reports + commit SHA en claims PASS) + checklist pre-G-6 con 'mvn verify -Pintegration'. Doc 05-corrective-actions.md. Luego Fase 5 (LA-026-09/10/11 + cierre formal NC) y Fase 6 (comunicacion cliente Banco Meridian, firma HITL-PO). Pendientes paralelos: DEBT-064 (migrar 4 IT a integration-compose S27), DEBT-065 (renombrar 5 WebMvcTest a *Test S27), DEBT-063 (TIN/TAE, gate legal offline).",
   "sprint_closed": true,
-  "updated_at": "2026-05-28T09:25:31.000Z",
+  "updated_at": "2026-05-28T18:45:00.000Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1440,6 +1440,58 @@
       "legal_gate": "PENDING (gestion offline PO + Banco Meridian; reporta cuando resuelto)",
       "queued": true,
       "pending_dr": "DR-S27-001"
+    },
+    {
+      "id": "DEBT-064",
+      "area": "Test infra / integration tests (Testcontainers)",
+      "priority": "Alta",
+      "desc": "4 IT que heredan IntegrationTestBase (SpringContextIT, DashboardJpaAdapterIT, AccountRepositoryAdapterIT, LoginControllerIT) inejecutables: Testcontainers 1.20.1 incompatible con daemon Docker Desktop 29.4.1. Las 3 estrategias (Environment, UnixSocket, DockerDesktop) fallan con BadRequestException Status 400 contra /info. No resoluble por env (DOCKER_HOST/TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE/RYUK_DISABLED probados).",
+      "fix": "Migrar los 4 IT de IntegrationTestBase (Testcontainers) al patron integration-compose (Postgres 5433 + Redis 6380 del compose canonico, como SavingsIntegrationTestBase/BizumIntegrationTestBase) + crear fixtures SQL. Alternativa: upgrade Testcontainers a version compatible con API daemon 29.x. Toca clase guardrail GR-003.",
+      "sprint_target": "S27",
+      "origin": "audit-NC-CMMI-001-Phase3B",
+      "registered_at": "2026-05-28T18:45:00.000Z",
+      "status": "OPEN",
+      "evidence": "mvn verify -Pintegration: 'Could not find a valid Docker environment'. docker CLI funciona (3 contenedores creados) pero API HTTP docker-java recibe Status 400. Fix @SpringBootConfiguration (classes=BackendTwoFactorApplication.class) validado como correcto pero insuficiente: revela el bloqueo Testcontainers subyacente.",
+      "blocking": "No bloquea cierre NC (impacto producto NULO, 0 defectos prod). Bloquea cobertura IT real de los 4 hasta migracion.",
+      "related_debts": [
+        "DEBT-062",
+        "DEBT-055"
+      ],
+      "cmmi_practice": "VER SP1.3 (implement verification environment)",
+      "audit_nc": "NC-CMMI-001",
+      "jira": null,
+      "disabled_tests": [
+        "SpringContextIT",
+        "DashboardJpaAdapterIT",
+        "AccountRepositoryAdapterIT",
+        "LoginControllerIT"
+      ]
+    },
+    {
+      "id": "DEBT-065",
+      "area": "Test taxonomy / WebMvcTest slices mal clasificados",
+      "priority": "Media",
+      "desc": "5 IT (@WebMvcTest) nombrados *IT siendo slices HTTP puros sin infra: AccountUnlockControllerIT, LoginContextControllerIT, SecurityConfigHistoryControllerIT, SseNotificationControllerIT, StatementControllerIT. Al ejecutarse por failsafe sin @SpringBootConfiguration fallan; forzar @ContextConfiguration(BackendTwoFactorApplication) carga app completa en slice sin JPA -> NoSuchBeanDefinitionException entityManagerFactory.",
+      "fix": "Renombrar de *IT a *Test para que vuelvan a surefire (lifecycle correcto de un @WebMvcTest slice). No requieren infra ni failsafe. Cambio de nomenclatura + verificar que surefire los recoge.",
+      "sprint_target": "S27",
+      "origin": "audit-NC-CMMI-001-Phase3B",
+      "registered_at": "2026-05-28T18:45:00.000Z",
+      "status": "OPEN",
+      "evidence": "Prueba empirica StatementControllerIT con @ContextConfiguration(classes=BackendTwoFactorApplication.class): 7/7 ERROR 'Failed to load ApplicationContext' por cadena kycAuthorizationFilter->kycVerificationRepository->entityManagerFactory ausente en slice web. Fix correcto = re-clasificar como *Test, no forzar contexto completo.",
+      "blocking": "No bloquea. Los 5 son slices de contrato HTTP; su logica esta cubierta. Solo afecta nomenclatura/lifecycle.",
+      "related_debts": [
+        "DEBT-062"
+      ],
+      "cmmi_practice": "VER SP1.1 (select work products for verification)",
+      "audit_nc": "NC-CMMI-001",
+      "jira": null,
+      "disabled_tests": [
+        "AccountUnlockControllerIT",
+        "LoginContextControllerIT",
+        "SecurityConfigHistoryControllerIT",
+        "SseNotificationControllerIT",
+        "StatementControllerIT"
+      ]
     }
   ],
   "jira_sprint": {
@@ -3981,7 +4033,9 @@
         "DEBT-063",
         "DEBT-061",
         "DEBT-062",
-        "DEBT-056"
+        "DEBT-056",
+        "DEBT-064",
+        "DEBT-065"
       ],
       "corrective_action": "Hotfix Fase 1 (DEBT-061) + Fix estructural Fase 3 (DEBT-062) + Audit retrospectiva Fase 2.",
       "preventive_action": "GR-QA-002 + actualizacion SKILL qa-tester + checklist pre-G-6 con mvn -Pit verify.",
@@ -4017,15 +4071,18 @@
     "phases_completed": [
       0,
       1,
-      2
+      2,
+      3
     ],
-    "current_phase": 3,
-    "current_phase_name": "Fix estructural Maven failsafe (DEBT-062) - Parte A aplicada, ejecucion matriz IT diferida",
+    "current_phase": 4,
+    "current_phase_name": "Fase 4 - politica Step 6 (GR-QA-002 + SKILL qa-tester + checklist pre-G-6 mvn verify -Pintegration)",
     "phase_1_completed_at": "2026-05-20T07:46:33.623Z",
     "phase_2_completed_at": "2026-05-28T09:15:27.000Z",
     "phase_commits": {
-      "phase_2": "296e372"
+      "phase_2": "296e372",
+      "phase_3_partA": "4d8fc59"
     },
-    "phase_3_partA_note": "pom.xml failsafe-plugin + Jenkinsfile -Pintegration fix aplicados. Ejecucion mvn verify -Pintegration (matriz 22 IT + triage S2) diferida a sesion dedicada (handoff)."
+    "phase_3_completed_at": "2026-05-28T18:45:00.000Z",
+    "phase_3_partB_note": "22 IT ejecutados via failsafe. 13 PASS (44 @Test) / 9 @Disabled (DEBT-064 x4 Testcontainers, DEBT-065 x5 WebMvcTest). Build verde 0 fail/0 err. PfmControllerIT 5/5 -> DEBT-055 cerrable."
   }
 }
