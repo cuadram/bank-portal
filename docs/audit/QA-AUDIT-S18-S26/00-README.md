@@ -44,7 +44,7 @@ Durante housekeeping post-S26 (commit `5f6803f`) se reproduce empiricamente el p
 | 3 | Fix estructural Maven failsafe (DEBT-062) | `04-build-fix-failsafe.md` + commits | DONE 2026-05-28 (Parte A: 4d8fc59 · Parte B: d38cbe2 · 13 PASS / 9 @Disabled / 0 fail / 0 err) |
 | 4 | Politica Step 6 (GR-QA-002 + SKILL update) | `05-corrective-actions.md` + GR-QA-002 en GUARDRAILS.md + SKILL qa-tester | DONE 2026-05-28 |
 | 5 | LAs + cierre formal NC | LA-026-09/10/11 en session.lessons_learned + 06-nc-closure.md + NC status=CLOSED + DEBT-055 CLOSED | DONE 2026-05-28 (promocion SOFIA-CORE diferida a sesion dedicada) |
-| 6 | Comunicacion cliente Banco Meridian | Email/Confluence draft (firma HITL-PO requerida) | PENDING |
+| 6 | Comunicacion cliente Banco Meridian | `07-client-communication.md` (anexo tecnico) + `08-client-comm-variants.md` (3 variantes carta ejecutiva) | DRAFT READY 2026-05-28 (envio + firma HITL-PO pendiente) |
 
 ## Deudas registradas
 

@@ -1169,9 +1169,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "NC-CMMI-001 Fase 6: redactar comunicacion al cliente Banco Meridian (draft email/Confluence). Firma HITL-PO requerida. Tras F6: merge hotfix/qa-audit-s18-s26 -> develop, luego Step 1 Scrum Master para planificar Sprint 27 (creara issues Jira para DEBT-063/064/065 + 21 BUG-PO diferidos + nuevas US). Pendiente paralelo dedicado: promocion LA-026-09/10/11 a SOFIA-CORE cuando ese repo este limpio (sofia-contribute.py --accept).",
+  "resume_next": "NC-CMMI-001 Fase 6: HITL-PO elige variante (A/B/C) de 08-client-comm-variants.md, envia email offline a Banco Meridian con anexo 07-client-communication.md. Tras envio: actualizar tabla 'Estado de envio' en 08-client-comm-variants.md + firma en 06-nc-closure.md seccion 10, commit de cierre F6 marcando phase_6_status=SENT y status global=audit-completed. Tras cierre F6: merge hotfix/qa-audit-s18-s26 -> develop, luego Step 1 Scrum Master Sprint 27 (issues Jira para DEBT-063/064/065 + 21 BUG-PO diferidos + nuevas US). Pendiente paralelo: promocion LA-026-09/10/11 a SOFIA-CORE cuando ese repo este limpio.",
   "sprint_closed": true,
-  "updated_at": "2026-05-28T21:32:00.000Z",
+  "updated_at": "2026-05-28T21:40:00.000Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -4226,6 +4226,9 @@
     "phase_4_note": "GR-QA-002 en GUARDRAILS.md (BLOQUEANTE G-6). SKILL qa-tester: 3 ediciones (Paso 2b + Exit Criteria + Plantilla output). 05-corrective-actions.md creado. DEBT-056 cubierta por GR-QA-002 -> CLOSED.",
     "phase_3_partB_commit": "d38cbe2",
     "phase_5_completed_at": "2026-05-28T21:32:00.000Z",
-    "phase_5_note": "3 LAs registradas (LA-026-09/10/11) con sofia_core_candidate=true. NC-CMMI-001 CLOSED formalmente. DEBT-055 CLOSED. Promocion SOFIA-CORE DEFERIDA a sesion dedicada (SOFIA-CORE en feature/sprint-arq-S14 in-flight, working tree no limpio)."
+    "phase_5_note": "3 LAs registradas (LA-026-09/10/11) con sofia_core_candidate=true. NC-CMMI-001 CLOSED formalmente. DEBT-055 CLOSED. Promocion SOFIA-CORE DEFERIDA a sesion dedicada (SOFIA-CORE en feature/sprint-arq-S14 in-flight, working tree no limpio).",
+    "phase_6_status": "DRAFT_READY",
+    "phase_6_draft_ready_at": "2026-05-28T21:40:00.000Z",
+    "phase_6_note": "07-client-communication.md (anexo tecnico, 9.8KB, despersonalizado) + 08-client-comm-variants.md (3 variantes carta ejecutiva: A Transparencia proactiva [recomendada], B Resultados y garantias, C Compromiso CMMI L3). Pendiente: HITL-PO elige variante, envia email offline, registra timestamp y destinatarios en 08-client-comm-variants.md + firma en 06-nc-closure.md seccion 10, commit de cierre F6."
   }
 }
