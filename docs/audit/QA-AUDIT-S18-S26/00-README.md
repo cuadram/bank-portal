@@ -39,9 +39,9 @@ Durante housekeeping post-S26 (commit `5f6803f`) se reproduce empiricamente el p
 | Fase | Objetivo | Salida canonica | Status |
 |---|---|---|---|
 | 0 | Setup (branch + folder + NC + DEBTs) | Este README + `session.json` | DONE 2026-05-20 |
-| 1 | Hotfix tests rotos main (DEBT-061) | `01-hotfix-main-tests.md` + commit | PENDING |
+| 1 | Hotfix tests rotos main (DEBT-061) | `01-hotfix-main-tests.md` + commit | DONE 2026-05-20 (commit 184e185) |
 | 2 | Audit retrospectiva S18-S26 | `02-retrospective-matrix.md` + `03-falsified-evidence-list.md` | DONE 2026-05-28 (alcance 11->22) |
-| 3 | Fix estructural Maven failsafe (DEBT-062) | `04-build-fix-failsafe.md` + commit | PENDING |
+| 3 | Fix estructural Maven failsafe (DEBT-062) | `04-build-fix-failsafe.md` + commit | PARTIAL 2026-05-28 (Parte A: config aplicada; Parte B: matriz IT diferida) |
 | 4 | Politica Step 6 (GR-QA-002 + SKILL update) | `05-corrective-actions.md` + GR proposal | PENDING |
 | 5 | LAs + cierre formal NC | LA-026-09/10/11 + NC closure record | PENDING |
 | 6 | Comunicacion cliente Banco Meridian | Email/Confluence draft (firma HITL-PO requerida) | PENDING |
@@ -63,5 +63,8 @@ NC-CMMI-001 closure: **2026-05-27** (1 semana, 6-8h trabajo concentrado).
 
 - Backup pre-audit: `.sofia/session.json.bak-phase0-audit-2026-05-20`
 - Commit Fase 0: (pendiente)
+- Commit Fase 1: `184e185`
+- Commit Fase 2: `296e372`
+- Commit Fase 3 Parte A: (este commit)
 - Branch: `hotfix/qa-audit-s18-s26`
 - Parent commit: `5f6803f` (chore: housekeeping open_debts post-S26)

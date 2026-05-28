@@ -196,7 +196,7 @@ pipeline {
       when { tag 'v*' }
       steps {
         dir("apps/${SERVICE_NAME}") {
-          sh 'mvn verify -Pintegration-tests -Dtest.env=stg -q'
+          sh 'mvn verify -Pintegration -Dtest.env=stg -q'
         }
       }
       post {

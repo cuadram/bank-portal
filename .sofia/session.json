@@ -1169,9 +1169,9 @@
     "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Branch hotfix/qa-audit-s18-s26. Fase 2 audit retrospectiva COMPLETADA (02-retrospective-matrix.md + 03-falsified-evidence-list.md). Alcance corregido 11->22 ITs huerfanos. Siguiente: Fase 3 fix estructural Maven failsafe-plugin (DEBT-062). DEBT-063 encolada S27 (Opcion B, legal offline pendiente).",
+  "resume_next": "NC-CMMI-001 Fase 3 Parte B: levantar Redis localhost:6379 sin password + mvn verify -Pintegration -> capturar matriz 22 IT -> triage S2 (fix<30L vs @Disabled+DEBT) -> actualizar 04-build-fix-failsafe.md + commit. Luego Fase 4 (GR-QA-002, SKILL qa-tester, checklist pre-G-6 mvn -Pintegration verify).",
   "sprint_closed": true,
-  "updated_at": "2026-05-28T09:15:27.000Z",
+  "updated_at": "2026-05-28T09:25:31.000Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1594,9 +1594,10 @@
         "LA-CORE-057"
       ],
       "bug_po": {
-        "total": 36,
+        "total": 35,
         "resolved": 15,
-        "deferred": 21
+        "deferred": 20,
+        "_reconciled": "2026-05-28: report off-by-one celda Mayor (14->13). Universo real 35, no 36. BUG-PO-036 inexistente."
       },
       "debt_closed": [
         "DEBT-047"
@@ -3920,6 +3921,11 @@
       "at": "2026-05-28T09:15:27.000Z",
       "event": "Fase 2 COMPLETADA",
       "detail": "Audit retrospectiva S18-S26. 2 artefactos canonicos: 02-retrospective-matrix.md, 03-falsified-evidence-list.md. Hallazgo: 22/22 ITs huerfanos (100 metodos @Test, 0 ejecutados). 6 sprints con claims IT no respaldados; S25 unico FALSIFICADO con evidencia directa (DEBT-055). S20/S23 limpios. Alcance NC corregido 11->22. Siguiente: Fase 3 failsafe."
+    },
+    {
+      "at": "2026-05-28T09:25:31.000Z",
+      "event": "Fase 2 commit",
+      "detail": "git commit 296e372 en hotfix/qa-audit-s18-s26 (5 files, sin push). GR-GIT-001 OK, working tree limpio."
     }
   ],
   "closed_debts": [
@@ -4014,8 +4020,12 @@
       2
     ],
     "current_phase": 3,
-    "current_phase_name": "Fix estructural Maven failsafe (DEBT-062)",
+    "current_phase_name": "Fix estructural Maven failsafe (DEBT-062) - Parte A aplicada, ejecucion matriz IT diferida",
     "phase_1_completed_at": "2026-05-20T07:46:33.623Z",
-    "phase_2_completed_at": "2026-05-28T09:15:27.000Z"
+    "phase_2_completed_at": "2026-05-28T09:15:27.000Z",
+    "phase_commits": {
+      "phase_2": "296e372"
+    },
+    "phase_3_partA_note": "pom.xml failsafe-plugin + Jenkinsfile -Pintegration fix aplicados. Ejecucion mvn verify -Pintegration (matriz 22 IT + triage S2) diferida a sesion dedicada (handoff)."
   }
 }
