@@ -1,7 +1,7 @@
 {
   "version": "2.0",
   "sofia_version": "2.7",
-  "status": "in_progress",
+  "status": "gate_pending",
   "project": "bank-portal",
   "client": "Banco Meridian",
   "current_sprint": 27,
@@ -11,10 +11,200 @@
   "pipeline_step_name": "scrum-master",
   "_completed_steps_note": "Array del sprint actual (current_sprint: 25). Se resetea al inicio de cada sprint. No acumula sprints anteriores — ver sprint_history para histórico.",
   "completed_steps": {
-    "sprint": 27,
-    "feature": "S27-saneamiento+deudas",
+    "sprint": 26,
+    "feature": "FEAT-024",
     "steps": [
-      "1"
+      "1",
+      "2",
+      "2b",
+      "2c",
+      "3",
+      "3b",
+      {
+        "step": 4,
+        "feature": "FEAT-024",
+        "sprint": 26,
+        "completed_at": "2026-05-08T06:05:40.228Z",
+        "status": "completed",
+        "gate_pending": "G-4b",
+        "phases": [
+          "A_domain_ddl",
+          "B_domain_services",
+          "C_application",
+          "D_infrastructure",
+          "E_api",
+          "F_tests",
+          "G_frontend",
+          "H_smoke"
+        ],
+        "summary": "Step 4 Developer · 8 fases (A..H) · 145 tests · ng build production OK · ShedLock cableado · OpenAPI sin JWT"
+      },
+      {
+        "step": 5,
+        "feature": "FEAT-024",
+        "sprint": 26,
+        "completed_at": "2026-05-08T07:06:04.988Z",
+        "status": "completed",
+        "gate_approved": "G-5",
+        "verdict": "APPROVED",
+        "blockers": 0,
+        "majors": 0,
+        "minors": 2,
+        "suggestions": 4,
+        "summary": "Step 5 Code Reviewer · veredicto APROBADO · diff Fase H 5 commits revisados · todos guardrails y checks automáticos PASS · LAs/GR/DEBT diferidos a Step 8b"
+      },
+      {
+        "step": "5b",
+        "feature": "FEAT-024",
+        "sprint": 26,
+        "completed_at": "2026-05-08T07:17:56.987Z",
+        "status": "completed",
+        "semaphore": "GREEN",
+        "blockers": 0,
+        "cve_critical": 0,
+        "cve_high": 0,
+        "cve_low_transitive": 2,
+        "sast_findings": 1,
+        "sast_blocker": 0,
+        "new_debts": [
+          "DEBT-059",
+          "DEBT-060"
+        ],
+        "summary": "Step 5b Security Agent · semáforo VERDE · 0 CVEs críticos · 0 secrets · 1 hallazgo SAST BAJO (SEC-F024-01 · DEBT-059) · 2 CVEs LOW transitivos preexistentes (DEBT-060) · APPROVED sin condiciones"
+      },
+      {
+        "step": "6",
+        "status": "COMPLETED",
+        "verdict": "APROBADO CON CONDICIONES",
+        "timestamp": "2026-05-08T09:36:58.508Z"
+      },
+      {
+        "step": 7,
+        "feature": "FEAT-024",
+        "sprint": 26,
+        "completed_at": "2026-05-08T13:07:59.954Z",
+        "status": "COMPLETED",
+        "verdict": "APPROVED",
+        "scope": "DevOps + alcance ampliado (B.4 + Hallazgo 1 + OBS-008/009)",
+        "decision_records": [
+          "DR-S26-007",
+          "DR-S26-008"
+        ],
+        "new_debts": [
+          "DEBT-Q-073",
+          "DEBT-FE-074",
+          "DEBT-FE-075"
+        ],
+        "la_candidates": [
+          "GR-SHELL-001 (aplicada)",
+          "GR-SHELL-002",
+          "GR-FE-002"
+        ],
+        "evidence": [
+          "docs/quality/evidence/sprint-26/devops-step7-tests-21clases.log",
+          "docs/quality/evidence/sprint-26/qa-retest-step7-fixes.log",
+          "docs/quality/checklists/checklist-pre-G7-sprint26.md",
+          "infra/compose/smoke-test-v1.26.0.sh"
+        ],
+        "summary": "Step 7 DevOps · scope ampliado por hallazgos PO durante verificación visual · B.4 retry 409 + Hallazgo 1 auth guard + OBS-008/009 multi-cuenta · 147/147 backend tests · ng build OK · smoke 409 7×201+3×409 sin perdida · 11 items checklist-pre-G7 PASS · DEBT-Q-073/FE-074/FE-075 abiertas · LA candidatas GR-SHELL-002, GR-FE-002 · pendiente Step 8b para fa-index BR nuevas"
+      },
+      {
+        "step": 8,
+        "feature": "FEAT-024",
+        "sprint": 26,
+        "completed_at": "2026-05-10T10:55:48.967Z",
+        "status": "COMPLETED",
+        "verdict": "APPROVED",
+        "scope": "Documentation Agent · Lotes A-B-C-D ejecutados · 17 DOCX + 3 XLSX + 1 JSON + 1 generador",
+        "artifacts": {
+          "word_dir": "docs/deliverables/sprint-26-FEAT-024/word/",
+          "word_count": 17,
+          "excel_dir": "docs/deliverables/sprint-26-FEAT-024/excel/",
+          "excel_count": 3,
+          "sprint_data_json": "docs/sprints/SPRINT-026-data.json",
+          "generator": "docs/deliverables/sprint-26-FEAT-024/gen-docs-sprint26.js",
+          "plan": "docs/deliverables/sprint-26-FEAT-024/STEP8-plan.md",
+          "release_notes": "docs/releases/RELEASE-NOTES-v1.26.0.md",
+          "runbook": "docs/runbooks/RUNBOOK-backend-2fa-v1.26.0.md"
+        },
+        "cmmi_bloqueantes_g8": "7/7 presentes (CMMI-Evidence, MEETING-MINUTES, PROJECT-PLAN, QUALITY-SUMMARY, RISK-REGISTER, TRACEABILITY, planning-doc)",
+        "la_022_08_validation": "PASS · 21 binarios > 0 KB · magic bytes ZIP correctos",
+        "checklist_pre_g8": "7/8 PASS · 1 N/A (diagramas Mermaid opcionales)",
+        "pending_actions": [
+          "G-8 HITL-PM approval",
+          "dashboard regeneration post-G-8",
+          "Step 8b FA-Agent posterior"
+        ],
+        "summary": "Step 8 Documentation Agent · Lotes A→B→C→D ejecutados en autonomía · 17 DOCX + 3 XLSX + 1 JSON + generador 1163L · checklist pre-G-8 PASS · pendiente aprobación HITL-PM (Angel)",
+        "approved_at": "2026-05-10T11:05:49.533Z",
+        "approved_by": "HITL-PM (Angel de la Cuadra)"
+      },
+      {
+        "step": "8b",
+        "feature": "FEAT-024",
+        "sprint": 26,
+        "completed_at": "2026-05-10T11:10:05.786Z",
+        "status": "COMPLETED",
+        "verdict": "AUTO_APPROVED",
+        "scope": "FA-Agent · indexar RN-F024-16/17 + regenerar Word FA + plan promoción LA-CORE",
+        "fa_index": {
+          "total_functionalities": 108,
+          "total_business_rules": 248,
+          "doc_version": "0.13",
+          "doc_path": "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx",
+          "doc_size_kb": 88.7,
+          "last_sprint_consolidated": 26,
+          "last_feat_consolidated": "FEAT-024"
+        },
+        "business_rules_added": [
+          "RN-F024-16",
+          "RN-F024-17"
+        ],
+        "validation": "8/8 PASS validate-fa-index.js",
+        "la_core_promotion_plan": {
+          "aplicada_previa": [
+            "GR-SHELL-001"
+          ],
+          "pendientes_step9": [
+            "GR-SHELL-002",
+            "GR-FE-002",
+            "LA-026-09 (dashboard fix)"
+          ],
+          "procedimiento": "la-promote.js + sofia-contribute.py"
+        },
+        "summary": "Step 8b FA-Agent · 2 BR nuevas indexadas (246->248) · FA Word v0.12->v0.13 · 8/8 PASS · 3 LAs candidatas listadas para promoción Step 9"
+      },
+      {
+        "step": 9,
+        "feature": "FEAT-024",
+        "sprint": 26,
+        "completed_at": "2026-05-10T13:40:49.642Z",
+        "status": "COMPLETED",
+        "verdict": "APPROVED",
+        "approved_by": "HITL-PO (Angel de la Cuadra)",
+        "approved_at": "2026-05-10T13:40:49.642Z",
+        "scope": "Workflow Manager · cierre Sprint 26 · 5 LAs candidatas + 2 guardrail-proposals + 2 paginas Confluence + CLAUDE.md actualizado + handoff SOFIA-CORE",
+        "artifacts": {
+          "la_promotion_report": "docs/quality/LA-CORE-PROMOTION-REPORT-S26.md",
+          "la_promotion_json": ".sofia/la-promotion-request-S26.json",
+          "guardrail_proposals": [
+            "docs/guardrail-proposals/GR-SHELL-002.md",
+            "docs/guardrail-proposals/GR-FE-002.md"
+          ],
+          "handoff_sofia_core": "docs/handoffs/HANDOFF-sprint26-post-G9-sofia-core-actions.md",
+          "confluence_resultados": "24805378",
+          "confluence_retrospectiva": "24838145",
+          "claude_md_updated": true
+        },
+        "pending_async_post_g9": [
+          "tag git v1.26.0 (A11)",
+          "merge feature/FEAT-024-sprint26 -> develop -> main (A12)",
+          "cierre Jira sprint 497 via UI por PO",
+          "aceptar 5 LAs en SOFIA-CORE (sesion separada)",
+          "procesar 2 guardrail-proposals en S04 SOFIA-CORE"
+        ],
+        "summary": "Step 9 Workflow Manager COMPLETADO · G-9 aprobado HITL-PO 2026-05-10"
+      }
     ]
   },
   "pending_steps": [
@@ -36,7 +226,7 @@
   ],
   "last_skill": "scrum-master",
   "last_skill_output_path": "docs/backlog/SPRINT-027-plan.md",
-  "gate_pending": null,
+  "gate_pending": "G-1",
   "release_blocked": false,
   "release_blocked_reason": null,
   "sprint_goal": "Estabilizar el suite de integracion y la configuracion multi-perfil post-NC-CMMI-001 (deudas de test/CI bajo GR-QA-002), saldando deuda funcional priorizada, dejando el pipeline listo para feature en S28.",
@@ -971,16 +1161,16 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-05-29T05:28:59.818Z",
-    "last_gate": "G-1",
-    "last_step": "1",
-    "sprint": 27,
-    "feature": "S27-saneamiento+deudas",
+    "last_generated": "2026-05-10T13:41:04.154Z",
+    "last_gate": "G-9",
+    "last_step": "9",
+    "sprint": 26,
+    "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 27 Step 1 COMPLETADO, G-1 APROBADO. 8 issues creados SCRUM-175..182 (23 SP) en backlog SCRUM. PENDIENTE PO en UI: crear contenedor Sprint 27 e iniciar sprint (GR-ATLASSIAN-001). Siguiente pipeline: Step 2 (Requirements Analyst) o, si S27 es saneamiento puro sin US nuevas, evaluar saltar a Step 4/Developer por deuda. Housekeeping 9 ramas S2-S14 pendiente de OK PO.",
+  "resume_next": "Sprint 27 Step 1 (Scrum Master) ejecutado: Sprint Plan en docs/backlog/SPRINT-027-plan.md. Gate G-1 PENDIENTE de aprobacion PO. Tras aprobar -> crear issues Jira (fase 1b) + regenerar dashboard G-1. NC-CMMI-001 ya cerrada y pusheada (no requiere accion).",
   "sprint_closed": true,
-  "updated_at": "2026-05-29T05:28:59.818Z",
+  "updated_at": "2026-05-29T05:19:46.838Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1308,23 +1498,26 @@
     }
   ],
   "jira_sprint": {
-    "sprint_name": "Tablero Sprint 27",
+    "sprint_name": "Tablero Sprint 26",
     "board_id": 1,
-    "state": "planned",
+    "state": "active",
     "issues": [
-      "SCRUM-175",
-      "SCRUM-176",
-      "SCRUM-177",
-      "SCRUM-178",
-      "SCRUM-179",
-      "SCRUM-180",
-      "SCRUM-181",
-      "SCRUM-182"
+      "SCRUM-163",
+      "SCRUM-164",
+      "SCRUM-165",
+      "SCRUM-166",
+      "SCRUM-167",
+      "SCRUM-168",
+      "SCRUM-169",
+      "SCRUM-170",
+      "SCRUM-171",
+      "SCRUM-172",
+      "SCRUM-173"
     ],
-    "planned_sp": 23,
+    "started_at": "2026-04-21T19:20:39.470Z",
+    "sprint_id": 497,
     "open_method": "Jira UI (PO manual - GR-ATLASSIAN-001)",
-    "planned_at": "2026-05-29T05:28:48.491Z",
-    "feature": "S27-saneamiento+deudas"
+    "end_date": "2026-06-16T08:12:37.000Z"
   },
   "cmmi": {
     "level": 3,
@@ -1824,32 +2017,6 @@
       "approved_at": "2026-05-10T13:41:04.154Z",
       "sprint": 26,
       "feature": "FEAT-024"
-    },
-    {
-      "gate": "G-1",
-      "sprint": 27,
-      "step": "1",
-      "result": "approved",
-      "by": "HITL-PO (Angel de la Cuadra)",
-      "at": "2026-05-29T05:28:48.491Z",
-      "artifact": "docs/backlog/SPRINT-027-plan.md",
-      "jira_issues": [
-        "SCRUM-175",
-        "SCRUM-176",
-        "SCRUM-177",
-        "SCRUM-178",
-        "SCRUM-179",
-        "SCRUM-180",
-        "SCRUM-181",
-        "SCRUM-182"
-      ]
-    },
-    {
-      "gate": "G-1",
-      "step": "1",
-      "approved_at": "2026-05-29T05:28:59.818Z",
-      "sprint": 27,
-      "feature": "S27-saneamiento+deudas"
     }
   ],
   "lessons_learned": [
@@ -3620,8 +3787,8 @@
     }
   },
   "last_gate_request_at": "2026-05-29T05:19:46.838Z",
-  "last_gate_approved": "G-1",
-  "last_gate_approved_at": "2026-05-29T05:28:48.491Z",
+  "last_gate_approved": "G-9",
+  "last_gate_approved_at": "2026-05-10T13:40:49.642Z",
   "last_gate_approved_by": "HITL-PO (Angel de la Cuadra)",
   "stg_pre_check": {
     "executed_at": "2026-05-08T06:34:51.541Z",
@@ -4082,204 +4249,5 @@
     "phase_6_recipient": "daniel@nemtec.es",
     "phase_6_variant_sent": "A - Transparencia proactiva",
     "phase_6_attachment": "docs/audit/QA-AUDIT-S18-S26/07-client-communication.md"
-  },
-  "completed_steps_archive": {
-    "sprint_26": {
-      "sprint": 26,
-      "feature": "FEAT-024",
-      "steps": [
-        "1",
-        "2",
-        "2b",
-        "2c",
-        "3",
-        "3b",
-        {
-          "step": 4,
-          "feature": "FEAT-024",
-          "sprint": 26,
-          "completed_at": "2026-05-08T06:05:40.228Z",
-          "status": "completed",
-          "gate_pending": "G-4b",
-          "phases": [
-            "A_domain_ddl",
-            "B_domain_services",
-            "C_application",
-            "D_infrastructure",
-            "E_api",
-            "F_tests",
-            "G_frontend",
-            "H_smoke"
-          ],
-          "summary": "Step 4 Developer · 8 fases (A..H) · 145 tests · ng build production OK · ShedLock cableado · OpenAPI sin JWT"
-        },
-        {
-          "step": 5,
-          "feature": "FEAT-024",
-          "sprint": 26,
-          "completed_at": "2026-05-08T07:06:04.988Z",
-          "status": "completed",
-          "gate_approved": "G-5",
-          "verdict": "APPROVED",
-          "blockers": 0,
-          "majors": 0,
-          "minors": 2,
-          "suggestions": 4,
-          "summary": "Step 5 Code Reviewer · veredicto APROBADO · diff Fase H 5 commits revisados · todos guardrails y checks automáticos PASS · LAs/GR/DEBT diferidos a Step 8b"
-        },
-        {
-          "step": "5b",
-          "feature": "FEAT-024",
-          "sprint": 26,
-          "completed_at": "2026-05-08T07:17:56.987Z",
-          "status": "completed",
-          "semaphore": "GREEN",
-          "blockers": 0,
-          "cve_critical": 0,
-          "cve_high": 0,
-          "cve_low_transitive": 2,
-          "sast_findings": 1,
-          "sast_blocker": 0,
-          "new_debts": [
-            "DEBT-059",
-            "DEBT-060"
-          ],
-          "summary": "Step 5b Security Agent · semáforo VERDE · 0 CVEs críticos · 0 secrets · 1 hallazgo SAST BAJO (SEC-F024-01 · DEBT-059) · 2 CVEs LOW transitivos preexistentes (DEBT-060) · APPROVED sin condiciones"
-        },
-        {
-          "step": "6",
-          "status": "COMPLETED",
-          "verdict": "APROBADO CON CONDICIONES",
-          "timestamp": "2026-05-08T09:36:58.508Z"
-        },
-        {
-          "step": 7,
-          "feature": "FEAT-024",
-          "sprint": 26,
-          "completed_at": "2026-05-08T13:07:59.954Z",
-          "status": "COMPLETED",
-          "verdict": "APPROVED",
-          "scope": "DevOps + alcance ampliado (B.4 + Hallazgo 1 + OBS-008/009)",
-          "decision_records": [
-            "DR-S26-007",
-            "DR-S26-008"
-          ],
-          "new_debts": [
-            "DEBT-Q-073",
-            "DEBT-FE-074",
-            "DEBT-FE-075"
-          ],
-          "la_candidates": [
-            "GR-SHELL-001 (aplicada)",
-            "GR-SHELL-002",
-            "GR-FE-002"
-          ],
-          "evidence": [
-            "docs/quality/evidence/sprint-26/devops-step7-tests-21clases.log",
-            "docs/quality/evidence/sprint-26/qa-retest-step7-fixes.log",
-            "docs/quality/checklists/checklist-pre-G7-sprint26.md",
-            "infra/compose/smoke-test-v1.26.0.sh"
-          ],
-          "summary": "Step 7 DevOps · scope ampliado por hallazgos PO durante verificación visual · B.4 retry 409 + Hallazgo 1 auth guard + OBS-008/009 multi-cuenta · 147/147 backend tests · ng build OK · smoke 409 7×201+3×409 sin perdida · 11 items checklist-pre-G7 PASS · DEBT-Q-073/FE-074/FE-075 abiertas · LA candidatas GR-SHELL-002, GR-FE-002 · pendiente Step 8b para fa-index BR nuevas"
-        },
-        {
-          "step": 8,
-          "feature": "FEAT-024",
-          "sprint": 26,
-          "completed_at": "2026-05-10T10:55:48.967Z",
-          "status": "COMPLETED",
-          "verdict": "APPROVED",
-          "scope": "Documentation Agent · Lotes A-B-C-D ejecutados · 17 DOCX + 3 XLSX + 1 JSON + 1 generador",
-          "artifacts": {
-            "word_dir": "docs/deliverables/sprint-26-FEAT-024/word/",
-            "word_count": 17,
-            "excel_dir": "docs/deliverables/sprint-26-FEAT-024/excel/",
-            "excel_count": 3,
-            "sprint_data_json": "docs/sprints/SPRINT-026-data.json",
-            "generator": "docs/deliverables/sprint-26-FEAT-024/gen-docs-sprint26.js",
-            "plan": "docs/deliverables/sprint-26-FEAT-024/STEP8-plan.md",
-            "release_notes": "docs/releases/RELEASE-NOTES-v1.26.0.md",
-            "runbook": "docs/runbooks/RUNBOOK-backend-2fa-v1.26.0.md"
-          },
-          "cmmi_bloqueantes_g8": "7/7 presentes (CMMI-Evidence, MEETING-MINUTES, PROJECT-PLAN, QUALITY-SUMMARY, RISK-REGISTER, TRACEABILITY, planning-doc)",
-          "la_022_08_validation": "PASS · 21 binarios > 0 KB · magic bytes ZIP correctos",
-          "checklist_pre_g8": "7/8 PASS · 1 N/A (diagramas Mermaid opcionales)",
-          "pending_actions": [
-            "G-8 HITL-PM approval",
-            "dashboard regeneration post-G-8",
-            "Step 8b FA-Agent posterior"
-          ],
-          "summary": "Step 8 Documentation Agent · Lotes A→B→C→D ejecutados en autonomía · 17 DOCX + 3 XLSX + 1 JSON + generador 1163L · checklist pre-G-8 PASS · pendiente aprobación HITL-PM (Angel)",
-          "approved_at": "2026-05-10T11:05:49.533Z",
-          "approved_by": "HITL-PM (Angel de la Cuadra)"
-        },
-        {
-          "step": "8b",
-          "feature": "FEAT-024",
-          "sprint": 26,
-          "completed_at": "2026-05-10T11:10:05.786Z",
-          "status": "COMPLETED",
-          "verdict": "AUTO_APPROVED",
-          "scope": "FA-Agent · indexar RN-F024-16/17 + regenerar Word FA + plan promoción LA-CORE",
-          "fa_index": {
-            "total_functionalities": 108,
-            "total_business_rules": 248,
-            "doc_version": "0.13",
-            "doc_path": "docs/functional-analysis/FA-bank-portal-Banco Meridian.docx",
-            "doc_size_kb": 88.7,
-            "last_sprint_consolidated": 26,
-            "last_feat_consolidated": "FEAT-024"
-          },
-          "business_rules_added": [
-            "RN-F024-16",
-            "RN-F024-17"
-          ],
-          "validation": "8/8 PASS validate-fa-index.js",
-          "la_core_promotion_plan": {
-            "aplicada_previa": [
-              "GR-SHELL-001"
-            ],
-            "pendientes_step9": [
-              "GR-SHELL-002",
-              "GR-FE-002",
-              "LA-026-09 (dashboard fix)"
-            ],
-            "procedimiento": "la-promote.js + sofia-contribute.py"
-          },
-          "summary": "Step 8b FA-Agent · 2 BR nuevas indexadas (246->248) · FA Word v0.12->v0.13 · 8/8 PASS · 3 LAs candidatas listadas para promoción Step 9"
-        },
-        {
-          "step": 9,
-          "feature": "FEAT-024",
-          "sprint": 26,
-          "completed_at": "2026-05-10T13:40:49.642Z",
-          "status": "COMPLETED",
-          "verdict": "APPROVED",
-          "approved_by": "HITL-PO (Angel de la Cuadra)",
-          "approved_at": "2026-05-10T13:40:49.642Z",
-          "scope": "Workflow Manager · cierre Sprint 26 · 5 LAs candidatas + 2 guardrail-proposals + 2 paginas Confluence + CLAUDE.md actualizado + handoff SOFIA-CORE",
-          "artifacts": {
-            "la_promotion_report": "docs/quality/LA-CORE-PROMOTION-REPORT-S26.md",
-            "la_promotion_json": ".sofia/la-promotion-request-S26.json",
-            "guardrail_proposals": [
-              "docs/guardrail-proposals/GR-SHELL-002.md",
-              "docs/guardrail-proposals/GR-FE-002.md"
-            ],
-            "handoff_sofia_core": "docs/handoffs/HANDOFF-sprint26-post-G9-sofia-core-actions.md",
-            "confluence_resultados": "24805378",
-            "confluence_retrospectiva": "24838145",
-            "claude_md_updated": true
-          },
-          "pending_async_post_g9": [
-            "tag git v1.26.0 (A11)",
-            "merge feature/FEAT-024-sprint26 -> develop -> main (A12)",
-            "cierre Jira sprint 497 via UI por PO",
-            "aceptar 5 LAs en SOFIA-CORE (sesion separada)",
-            "procesar 2 guardrail-proposals en S04 SOFIA-CORE"
-          ],
-          "summary": "Step 9 Workflow Manager COMPLETADO · G-9 aprobado HITL-PO 2026-05-10"
-        }
-      ]
-    }
   }
 }

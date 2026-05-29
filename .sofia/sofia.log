@@ -813,3 +813,8 @@
 [2026-05-28T21:40:00.000Z] NC-CMMI-001 Fase 6 DRAFT READY | 07-client-communication.md anexo tecnico (9.8KB) + 08-client-comm-variants.md (3 variantes A/B/C carta ejecutiva) | recomendada: A Transparencia proactiva (decision D3 apertura NC) | pendiente: HITL-PO elige, envia offline, commit cierre F6 + firma 06-nc-closure.md seccion 10
 [2026-05-28T21:43:00.000Z] NC-CMMI-001 Fase 6 | HITL-PO elige variante A (Transparencia proactiva) | destinatario daniel@nemtec.es | envio offline pendiente | phase_6_status sigue DRAFT_READY hasta confirmar envio
 [2026-05-28T21:45:00.000Z] NC-CMMI-001 Fase 6 COMPLETADA | variante A enviada a daniel@nemtec.es por HITL-PO con anexo 07-client-communication.md | decision D3 apertura cumplida | NC-CMMI-001 CERRADA end-to-end 6/6 fases | status global=audit-completed | siguiente: push + merge + Step 1 Scrum Master S27
+[2026-05-29T05:19:46.838Z] [STEP-1] [scrum-master] STARTED -> Sprint 27 planning (S27 saneamiento+deudas, cap 14 SP)
+[2026-05-29T05:19:46.838Z] [STEP-1] [scrum-master] GATE-REQUESTED G-1 -> docs/backlog/SPRINT-027-plan.md (issues Jira NO creados, esperan aprobacion)
+[2026-05-29T05:28:48.491Z] [STEP-1] [scrum-master] GATE-APPROVED G-1 (PO) -> 8 issues SCRUM-175..182, 23 SP, completed_steps rotado a S27
+[2026-05-29T05:28:59.818Z] [DASH] [gen-global-dashboard] GENERATED → docs/dashboard/bankportal-global-dashboard.html · Gate: G-1 · Step: 1 · Sprint 27
+[2026-05-29T05:36:13.236Z] [HOUSEKEEPING] [scrum-master] SCRUM-174 cerrada (Finalizada, transition 31) por obsolescencia: DoD V13/LA-CORE-093/SC-36/SC-37 entregado y verificado en SOFIA-CORE S03/S04 (diagnostico read-only). Comentario de evidencia anexado. Aprobado HITL-PO.

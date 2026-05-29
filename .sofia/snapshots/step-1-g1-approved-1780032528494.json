@@ -971,16 +971,16 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-05-29T05:28:59.818Z",
-    "last_gate": "G-1",
-    "last_step": "1",
-    "sprint": 27,
-    "feature": "S27-saneamiento+deudas",
+    "last_generated": "2026-05-10T13:41:04.154Z",
+    "last_gate": "G-9",
+    "last_step": "9",
+    "sprint": 26,
+    "feature": "FEAT-024",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
   "resume_next": "Sprint 27 Step 1 COMPLETADO, G-1 APROBADO. 8 issues creados SCRUM-175..182 (23 SP) en backlog SCRUM. PENDIENTE PO en UI: crear contenedor Sprint 27 e iniciar sprint (GR-ATLASSIAN-001). Siguiente pipeline: Step 2 (Requirements Analyst) o, si S27 es saneamiento puro sin US nuevas, evaluar saltar a Step 4/Developer por deuda. Housekeeping 9 ramas S2-S14 pendiente de OK PO.",
   "sprint_closed": true,
-  "updated_at": "2026-05-29T05:28:59.818Z",
+  "updated_at": "2026-05-29T05:28:48.491Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1843,13 +1843,6 @@
         "SCRUM-181",
         "SCRUM-182"
       ]
-    },
-    {
-      "gate": "G-1",
-      "step": "1",
-      "approved_at": "2026-05-29T05:28:59.818Z",
-      "sprint": 27,
-      "feature": "S27-saneamiento+deudas"
     }
   ],
   "lessons_learned": [
