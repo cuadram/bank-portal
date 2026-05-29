@@ -85,7 +85,9 @@ class DataExportServiceTest {
     @Test
     @DisplayName("getExportStatus — sin solicitud activa → HTTP 404")
     void getExportStatus_noActive_throws404() {
-        when(gdprRepo.findActiveByUserIdAndTipo(userId, GdprRequestType.EXPORT))
+        // Fix DEBT-061/NC-CMMI-001: getExportStatus usa findLatest no findActive
+        // (refactor F4 cambio metodo del servicio sin actualizar este mock)
+        when(gdprRepo.findLatestByUserIdAndTipo(userId, GdprRequestType.EXPORT))
             .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.getExportStatus(userId))
@@ -101,7 +103,8 @@ class DataExportServiceTest {
             .tipo(GdprRequestType.EXPORT)
             .estado(GdprRequestStatus.IN_PROGRESS)
             .build();
-        when(gdprRepo.findActiveByUserIdAndTipo(userId, GdprRequestType.EXPORT))
+        // Fix DEBT-061/NC-CMMI-001: getExportStatus usa findLatest no findActive
+        when(gdprRepo.findLatestByUserIdAndTipo(userId, GdprRequestType.EXPORT))
             .thenReturn(Optional.of(active));
 
         DataExportResponse response = service.getExportStatus(userId);

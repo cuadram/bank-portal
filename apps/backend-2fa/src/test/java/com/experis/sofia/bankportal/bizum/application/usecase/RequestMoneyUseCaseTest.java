@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.lenient;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import java.math.BigDecimal;
@@ -33,7 +34,9 @@ class RequestMoneyUseCaseTest {
         BizumActivation act = new BizumActivation();
         act.setStatus(BizumStatus.ACTIVE);
         when(activationRepo.findByUserId(userId)).thenReturn(Optional.of(act));
-        when(requestRepo.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        // Fix DEBT-061: lenient porque TC013 (early return) sobreescribe activationRepo
+        // y nunca llega a invocar save; Mockito strict marca unnecessary stubbing.
+        lenient().when(requestRepo.save(any())).thenAnswer(inv -> inv.getArgument(0));
     }
 
     @Test void TC011_solicitud_creada_PENDING() {

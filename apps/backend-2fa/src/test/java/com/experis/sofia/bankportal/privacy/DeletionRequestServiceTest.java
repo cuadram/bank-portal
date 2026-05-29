@@ -21,6 +21,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import java.time.LocalDateTime;
 
 /**
  * Tests unitarios — DeletionRequestService.
@@ -86,6 +87,7 @@ class DeletionRequestServiceTest {
             .id(requestId).userId(userId)
             .tipo(GdprRequestType.DELETION)
             .estado(GdprRequestStatus.PENDING)
+            .createdAt(LocalDateTime.now())  // Fix DEBT-061: DEBT-042 RN-F019-26 TTL 24h requiere createdAt
             .build();
         when(gdprRepo.findById(requestId)).thenReturn(Optional.of(pending));
 

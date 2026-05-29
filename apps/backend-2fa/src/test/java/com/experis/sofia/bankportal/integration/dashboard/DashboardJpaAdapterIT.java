@@ -4,6 +4,7 @@ import com.experis.sofia.bankportal.dashboard.domain.DashboardRepositoryPort;
 import com.experis.sofia.bankportal.integration.config.IntegrationTestBase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
@@ -18,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
  * DEBT-030 — detecta schema drift antes de llegar a STG.
  */
 @DisplayName("DashboardJpaAdapter — Integration Tests")
+@Disabled("DEBT-064 (NC-CMMI-001 F3B): Testcontainers 1.20.1 incompatible con daemon Docker Desktop 29.4.1 (Status 400). Migrar a perfil integration-compose en S27.")
 class DashboardJpaAdapterIT extends IntegrationTestBase {
 
     @Autowired

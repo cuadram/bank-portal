@@ -397,6 +397,26 @@
                             </includes>
                         </configuration>
                     </plugin>
+                    <!-- NC-CMMI-001 Fase 3 / DEBT-062: failsafe ejecuta los 22 *IT.java
+                         huerfanos del lifecycle. Sufijo *IT = convencion nativa failsafe. -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>integration-tests</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>

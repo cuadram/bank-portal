@@ -12,9 +12,11 @@
 | Severidad | Total |
 |---|---|
 | 🔴 Crítico | 9 |
-| 🟠 Mayor | 14 |
+| 🟠 Mayor | 13 |
 | 🟡 Menor | 13 |
-| **TOTAL** | **36** |
+| **TOTAL** | **35** |
+
+> **Reconciliación 2026-05-28 (NC-CMMI-001):** conteo corregido — cuerpo enumera 13 mayores (no 14). Universo real **35** BUG-PO (001–035), sin huecos. No existe BUG-PO-036.
 
 **Bug raíz transversal identificado:** Los importes CARGO llegan del backend con signo negativo y el frontend no aplica `Math.abs()` antes de renderizarlos. Este único bug corrompe todos los cálculos derivados en Overview, Presupuestos y Análisis (porcentajes, semáforos, variaciones, totales).
 
