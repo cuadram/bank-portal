@@ -130,16 +130,35 @@ Sprint 26 CERRADO · FEAT-024 Objetivos de Ahorro · v1.26.0 · 24/24 SP · 617 
 - Hallazgos Step 7 (verificación visual PO): 4/4 resueltos en sprint · 0 deferred a S26 cliente
   - DR-S26-007 (B.4 retry 409) · DR-S26-008 (auth guard + multi-cuenta selector)
   - DEBT-Q-073 + DEBT-FE-074 + DEBT-FE-075 abiertas para S27
-- Lessons Learned: 8 LAs (LA-026-01..08)
+- Lessons Learned: 11 LAs (LA-026-01..11)
   - 3 promovidas a SOFIA-CORE (LA-CORE-065/066/067)
-  - 5 candidatas pendientes (JSON commiteado para sesión SOFIA-CORE asíncrona)
+  - 5 candidatas previas pendientes decision=None (LA-026-04..08)
+  - 3 NUEVAS sofia_core_candidate=true desde NC-CMMI-001 F5 (LA-026-09/10/11)
   - 2 guardrail-proposals deferred S04 SOFIA-CORE (GR-SHELL-002, GR-FE-002)
-  - 1 fix dashboard sprint-level sin LA formal (commit c72461d)
 - Confluence: páginas 24805378 (Resultados) + 24838145 (Retrospectiva)
 - FA-Agent: FA Word v0.13 · 88,7 KB · 108 funcionalidades · 248 reglas de negocio · S1–S26
 - Jira sprint 497: cierre vía UI manual por PO (LA-025-10 / GR-ATLASSIAN-001)
-- Sprint 27 pendiente definición PO · FEAT-025 TBD
-  - Inputs ya identificados: DEBT-Q-073 + DEBT-FE-074 + DEBT-FE-075 + posible activación GR-CI-002
+
+NC-CMMI-001 CERRADA end-to-end 2026-05-28 (Major, 6 fases, 9 commits 346cb26→e6c28f4)
+- Causa raíz: maven-failsafe-plugin ausente + Jenkinsfile -Pintegration-tests perfil fantasma
+  → 22/22 *IT.java huérfanos del lifecycle en S18-S26 (S20/S23 limpios; S25 falsificado DEBT-055)
+- Impacto producto NULO. Post-remediación: 22/22 IT ejecutables, 13 PASS / 44 @Test verdes /
+  9 @Disabled con DEBT registrada / 0 fail / 0 err. Build verde mvn verify -Pintegration.
+- origin/develop=205e171 (merge --no-ff hotfix/qa-audit-s18-s26) · tag audit/NC-CMMI-001-closed
+- Rama hotfix/qa-audit-s18-s26 conservada local+remoto (mantener 1-2 sprints, luego borrar)
+- Cliente Banco Meridian notificado por email daniel@nemtec.es 2026-05-28T21:45Z (variante A)
+- Acta formal: docs/audit/QA-AUDIT-S18-S26/06-nc-closure.md
+
+Balance debts post-NC: 8 OPEN / 6 CLOSED de 15
+- Cerradas NC: DEBT-055, DEBT-056, DEBT-061, DEBT-062
+- Diferidas S27: DEBT-063 (TIN/TAE gate legal offline), DEBT-064 (4 IT Testcontainers vs daemon
+  29.4.1, migrar a integration-compose), DEBT-065 (5 @WebMvcTest renombrar a *Test surefire)
+
+Sprint 27 pendiente definición PO · FEAT-025 TBD
+- Inputs S27 identificados: DEBT-Q-073/FE-074/FE-075 + DEBT-063/064/065 + 21 BUG-PO diferidos
+  S26 + decisión 9 ramas obsoletas feature/FEAT-XXX-sprintNN S2-S14 mergeadas
+- Acción pendiente sesión dedicada: promoción LA-026-09/10/11 a SOFIA-CORE
+  (sofia-contribute.py --accept) cuando SOFIA-CORE limpio (hoy feature/sprint-arq-S14 in-flight)
 ```
 
 ## ⚠️ PROTOCOLO OBLIGATORIO — STEP 8b (FA-Agent Gate 8b)
@@ -245,6 +264,12 @@ sofia-shell:run_command(command="<comando>")
 - GR-012: Step 3b OBLIGATORIO post G-3
 - GR-013: verify-persistence.js BLOQUEANTE en cada step
 - GR-016: Application handlers NO importan Infrastructure (Clean Architecture)
+- GR-QA-001: RESERVADO (placeholder NC-CMMI-001, sin contenido funcional)
+- GR-QA-002 (BLOQUEANTE QA Tester G-6, NC-CMMI-001 F4): todo *Test/*IT declarado PASS exige
+  evidencia ejecutable (TEST-{FQCN}.xml + commit SHA HEAD + timestamp + conteo tests/F/E/S +
+  perfil Maven). Sin XML → BLOCKED, no PASS, G-6 BLOQUEADO. Comando: mvn verify -Pintegration.
+- GR-DEVOPS-001 (CANDIDATO, pendiente activación G-7): CI profile alignment check — todo perfil
+  Maven invocado en Jenkinsfile/.github/workflows existe en pom.xml (LA-026-11)
 
 ## Reglas críticas
 
@@ -256,6 +281,9 @@ sofia-shell:run_command(command="<comando>")
 - forkJoin + catchError: SIEMPRE of([]) nunca EMPTY (LA-STG-001)
 - Angular: route + nav item en mismo step que el módulo (LA-FRONT-001)
 - Flyway seeds con UUIDs: ON CONFLICT (id) DO NOTHING (LA-022-09)
+- Claim PASS en QA Report SIN XML failsafe/surefire adjunto = BLOCKED (GR-QA-002, NC-CMMI-001)
+- Antes de declarar PASS un *IT: verificar TEST-{FQCN}.xml en target/failsafe-reports/ + SHA HEAD
+- Antes de editar CLAUDE.md: SIEMPRE crear CLAUDE.md.bak-<motivo>-<fecha> (gitignored)
 
 ## FA-Agent
 
