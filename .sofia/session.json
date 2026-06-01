@@ -1225,14 +1225,20 @@
       "sprint_target_phase": "hotfix-Phase3",
       "origin": "audit-2026-05-20-DEBT-055-DEBT-056",
       "registered_at": "2026-05-20T06:25:28.265Z",
-      "status": "OPEN",
+      "status": "CLOSED",
       "evidence": "22 archivos IT.java fisicos vs 11 surefire-reports/*IT.txt tras mvn test.",
       "blocking": "Cualquier auditoria CMMI L3 de Sprints 18-26 (gap historico). G-4b futuros si confian en mvn test.",
       "related_debt": "DEBT-056",
       "audit_nc": "NC-CMMI-001",
       "sofia_core_candidate": true,
       "jira": null,
-      "scope_corrected": "22/22 (era 11)"
+      "scope_corrected": "22/22 (era 11)",
+      "closed_at": "2026-06-01T12:59:00.000Z",
+      "closed_in_sprint": 27,
+      "closed_in_step": "4",
+      "closed_by": "HITL-PO (Angel de la Cuadra)",
+      "closure_evidence": "mvn -Pintegration-compose verify: failsafe AUTO-DESCUBRE y ejecuta los 17 *IT.java (sin lista -Dtest explicita) -> 77 tests, 0 fail/0 err, BUILD SUCCESS. Alcance real 17 (no 22): 5 *IT pasaron a *Test en DEBT-065 (fuera de failsafe, correcto). Los 17: PfmControllerIT 5, SavingsFlywayIT 5, AutoContributionSchedulerIT 1, SavingsControllerIT 15, ContributeManualConcurrencyIT 1, ConfigureAutoRuleIdempotencyIT 1, MilestoneEmissionIT 1, ShedLockEnabledIT 2, BizumPrecisionIT 2, LoginControllerIT 5, SpringContextIT 9, BizumFlywayIT 2, DashboardJpaAdapterIT 8, BizumExpireIT 2, AccountRepositoryAdapterIT 4, BizumAdapterIT 2, JpaAccountReserveAdapterIT 5. Failsafe + perfil integration-compose demuestran no-huerfanos del lifecycle. ts 2026-06-01T12:59Z.",
+      "scope_corrected_s27": "17 IT (era 22; -5 reclasificados a *Test por DEBT-065)"
     },
     {
       "id": "DEBT-063",
@@ -1292,7 +1298,12 @@
       "closed_in_step": "4",
       "closed_by": "HITL-PO (Angel de la Cuadra)",
       "closure_evidence": "26/26 tests VERDE (SpringContextIT 9, LoginControllerIT 5, DashboardJpaAdapterIT 8, AccountRepositoryAdapterIT 4), 0 fail/0 err, BUILD SUCCESS, perfil integration-compose. Migrado a @SpringBootTest(classes=BackendTwoFactorApplication.class) sin Testcontainers. Infra reproducible: it-db/it-db-setup.sql (BD/rol bankportal_it) + infra/compose/docker-compose.it.yml (redis-it sin auth :6381). 11 placeholders obligatorios cubiertos en application-integration-compose.yml. 2 bugs de test corregidos con evidencia: testAccountId->acc...0001, credencial login Angel@123->angel123 (verificado bcrypt vs hash seed V30). @BeforeEach aisla del seed V30. Evidencia GR-QA-002: TEST-{FQCN}.xml en target/failsafe-reports, ts 2026-06-01T10:49Z.",
-      "closure_note": "El \"Testcontainers incompatible con daemon\" era real pero solo la punta: al reactivar los IT afloro config-debt latente (11 placeholders de features anadidas tras el @Disabled) + 2 bugs de fixtures. Todo resuelto en S27 sin verde fingido."
+      "closure_note": "El \"Testcontainers incompatible con daemon\" era real pero solo la punta: al reactivar los IT afloro config-debt latente (11 placeholders de features anadidas tras el @Disabled) + 2 bugs de fixtures. Todo resuelto en S27 sin verde fingido.",
+      "post_closure_correction": {
+        "at": "2026-06-01T12:59:00.000Z",
+        "by": "DEBT-062 verification",
+        "note": "La reescritura destructiva de application-integration-compose.yml en DEBT-064 (commit d55a195) elimino config de dominio (totp, jwt claves antiguas, bank.bizum, bank.savings completo, kyc, loan/deposit) de la que dependian 13 IT que usan SOLO @ActiveProfiles(\"integration-compose\"). Los 4 IT de DEBT-064 quedaron verde (cargan ademas \"test\"), pero se regresaron 13 IT. El run de DEBT-064 (solo los 4) no lo detecto; DEBT-062 (los 17) si. Reparado: fichero reconstruido = ORIGINAL 8eee244 + deltas it-db (datasource bankportal_it, redis-it 6381) + bloque aditivo application.security.jwt. 17/17 IT verde. DEBT-064 permanece CLOSED (sus 4 IT son correctos); la reparacion del fichero compartido se contabiliza en DEBT-062."
+      }
     },
     {
       "id": "DEBT-065",
@@ -3569,6 +3580,18 @@
       "sprint": 27,
       "origin": "DEBT-064 reactivacion IT",
       "registered_at": "2026-06-01T10:55:00.000Z",
+      "sofia_core_candidate": true,
+      "decision": null
+    },
+    {
+      "id": "LA-027-04",
+      "title": "No sobrescribir destructivamente ficheros de config compartidos; verificar la suite completa, no el subconjunto cambiado",
+      "context": "DEBT-064 reescribio por completo application-integration-compose.yml (fichero compartido por 17 IT) ajustandolo a las necesidades de solo 4 IT. Como esos 4 cargan ademas el profile \"test\", pasaron; pero los otros 13 (solo \"integration-compose\") perdieron config de dominio (totp, jwt antiguo, bank.bizum, bank.savings, kyc) y su contexto dejo de cargar. El run de verificacion de DEBT-064 ejecuto solo los 4 cambiados -> no detecto la regresion. DEBT-062, al correr los 17, la destapo.",
+      "lesson": "(a) Un fichero de configuracion compartido se MODIFICA aditivamente (merge), nunca se reescribe a la medida de un subconjunto. (b) Tras tocar config de test compartida, ejecutar la SUITE COMPLETA de IT que la consume, no solo los tests que motivaron el cambio. Verde en el subconjunto != verde en el conjunto.",
+      "recommendation": "Propuesta GR-TEST-004: si un cambio toca un application-*.yml de test compartido, el gate de verificacion DEBE correr todos los *IT.java (mvn -Pintegration-compose verify completo), no una lista -Dtest reducida. Considerar diff de claves YAML eliminadas como check bloqueante.",
+      "sprint": 27,
+      "origin": "DEBT-062 detecta regresion de DEBT-064",
+      "registered_at": "2026-06-01T13:00:00.000Z",
       "sofia_core_candidate": true,
       "decision": null
     }

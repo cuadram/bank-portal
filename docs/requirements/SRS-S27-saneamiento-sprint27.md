@@ -74,6 +74,12 @@ Escenario: Acta de cierre con evidencia
 ```
 **DoD** GR-QA-002 satisfecho · acta con evidencia · `session.json.open_debts` DEBT-062 reconciliado OPEN→CLOSED.
 
+> **✅ CIERRE DEBT-062 (Step 4, 2026-06-01):** **17/17 IT VERDE** — 77 tests, 0 fail/0 err, BUILD SUCCESS.
+> - Comando: `mvn -Pintegration-compose verify` (no `-Pintegration`, que arrastra `*Test.java` bajo failsafe). Failsafe **auto-descubre** los 17 `*IT.java` sin lista `-Dtest` → demuestra que no son huérfanos del lifecycle.
+> - **Alcance corregido: 17 IT, no 22** — los 5 `@WebMvcTest` pasaron a `*Test` en DEBT-065 (fuera de failsafe, correcto). Todos los IT usan ahora el Spring profile `integration-compose`.
+> - **Regresión de DEBT-064 detectada y reparada aquí:** la reescritura destructiva de `application-integration-compose.yml` (commit `d55a195`) había vaciado config de dominio (totp, jwt antiguo, bank.bizum, bank.savings, kyc) de la que dependían 13 IT (solo `integration-compose`). Reconstruido = ORIGINAL `8eee244` + deltas it-db (datasource `bankportal_it`, redis-it 6381) + bloque aditivo `application.security.jwt`. → LA-027-04.
+> - Evidencia GR-QA-002: `TEST-{FQCN}.xml` en `target/failsafe-reports` · perfil `integration-compose` · ts 2026-06-01T12:59Z.
+
 ### REQ-S27-02 — DEBT-064 · Migrar 4 IT Testcontainers → integration-compose
 **Jira** SCRUM-176 · **SP** 5 · **Prio** Alta · **Tipo** Tech Debt
 Migrar los 4 IT que usan Testcontainers 1.20.1 (incompatibles con Docker daemon 29.4.1,
