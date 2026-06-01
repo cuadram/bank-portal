@@ -43,6 +43,7 @@ apps/frontend-portal/dist/
 
 # SOFIA temporales
 .sofia/tmp/
+.sofia/pav/
 .sofia/*.bak-*
 # Backups locales de ficheros raíz (defensa pre-edit; el historial canónico es git)
 CLAUDE.md.bak*
