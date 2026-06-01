@@ -48,17 +48,24 @@ public class SpendingCategoryService {
             counts.merge(cat, 1, Integer::sum);
         }
 
-        BigDecimal total = totals.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+        // BUG-PO-001 (raiz): la cache spending_categories almacena MAGNITUD positiva
+        // (convencion consistente con el resto de periodos). El importe crudo de CARGO
+        // es negativo; sin abs() la cache quedaba firmada y corrompia el filtro/variacion
+        // de Analisis y el consumo de Presupuestos.
+        BigDecimal total = totals.values().stream()
+                .map(BigDecimal::abs)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         List<SpendingCategoryDto> result = totals.entrySet().stream()
                 .map(e -> {
+                    BigDecimal amt = e.getValue().abs();   // magnitud positiva (BUG-PO-001 raiz)
                     double pct = total.compareTo(BigDecimal.ZERO) > 0
-                            ? e.getValue().multiply(BigDecimal.valueOf(100))
-                                          .divide(total, 1, RoundingMode.HALF_UP)
-                                          .doubleValue()
+                            ? amt.multiply(BigDecimal.valueOf(100))
+                                 .divide(total, 1, RoundingMode.HALF_UP)
+                                 .doubleValue()
                             : 0.0;
                     return new SpendingCategoryDto(
-                            e.getKey().name(), e.getValue(), pct,
+                            e.getKey().name(), amt, pct,
                             counts.getOrDefault(e.getKey(), 0));
                 })
                 .sorted(Comparator.comparing(SpendingCategoryDto::amount).reversed()) // RV-010: BigDecimal usa Comparable, no comparingDouble

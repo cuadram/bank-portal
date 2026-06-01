@@ -100,4 +100,20 @@ class SpendingCategoryServiceTest {
         assertThat(result).isEmpty();
         verify(repo, never()).upsertSpendingCategories(any(), any(), any());
     }
+
+    @Test
+    @DisplayName("BUG-PO-001 (raiz): importe CARGO negativo se almacena como MAGNITUD positiva en cache")
+    void cacheAlmacenaMagnitudPositiva() {
+        when(repo.findCachedCategories(userId, "2026-06")).thenReturn(Collections.emptyList());
+        when(repo.findRawSpendings(userId, "2026-06")).thenReturn(List.of(
+                new RawSpendingRecord("Compra Mercadona", null, new BigDecimal("-360.00")),
+                new RawSpendingRecord("Netflix mensual",  null, new BigDecimal("-13.99"))
+        ));
+
+        List<SpendingCategoryDto> result = service.getCategories(userId, "2026-06");
+
+        assertThat(result).isNotEmpty();
+        assertThat(result).allSatisfy(dto ->
+                assertThat(dto.amount()).isGreaterThan(BigDecimal.ZERO));   // nunca negativo
+    }
 }
