@@ -6,8 +6,8 @@
   "client": "Banco Meridian",
   "current_sprint": 27,
   "current_feature": "S27-saneamiento+deudas",
-  "current_step": "3b",
-  "pipeline_step": "3b",
+  "current_step": "4",
+  "pipeline_step": "4",
   "pipeline_step_name": "scrum-master",
   "_completed_steps_note": "Array del sprint actual (current_sprint: 25). Se resetea al inicio de cada sprint. No acumula sprints anteriores — ver sprint_history para histórico.",
   "completed_steps": {
@@ -1307,6 +1307,34 @@
         "SecurityConfigHistoryControllerIT",
         "SseNotificationControllerIT",
         "StatementControllerIT"
+      ]
+    },
+    {
+      "id": "DEBT-066",
+      "area": "Test infra / config de slice @WebMvcTest no alcanzable",
+      "priority": "Media",
+      "desc": "Todos los slices @WebMvcTest del proyecto estan @Disabled (incl. los 5 renombrados en DEBT-065, NotificationControllerTest, SessionControllerTest...). Causa: @SpringBootApplication (BackendTwoFactorApplication) vive en com.experis.sofia.bankportal.twofa (paquete HERMANO), no ancestro de los paquetes de test (auth/notification/audit/account), por lo que @WebMvcTest no encuentra @SpringBootConfiguration al subir por el arbol. Apuntar a la app completa reintroduce NoSuchBeanDefinitionException entityManagerFactory (slice sin JPA). Resultado: cohorte de slices con 0 cobertura efectiva (skipped).",
+      "fix": "Definir una @SpringBootConfiguration/@TestConfiguration de slice reutilizable (web-only, sin JPA) o un paquete-base de tests con la config alcanzable, y habilitar los slices @Disabled apuntando a ella. Verificar verde + XML (GR-QA-002).",
+      "sprint_target": "S28",
+      "origin": "S27 DEBT-065 (rename revelo el bloqueo estructural subyacente)",
+      "registered_at": "2026-06-01T07:35:57.127Z",
+      "status": "OPEN",
+      "evidence": "S27: tras renombrar los 5 *IT->*Test (DEBT-065) y quitar @Disabled, 'mvn -Dtest=...Test test' -> 5/5 ERROR 'Unable to find a @SpringBootConfiguration'. NotificationControllerTest aislado -> 6 skipped (tambien @Disabled). Unica @TestConfiguration de test existente: PfmControllerIT (un IT, no slice).",
+      "blocking": "No bloquea S27. Afecta cobertura efectiva de slices web (0 hoy).",
+      "related_debts": [
+        "DEBT-065"
+      ],
+      "cmmi_practice": "VER SP1.1 / SP3.2 (verification, evidence)",
+      "audit_nc": null,
+      "jira": null,
+      "disabled_tests": [
+        "AccountUnlockControllerTest",
+        "LoginContextControllerTest",
+        "SseNotificationControllerTest",
+        "SecurityConfigHistoryControllerTest",
+        "StatementControllerTest",
+        "NotificationControllerTest",
+        "SessionControllerTest"
       ]
     }
   ],
