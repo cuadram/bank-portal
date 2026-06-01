@@ -3496,6 +3496,30 @@
       "promoted_at": null,
       "sofia_core_version": null,
       "guardrail_official": null
+    },
+    {
+      "id": "LA-027-02",
+      "sprint": 27,
+      "feature": "S27-saneamiento+deudas",
+      "type": "process/architecture/adr-governance",
+      "title": "verify-adr-max-number-across-all-folders-before-creating",
+      "description": "En Step 3 (Architect) S27 se generaron ADR-021/ADR-022 mirando solo docs/architecture/hld/ (ultimo=ADR-020), sin ver la serie canonica en docs/architecture/adr/ que llega a ADR-042 (+ ADRs sueltos y pares en la raiz). Resultado: colision de numero (ya existian adr/ADR-021-password-history-table y adr/ADR-022-jti-revocation-hybrid). Detectado en Step 3b al ir a enlazar TDN/ADRs. Impacto: 2 ADR mal numerados + referencias propagadas al TDN y a 2 comentarios Jira; cero impacto en producto.",
+      "correction": "Antes de crear un ADR, obtener el numero maximo cruzando LAS TRES ubicaciones: docs/architecture/adr/, docs/architecture/hld/ y la raiz docs/architecture/ (incluye ADR sueltos y pares tipo ADR-034-035). Comando: find docs/architecture -name 'ADR-*.md' | grep -oE 'ADR-[0-9]{3}' | sort -u | tail. La serie canonica para ADR nuevos es adr/. Convencion documentada en docs/architecture/README.md (ADR log + siguiente numero libre). Aplicable a cualquier proyecto SOFIA con ADRs multi-carpeta.",
+      "registered_at": "2026-06-01T07:08:34.510Z",
+      "approved_by": "product-owner",
+      "hitl_approved": true,
+      "sofia_core_candidate": true,
+      "guardrail_proposed": "Refuerzo SKILL architect (Paso 1/HLD): validar el numero de ADR contra TODAS las carpetas de docs/architecture antes de asignarlo; candidato GR-ARCH-002.",
+      "related_las": [
+        "LA-027-01"
+      ],
+      "detected_at": "2026-06-01 Step 3b S27 al enlazar TDN/ADRs en doc de arquitectura",
+      "severity": "baja",
+      "recovery_evidence": "Renumeracion hld/ADR-021->adr/ADR-043 (yaml-merge) y hld/ADR-022->adr/ADR-044 (integration-compose); TDN-S27 refs actualizadas; docs/architecture/README.md con convencion + ADR log (44); comentarios correccion Jira SCRUM-178/176. Consolidado en commit 9add9c6.",
+      "promoted_to": null,
+      "promoted_at": null,
+      "sofia_core_version": null,
+      "guardrail_official": null
     }
   ],
   "gate_history_pending": [
