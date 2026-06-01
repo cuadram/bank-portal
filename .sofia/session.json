@@ -981,9 +981,9 @@
     "feature": "S27-saneamiento+deudas",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 27 Step 4 (DEVELOP). Lote frontend BUG-PO PFM EN CURSO (verificar+reconciliar por componente vs prototipo). CERRADO lote Overview/Movimientos: BUG-PO-012 (fecha mov, 5 capas back+2 front), 013/014/015/024 verificados (drift S25; 014 mes->dinamico), BUG-PO-001 cerrado en raiz backend (getSpent magnitud) + KPI Overview. Bug cascada alert-insert (Instant->Timestamp) corregido. 5 commits nuevos (01e90a7 BUG-012, 2ca4538 alert-fix, d7610af BUG-001, +C4 docs, +C5 seed). DEBT-067/068 registradas. Seed dev Junio en infra/dev-seed/seed-pfm-junio-2026.sql. PENDIENTE: lotes Analisis (018/021/030/031) y Distribucion (019/020/032/033/034) — requieren datos (seed aplicado). BUG-PO-035 (subtitulo PfmPageComponent) abierto. SIN PUSH. Entorno dev levantado (ng serve :4201 pid 76954 + stack docker).",
+  "resume_next": "Sprint 27 Step 4 (DEVELOP). Lote frontend BUG-PO PFM EN CURSO (verificar+reconciliar). CERRADOS: Overview/Movimientos (012/013/014/015/024 + 001) y Analisis (018/021/030/031 ya implementados drift S25). BUG-PO-001 cerrado en RAIZ: escritor cache spending_categories guarda magnitud (commit cce5a6a) + getSpent.abs (d7610af) + alert-insert fix (2ca4538). Filas Junio negativas reparadas en BD dev. 6 commits nuevos (01e90a7,2ca4538,d7610af,2aa26b1,24b9522,cce5a6a)+C7 docs. PENDIENTE: lote Distribucion (019/020/032/033/034 — donut+top comercios, usa findTopComerciosUnificados). BUG-PO-035 (PfmPageComponent) abierto. DEBT-067/068 registradas. SIN PUSH. Entorno dev arriba (ng serve :4201 + docker).",
   "sprint_closed": false,
-  "updated_at": "2026-06-01T19:52:58.638Z",
+  "updated_at": "2026-06-01T20:12:49.152Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -3667,6 +3667,12 @@
       "title": "El catalogo BUG-PO S25 arrastra drift: verificar+reconciliar contra codigo y prototipo antes de implementar a ciegas",
       "context": "El catalogo BUG-REPORT-PO-FEAT-023-sprint25 marcaba como ausentes bugs ya implementados en S26 (013/014/015/024) y ubicaba el fix de 012 en PfmMovimientoRowComponent cuando la fila vive inline en PfmOverviewComponent. Reimplementar a ciegas habria duplicado trabajo y corrompido codigo correcto.",
       "lesson": "Lote a lote: (a) comparar codigo actual vs prototipo+catalogo, (b) verificar visualmente con el PO, (c) clasificar cada BUG-PO como ya-hecho / brecha-real / reconciliar, (d) actualizar el registro. El catalogo es indicio, no verdad; la verdad esta en el codigo y el prototipo."
+    },
+    {
+      "id": "LA-027-09",
+      "title": "Un bug transversal puede tener varias capas; arreglar la RAIZ (fuente unica) y no solo cada sintoma",
+      "context": "BUG-PO-001 (importe firmado) se manifestaba en 3 capas: (1) display front (ya abs en S25), (2) consumo de presupuesto getSpent (parcheado con abs), (3) RAIZ: el escritor de cache SpendingCategoryService guardaba firmado, corrompiendo el filtro y la variacion del Analisis (descartaba OTROS/SERVICIOS de Junio). Parchear solo (1) y (2) dejaba el Analisis roto.",
+      "lesson": "Ante un bug transversal, localizar la fuente (aqui: el escritor de la cache) y corregir ahi, no solo en cada consumidor. Verificar TODOS los consumidores de la fuente (presupuestos, analisis, dashboard) tras el fix."
     }
   ],
   "gate_history_pending": [
@@ -3920,7 +3926,7 @@
       ]
     }
   ],
-  "last_updated": "2026-06-01T19:52:58.638Z",
+  "last_updated": "2026-06-01T20:12:49.152Z",
   "active_branch": "develop",
   "audit_log": [
     {

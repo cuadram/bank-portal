@@ -30,7 +30,11 @@
 
 | BUG-PO | Sev | Estado real S27 | Evidencia / nota |
 |---|---|---|---|
-| 001 | 🔴 | **CORREGIDO (raíz)** | abs parcial en `BudgetProgressBar` (S25) + raíz backend `getSpent` magnitud + KPI Overview. Commit `d7610af`. Test `BudgetServiceSpentTest`. |
+| 001 | 🔴 | **CORREGIDO (raíz completa)** | 3 capas: abs front `BudgetProgressBar` (S25) + `getSpent` magnitud (`d7610af`) + **raíz: escritor caché `spending_categories` magnitud** (`cce5a6a`). Corrige KPI Overview, Presupuestos y filtro de Análisis. Tests `BudgetServiceSpentTest` + `SpendingCategoryServiceTest`. |
+| 018 | 🟠 | **YA IMPLEMENTADO (S26)** | tabla en `.card` + leyenda colores. Verificado visualmente. Drift. |
+| 021 | 🟠 | **YA IMPLEMENTADO** | variación sobre `abs()` + color (sube=rojo). Frontend ignora `variacion` backend. Verificado. |
+| 030 | 🟡 | **YA IMPLEMENTADO** | título "Análisis mensual". |
+| 031 | 🟡 | **YA IMPLEMENTADO** | hover fila categoría. |
 | 012 | 🟠 | **CORREGIDO** | fecha movimiento end-to-end (5 capas back + 2 front). Commit `01e90a7`. Catálogo ubicaba en `PfmMovimientoRowComponent`; vive inline en `PfmOverviewComponent`. |
 | 013 | 🟠 | **YA IMPLEMENTADO (S26)** | filtro "Todas las categorías" presente. Drift de catálogo. |
 | 014 | 🟠 | **YA IMPLEMENTADO + corregido** | subtítulo + "última actualización" presentes; mes `Abril` fijo → dinámico (mes actual). |
