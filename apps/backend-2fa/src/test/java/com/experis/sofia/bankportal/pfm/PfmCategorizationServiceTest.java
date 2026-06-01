@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,7 +48,7 @@ class PfmCategorizationServiceTest {
     @Test @DisplayName("TC-F023-001 — Categorización por concepto: MERCADONA → ALIMENTACION")
     void categorizaByConcepto() {
         when(userRuleRepo.findByUserId(userId)).thenReturn(List.of());
-        var movs = List.of(new RawMovimiento(UUID.randomUUID(), "COMPRA MERCADONA SA", new BigDecimal("45.20")));
+        var movs = List.of(new RawMovimiento(UUID.randomUUID(), "COMPRA MERCADONA SA", new BigDecimal("45.20"), LocalDate.of(2026, 6, 3)));
         var result = service.categorizeAll(userId, movs);
         assertThat(result).hasSize(1);
         assertThat(result.get(0).category()).isEqualTo(SpendingCategory.ALIMENTACION);
@@ -56,7 +57,7 @@ class PfmCategorizationServiceTest {
     @Test @DisplayName("TC-F023-002 — Concepto desconocido → OTROS")
     void conceptoDesconocidoOtros() {
         when(userRuleRepo.findByUserId(userId)).thenReturn(List.of());
-        var movs = List.of(new RawMovimiento(UUID.randomUUID(), "EMPRESA XYZ SL REF0001", new BigDecimal("25.00")));
+        var movs = List.of(new RawMovimiento(UUID.randomUUID(), "EMPRESA XYZ SL REF0001", new BigDecimal("25.00"), LocalDate.of(2026, 6, 5)));
         var result = service.categorizeAll(userId, movs);
         assertThat(result.get(0).category()).isEqualTo(SpendingCategory.OTROS);
     }
@@ -66,7 +67,7 @@ class PfmCategorizationServiceTest {
         UUID ruleId = UUID.randomUUID();
         var userRule = new PfmUserRule(ruleId, userId, "FLOWERTOPIA", SpendingCategory.HOGAR, Instant.now());
         when(userRuleRepo.findByUserId(userId)).thenReturn(List.of(userRule));
-        var movs = List.of(new RawMovimiento(UUID.randomUUID(), "FLOWERTOPIA SL", new BigDecimal("30.00")));
+        var movs = List.of(new RawMovimiento(UUID.randomUUID(), "FLOWERTOPIA SL", new BigDecimal("30.00"), LocalDate.of(2026, 6, 7)));
         var result = service.categorizeAll(userId, movs);
         assertThat(result.get(0).category()).isEqualTo(SpendingCategory.HOGAR);
     }
@@ -74,7 +75,7 @@ class PfmCategorizationServiceTest {
     @Test @DisplayName("TC-F023-004 — NOMINA categorizada como ingreso: isIngreso true")
     void nominaIngreso() {
         when(userRuleRepo.findByUserId(userId)).thenReturn(List.of());
-        var movs = List.of(new RawMovimiento(UUID.randomUUID(), "NOMINA ABRIL EMPRESA SA", new BigDecimal("2400.00")));
+        var movs = List.of(new RawMovimiento(UUID.randomUUID(), "NOMINA ABRIL EMPRESA SA", new BigDecimal("2400.00"), LocalDate.of(2026, 6, 1)));
         var result = service.categorizeAll(userId, movs);
         assertThat(result.get(0).category()).isEqualTo(SpendingCategory.NOMINA);
         assertThat(result.get(0).category().isIngreso()).isTrue();

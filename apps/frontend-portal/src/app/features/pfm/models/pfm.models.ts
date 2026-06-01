@@ -12,6 +12,7 @@ export interface MovimientoCategorizado {
   categoryCode:  string;
   categoryLabel: string;
   isIngreso:     boolean;
+  fecha:         string;   // BUG-PO-012: fecha del movimiento (ISO)
 }
 
 export interface BudgetDto {

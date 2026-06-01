@@ -2,6 +2,7 @@ package com.experis.sofia.bankportal.pfm.domain.repository;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +18,6 @@ public interface PfmTransactionReadRepository {
     /** Suma de CARGOs por categoría para un mes (para análisis comparativo). */
     BigDecimal sumCargosByCategory(UUID userId, YearMonth month, String categoryCode);
 
-    record RawMovimiento(UUID txId, String concept, BigDecimal amount) {}
+    record RawMovimiento(UUID txId, String concept, BigDecimal amount, LocalDate fecha) {}
     record TopComercioRaw(String nombre, BigDecimal totalImporte, int numTransacciones) {}
 }

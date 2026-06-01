@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +27,7 @@ public class JdbcPfmTransactionReadAdapter implements PfmTransactionReadReposito
     @Override
     public List<RawMovimiento> findCargos(UUID userId, YearMonth month) {
         return jdbc.sql("""
-            SELECT t.id, t.concept, ABS(t.amount) AS amount
+            SELECT t.id, t.concept, ABS(t.amount) AS amount, t.transaction_date::date AS tx_date
             FROM transactions t
             JOIN accounts a ON t.account_id = a.id
             WHERE a.user_id = :userId
@@ -39,7 +40,8 @@ public class JdbcPfmTransactionReadAdapter implements PfmTransactionReadReposito
             .query((rs, n) -> new RawMovimiento(
                 rs.getObject("id", UUID.class),
                 rs.getString("concept"),
-                rs.getBigDecimal("amount")
+                rs.getBigDecimal("amount"),
+                rs.getObject("tx_date", LocalDate.class)
             )).list();
     }
 

@@ -35,7 +35,7 @@ public class GetPfmOverviewUseCase {
             new MovimientoCategoriadoDto(
                 m.txId(), m.concept(), m.amount(),
                 m.category().name(), label(m.category()),
-                m.category().isIngreso()
+                m.category().isIngreso(), m.fecha()
             )
         ).toList();
 

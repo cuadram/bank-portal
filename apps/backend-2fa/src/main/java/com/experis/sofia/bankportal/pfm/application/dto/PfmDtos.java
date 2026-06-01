@@ -2,6 +2,7 @@ package com.experis.sofia.bankportal.pfm.application.dto;
 
 import com.experis.sofia.bankportal.pfm.domain.model.Budget.Status;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,7 +37,8 @@ public final class PfmDtos {
         BigDecimal amount,
         String categoryCode,
         String categoryLabel,
-        boolean isIngreso       // NOMINA o TRANSFERENCIAS
+        boolean isIngreso,      // NOMINA o TRANSFERENCIAS
+        LocalDate fecha
     ) {}
 
     public record BudgetDto(

@@ -46,7 +46,7 @@ public class PfmCategorizationService {
                     .map(PfmUserRule::getCategory)
                     .findFirst().orElse(null);
             SpendingCategory cat = engine.categorizeWithUserRule(m.concept(), m.concept(), userOverride);
-            return new MovimientoCategorizado(m.txId(), m.concept(), m.amount(), cat);
+            return new MovimientoCategorizado(m.txId(), m.concept(), m.amount(), cat, m.fecha());
         }).toList();
     }
 
@@ -54,6 +54,7 @@ public class PfmCategorizationService {
         java.util.UUID txId,
         String concept,
         java.math.BigDecimal amount,
-        SpendingCategory category
+        SpendingCategory category,
+        java.time.LocalDate fecha
     ) {}
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PfmService } from '../../services/pfm.service';
 import {
   PfmOverviewResponse, MovimientoCategorizado,
-  CATEGORY_LABELS, CATEGORY_ICONS, PFM_CATEGORY_COLORS, PFM_CATEGORY_BG
+  CATEGORY_LABELS, CATEGORY_ICONS, PFM_CATEGORY_COLORS, PFM_CATEGORY_BG, formatYearMonth
 } from '../../models/pfm.models';
 
 /**
@@ -67,6 +67,7 @@ import {
               <span class="cat-badge" [style.background]="catColor(m.categoryCode)">
                 {{ label(m.categoryCode) }}
               </span>
+              <span class="mv-date">{{ m.fecha | date:'d MMM y' }}</span>
             </div>
           </div>
           <div class="mv-amount" [class.ingreso]="m.isIngreso" [class.cargo]="!m.isIngreso">
@@ -122,7 +123,8 @@ import {
                justify-content:center; font-size:18px; flex-shrink:0; }
     .mv-info { flex:1; }
     .mv-concept { font-size:.9rem; font-weight:500; color:#1A2332; }
-    .mv-meta    { margin-top:3px; }
+    .mv-meta    { margin-top:3px; display:flex; align-items:center; }
+    .mv-date    { margin-left:8px; font-size:.78rem; color:#9CA3AF; }
     .cat-badge  { display:inline-flex; align-items:center; padding:2px 8px; border-radius:999px;
                   font-size:.72rem; font-weight:600; color:#fff; }
     .mv-amount  { width:7rem; text-align:right; font-variant-numeric:tabular-nums;
@@ -143,7 +145,7 @@ export class PfmOverviewComponent implements OnInit {
   filtroCategoria = '';
   modalMov: MovimientoCategorizado | null = null;
   readonly TOTAL_CATEGORIAS = 14;
-  readonly mesLabel = 'Abril 2026';
+  readonly mesLabel = formatYearMonth(new Date().toISOString().substring(0, 7)); // BUG-PO-014: mes actual dinamico (no fijo)
 
   constructor(private pfm: PfmService) {}
 
