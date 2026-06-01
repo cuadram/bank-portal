@@ -8,8 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,9 +48,9 @@ public class JpaGoalAutoRuleAdapter implements GoalAutoRuleRepositoryPort {
     }
 
     @Override
-    public List<GoalAutoRule> findDueForExecution(Instant now) {
-        return jpa.findByActiveTrueAndNextExecutionAtLessThanEqual(now)
-                .stream().map(this::toDomain).toList();
+    public Page<GoalAutoRule> findDueForExecution(Instant now, Pageable pageable) {
+        return jpa.findByActiveTrueAndNextExecutionAtLessThanEqual(now, pageable)
+                .map(this::toDomain);
     }
 
     @Override

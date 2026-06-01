@@ -151,6 +151,8 @@ Escenario: Procesado paginado de contribuciones
 ```
 **DoD** paginación conforme a LLD §11 · test que cubre umbral de página · sin regresión funcional.
 
+> **Implementación S27 (2026-06-01) — DoD CUMPLIDO.** Lectura paginada via `findDueForExecution(Instant, Pageable)` (puerto+adapter+JPA repo) + refactor del scheduler a **drenaje por página 0 + guard `Set<UUID>`** (no `nextPageable()`: se saltaría reglas porque el procesado avanza `next_execution_at`; ver LA-027-06). `page-size` desde `bank.savings.auto.page-size`. LLD §11 corregido (nombre + bug). Evidencia: unit `AutoContributionSchedulerTest` 3/3 (drenaje multi-página, terminación con regla fallida) + suite completa `mvn -Pintegration-compose verify` verde (660 unit 0F/0E, 70 IT 0F/0E/0skip, BUILD SUCCESS, HEAD 9d6a40a, 2026-06-01T14:16Z; `AutoContributionSchedulerIT` y `ShedLockEnabledIT` verdes).
+
 ### REQ-S27-06 — DEBT-059 · Mensaje de excepción savings sin importes (CWE-209)
 **Jira** SCRUM-180 · **SP** 1 · **Prio** Baja · **Tipo** Tech Debt (seguridad)
 Las excepciones del dominio savings exponen importes; eliminar datos sensibles del mensaje

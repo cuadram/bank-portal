@@ -1,10 +1,11 @@
 package com.experis.sofia.bankportal.savings.infrastructure.persistence.jpa;
 
 import com.experis.sofia.bankportal.savings.infrastructure.persistence.entity.GoalAutoRuleEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,5 +21,5 @@ public interface JpaGoalAutoRuleRepository extends JpaRepository<GoalAutoRuleEnt
 
     Optional<GoalAutoRuleEntity> findByGoalIdAndActiveTrue(UUID goalId);
 
-    List<GoalAutoRuleEntity> findByActiveTrueAndNextExecutionAtLessThanEqual(Instant now);
+    Page<GoalAutoRuleEntity> findByActiveTrueAndNextExecutionAtLessThanEqual(Instant now, Pageable pageable);
 }

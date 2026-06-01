@@ -981,9 +981,9 @@
     "feature": "S27-saneamiento+deudas",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 27 Step 4 (DEVELOP) en curso. CERRADAS S27: DEBT-059, DEBT-062, DEBT-064, DEBT-054 (GR-CONFIG-001) y DEBT-065 (reclasificacion *IT->*Test verificada por surefire: 15/15 skipped, @Disabled; cobertura runtime diferida a DEBT-066/S28). SIGUIENTE: DEBT-053 (SCRUM-179, 2 SP, paginar AutoContributionScheduler, LLD section 11, sin bloqueo). OPEN restantes: DEBT-053, DEBT-060, DEBT-063 (bloqueada legal gate, DR-S27-001), DEBT-066 (S28). Commits LOCALES sin pushear (pendiente autorizacion Angel). Cadencia Jira (cerrar SCRUM-175..182) y promocion LA-027-01..05 a SOFIA-CORE en Step 9.",
+  "resume_next": "Sprint 27 Step 4 (DEVELOP). CERRADAS S27: DEBT-059, DEBT-062, DEBT-064, DEBT-054 (GR-CONFIG-001), DEBT-065 (reclasif slices) y DEBT-053 (paginacion AutoContributionScheduler: drenaje pagina0+seen, LA-027-06; suite completa verde 660 unit + 70 IT). OPEN restantes: DEBT-060, DEBT-063 (bloqueada legal gate DR-S27-001), DEBT-066 (S28). SIGUIENTE: revisar DEBT-060 o evaluar avance de pipeline (Step 5 Code Review) si el saneamiento S27 esta completo. Commits LOCALES sin pushear (pendiente autorizacion Angel). Cadencia Jira (cerrar SCRUM-175..182) y promocion LA-027-01..06 a SOFIA-CORE en Step 9. Infra IT efimera: parar al cerrar sesion.",
   "sprint_closed": false,
-  "updated_at": "2026-06-01T13:54:37.076Z",
+  "updated_at": "2026-06-01T14:16:05.951Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1093,10 +1093,14 @@
       "sprint_target": "S27",
       "origin": "auditoria-fase-D-2026-04-28",
       "registered_at": "2026-04-28T08:36:11.321Z",
-      "status": "OPEN",
+      "status": "CLOSED",
       "evidence": "AutoContributionScheduler.java javadoc explicito declara la deuda. LLD-backend seccion 11 contradice el codigo en el nombre del metodo (findActiveDue) y en el patron de iteracion (page-by-page).",
       "blocking": "Ninguno en S26: a la escala actual del proyecto la lectura no paginada cabe en memoria sin riesgo. Diferible a S27 sin impacto en G-4b.",
-      "jira": null
+      "jira": "SCRUM-179",
+      "closed_at": "2026-06-01T14:16:05.951Z",
+      "closed_by": "claude-S27-step4-DEBT-053",
+      "related_la": "LA-027-06",
+      "closure_evidence": "Lectura paginada: puerto/adapter/JPA repo migrados a findDueForExecution(Instant, Pageable) (Page). Scheduler refactorizado a DRENAJE por pagina 0 + guard Set<UUID> (no nextPageable: saltaria reglas porque el procesado avanza next_execution_at y la regla sale del conjunto due; ver LA-027-06). page-size desde bank.savings.auto.page-size (def 200). Nombre alineado: se mantiene findDueForExecution y se corrige el LLD §11 (que decia findActiveDue) + su bug nextPageable. Evidencia: unit AutoContributionSchedulerTest 3/3 (drenaje multi-pagina, terminacion con regla fallida via @Timeout, mixto). Suite completa mvn -Pintegration-compose verify VERDE: 660 unit 0F/0E (28 skip = slices @Disabled + 2 TC-LOAN), 70 IT 0F/0E/0skip, BUILD SUCCESS, HEAD 9d6a40a, ts 2026-06-01T14:16Z. AutoContributionSchedulerIT (1/1) y ShedLockEnabledIT (2/2) verdes (wiring JPA real). Evidencia GR-QA-002: TEST-{FQCN}.xml en surefire-reports + failsafe-reports. Sin impacto en produccion. Sin push."
     },
     {
       "id": "DEBT-054",
@@ -3613,6 +3617,18 @@
       "registered_at": "2026-06-01T13:44:27.526Z",
       "sofia_core_candidate": true,
       "decision": null
+    },
+    {
+      "id": "LA-027-06",
+      "title": "Paginar un scheduler que DRENA su conjunto de trabajo: offset (nextPageable) salta filas; usar drenaje por pagina 0 + guard de IDs ya intentados",
+      "context": "DEBT-053: AutoContributionScheduler procesa reglas due; ProcessAutoRuleUseCase avanza next_execution_at +1 mes (sale del due-set). El esqueleto LLD §11 usaba page.nextPageable() (offset): tras procesar la pagina 0 esas reglas salen del conjunto, el offset=pageSize apunta mas alla del conjunto ya encogido -> con 400 due / page 200 solo se procesarian 200. Ademas una regla que FALLA no avanza (rollback REQUIRES_NEW) -> reaparece en pagina 0 -> un drenaje desnudo por pagina 0 entra en bucle infinito.",
+      "lesson": "Para paginar un conjunto que se DRENA al procesar: (a) re-leer la PAGINA 0 en bucle (no nextPageable), porque las procesadas salen y la pagina 0 trae el siguiente lote; (b) un Set<UUID> de reglas ya intentadas corta el bucle cuando la pagina solo trae IDs ya vistos (reglas que fallan y no avanzan). Cota conocida: con >page-size reglas de fallo persistente en cabeza del orden, las posteriores se difieren al siguiente ciclo (sin perdida; siguen due). Escala extrema -> cursor keyset por (next_execution_at, id).",
+      "recommendation": "Check de code-review para schedulers/batch que MUTAN la pertenencia al conjunto que iteran: rechazar paginacion por offset (nextPageable); exigir drenaje por pagina 0 + guard, o cursor keyset. Candidato a guardrail GR-DEV (formalizar).",
+      "sprint": 27,
+      "origin": "DEBT-053 (drift LLD §11)",
+      "registered_at": "2026-06-01T14:16:05.951Z",
+      "sofia_core_candidate": true,
+      "decision": null
     }
   ],
   "gate_history_pending": [
@@ -3866,7 +3882,7 @@
       ]
     }
   ],
-  "last_updated": "2026-06-01T13:54:37.076Z",
+  "last_updated": "2026-06-01T14:16:05.951Z",
   "active_branch": "develop",
   "audit_log": [
     {

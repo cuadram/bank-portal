@@ -650,6 +650,8 @@ springdoc:
 
 ## 11. AutoContributionScheduler - esqueleto
 
+> **Correccion S27 (DEBT-053, LA-027-06):** este esqueleto S26 tenia dos defectos, corregidos en la implementacion: (1) el metodo del puerto se llama `findDueForExecution` (no `findActiveDue`); (2) `page.nextPageable()` **se salta reglas** porque procesar una regla avanza su `next_execution_at` y la saca del conjunto due (el offset apunta mas alla del conjunto ya encogido). El patron correcto es **drenar re-leyendo la pagina 0** + un `Set<UUID>` que evita reprocesar en bucle las reglas que fallan. Esqueleto actualizado abajo.
+
 ```java
 @Component
 @RequiredArgsConstructor
@@ -667,19 +669,24 @@ public class AutoContributionScheduler {
   )
   public void runDueAutoContributions() {
     Instant now = Instant.now();
-    int processed = 0;
-    int failed = 0;
-    var page = ruleRepo.findActiveDue(now, PageRequest.of(0, pageSize));
-    while (!page.isEmpty()) {
+    int processed = 0, failed = 0;
+    Set<UUID> seen = new HashSet<>();
+    Pageable firstPage = PageRequest.of(0, pageSize, Sort.by("nextExecutionAt", "id"));
+    while (true) {
+      Page<GoalAutoRule> page = ruleRepo.findDueForExecution(now, firstPage);
+      boolean progress = false;
       for (var rule : page) {
-        var r = processRule.execute(rule);
-        if (r.status() == AllocationStatus.SUCCESS) processed++; else failed++;
+        if (!seen.add(rule.getId())) continue;   // ya intentada (regla atascada/fallida)
+        progress = true;
+        try {
+          var r = processRule.execute(rule);
+          if (r.status() == AllocationStatus.SUCCESS) processed++; else failed++;
+        } catch (Exception e) { failed++; /* RN-F024-04: no aborta el ciclo */ }
       }
-      if (page.size() < pageSize) break;
-      page = ruleRepo.findActiveDue(now, page.nextPageable());
+      if (page.isEmpty() || !progress) break;    // agotado o solo reglas ya intentadas
     }
-    log.info("savings.auto.scheduler done processed={} failed={} elapsed_ms={}",
-             processed, failed, Duration.between(now, Instant.now()).toMillis());
+    log.info("savings.auto.scheduler done attempted={} processed={} failed={} elapsed_ms={}",
+             seen.size(), processed, failed, Duration.between(now, Instant.now()).toMillis());
   }
 }
 ```
