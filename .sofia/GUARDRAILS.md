@@ -227,8 +227,26 @@ node .sofia/scripts/guardrail-pre-gate.js --gate G-5
 
 ---
 
+## GR-CONFIG-001 — Resolubilidad de placeholders en profiles (BLOQUEANTE · DevOps · G-4b/pre-G-7)
+
+**Qué detecta:** placeholders Spring `${a.b.c}` sin default y dotted (no env-style) que no están resueltos en la cadena de yml de un profile de contexto completo. Previene la clase de regresión DEBT-064 (vaciado de `application-integration-compose.yml` → "Could not resolve placeholder ..." en los IT).
+
+**Cuándo ejecutar:** antes de G-4b (tras tocar cualquier `application*.yml`, `@Value` o `@ConfigurationProperties`) y en el checklist DevOps pre-G-7.
+
+```bash
+node .sofia/scripts/validate-yaml-profiles.js            # enforce: exit!=0 si profile BLOQUEANTE no resuelve R
+node .sofia/scripts/validate-yaml-profiles.js --report   # tabla R/A por profile, exit 0
+```
+
+**Regla:** para los profiles en `BLOCKING` del script (S27: `integration-compose`, único con `@SpringBootTest` de contexto completo activo), `R ⊆ A` es obligatorio. `test`, `integration` (vestigial post-DEBT-064) y los profiles main → warning (main externaliza `bank.core.*` a entorno; bloquear daría falsos positivos). Ampliar `BLOCKING` (1 línea) si un sprint añade otro profile full-context.
+
+**Origen:** DEBT-054 (SCRUM-178) · LA-027-05 · regresión DEBT-064.
+
+---
+
 ## Historial
 
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-03-30 | Creación post HOTFIX-S20 — LA-020-09/10/11 |
+| 1.1 | 2026-06-01 | GR-CONFIG-001 (DEBT-054) — resolubilidad placeholders, bloqueante en integration-compose |

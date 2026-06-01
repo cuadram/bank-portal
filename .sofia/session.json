@@ -981,9 +981,9 @@
     "feature": "S27-saneamiento+deudas",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 27 Step 1 COMPLETADO, G-1 APROBADO. 8 issues creados SCRUM-175..182 (23 SP) en backlog SCRUM. PENDIENTE PO en UI: crear contenedor Sprint 27 e iniciar sprint (GR-ATLASSIAN-001). Siguiente pipeline: Step 2 (Requirements Analyst) o, si S27 es saneamiento puro sin US nuevas, evaluar saltar a Step 4/Developer por deuda. Housekeeping 9 ramas S2-S14 pendiente de OK PO.",
+  "resume_next": "Sprint 27 Step 4 (DEVELOP) en curso. CERRADAS S27: DEBT-059, DEBT-062, DEBT-064 y DEBT-054 (GR-CONFIG-001: validador validate-yaml-profiles.js + guardrail + checklist DevOps pre-G-7 item 11 + LA-027-05; bloqueante solo en integration-compose). SIGUIENTE: DEBT-053 (SCRUM-179, 2 SP, paginar AutoContributionScheduler, LLD section 11, sin bloqueo). PENDIENTE decision PO: DEBT-065 (cerrar por reclasificacion cumplida con runtime diferido a DEBT-066, o mantener OPEN). DEBT-063 bloqueada (legal gate Banco Meridian, DR-S27-001). Commits LOCALES sin pushear (pendiente autorizacion Angel). Cadencia Jira (cerrar SCRUM-175..182) y promocion LA-027-01..05 a SOFIA-CORE en Step 9.",
   "sprint_closed": false,
-  "updated_at": "2026-06-01T06:49:22.140Z",
+  "updated_at": "2026-06-01T13:44:27.526Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1108,11 +1108,14 @@
       "sprint_target_phase": "governance",
       "origin": "F.4 IT execution 2026-04-28",
       "registered_at": "2026-04-28T13:52:54.131Z",
-      "status": "OPEN",
+      "status": "CLOSED",
       "evidence": "BizumFlywayIT antes del fix: error \"Could not resolve placeholder bank.savings.auto.cron\". Tras anadir bank.savings.* a application-integration-compose.yml: BizumFlywayIT 2/2 PASS y 27/27 ITs F.4 PASS.",
       "blocking": "Resuelto en mismo commit que F.4. Pendiente solucion estructural Sprint 27.",
       "jira": null,
-      "related_la": "LA-026-07"
+      "related_la": "LA-026-07, LA-027-05",
+      "closed_at": "2026-06-01T13:44:27.526Z",
+      "closed_by": "claude-S27-step4-DEBT-054",
+      "closure_evidence": "GR-CONFIG-001 implementado. Decision de diseno HITL-PO: check de RESOLUBILIDAD de placeholders (R=${a.b.c} sin default y dotted en src/main/java; A=claves de la cadena de yml por profile), no el lint literal \"merge profundo via application-shared.yml\" del SRS original (superado, sin import compartido). Alcance bloqueante = integration-compose unicamente (unico profile con @SpringBootTest de contexto completo activo: 3 clases base + PfmControllerIT); test/integration/main -> warning (main externaliza bank.core.* a entorno: 2 falsos positivos evitados). Validador dependency-free .sofia/scripts/validate-yaml-profiles.js: enforce verde, R=14, integration-compose 0 faltantes (los 17 IT verdes lo confirman). Cableado: GR-CONFIG-001 (GUARDRAILS.md, G-4b) + checklist DevOps pre-G-7 item 11 + DoD SRS REQ-S27-04. Leccion LA-027-05. Sin push; SCRUM-178 se cierra en UI en Step 9."
     },
     {
       "id": "DEBT-055",
@@ -3594,6 +3597,18 @@
       "registered_at": "2026-06-01T13:00:00.000Z",
       "sofia_core_candidate": true,
       "decision": null
+    },
+    {
+      "id": "LA-027-05",
+      "title": "Los profiles de test no son equivalentes frente a la resolubilidad de placeholders; el alcance bloqueante de un validador de config se cine a los profiles full-context activos",
+      "context": "DEBT-054/GR-CONFIG-001: al disenar el validador se asumio (handoff) bloquear R-subconjunto-A en los tres profiles de test por igual. Inspeccion en disco: solo application-integration-compose.yml contiene las 14 claves de R completas; application-test.yml y application-integration.yml aportan subconjuntos parciales. Todos los @SpringBootTest de contexto completo activos usan @ActiveProfiles(integration-compose) (3 clases base + PfmControllerIT); ninguno usa test ni integration en solitario. El profile integration (Testcontainers) quedo vestigial tras DEBT-064. Bloquear los tres por igual habria dado ~12-14 falsos positivos en test/integration. Ademas los profiles main (prod/kyc) reportan 2 'faltantes' (bank.core.api-key, bank.core.base-url) que se inyectan por entorno.",
+      "lesson": "(a) Validar RESOLUBILIDAD (R-subconjunto-A) en vez del lint literal de replicar subarboles: prueba la funcion (placeholder resoluble), no la forma. (b) El alcance BLOQUEANTE debe cenirse a los profiles realmente ejercidos por tests de contexto completo activos; el resto -> warning. Un guardrail con falsos positivos se acaba esquivando, el peor desenlace CMMI.",
+      "recommendation": "Mantener la lista BLOCKING como constante editable (1 linea); ampliarla solo si un sprint anade otro profile full-context. Revisar periodicamente profiles vestigiales (application-integration.yml post-DEBT-064, candidato a retirada S28).",
+      "sprint": 27,
+      "origin": "DEBT-054 / GR-CONFIG-001",
+      "registered_at": "2026-06-01T13:44:27.526Z",
+      "sofia_core_candidate": true,
+      "decision": null
     }
   ],
   "gate_history_pending": [
@@ -3847,7 +3862,7 @@
       ]
     }
   ],
-  "last_updated": "2026-05-20T07:46:33.623Z",
+  "last_updated": "2026-06-01T13:44:27.526Z",
   "active_branch": "develop",
   "audit_log": [
     {

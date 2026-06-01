@@ -880,6 +880,7 @@ pipeline al step correspondiente.
 | 8 | Frontend ng test sin failures | cd apps/frontend-portal && ng test --watch=false · 0 failed | si |
 | 9 | Flyway schema_history actualizada | psql -c SELECT version, success FROM flyway_schema_history ORDER BY installed_rank DESC LIMIT 5 · todas success=t | si |
 | 10 | ShedLock LockProvider cableado | IT ShedLockEnabledIT PASS · evita scheduler split-brain en multi-replica | si |
+| 11 | GR-CONFIG-001 placeholders resolubles | node .sofia/scripts/validate-yaml-profiles.js exit 0 (profile integration-compose resuelve R) | si |
 
 ### Procedimiento operativo
 

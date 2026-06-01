@@ -137,6 +137,8 @@ Escenario: Validador bloqueante en G-4b
 ```
 **DoD** validador en verde sobre los perfiles actuales · integrado como bloqueo G-4b · GR-CONFIG-001 documentada.
 
+> **Implementación S27 (2026-06-01) — DoD CUMPLIDO.** Decisión de diseño aprobada (HITL-PO): el check central es **resolubilidad de placeholders** (R = `${a.b.c}` sin default y dotted en `src/main/java`; A = claves de la cadena de yml por profile) en vez del lint literal "merge profundo vía `application-shared.yml`" del escenario original (superado, sin import compartido). **Alcance bloqueante = `integration-compose` únicamente** (único profile con `@SpringBootTest` de contexto completo activo); `test`/`integration`/main → warning (evita falsos positivos: main externaliza `bank.core.*` a entorno). Evidencia: `validate-yaml-profiles.js` (dependency-free) verde en enforce — R=14, `integration-compose` 0 faltantes (los 17 IT verdes lo confirman). Cableado en GR-CONFIG-001 (G-4b) + checklist DevOps pre-G-7 ítem 11. Lección: LA-027-05.
+
 ### REQ-S27-05 — DEBT-053 · Paginación AutoContributionScheduler (LLD §11)
 **Jira** SCRUM-179 · **SP** 2 · **Prio** Media · **Tipo** Tech Debt
 El scheduler procesa contribuciones sin paginación; introducir paginación según LLD §11.
