@@ -48,9 +48,14 @@ public class BudgetService {
         budgetRepo.deleteById(budgetId, userId);
     }
 
-    /** Consumo real del presupuesto en el mes de referencia. */
+    /**
+     * Consumo real del presupuesto en el mes de referencia.
+     * BUG-PO-001: el gasto consumido es una MAGNITUD positiva. La caché
+     * (spending_categories) almacena el importe firmado (negativo en CARGO);
+     * sin abs() el percentConsumed/status salían negativos → semáforo siempre verde.
+     */
     public BigDecimal getSpent(UUID userId, SpendingCategory category, YearMonth month) {
-        return txRepo.sumCargosByCategory(userId, month, category.name());
+        return txRepo.sumCargosByCategory(userId, month, category.name()).abs();
     }
 
     // ── Excepciones de dominio ─────────────────────────────────────────────────
