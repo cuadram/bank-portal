@@ -981,7 +981,7 @@
     "feature": "S27-saneamiento+deudas",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 27 Step 4 (DEVELOP). CERRADAS S27: DEBT-059, DEBT-062, DEBT-064, DEBT-054 (GR-CONFIG-001), DEBT-065 (reclasif slices) y DEBT-053 (paginacion AutoContributionScheduler: drenaje pagina0+seen, LA-027-06; suite completa verde 660 unit + 70 IT). OPEN restantes: DEBT-060, DEBT-063 (bloqueada legal gate DR-S27-001), DEBT-066 (S28). SIGUIENTE: revisar DEBT-060 o evaluar avance de pipeline (Step 5 Code Review) si el saneamiento S27 esta completo. Commits LOCALES sin pushear (pendiente autorizacion Angel). Cadencia Jira (cerrar SCRUM-175..182) y promocion LA-027-01..06 a SOFIA-CORE en Step 9. Infra IT efimera: parar al cerrar sesion.",
+  "resume_next": "Sprint 27 Step 4 (DEVELOP). Saneamiento BACKEND completo: DEBT-059/062/064/054/065/053 CERRADAS. DEBT-060 DIFERIDA a S28-mantenimiento (OPEN, bump Spring Boot LOW). OPEN restantes: DEBT-060 (S28-mant), DEBT-063 (S27, bloqueada legal gate DR-S27-001), DEBT-066 (S28). SIGUIENTE trabajo real S27: umbrellas BUG-PO frontend PFM (SCRUM-181 3SP / SCRUM-182 6SP) — requieren entorno frontend (4201) + prototipo PROTO-FEAT-023. Commits LOCALES sin pushear (11+, pendiente autorizacion Angel). Cadencia Jira (cerrar SCRUM-175..182) y promocion LA-027-01..06 a SOFIA-CORE en Step 9.",
   "sprint_closed": false,
   "updated_at": "2026-06-01T14:16:05.951Z",
   "fa_agent": {
@@ -1191,13 +1191,16 @@
       "area": "Backend",
       "priority": "Baja",
       "desc": "Spring Boot 3.3.4 trae Spring Framework 6.1.13 afectado por CVE-2025-22233 + CVE-2024-38820 (DataBinder disallowedFields bypass · CVSS 3.1 LOW · transitivo via shedlock-spring 5.16.0 y resto del proyecto). Mitigación: upgrade a Spring Boot 3.3.6+ en sprint de mantenimiento dedicado a actualización de framework.",
-      "sprint_target": "TBD",
+      "sprint_target": "S28-mantenimiento",
       "origin": "Step-5b-security-agent-S26",
       "registered_at": "2026-05-08T07:17:56.987Z",
       "status": "OPEN",
       "jira": null,
       "cvss": "3.1",
-      "cve_ref": "CVE-2025-22233+CVE-2024-38820"
+      "cve_ref": "CVE-2025-22233+CVE-2024-38820",
+      "deferred_at": "2026-06-01T14:16:05.951Z",
+      "deferred_by": "HITL-PO (Angel) via claude-S27-step4",
+      "deferral_reason": "Bump transversal de framework (Spring Boot 3.3.4->3.3.6+) que toca build y 24 modulos; severidad LOW (CVSS 3.1), CVE transitivos sin via de explotacion demostrada; no bloquea (Step 5b solo bloquea CVE criticos). Requiere sprint de mantenimiento dedicado con regresion completa propia, no arrastrarlo a la cola de S27. Permanece OPEN."
     },
     {
       "id": "DEBT-061",
