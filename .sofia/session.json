@@ -981,9 +981,9 @@
     "feature": "S27-saneamiento+deudas",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 27 Step 4 (DEVELOP) en curso. CERRADAS S27: DEBT-059, DEBT-062, DEBT-064 y DEBT-054 (GR-CONFIG-001: validador validate-yaml-profiles.js + guardrail + checklist DevOps pre-G-7 item 11 + LA-027-05; bloqueante solo en integration-compose). SIGUIENTE: DEBT-053 (SCRUM-179, 2 SP, paginar AutoContributionScheduler, LLD section 11, sin bloqueo). PENDIENTE decision PO: DEBT-065 (cerrar por reclasificacion cumplida con runtime diferido a DEBT-066, o mantener OPEN). DEBT-063 bloqueada (legal gate Banco Meridian, DR-S27-001). Commits LOCALES sin pushear (pendiente autorizacion Angel). Cadencia Jira (cerrar SCRUM-175..182) y promocion LA-027-01..05 a SOFIA-CORE en Step 9.",
+  "resume_next": "Sprint 27 Step 4 (DEVELOP) en curso. CERRADAS S27: DEBT-059, DEBT-062, DEBT-064, DEBT-054 (GR-CONFIG-001) y DEBT-065 (reclasificacion *IT->*Test verificada por surefire: 15/15 skipped, @Disabled; cobertura runtime diferida a DEBT-066/S28). SIGUIENTE: DEBT-053 (SCRUM-179, 2 SP, paginar AutoContributionScheduler, LLD section 11, sin bloqueo). OPEN restantes: DEBT-053, DEBT-060, DEBT-063 (bloqueada legal gate, DR-S27-001), DEBT-066 (S28). Commits LOCALES sin pushear (pendiente autorizacion Angel). Cadencia Jira (cerrar SCRUM-175..182) y promocion LA-027-01..05 a SOFIA-CORE en Step 9.",
   "sprint_closed": false,
-  "updated_at": "2026-06-01T13:44:27.526Z",
+  "updated_at": "2026-06-01T13:54:37.076Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1317,7 +1317,7 @@
       "sprint_target": "S27",
       "origin": "audit-NC-CMMI-001-Phase3B",
       "registered_at": "2026-05-28T18:45:00.000Z",
-      "status": "OPEN",
+      "status": "CLOSED",
       "evidence": "Prueba empirica StatementControllerIT con @ContextConfiguration(classes=BackendTwoFactorApplication.class): 7/7 ERROR 'Failed to load ApplicationContext' por cadena kycAuthorizationFilter->kycVerificationRepository->entityManagerFactory ausente en slice web. Fix correcto = re-clasificar como *Test, no forzar contexto completo.",
       "blocking": "No bloquea. Los 5 son slices de contrato HTTP; su logica esta cubierta. Solo afecta nomenclatura/lifecycle.",
       "related_debts": [
@@ -1325,14 +1325,18 @@
       ],
       "cmmi_practice": "VER SP1.1 (select work products for verification)",
       "audit_nc": "NC-CMMI-001",
-      "jira": null,
+      "jira": "SCRUM-177",
       "disabled_tests": [
         "AccountUnlockControllerIT",
         "LoginContextControllerIT",
         "SecurityConfigHistoryControllerIT",
         "SseNotificationControllerIT",
         "StatementControllerIT"
-      ]
+      ],
+      "closed_at": "2026-06-01T13:54:37.076Z",
+      "closed_by": "claude-S27-step4-DEBT-065",
+      "related_la": "DEBT-066 (runtime diferido S28)",
+      "closure_evidence": "Verificacion surefire 2026-06-01T13:54Z (HEAD 7eb2b98, lifecycle surefire/unit, sin infra): los 5 slices renombrados *IT->*Test (AccountUnlockControllerTest 2, LoginContextControllerTest 1, SecurityConfigHistoryControllerTest 3, SseNotificationControllerTest 2, StatementControllerTest 7) son DESCUBIERTOS y procesados por SUREFIRE (lifecycle correcto de @WebMvcTest), no por failsafe. mvn test -Dtest=<los 5>: 15 tests, 0F/0E, 15 SKIPPED (todos @Disabled), BUILD SUCCESS. Evidencia GR-QA-002: 5x TEST-{FQCN}.xml en target/surefire-reports. DoD de DEBT-065 (renombrar a *Test + verificar descubrimiento por surefire) CUMPLIDO. La cobertura runtime efectiva = 0 (siguen @Disabled por bloqueo estructural: @SpringBootApplication en paquete hermano .twofa, no alcanzable por @WebMvcTest) se traza en DEBT-066 (S28). Sin impacto en produccion. Rename ya committed en 78c3b2b; cierre de estado en commit posterior."
     },
     {
       "id": "DEBT-066",
@@ -3862,7 +3866,7 @@
       ]
     }
   ],
-  "last_updated": "2026-06-01T13:44:27.526Z",
+  "last_updated": "2026-06-01T13:54:37.076Z",
   "active_branch": "develop",
   "audit_log": [
     {
