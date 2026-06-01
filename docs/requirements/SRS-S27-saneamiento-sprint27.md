@@ -92,6 +92,15 @@ Escenario: Timebox de riesgo R-S27-01
 ```
 **DoD** 4/4 IT VERDE con XML · sin dependencia del daemon · documentado el perfil.
 
+> **✅ CIERRE DEBT-064 (Step 4, 2026-06-01):** **26/26 tests VERDE, 0 fail/0 err, BUILD SUCCESS.**
+> SpringContextIT 9/9 · LoginControllerIT 5/5 · DashboardJpaAdapterIT 8/8 · AccountRepositoryAdapterIT 4/4.
+> - Migrados a `@SpringBootTest(classes=BackendTwoFactorApplication.class)` + perfil Spring `integration-compose` (sin Testcontainers).
+> - Infra reproducible: BD/rol dedicados `bankportal_it` (`it-db/it-db-setup.sql`) + `redis-it` sin auth :6381 (`infra/compose/docker-compose.it.yml`).
+> - **Deuda latente resuelta:** el contexto completo exigía 11 placeholders sin default (VAPID, bank.products/savings.auto, notification.email, hmac…) que el `application.yml` de test ocultaba → cubiertos en `application-integration-compose.yml`.
+> - **2 bugs de test corregidos con evidencia (no asunción):** `testAccountId` apuntaba a UUID de usuario, no de cuenta → `acc…0001`; credencial login `Angel@123`→`angel123` (verificado bcrypt contra hash del seed V30).
+> - **Aislamiento del seed V30:** `@BeforeEach` borra transactions del usuario de test (dashboard agrega por usuario).
+> - Evidencia GR-QA-002: TEST-{FQCN}.xml en `target/failsafe-reports` · perfil `integration-compose` · ts 2026-06-01T10:49Z.
+
 ### REQ-S27-03 — DEBT-065 · Renombrar 5 *IT → *Test (slices @WebMvcTest)
 **Jira** SCRUM-177 · **SP** 2 · **Prio** Media · **Tipo** Tech Debt
 Los 5 ficheros `@WebMvcTest` están mal nombrados `*IT` (scope failsafe) cuando son slices

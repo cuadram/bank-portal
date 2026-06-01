@@ -1,0 +1,22 @@
+# DEBT-064 (S27) - Override de compose para integration tests (perfil integration-compose).
+# Anade un redis SIN auth en 6381 (el redis dev usa requirepass; no versionamos el secreto).
+# Uso (desde infra/compose/):
+#   docker compose -f docker-compose.yml -f docker-compose.it.yml up -d postgres redis-it
+# El postgres es el del compose base; la BD/rol de test los crea it-db/it-db-setup.sql.
+services:
+  redis-it:
+    image: redis:7-alpine
+    container_name: bankportal-redis-it
+    restart: unless-stopped
+    command: redis-server --loglevel warning --save ""
+    ports:
+      - "6381:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 96M

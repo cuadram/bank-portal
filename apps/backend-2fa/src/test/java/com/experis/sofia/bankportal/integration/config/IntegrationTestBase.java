@@ -2,62 +2,28 @@ package com.experis.sofia.bankportal.integration.config;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import com.experis.sofia.bankportal.twofa.BackendTwoFactorApplication;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 /**
  * Base para todos los integration tests del proyecto BankPortal.
- * Levanta PostgreSQL real con Testcontainers — singleton pattern (withReuse).
+ * DEBT-064 (S27): migrado de Testcontainers al perfil integration-compose.
+ * Usa los servicios reales del docker-compose (PostgreSQL :5433 BD bankportal_it, Redis :6380, MailHog :1025).
+ * Precondicion: docker compose -f infra/compose/docker-compose.yml up -d postgres redis
+ *   + ejecutar src/test/resources/it-db/it-db-setup.sql (rol+BD bankportal_it).
+ * Datasource y endpoints en application-integration-compose.yml. Flyway aplica las migraciones (incl. V30 seed).
  *
- * GUARDRAIL GR-003: Este fichero es OBLIGATORIO y BLOQUEANTE para Gate G-4b.
- * Un test hijo que herede esta clase detecta en < 60s:
- *   - Beans faltantes (NoSuchBeanDefinitionException)
- *   - Paquetes incorrectos (clases no escaneadas por Spring)
- *   - SQL con columnas inexistentes (BadSqlGrammarException)
- *   - Properties no configuradas (IllegalArgumentException)
+ * GUARDRAIL GR-003: fichero OBLIGATORIO y BLOQUEANTE para Gate G-4b.
  *
- * HOTFIX-S20: este test habría detectado el paquete incorrecto es.meridian en 30s.
- *
- * @author SOFIA Developer Agent — Guardrail GR-003
+ * @author SOFIA Developer Agent - Guardrail GR-003 / DEBT-064
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = BackendTwoFactorApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
-@Testcontainers
+@ActiveProfiles({"test", "integration-compose"})
 public abstract class IntegrationTestBase {
-
-    @Container
-    static final PostgreSQLContainer<?> POSTGRES =
-            new PostgreSQLContainer<>("postgres:16-alpine")
-                    .withDatabaseName("bankportal_test")
-                    .withUsername("test")
-                    .withPassword("test")
-                    .withReuse(true);
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url",      POSTGRES::getJdbcUrl);
-        registry.add("spring.datasource.username", POSTGRES::getUsername);
-        registry.add("spring.datasource.password", POSTGRES::getPassword);
-        registry.add("spring.flyway.enabled",      () -> "true");
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "none");
-        // JWT mínimo para que SecurityConfig arranque
-        registry.add("application.security.jwt.secret-key",
-                () -> "test-jwt-secret-key-minimum-32-characters-for-hmac");
-        registry.add("application.security.jwt.expiration", () -> "3600000");
-        // Stub de propiedades opcionales para evitar IllegalArgumentException
-        registry.add("spring.mail.host",     () -> "localhost");
-        registry.add("spring.mail.port",     () -> "1025");
-        registry.add("spring.data.redis.host", () -> "localhost");
-        registry.add("spring.data.redis.port", () -> "6379");
-    }
 
     @Autowired
     protected MockMvc mockMvc;
@@ -65,7 +31,7 @@ public abstract class IntegrationTestBase {
     @Autowired
     protected JdbcClient jdbc;
 
-    // Fixtures comunes para tests de integración (DEBT — DashboardJpaAdapterIT)
+    // Fixtures comunes (seed via Flyway V30__seed_test_dataset_complete)
     protected final java.util.UUID testUserId    = java.util.UUID.fromString("00000000-0000-0000-0000-000000000001");
-    protected final java.util.UUID testAccountId = java.util.UUID.fromString("00000000-0000-0000-0000-000000000002");
+    protected final java.util.UUID testAccountId = java.util.UUID.fromString("acc00000-0000-0000-0000-000000000001");
 }

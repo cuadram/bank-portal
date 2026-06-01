@@ -1266,7 +1266,7 @@
       "sprint_target": "S27",
       "origin": "audit-NC-CMMI-001-Phase3B",
       "registered_at": "2026-05-28T18:45:00.000Z",
-      "status": "OPEN",
+      "status": "CLOSED",
       "evidence": "mvn verify -Pintegration: 'Could not find a valid Docker environment'. docker CLI funciona (3 contenedores creados) pero API HTTP docker-java recibe Status 400. Fix @SpringBootConfiguration (classes=BackendTwoFactorApplication.class) validado como correcto pero insuficiente: revela el bloqueo Testcontainers subyacente.",
       "blocking": "No bloquea cierre NC (impacto producto NULO, 0 defectos prod). Bloquea cobertura IT real de los 4 hasta migracion.",
       "related_debts": [
@@ -1281,7 +1281,13 @@
         "DashboardJpaAdapterIT",
         "AccountRepositoryAdapterIT",
         "LoginControllerIT"
-      ]
+      ],
+      "closed_at": "2026-06-01T10:49:00.000Z",
+      "closed_in_sprint": 27,
+      "closed_in_step": "4",
+      "closed_by": "HITL-PO (Angel de la Cuadra)",
+      "closure_evidence": "26/26 tests VERDE (SpringContextIT 9, LoginControllerIT 5, DashboardJpaAdapterIT 8, AccountRepositoryAdapterIT 4), 0 fail/0 err, BUILD SUCCESS, perfil integration-compose. Migrado a @SpringBootTest(classes=BackendTwoFactorApplication.class) sin Testcontainers. Infra reproducible: it-db/it-db-setup.sql (BD/rol bankportal_it) + infra/compose/docker-compose.it.yml (redis-it sin auth :6381). 11 placeholders obligatorios cubiertos en application-integration-compose.yml. 2 bugs de test corregidos con evidencia: testAccountId->acc...0001, credencial login Angel@123->angel123 (verificado bcrypt vs hash seed V30). @BeforeEach aisla del seed V30. Evidencia GR-QA-002: TEST-{FQCN}.xml en target/failsafe-reports, ts 2026-06-01T10:49Z.",
+      "closure_note": "El \"Testcontainers incompatible con daemon\" era real pero solo la punta: al reactivar los IT afloro config-debt latente (11 placeholders de features anadidas tras el @Disabled) + 2 bugs de fixtures. Todo resuelto en S27 sin verde fingido."
     },
     {
       "id": "DEBT-065",
@@ -3548,6 +3554,18 @@
       "promoted_at": null,
       "sofia_core_version": null,
       "guardrail_official": null
+    },
+    {
+      "id": "LA-027-03",
+      "title": "Reactivar IT @Disabled hace de canario de config-debt latente acumulada",
+      "context": "DEBT-064: al migrar 4 IT de Testcontainers a integration-compose y quitar @Disabled, el contexto completo fallo en cascada por 11 placeholders ${...} sin default (VAPID web-push, bank.products/savings.auto, notification.email, hmac keys) introducidos por features posteriores al @Disabled. El application.yml de test ocultaba el de main sin esas claves. Ademas 2 bugs de fixtures (testAccountId=UUID de usuario en vez de cuenta; credencial de login desalineada con el hash del seed).",
+      "lesson": "Un IT @Disabled deja de proteger y ACUMULA deuda invisible: cada feature nueva puede romper su contexto sin que nadie lo note. Al reactivarlo, barrer TODOS los placeholders obligatorios (no solo @Value: tambien @Scheduled/@SchedulerLock) de una vez con grep, y verificar credenciales/fixtures contra el seed real (bcrypt, no asuncion). El tiempo de reactivacion escala con los sprints que estuvo @Disabled.",
+      "recommendation": "Propuesta GR-TEST-003: prohibir @Disabled permanente en IT; si se deshabilita, abrir DEBT con sprint_target y, al reactivar, ejecutar barrido de placeholders + validacion de fixtures contra seed. Considerar test de arranque de contexto (smoke) que falle si falta cualquier placeholder obligatorio.",
+      "sprint": 27,
+      "origin": "DEBT-064 reactivacion IT",
+      "registered_at": "2026-06-01T10:55:00.000Z",
+      "sofia_core_candidate": true,
+      "decision": null
     }
   ],
   "gate_history_pending": [

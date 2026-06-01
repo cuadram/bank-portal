@@ -443,6 +443,50 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>integration-compose</id>
+            <!-- DEBT-064 (S27): IT contra docker-compose (sin Testcontainers).
+                 Precondicion: compose up (postgres+redis) + it-db/it-db-setup.sql.
+                 Failsafe ejecuta los *IT.java; el datasource lo fija el perfil Spring integration-compose. -->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>integration-tests</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${jacoco.version}</version>
+                        <executions>
+                            <execution>
+                                <id>prepare-agent</id>
+                                <goals><goal>prepare-agent</goal></goals>
+                            </execution>
+                            <execution>
+                                <id>check</id>
+                                <goals><goal>check</goal></goals>
+                                <configuration><skip>true</skip></configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
 </project>

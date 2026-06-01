@@ -2,9 +2,9 @@ package com.experis.sofia.bankportal.integration.dashboard;
 
 import com.experis.sofia.bankportal.dashboard.domain.DashboardRepositoryPort;
 import com.experis.sofia.bankportal.integration.config.IntegrationTestBase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
@@ -19,11 +19,25 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
  * DEBT-030 — detecta schema drift antes de llegar a STG.
  */
 @DisplayName("DashboardJpaAdapter — Integration Tests")
-@Disabled("DEBT-064 (NC-CMMI-001 F3B): Testcontainers 1.20.1 incompatible con daemon Docker Desktop 29.4.1 (Status 400). Migrar a perfil integration-compose en S27.")
 class DashboardJpaAdapterIT extends IntegrationTestBase {
 
     @Autowired
     private DashboardRepositoryPort dashboardRepo;
+
+    /**
+     * DEBT-064: estos IT se escribieron contra BD vacia (Testcontainers efimero).
+     * Al migrar a integration-compose la BD trae el seed V30, cuyas transactions del
+     * usuario de test caen en el mismo periodo ("2026-03") y contaminaban los conteos.
+     * Limpieza acotada: borra transactions de TODAS las cuentas del usuario de test
+     * (el dashboard agrega por usuario). No afecta a otros usuarios ni a produccion.
+     */
+    @BeforeEach
+    void cleanTestUserTransactions() {
+        jdbc.sql("""
+            DELETE FROM transactions
+            WHERE account_id IN (SELECT id FROM accounts WHERE user_id = :uid)
+            """).param("uid", testUserId).update();
+    }
 
     @Test
     @DisplayName("El bean DashboardRepositoryPort se instancia correctamente")
