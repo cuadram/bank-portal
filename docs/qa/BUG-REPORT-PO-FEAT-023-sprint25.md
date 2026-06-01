@@ -24,6 +24,27 @@
 
 ---
 
+## Reconciliación Sprint 27 (verificación visual PO + saneamiento)
+
+> Verificación lote a lote (real vs prototipo) durante Sprint 27. El catálogo S25 arrastra **drift**: marcaba ausentes ítems ya implementados en S26. Estado real:
+
+| BUG-PO | Sev | Estado real S27 | Evidencia / nota |
+|---|---|---|---|
+| 001 | 🔴 | **CORREGIDO (raíz)** | abs parcial en `BudgetProgressBar` (S25) + raíz backend `getSpent` magnitud + KPI Overview. Commit `d7610af`. Test `BudgetServiceSpentTest`. |
+| 012 | 🟠 | **CORREGIDO** | fecha movimiento end-to-end (5 capas back + 2 front). Commit `01e90a7`. Catálogo ubicaba en `PfmMovimientoRowComponent`; vive inline en `PfmOverviewComponent`. |
+| 013 | 🟠 | **YA IMPLEMENTADO (S26)** | filtro "Todas las categorías" presente. Drift de catálogo. |
+| 014 | 🟠 | **YA IMPLEMENTADO + corregido** | subtítulo + "última actualización" presentes; mes `Abril` fijo → dinámico (mes actual). |
+| 015 | 🟡 | **YA IMPLEMENTADO** | "Mostrando X de Y" presente. |
+| 024 | 🟡 | **YA IMPLEMENTADO** | badges de color por categoría presentes. |
+| 035 | 🟡 | **ABIERTO** | subtítulo exterior fijo "Gestiona tus finanzas personales" (`PfmPageComponent`). Pendiente lote propio. |
+
+**Hallazgos nuevos (no catalogados):**
+- 🐛 **Bug alert-insert** (efecto cascada de 001): `JpaBudgetAlertAdapter.save` bindeaba `Instant` sin tipo SQL → 500 en `/overview` al saltar la primera alerta. Corregido (commit `2ca4538`). Cobertura IT → **DEBT-067**.
+- ⚠️ **Smell**: `GET /overview` inserta alertas (escritura en lectura, RN-F023-11). Idempotente pero deuda de diseño → **DEBT-068**.
+- ℹ️ Keyword `restaurante` cae en OCIO por prioridad del motor (semántico, no bug).
+
+---
+
 ## BUG-PO-001 🔴 CRÍTICO — Importes negativos transversal en todo el módulo PFM
 
 **Pantallas afectadas:** Overview · Presupuestos · Análisis

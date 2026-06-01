@@ -981,9 +981,9 @@
     "feature": "S27-saneamiento+deudas",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 27 Step 4 (DEVELOP). Saneamiento BACKEND completo: DEBT-059/062/064/054/065/053 CERRADAS. DEBT-060 DIFERIDA a S28-mantenimiento (OPEN, bump Spring Boot LOW). OPEN restantes: DEBT-060 (S28-mant), DEBT-063 (S27, bloqueada legal gate DR-S27-001), DEBT-066 (S28). SIGUIENTE trabajo real S27: umbrellas BUG-PO frontend PFM (SCRUM-181 3SP / SCRUM-182 6SP) — requieren entorno frontend (4201) + prototipo PROTO-FEAT-023. Commits LOCALES sin pushear (11+, pendiente autorizacion Angel). Cadencia Jira (cerrar SCRUM-175..182) y promocion LA-027-01..06 a SOFIA-CORE en Step 9.",
+  "resume_next": "Sprint 27 Step 4 (DEVELOP). Lote frontend BUG-PO PFM EN CURSO (verificar+reconciliar por componente vs prototipo). CERRADO lote Overview/Movimientos: BUG-PO-012 (fecha mov, 5 capas back+2 front), 013/014/015/024 verificados (drift S25; 014 mes->dinamico), BUG-PO-001 cerrado en raiz backend (getSpent magnitud) + KPI Overview. Bug cascada alert-insert (Instant->Timestamp) corregido. 5 commits nuevos (01e90a7 BUG-012, 2ca4538 alert-fix, d7610af BUG-001, +C4 docs, +C5 seed). DEBT-067/068 registradas. Seed dev Junio en infra/dev-seed/seed-pfm-junio-2026.sql. PENDIENTE: lotes Analisis (018/021/030/031) y Distribucion (019/020/032/033/034) — requieren datos (seed aplicado). BUG-PO-035 (subtitulo PfmPageComponent) abierto. SIN PUSH. Entorno dev levantado (ng serve :4201 pid 76954 + stack docker).",
   "sprint_closed": false,
-  "updated_at": "2026-06-01T14:16:05.951Z",
+  "updated_at": "2026-06-01T19:52:58.638Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1372,6 +1372,29 @@
         "NotificationControllerTest",
         "SessionControllerTest"
       ]
+    },
+    {
+      "id": "DEBT-067",
+      "area": "PFM / testing",
+      "priority": "Media",
+      "desc": "IT de persistencia de alerta de presupuesto (JpaBudgetAlertAdapter.save). El bug Instant->Timestamp se corrigio sin cobertura automatica (es JDBC, requiere DB).",
+      "sprint_target": "S28",
+      "origin": "BUG-PO-001 cascade (Sprint 27)",
+      "registered_at": "2026-06-01T19:52:58.638Z",
+      "status": "OPEN",
+      "blocked_by": "DEBT-064 (Testcontainers/Docker)",
+      "note": "Anadir IT que fuerce alerta (gasto > umbral) y verifique INSERT en pfm_budget_alerts (timestamptz)."
+    },
+    {
+      "id": "DEBT-068",
+      "area": "PFM / diseno",
+      "priority": "Baja",
+      "desc": "GET /pfm/overview tiene efecto de escritura: inserta alertas de presupuesto (RN-F023-11, evaluateAndAlert). Idempotente (ON CONFLICT DO NOTHING) pero un GET no debe mutar estado.",
+      "sprint_target": "S28",
+      "origin": "Hallazgo verificacion BUG-PO (Sprint 27)",
+      "registered_at": "2026-06-01T19:52:58.638Z",
+      "status": "OPEN",
+      "note": "Mover evaluacion/persistencia de alertas a un flujo explicito o asincrono fuera del GET de lectura."
     }
   ],
   "jira_sprint": {
@@ -3632,6 +3655,18 @@
       "registered_at": "2026-06-01T14:16:05.951Z",
       "sofia_core_candidate": true,
       "decision": null
+    },
+    {
+      "id": "LA-027-07",
+      "title": "Corregir un bug puede destapar defectos latentes que el propio bug enmascaraba (efecto cascada): re-verificar el camino recien activado",
+      "context": "BUG-PO-001 (semaforo presupuestos siempre verde por importe firmado negativo en cache) impedia que las alertas de presupuesto superaran umbral, asi que el INSERT en pfm_budget_alerts nunca se ejecutaba. Al corregir BUG-PO-001 en backend (getSpent magnitud), las alertas saltaron por primera vez desde S25 y afloro un bug latente: JpaBudgetAlertAdapter.save bindeaba un Instant sin tipo SQL -> PSQLException -> 500 en /overview.",
+      "lesson": "Tras corregir un bug que bloqueaba un camino de ejecucion, verificar end-to-end ESE camino recien activado (no solo el sintoma). Un fix puede convertir codigo muerto en codigo vivo y exponer defectos nunca ejercitados. Aqui: validar /overview completo, no solo el KPI del semaforo."
+    },
+    {
+      "id": "LA-027-08",
+      "title": "El catalogo BUG-PO S25 arrastra drift: verificar+reconciliar contra codigo y prototipo antes de implementar a ciegas",
+      "context": "El catalogo BUG-REPORT-PO-FEAT-023-sprint25 marcaba como ausentes bugs ya implementados en S26 (013/014/015/024) y ubicaba el fix de 012 en PfmMovimientoRowComponent cuando la fila vive inline en PfmOverviewComponent. Reimplementar a ciegas habria duplicado trabajo y corrompido codigo correcto.",
+      "lesson": "Lote a lote: (a) comparar codigo actual vs prototipo+catalogo, (b) verificar visualmente con el PO, (c) clasificar cada BUG-PO como ya-hecho / brecha-real / reconciliar, (d) actualizar el registro. El catalogo es indicio, no verdad; la verdad esta en el codigo y el prototipo."
     }
   ],
   "gate_history_pending": [
@@ -3885,7 +3920,7 @@
       ]
     }
   ],
-  "last_updated": "2026-06-01T14:16:05.951Z",
+  "last_updated": "2026-06-01T19:52:58.638Z",
   "active_branch": "develop",
   "audit_log": [
     {
