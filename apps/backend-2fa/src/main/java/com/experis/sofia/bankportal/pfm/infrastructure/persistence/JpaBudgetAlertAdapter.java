@@ -43,7 +43,9 @@ public class JpaBudgetAlertAdapter implements BudgetAlertRepository {
             ON CONFLICT (budget_id, alert_month) DO NOTHING
             """)
             .param("id", id).param("budgetId", budgetId)
-            .param("month", month.toString()).param("now", now).update();
+            .param("month", month.toString())
+            .param("now", java.sql.Timestamp.from(now))   // BUG: Postgres no infiere SQL type de Instant
+            .update();
         return new BudgetAlert(id, budgetId, month, now);
     }
 
