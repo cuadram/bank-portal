@@ -6,15 +6,18 @@
   "client": "Banco Meridian",
   "current_sprint": 27,
   "current_feature": "S27-saneamiento+deudas",
-  "current_step": "1",
-  "pipeline_step": "1",
+  "current_step": "3b",
+  "pipeline_step": "3b",
   "pipeline_step_name": "scrum-master",
   "_completed_steps_note": "Array del sprint actual (current_sprint: 25). Se resetea al inicio de cada sprint. No acumula sprints anteriores — ver sprint_history para histórico.",
   "completed_steps": {
     "sprint": 27,
     "feature": "S27-saneamiento+deudas",
     "steps": [
-      "1"
+      "1",
+      "2",
+      "3",
+      "3b"
     ]
   },
   "pending_steps": [
@@ -971,16 +974,16 @@
   "dashboard_global": {
     "path": "docs/dashboard/bankportal-global-dashboard.html",
     "alias": "docs/quality/sofia-dashboard.html",
-    "last_generated": "2026-05-29T05:28:59.818Z",
-    "last_gate": "G-1",
-    "last_step": "1",
+    "last_generated": "2026-06-01T06:49:22.140Z",
+    "last_gate": "G-3",
+    "last_step": "3",
     "sprint": 27,
     "feature": "S27-saneamiento+deudas",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
   "resume_next": "Sprint 27 Step 1 COMPLETADO, G-1 APROBADO. 8 issues creados SCRUM-175..182 (23 SP) en backlog SCRUM. PENDIENTE PO en UI: crear contenedor Sprint 27 e iniciar sprint (GR-ATLASSIAN-001). Siguiente pipeline: Step 2 (Requirements Analyst) o, si S27 es saneamiento puro sin US nuevas, evaluar saltar a Step 4/Developer por deuda. Housekeeping 9 ramas S2-S14 pendiente de OK PO.",
-  "sprint_closed": true,
-  "updated_at": "2026-05-29T05:28:59.818Z",
+  "sprint_closed": false,
+  "updated_at": "2026-06-01T06:49:22.140Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -1310,7 +1313,7 @@
   "jira_sprint": {
     "sprint_name": "Tablero Sprint 27",
     "board_id": 1,
-    "state": "planned",
+    "state": "active",
     "issues": [
       "SCRUM-175",
       "SCRUM-176",
@@ -1324,7 +1327,10 @@
     "planned_sp": 23,
     "open_method": "Jira UI (PO manual - GR-ATLASSIAN-001)",
     "planned_at": "2026-05-29T05:28:48.491Z",
-    "feature": "S27-saneamiento+deudas"
+    "feature": "S27-saneamiento+deudas",
+    "jira_sprint_id": 1091,
+    "started_at": "2026-06-01T05:42:24.744Z",
+    "resync_note": "S27(695) cerrado por error en UI; S28(1091) renombrado a S27 y arrancado limpio 2026-06-01. 0 trabajo perdido. 695 = duplicado cerrado huerfano."
   },
   "cmmi": {
     "level": 3,
@@ -1848,6 +1854,27 @@
       "gate": "G-1",
       "step": "1",
       "approved_at": "2026-05-29T05:28:59.818Z",
+      "sprint": 27,
+      "feature": "S27-saneamiento+deudas"
+    },
+    {
+      "gate": "G-2",
+      "step": "2",
+      "approved_at": "2026-06-01T06:29:20.581Z",
+      "sprint": 27,
+      "feature": "S27-saneamiento+deudas"
+    },
+    {
+      "gate": "G-2",
+      "step": "2",
+      "approved_at": "2026-06-01T06:32:42.227Z",
+      "sprint": 27,
+      "feature": "S27-saneamiento+deudas"
+    },
+    {
+      "gate": "G-3",
+      "step": "3",
+      "approved_at": "2026-06-01T06:49:22.140Z",
       "sprint": 27,
       "feature": "S27-saneamiento+deudas"
     }
@@ -3439,6 +3466,32 @@
       "detected_at": "2026-05-28 F3 Parte A inspeccion pipelines CI",
       "severity": "alta",
       "recovery_evidence": "commit 4d8fc59: Jenkinsfile:199 -Pintegration-tests -> -Pintegration; failsafe-plugin anadido a pom.xml perfil integration. Verificacion F3B (d38cbe2): 22/22 IT ahora ejecutados por failsafe (antes 0).",
+      "promoted_to": null,
+      "promoted_at": null,
+      "sofia_core_version": null,
+      "guardrail_official": null
+    },
+    {
+      "id": "LA-027-01",
+      "sprint": 27,
+      "feature": "S27-saneamiento+deudas",
+      "type": "process/dashboard/state-management",
+      "title": "dashboard-sprint-state-must-derive-not-rely-on-manual-sprint-closed-flag",
+      "description": "El flag session.json.sprint_closed quedo en true tras el cierre de S26 y NO se reseteo a false al abrir S27 en Step 1 (Scrum Master). gen-global-dashboard.js confia en ese flag manual (linea 307: completedSprints = sprint_closed ? current_sprint : current_sprint-1) y derivo completedSprints=27 -> banner 'S27 CERRADO / v1.27.0 en produccion', fila JIRA 'Sprint 27 — Cerrado', 'S1-S27 OK', contradiciendo status=in_progress y completed_steps=[1,2]. El dashboard de G-1 (2026-05-29) ya mostraba el header erroneo; aflora en G-2. Impacto: dashboard (entregable oficial) con encabezado incorrecto; cero impacto en codigo/producto.",
+      "correction": "(1) Step 1 / Scrum Master DEBE resetear session.json.sprint_closed=false al abrir un sprint nuevo, en el mismo bloque de apertura que fija current_sprint/current_feature. (2) gen-global-dashboard.js debe DERIVAR el estado del sprint de senales no contradictorias (status==='closed' y/o Step 9 en completed_steps), no de un flag manual aislado; entretanto, verificacion cruzada sprint_closed vs status/completed_steps antes de generar. (3) Limpiar literales hardcodeados de la rama 'CERRADO' del generador (p.ej. 'Sprint 21 pendiente definicion PO', linea 609). Aplicable a cualquier proyecto SOFIA que use el Dashboard Global.",
+      "registered_at": "2026-06-01T06:35:17.237Z",
+      "approved_by": "product-owner",
+      "hitl_approved": true,
+      "sofia_core_candidate": true,
+      "guardrail_proposed": "GR-DASH-002 (candidato) o refuerzo de GR-011: sprint_closed debe ser coherente con status/completed_steps; reset obligatorio en apertura de sprint; el dashboard deriva el estado en vez de confiar en flag manual.",
+      "related_las": [
+        "LA-020-07",
+        "LA-022-05",
+        "LA-022-06"
+      ],
+      "detected_at": "2026-06-01 G-2 S27 — HITL-PO reporta header \"S27 CERRADO\" en dashboard",
+      "severity": "media",
+      "recovery_evidence": "session.json.sprint_closed true->false (backup .sofia/tmp/session.json.bak-fixclosed-*); dashboard regenerado G-2/Step2 2026-06-01T06:32Z con header 'S27 ACTIVO / Pipeline en progreso', v1.26.0 PRD, fila JIRA 'Sprint 26 — Cerrado'. Entrada [FIX] en sofia.log.",
       "promoted_to": null,
       "promoted_at": null,
       "sofia_core_version": null,
