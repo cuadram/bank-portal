@@ -11,6 +11,7 @@ import com.experis.sofia.bankportal.savings.domain.repository.SavingsGoalReposit
 import com.experis.sofia.bankportal.savings.domain.service.GoalProjectionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -22,6 +23,7 @@ import java.util.UUID;
  * RN-F024-11 (pausa/reanudacion).
  */
 @Service
+@Slf4j
 public class UpdateGoalUseCase {
 
     private final SavingsGoalRepositoryPort goalRepo;
@@ -47,8 +49,11 @@ public class UpdateGoalUseCase {
         if (req.targetAmount() != null) {
             BigDecimal newTarget = req.targetAmount().setScale(2, java.math.RoundingMode.HALF_UP);
             if (goal.getReservedAmount() != null && newTarget.compareTo(goal.getReservedAmount()) < 0) {
-                throw new ReservedExceedsTargetException(
-                    "El nuevo target " + newTarget + " es inferior al reservado actual " + goal.getReservedAmount());
+                // DEBT-059 (CWE-209): el mensaje al cliente NO debe exponer importes del usuario.
+                // El detalle (newTarget/reservedAmount) queda solo en logs de servidor para diagnostico.
+                log.debug("savings.update.reservedExceedsTarget goalId={} newTarget={} reservedAmount={}",
+                    goalId, newTarget, goal.getReservedAmount());
+                throw new ReservedExceedsTargetException();
             }
             goal.setTargetAmount(newTarget);
         }

@@ -1169,10 +1169,15 @@
       "sprint_target": "S27",
       "origin": "Step-5b-security-agent-S26",
       "registered_at": "2026-05-08T07:17:56.987Z",
-      "status": "OPEN",
+      "status": "CLOSED",
       "jira": null,
       "cvss": "3.5",
-      "cve_ref": "SEC-F024-01"
+      "cve_ref": "SEC-F024-01",
+      "closed_at": "2026-06-01T11:30:00.000Z",
+      "closed_in_sprint": 27,
+      "closed_in_step": "4",
+      "closed_by": "HITL-PO (Angel de la Cuadra)",
+      "closure_evidence": "UpdateGoalUseCase.java:50-51: eliminada la concatenacion de importes (newTarget + reservedAmount) en el mensaje de ReservedExceedsTargetException. Ahora usa el constructor sin args (mensaje generico \"La aportacion excede el importe objetivo\") + log.debug con el detalle (goalId/newTarget/reservedAmount) solo en servidor, patron @Slf4j ya usado en el modulo (ContributeManualUseCase). Verificado: SavingsExceptionHandler:70 mapea getMessage() a la respuesta 422 -> la fuga llegaba al cliente; ahora el cliente recibe solo el mensaje generico. Unico punto de fuga del modulo (grep confirmado). Tests: UpdateGoalUseCaseTest 7/7, SavingsGoalTest 4/4 (assertan isInstanceOf, no texto). CVSS 3.5 LOW CWE-209 mitigado."
     },
     {
       "id": "DEBT-060",

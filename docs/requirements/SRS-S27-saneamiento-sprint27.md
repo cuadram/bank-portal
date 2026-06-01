@@ -156,6 +156,12 @@ Escenario: Excepción sin fuga de importes
 ```
 **DoD** mensaje saneado · test que verifica ausencia de importes · alineado RNF-004/005.
 
+> **✅ CIERRE DEBT-059 (Step 4, 2026-06-01):** mensaje saneado.
+> - `UpdateGoalUseCase` (único punto de fuga, grep confirmado): eliminada la concatenación de `newTarget` + `reservedAmount` en `ReservedExceedsTargetException`. Ahora usa el **constructor sin args** (mensaje genérico _"La aportacion excede el importe objetivo"_) + **`log.debug`** (`@Slf4j`) con el detalle solo en servidor — patrón ya usado en el módulo (`ContributeManualUseCase`).
+> - **Fuga confirmada y cerrada:** `SavingsExceptionHandler:70` mapea `getMessage()` a la respuesta HTTP 422 → los importes llegaban al cliente; ahora recibe solo el mensaje genérico.
+> - Tests: `UpdateGoalUseCaseTest` 7/7 · `SavingsGoalTest` 4/4 (assertan `isInstanceOf`, no texto → no rotos). CVSS 3.5 LOW mitigado.
+> - **Pendiente DoD (test de ausencia de importes):** los tests actuales no asertan explícitamente que el mensaje carezca de importes. Se añadirá el assert en **Step 6 (QA)** sobre `e.getMessage()` (no contiene dígitos de importe), donde se genera la evidencia G-6.
+
 ### REQ-S27-07 — BUG-PO menores 023-035 · PFM visual (umbrella, 13)
 **Jira** SCRUM-181 · **SP** 3 · **Prio** Menor · **Tipo** Bug Fix (umbrella)
 Lote de 13 BUG-PO visuales menores del módulo PFM, verificados a nivel umbrella por
