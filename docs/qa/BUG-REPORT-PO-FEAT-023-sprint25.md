@@ -40,7 +40,8 @@
 | 014 | 🟠 | **YA IMPLEMENTADO + corregido** | subtítulo + "última actualización" presentes; mes `Abril` fijo → dinámico (mes actual). |
 | 015 | 🟡 | **YA IMPLEMENTADO** | "Mostrando X de Y" presente. |
 | 024 | 🟡 | **YA IMPLEMENTADO** | badges de color por categoría presentes. |
-| 035 | 🟡 | **ABIERTO** | subtítulo exterior fijo "Gestiona tus finanzas personales" (`PfmPageComponent`). Pendiente lote propio. |
+| 035 | 🟡 | **CORREGIDO** | subtítulo exterior por pestaña (`PfmPageComponent`): getter `subtitle` con switch sobre `activeTab`. Verificadas las 4 pestañas. |
+| 023 | 🟡 | **CORREGIDO (junto con 035)** | subtítulo Overview → "Resumen financiero · {mes}" dinámico (`formatYearMonth`). Verificado "Resumen financiero · Junio 2026". |
 | 019 | 🟠 | **YA IMPLEMENTADO** | badge azul top-3 (`.merchant-rank.top3`). Verificado visualmente S27. Drift. |
 | 020 | 🟠 | **YA IMPLEMENTADO** | card "Resumen" (total CARGO + mayor categoría). Verificado. Drift. |
 | 022 | 🟠 | **CORREGIDO (raíz backend)** | `JdbcPfmTransactionReadAdapter` tomaba siempre el primer token ("RECIBO ALQUILER"→RECIBO). Fix SQL nativo (ambas ramas UNION, ADR-039): primer token >4 no genérico {RECIBO,PAGO,CARGO,ABONO,CUOTA,FACTURA,TRANSFERENCIA} + `COALESCE` fallback. Verificado: #1 RECIBO→**ALQUILER**. RECARGA se mantiene por decisión PO. LA-027-10. |
