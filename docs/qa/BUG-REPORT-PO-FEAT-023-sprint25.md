@@ -60,6 +60,7 @@
 - ⚠️ **Smell**: `GET /overview` inserta alertas (escritura en lectura, RN-F023-11). Idempotente pero deuda de diseño → **DEBT-068**.
 - 🐛 **H-1 plural "transacciónes"** (front `PfmDistributionComponent`): concatenaba `transacción`+`es`. Corregido a `transacciones` (palabra completa por rama). Hallazgo cascada en verificación visual Distribución. LA-027-11.
 - 🐛 **H-3 separador decimal** (`BudgetProgressBar`): "Quedan/Excedido" usaban `toFixed(2)` (punto, sin miles) vs el resto con pipe `number` (coma+miles). Corregido con helper `fmt()` → `toLocaleString('es-ES')`. Verificado: "Quedan 40,00 €", "Servicios 1.200,55 €". LA-027-12.
+- 🐛 **H-4 separador decimal %** (`PfmAnalysisComponent`): deltas por categoría con `toFixed(1)` (punto) vs variación global con coma. Corregido con `toLocaleString('es-ES')`. Verificado: "+281,8%", "+1678,7%". Misma lección LA-027-12.
 - ℹ️ **Reconciliación select categorías (028)**: el formulario ofrece 13 categorías (incluye **Servicios**); el prototipo hardcodeaba 12 (omitía Servicios). Servicios es categoría real del motor → el componente es **correcto**. Sin cambio.
 - ℹ️ Keyword `restaurante` cae en OCIO por prioridad del motor (semántico, no bug).
 
