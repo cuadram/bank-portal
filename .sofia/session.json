@@ -3673,6 +3673,18 @@
       "title": "Un bug transversal puede tener varias capas; arreglar la RAIZ (fuente unica) y no solo cada sintoma",
       "context": "BUG-PO-001 (importe firmado) se manifestaba en 3 capas: (1) display front (ya abs en S25), (2) consumo de presupuesto getSpent (parcheado con abs), (3) RAIZ: el escritor de cache SpendingCategoryService guardaba firmado, corrompiendo el filtro y la variacion del Analisis (descartaba OTROS/SERVICIOS de Junio). Parchear solo (1) y (2) dejaba el Analisis roto.",
       "lesson": "Ante un bug transversal, localizar la fuente (aqui: el escritor de la cache) y corregir ahi, no solo en cada consumidor. Verificar TODOS los consumidores de la fuente (presupuestos, analisis, dashboard) tras el fix."
+    },
+    {
+      "id": "LA-027-10",
+      "title": "Tokenizar nombre de comercio: saltar tokens genericos con fallback, no usar siempre el primer token",
+      "context": "BUG-PO-022: JdbcPfmTransactionReadAdapter tomaba siempre el primer token >4 (SPLIT_PART(...,1)) -> 'RECIBO ALQUILER JUNIO' se mostraba 'RECIBO'. La intencion (RN-F023-20) es el nombre del comercio. Fix en SQL nativo (ADR-039, ambas ramas del UNION): primer token >4 que NO este en lista generica {RECIBO,PAGO,CARGO,ABONO,CUOTA,FACTURA,TRANSFERENCIA} via unnest+WITH ORDINALITY, con COALESCE de fallback al primer token. Se retira el filtro WHERE LENGTH(first)>4 (la logica pasa al proyectado). RECARGA queda FUERA de la lista por decision PO (la alternativa 'TARJETA' no mejoraba). Validado server-side: #1 RECIBO->ALQUILER 850, resto identico, sin filas espurias.",
+      "lesson": "Para extraer una entidad de texto libre, filtrar ruido (tokens genericos) con fallback determinista y validar contra datos reales (preview SQL antes de exponer en UI). Al mover la logica de inclusion al SELECT, retirar el filtro WHERE equivalente para no descartar filas validas."
+    },
+    {
+      "id": "LA-027-11",
+      "title": "Pluralizacion: elegir palabra completa por rama, no concatenar sufijo sobre lexema acentuado",
+      "context": "Hallazgo cascada en verificacion visual de Distribucion: el template concatenaba 'transaccion'+'es' -> 'transacciones' con tilde incorrecta. Correcto: singular 'transaccion' (aguda terminada en -n, lleva tilde), plural 'transacciones' (sin tilde). Fix: ternario que elige la palabra completa (n===1 ? singular : plural).",
+      "lesson": "Pluralizar eligiendo la palabra completa por rama, nunca concatenando sufijos sobre lexemas acentuados. La verificacion visual del PO detecta defectos ortograficos que la suite de tests no cubre."
     }
   ],
   "gate_history_pending": [
