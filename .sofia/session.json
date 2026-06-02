@@ -3685,6 +3685,12 @@
       "title": "Pluralizacion: elegir palabra completa por rama, no concatenar sufijo sobre lexema acentuado",
       "context": "Hallazgo cascada en verificacion visual de Distribucion: el template concatenaba 'transaccion'+'es' -> 'transacciones' con tilde incorrecta. Correcto: singular 'transaccion' (aguda terminada en -n, lleva tilde), plural 'transacciones' (sin tilde). Fix: ternario que elige la palabra completa (n===1 ? singular : plural).",
       "lesson": "Pluralizar eligiendo la palabra completa por rama, nunca concatenando sufijos sobre lexemas acentuados. La verificacion visual del PO detecta defectos ortograficos que la suite de tests no cubre."
+    },
+    {
+      "id": "LA-027-12",
+      "title": "Formato monetario con locale (es-ES) consistente; no mezclar toFixed crudo con el pipe number",
+      "context": "H-3: BudgetProgressBar.statusText generaba 'Quedan/Excedido' con toFixed(2) -> punto decimal y sin separador de miles ('1200.55'), mientras el resto de la UI usa el pipe number con locale es ('1.500,00 €'). Inconsistencia visible en la lista de presupuestos. Fix: helper privado fmt() con toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}). Verificado: 'Quedan 40,00 €', 'Servicios 1.200,55 €'.",
+      "lesson": "Centralizar el formato monetario en un helper con locale (toLocaleString es-ES) o el pipe number; nunca toFixed crudo en strings de plantilla. Revisar TODOS los importes construidos en .ts, no solo los del pipe en HTML."
     }
   ],
   "gate_history_pending": [

@@ -48,11 +48,18 @@
 | 033 | 🟠 | **CORREGIDO** | link "Ver los N comercios →": top-5 + fila-link que expande inline a 10 (sin ruta nueva, sin `[href]`, GR-ANGULAR-001). La pantalla `screen-merchant-detail` del prototipo no se implementa (excede saneamiento). |
 | 034 | 🟡 | **YA IMPLEMENTADO** | hover fila comercio (`.merchant-row:hover`). Verificado. |
 | 006 | 🟠 | **FIEL A PROTOTIPO (sin cambio)** | el "donut" renderiza como tarta sólida; el prototipo (línea 653) **también** es tarta (`conic-gradient` sin agujero). No hay brecha de fidelidad. Donut real = cambio de diseño → gate UX PO+TL futuro (decisión PO 2026-06-02). |
+| 025 | 🟡 | **YA IMPLEMENTADO** | label "Umbral de alerta push". Verificado visualmente S27. Drift. |
+| 026 | 🟡 | **YA IMPLEMENTADO** | "Importe mensual (€)" + `*` + hint "Entre 0,01 € y 99.999,99 €". Verificado. |
+| 027 | 🟡 | **YA IMPLEMENTADO** | botón "Crear presupuesto". Verificado. |
+| 028 | 🟡 | **YA IMPLEMENTADO** | select con emoji por categoría. Verificado. |
+| 029 | 🟡 | **YA IMPLEMENTADO** | alert-info "se reinicia automáticamente cada mes". Verificado. |
 
 **Hallazgos nuevos (no catalogados):**
 - 🐛 **Bug alert-insert** (efecto cascada de 001): `JpaBudgetAlertAdapter.save` bindeaba `Instant` sin tipo SQL → 500 en `/overview` al saltar la primera alerta. Corregido (commit `2ca4538`). Cobertura IT → **DEBT-067**.
 - ⚠️ **Smell**: `GET /overview` inserta alertas (escritura en lectura, RN-F023-11). Idempotente pero deuda de diseño → **DEBT-068**.
 - 🐛 **H-1 plural "transacciónes"** (front `PfmDistributionComponent`): concatenaba `transacción`+`es`. Corregido a `transacciones` (palabra completa por rama). Hallazgo cascada en verificación visual Distribución. LA-027-11.
+- 🐛 **H-3 separador decimal** (`BudgetProgressBar`): "Quedan/Excedido" usaban `toFixed(2)` (punto, sin miles) vs el resto con pipe `number` (coma+miles). Corregido con helper `fmt()` → `toLocaleString('es-ES')`. Verificado: "Quedan 40,00 €", "Servicios 1.200,55 €". LA-027-12.
+- ℹ️ **Reconciliación select categorías (028)**: el formulario ofrece 13 categorías (incluye **Servicios**); el prototipo hardcodeaba 12 (omitía Servicios). Servicios es categoría real del motor → el componente es **correcto**. Sin cambio.
 - ℹ️ Keyword `restaurante` cae en OCIO por prioridad del motor (semántico, no bug).
 
 ---
