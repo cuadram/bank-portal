@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { formatYearMonth } from '../../models/pfm.models';
 
 /**
  * Smart component — contenedor principal Mi Dinero con tabs por query param.
  * Tabs: overview | presupuestos | analisis | distribucion
  * RN-F023-16: navegación con Router.navigateByUrl() — nunca [href] (LA-023-01).
+ * BUG-PO-035/023 fix (S27): subtítulo por pestaña (overview con mes dinámico).
  * FEAT-023 Sprint 25.
  */
 @Component({
@@ -13,7 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     <div class="pfm-page">
       <div class="pfm-header">
         <h1 class="pfm-title">💰 Mi Dinero</h1>
-        <p class="pfm-subtitle">Gestiona tus finanzas personales</p>
+        <p class="pfm-subtitle">{{ subtitle }}</p>
       </div>
 
       <nav class="pfm-tabs">
@@ -58,6 +60,16 @@ export class PfmPageComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.activeTab = params['tab'] || 'overview';
     });
+  }
+
+  // BUG-PO-035/023: subtítulo por pestaña (overview con mes dinámico)
+  get subtitle(): string {
+    switch (this.activeTab) {
+      case 'presupuestos': return 'Control de presupuestos mensuales';
+      case 'analisis':     return 'Análisis y comparativa de gastos';
+      case 'distribucion': return 'Distribución del gasto por categoría';
+      default:             return `Resumen financiero · ${formatYearMonth(new Date().toISOString().substring(0, 7))}`;
+    }
   }
 
   // LA-023-01: navegación interna con Router.navigateByUrl()
