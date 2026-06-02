@@ -56,27 +56,39 @@ public class JdbcPfmTransactionReadAdapter implements PfmTransactionReadReposito
         return jdbc.sql("""
             WITH movs AS (
                 SELECT
-                    UPPER(SPLIT_PART(TRIM(t.concept), ' ', 1)) AS nombre_raw,
+                    COALESCE(
+                      (SELECT tok FROM unnest(regexp_split_to_array(UPPER(TRIM(t.concept)), '\\s+'))
+                              WITH ORDINALITY AS x(tok, ord)
+                       WHERE LENGTH(tok) > 4
+                         AND tok <> ALL (ARRAY['RECIBO','PAGO','CARGO','ABONO','CUOTA','FACTURA','TRANSFERENCIA'])
+                       ORDER BY ord LIMIT 1),
+                      UPPER(SPLIT_PART(TRIM(t.concept), ' ', 1))
+                    ) AS nombre_raw,
                     ABS(t.amount) AS importe
                 FROM transactions t
                 JOIN accounts a ON t.account_id = a.id
                 WHERE a.user_id = :userId
                   AND t.type = 'CARGO'
                   AND TO_CHAR(t.transaction_date, 'YYYY-MM') = :month
-                  AND LENGTH(SPLIT_PART(TRIM(t.concept), ' ', 1)) > 4
                   AND t.concept NOT ILIKE '%AEAT%'
                   AND t.concept NOT ILIKE '%TGSS%'
                   AND t.concept NOT ILIKE '%SUMA%'
                   AND t.concept NOT ILIKE '%TRANSFERENCIA%'
                 UNION ALL
                 SELECT
-                    UPPER(SPLIT_PART(TRIM(bp.issuer), ' ', 1)) AS nombre_raw,
+                    COALESCE(
+                      (SELECT tok FROM unnest(regexp_split_to_array(UPPER(TRIM(bp.issuer)), '\\s+'))
+                              WITH ORDINALITY AS y(tok, ord)
+                       WHERE LENGTH(tok) > 4
+                         AND tok <> ALL (ARRAY['RECIBO','PAGO','CARGO','ABONO','CUOTA','FACTURA','TRANSFERENCIA'])
+                       ORDER BY ord LIMIT 1),
+                      UPPER(SPLIT_PART(TRIM(bp.issuer), ' ', 1))
+                    ) AS nombre_raw,
                     ABS(bp.amount) AS importe
                 FROM bill_payments bp
                 WHERE bp.user_id = :userId
                   AND bp.status = 'COMPLETED'
                   AND TO_CHAR(bp.paid_at, 'YYYY-MM') = :month
-                  AND LENGTH(SPLIT_PART(TRIM(bp.issuer), ' ', 1)) > 4
                   AND bp.issuer NOT ILIKE '%AEAT%'
                   AND bp.issuer NOT ILIKE '%TGSS%'
             )
