@@ -217,6 +217,6 @@ export class PfmAnalysisComponent implements OnInit {
     const prev = Math.abs(cat.totalMesAnterior);
     const v = this.catVariacion(cat);
     if (prev === 0) return '↑ Nuevo';
-    return `${v > 0 ? '↑ +' : '↓ '}${Math.abs(v).toFixed(1)}%`;
+    return `${v > 0 ? '↑ +' : '↓ '}${Math.abs(v).toLocaleString('es-ES', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
   }
 }
