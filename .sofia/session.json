@@ -983,7 +983,7 @@
   },
   "resume_next": "Sprint 27 Step 4 (DEVELOP) — SESION CERRADA (entorno dev parado). Lote frontend BUG-PO PFM EN CURSO. CERRADOS y verificados visualmente (PO): Overview/Movimientos (BUG-PO-012/013/014/015/024) y Analisis (018/021/030/031, drift S25). BUG-PO-001 cerrado en RAIZ completa (3 capas): front abs S25 + getSpent.abs (d7610af) + escritor cache spending_categories magnitud (cce5a6a). Bug no catalogado alert-insert Instant->Timestamp (2ca4538). 7 commits nuevos esta sesion: 01e90a7,2ca4538,d7610af,2aa26b1,24b9522,cce5a6a,1cef7d5. 19 commits ahead de origin/develop, SIN PUSH (pendiente autorizacion Angel). PENDIENTE FEAT-023: lote Distribucion (BUG-PO-019/020/032/033/034 — donut + top comercios, findTopComerciosUnificados; ojo BUG-PO-022 tokenizacion backend); lote menores Presupuestos/Form (025-029); BUG-PO-035 (PfmPageComponent subtitulo por tab). DEBT-067 (IT alert-insert, bloqueada DEBT-064) y DEBT-068 (GET /overview escribe) OPEN. RETOMAR: levantar entorno (docker compose up backend postgres redis mailhog + ng serve --port 4201) y aplicar seed infra/dev-seed/seed-pfm-junio-2026.sql si BD recreada. Seed Junio + reparacion filas negativas spending_categories son SOLO BD dev (no versionado, salvo el .sql del seed).",
   "sprint_closed": false,
-  "updated_at": "2026-06-01T20:16:12.951Z",
+  "updated_at": "2026-06-02T05:09:49.231Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -3720,10 +3720,11 @@
     "phases_remaining": [],
     "files_persisted": 79,
     "estimated_files_remaining": 45,
-    "handoff_prepared_at": "2026-04-27T15:18:00.000Z",
-    "handoff_doc": "docs/handoffs/HANDOFF-sprint26-step4-fase-f.md",
+    "handoff_prepared_at": "2026-06-02T05:09:49.231Z",
+    "handoff_doc": "docs/handoffs/HANDOFF-S27-step4-20260602-bugpo.md",
     "previous_handoffs": [
-      "docs/handoffs/HANDOFF-sprint26-step4-fase-d.md"
+      "docs/handoffs/HANDOFF-sprint26-step4-fase-d.md",
+      "docs/handoffs/HANDOFF-S27-step4-20260602-bugpo.md"
     ],
     "files_persisted_breakdown": {
       "savings/": 47,
@@ -3926,7 +3927,7 @@
       ]
     }
   ],
-  "last_updated": "2026-06-01T20:16:12.951Z",
+  "last_updated": "2026-06-02T05:09:49.231Z",
   "active_branch": "develop",
   "audit_log": [
     {
