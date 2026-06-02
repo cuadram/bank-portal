@@ -981,9 +981,9 @@
     "feature": "S27-saneamiento+deudas",
     "generator": ".sofia/scripts/gen-global-dashboard.js"
   },
-  "resume_next": "Sprint 27 Step 4 (DEVELOP) — SESION CERRADA (entorno dev parado). Lote frontend BUG-PO PFM EN CURSO. CERRADOS y verificados visualmente (PO): Overview/Movimientos (BUG-PO-012/013/014/015/024) y Analisis (018/021/030/031, drift S25). BUG-PO-001 cerrado en RAIZ completa (3 capas): front abs S25 + getSpent.abs (d7610af) + escritor cache spending_categories magnitud (cce5a6a). Bug no catalogado alert-insert Instant->Timestamp (2ca4538). 7 commits nuevos esta sesion: 01e90a7,2ca4538,d7610af,2aa26b1,24b9522,cce5a6a,1cef7d5. 19 commits ahead de origin/develop, SIN PUSH (pendiente autorizacion Angel). PENDIENTE FEAT-023: lote Distribucion (BUG-PO-019/020/032/033/034 — donut + top comercios, findTopComerciosUnificados; ojo BUG-PO-022 tokenizacion backend); lote menores Presupuestos/Form (025-029); BUG-PO-035 (PfmPageComponent subtitulo por tab). DEBT-067 (IT alert-insert, bloqueada DEBT-064) y DEBT-068 (GET /overview escribe) OPEN. RETOMAR: levantar entorno (docker compose up backend postgres redis mailhog + ng serve --port 4201) y aplicar seed infra/dev-seed/seed-pfm-junio-2026.sql si BD recreada. Seed Junio + reparacion filas negativas spending_categories son SOLO BD dev (no versionado, salvo el .sql del seed).",
+  "resume_next": "Sprint 27 Step 4 (DEVELOP) — SESION CERRADA (entorno dev arriba). BUG-PO FEAT-023: CAMPAÑA COMPLETA y PUSHEADA (origin/develop=87a5d32, 0/0). Esta sesion (10 commits 06f38a0..87a5d32): Distribucion 022 tokenizacion backend (saltar genericos+fallback, RECIBO->ALQUILER) + 033 top-5+link + 006 donut FIEL a proto (sin cambio); Presupuestos/Form 025-029 ya-hecho (drift) + H-3 separador decimal BudgetProgressBar; 035/023 subtitulo por pestana PfmPageComponent; hallazgos cascada H-1 (plural transacciones), H-3, H-4 (% Analisis es-ES). LA-027-10/11/12. Jira: SCRUM-181 (BUG-PO menores 023-035) + SCRUM-182 (BUG-PO mayores 012-022) -> Finalizada via MCP (DoD verificado por PO). SIGUIENTE TRABAJO S27: tech debts SCRUM-175..180 EN CURSO: 175 (DEBT-062 acta cierre IT lifecycle), 176 (DEBT-064 migrar 4 IT Testcontainers->integration-compose, BLOQUEADA, fallback S28), 177 (DEBT-065 renombrar 5 *IT->*Test), 178 (DEBT-054 validador YAML profiles+bloqueo G-4b), 179 (DEBT-053 paginacion AutoContributionScheduler), 180 (DEBT-059 mensaje excepcion savings CWE-209). Tras tech debts: G-5 CR -> G-5b Sec -> G-6 QA BLOQUEANTE (TEST-*.xml, mvn -Pit verify) -> G-7 -> G-8 -> Step 9. Donut real (006) NO se registra como DEBT por decision PO; queda solo nota en catalogo. Sprint NO cerrado (Completar sprint es UI, GR-ATLASSIAN-001). DR-S27-001 (DEBT-063 TIN/TAE) sigue gate legal offline. Entorno dev: back 8081, front 4201 (IPv6 ::1), PG 5433, redis 6380, mailhog 8025; BD persistida (seed Junio + abs reparado, NO re-seed).",
   "sprint_closed": false,
-  "updated_at": "2026-06-02T05:09:49.231Z",
+  "updated_at": "2026-06-02T08:01:00.000Z",
   "fa_agent": {
     "last_gate": "8b",
     "last_updated": "2026-05-10T11:09:16.860407+00:00",
@@ -3945,7 +3945,7 @@
       ]
     }
   ],
-  "last_updated": "2026-06-02T05:09:49.231Z",
+  "last_updated": "2026-06-02T08:01:00.000Z",
   "active_branch": "develop",
   "audit_log": [
     {
