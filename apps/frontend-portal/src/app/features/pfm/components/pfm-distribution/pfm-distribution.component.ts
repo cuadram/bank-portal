@@ -11,6 +11,8 @@ import {
  * BUG-PO-019 fix: top-3 badge azul .merchant-rank.top3.
  * BUG-PO-020 fix: card resumen con total y mayor categoría.
  * BUG-PO-032 fix: título "Distribución de gasto · Abril 2026".
+ * BUG-PO-033 fix (S27): top-5 + link expandir a 10 (inline, sin ruta).
+ * H-1 fix (S27): plural correcto "transacciones".
  * US-F023-07 · DEBT-047 · FEAT-023 Sprint 25.
  */
 @Component({
@@ -70,15 +72,19 @@ import {
           <span class="card-period">{{ mesLabel }}</span>
         </div>
         <div class="merchant-list">
-          <div class="merchant-row" *ngFor="let m of data.topComercios; let i=index">
+          <div class="merchant-row" *ngFor="let m of comerciosVisibles; let i=index">
             <!-- BUG-PO-019: badge top-3 azul -->
             <div class="merchant-rank" [class.top3]="i < 3">{{ i + 1 }}</div>
             <div class="merchant-info">
               <div class="merchant-name">{{ m.nombre }}</div>
-              <div class="merchant-count">{{ m.numTransacciones }} transacción{{ m.numTransacciones !== 1 ? 'es' : '' }}</div>
+              <div class="merchant-count">{{ m.numTransacciones }} {{ m.numTransacciones === 1 ? 'transacción' : 'transacciones' }}</div>
             </div>
             <div class="merchant-amount">{{ m.totalImporte | number:'1.2-2' }} €</div>
           </div>
+          <!-- BUG-PO-033: link expandir a todos los comercios (sin ruta nueva) -->
+          <div class="merchant-row merchant-link"
+               *ngIf="!mostrarTodos && data.topComercios.length > 5"
+               (click)="mostrarTodos = true">Ver los {{ data.topComercios.length }} comercios →</div>
         </div>
       </div>
     </div>
@@ -144,6 +150,10 @@ import {
     .merchant-amount{ width:7rem; text-align:right; font-variant-numeric:tabular-nums;
                       font-weight:600; color:#1A2332; flex-shrink:0; font-size:.9rem; }
 
+    /* BUG-PO-033: fila-link ver todos */
+    .merchant-link { justify-content:center; color:#1B5E99; font-weight:600; font-size:.85rem; }
+    .merchant-link:hover { background:#E3F0FB; }
+
     .pfm-loading { color:#888; padding:2rem; text-align:center; }
     @media(max-width:768px){ .top-grid { grid-template-columns:1fr; } }
   `]
@@ -151,6 +161,7 @@ import {
 export class PfmDistributionComponent implements OnInit {
   data?: PfmDistributionResponse;
   loading = true;
+  mostrarTodos = false;
   readonly mesLabel = formatYearMonth(new Date().toISOString().substring(0, 7));
 
   constructor(private pfm: PfmService) {}
@@ -168,6 +179,12 @@ export class PfmDistributionComponent implements OnInit {
 
   get totalGasto(): number {
     return this.data?.distribucion.reduce((s, d) => s + d.totalImporte, 0) ?? 0;
+  }
+
+  // BUG-PO-033: top-5 por defecto, expandible a 10
+  get comerciosVisibles() {
+    const list = this.data?.topComercios ?? [];
+    return this.mostrarTodos ? list : list.slice(0, 5);
   }
 
   get topCategoria() {
