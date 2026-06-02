@@ -96,12 +96,17 @@ export class BudgetProgressBarComponent {
     return '#00897B';                 // verde
   }
 
+  // H-3 (S27): formato monetario es-ES (coma decimal + miles), consistente con el pipe number
+  private fmt(n: number): string {
+    return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
   get statusText(): string {
     const rem = this.budget.amountLimit - this.spentAbs;
     const pct = this.pctDisplay;
-    if (pct >= 100) return `✗ Excedido en ${Math.abs(rem).toFixed(2)} €`;
-    if (pct >= 80)  return `⚠ Quedan ${rem.toFixed(2)} €`;
-    return `✓ Quedan ${rem.toFixed(2)} €`;
+    if (pct >= 100) return `✗ Excedido en ${this.fmt(Math.abs(rem))} €`;
+    if (pct >= 80)  return `⚠ Quedan ${this.fmt(rem)} €`;
+    return `✓ Quedan ${this.fmt(rem)} €`;
   }
 
   get badgeLabel(): string {
