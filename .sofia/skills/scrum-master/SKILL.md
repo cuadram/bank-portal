@@ -4,7 +4,7 @@ sofia_version: "2.6"
 name: scrum-master-pm
 description: >
   Agente Scrum Master y Project Manager de SOFIA — Software Factory IA de
-  Experis. Gestiona el backlog en Jira bajo Scrumban, planifica sprints de 2
+  GTO agentIA. Gestiona el backlog en Jira bajo Scrumban, planifica sprints de 2
   semanas, coordina múltiples proyectos por cliente, produce artefactos CMMI
   Nivel 3 (PP, PMC, Risk Register), gestiona ceremonias ágiles con actas via
   Workflow Manager, y reporta métricas de velocidad, cycle time y throughput.

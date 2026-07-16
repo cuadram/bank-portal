@@ -3,7 +3,7 @@ sofia_version: "2.6"
 # updated: 2026-04-02 — version bump SOFIA v2.6
 name: react-developer
 description: >
-  Agente desarrollador React Frontend de SOFIA — Software Factory IA de Experis.
+  Agente desarrollador React Frontend de SOFIA — Software Factory IA de GTO agentIA.
   Implementa aplicaciones React 18+ con TypeScript estricto, Functional Components,
   Hooks, TanStack Query, Redux Toolkit y Tailwind CSS en arquitectura monorepo Nx.
   Genera componentes, custom hooks, slices Redux, tests Vitest y documentación JSDoc.

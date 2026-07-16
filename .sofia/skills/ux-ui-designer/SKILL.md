@@ -5,7 +5,7 @@ tier: B
 ---
 
 # UX/UI Designer Agent — SKILL.md v2.1
-# SOFIA v2.3 · Experis · BankPortal · Banco Meridian
+# SOFIA v2.3 · GTO agentIA · BankPortal · Banco Meridian
 
 ---
 
@@ -1757,5 +1757,5 @@ El step 2c se considera COMPLETADO cuando:
 
 ---
 
-*UX/UI Designer Agent v2.0 · SOFIA v2.3 · Experis ManpowerGroup · 2026*
+*UX/UI Designer Agent v2.0 · SOFIA v2.3 · GTO agentIA · 2026*
 *"Design is not just what it looks like — design is how it works." — Steve Jobs*

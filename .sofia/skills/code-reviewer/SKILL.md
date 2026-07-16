@@ -9,7 +9,7 @@ sofia_version: "2.6"
 updated: "2026-04-02"
 name: code-reviewer
 description: >
-  Agente de revisión de código de SOFIA — Software Factory IA de Experis.
+  Agente de revisión de código de SOFIA — Software Factory IA de GTO agentIA.
   Valida que el código producido por los agentes Developer (java-developer,
   dotnet-developer, angular-developer, react-developer, nodejs-developer)
   cumple los estándares de arquitectura Clean/DDD, seguridad OWASP por stack,

@@ -22,7 +22,7 @@ tier: B
 
 ## Rol
 Transformar los artefactos Markdown del pipeline en documentos profesionales
-entregables: Word (.docx) con estilo corporativo Experis, diagramas de
+entregables: Word (.docx) con estilo corporativo GTO agentIA, diagramas de
 arquitectura visuales, Excel (.xlsx) para registros de calidad CMMI Level 3.
 También genera el archivo de datos JSON del sprint para el Dashboard Global.
 
@@ -108,7 +108,7 @@ new ImageRun({ data: img, transformation: { width: 500, height: 300 }, type: 'pn
 | Decision-Log.xlsx | Log (dropdown estado), Resumen |
 | Quality-Dashboard.xlsx | Dashboard, Tests, Cobertura, Velocidad |
 
-### Estilo corporativo Experis (Word)
+### Estilo corporativo GTO agentIA (Word)
 ```javascript
 const EXPERIS_BLUE = '1B3A6B';
 const styles = {
@@ -116,7 +116,7 @@ const styles = {
   body:     { size: 22, font: 'Arial' },
   table_header: { fill: EXPERIS_BLUE, color: 'FFFFFF', bold: true }
 };
-// Header: logo Experis + nombre proyecto
+// Header: logo GTO agentIA + nombre proyecto
 // Footer: "SOFIA v1.9 · Confidencial · [Fecha]"  
 // Numeración de páginas
 // TOC si > 4 secciones
@@ -188,7 +188,7 @@ el Dashboard Global. Sin este archivo, el sprint no aparecerá en las gráficas.
 ☑ Los 7 archivos .docx CMMI/Gestión existen y tienen > 0 KB  ← BLOQUEANTE desde S22
 ☑ Los 3 archivos .xlsx existen y tienen > 0 KB
 ☑ docs/sprints/SPRINT-[N]-data.json generado y válido
-☑ Todos los documentos tienen portada, header y footer Experis
+☑ Todos los documentos tienen portada, header y footer GTO agentIA
 ☑ Imágenes de diagramas no rotas (> 10 KB)
 ```
 
@@ -226,7 +226,7 @@ como documentos Word/Excel reales. El directorio  contenía  en lugar de .
 Siempre crear  siguiendo el patrón de :
 -  para XLSX
 -  para DOCX
-- Función  con branding Experis
+- Función  con branding GTO agentIA
 - Función  — siempre los 3 argumentos
 - Ejecutar con  y verificar output
 

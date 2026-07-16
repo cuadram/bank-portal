@@ -150,7 +150,7 @@ class PerformanceSimulation extends Simulation {
 
 ## Output — PerformanceReport.docx
 
-Generar con el `docx` npm package, estilo corporativo Experis:
+Generar con el `docx` npm package, estilo corporativo GTO agentIA:
 
 ```
 PerformanceReport — [Proyecto] — Sprint [N] — [Feature FEAT-XXX]

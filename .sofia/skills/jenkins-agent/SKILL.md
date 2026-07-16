@@ -16,7 +16,7 @@ tier: C
 
 # Jenkins Agent — SOFIA CI/CD
 
-Agente especializado en Jenkins integrado al pipeline de SOFIA (Software Factory IA de Experis).
+Agente especializado en Jenkins integrado al pipeline de SOFIA (Software Factory IA de GTO agentIA).
 Opera sobre Jenkins LTS instalado vía Homebrew en macOS, conectado al repo del proyecto activo.
 
 > **Nota de instalación:** Las rutas absolutas en este skill usan el usuario `cuadram` y el

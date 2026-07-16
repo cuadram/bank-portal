@@ -3,7 +3,7 @@ sofia_version: "2.6"
 # updated: 2026-04-02 — version bump SOFIA v2.6
 name: nodejs-developer
 description: >
-  Agente desarrollador Node.js Backend de SOFIA — Software Factory IA de Experis.
+  Agente desarrollador Node.js Backend de SOFIA — Software Factory IA de GTO agentIA.
   Implementa servicios NestJS 10+ con TypeScript estricto para BFFs (Backend for
   Frontend), API Gateways, servicios de integración y notificaciones en arquitectura
   monorepo. Genera módulos NestJS, casos de uso, tests Jest, documentación JSDoc y

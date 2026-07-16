@@ -7,13 +7,18 @@ assigned_in: SC-41 (S03 Step 3 sub-paso 3.6 · Fase 1)
 promoted_la: LA-CORE-074
 name: stabilization-planner
 sofia_version: "2.6"
-version: "1.0"
+version: "1.1"
 created: "2026-04-06"
-updated: "2026-04-06"
+updated: "2026-06-06"
 pipeline_type: "takeover"
 pipeline_step: "T-5"
 gate: "GT-5"
 changelog: |
+  v1.1 (2026-06-06) — Alineación a org-baseline Schema v2 (ADR-006 · S15 SC-111).
+    El alta del proyecto pasa de `projects.[P]` (v1) a `tenant_state.projects.[P]` (v2)
+    con shape PENDING (convención alta-sin-métricas §2.4) + registro en
+    MANIFEST.multisf.tenant_registry. Campos bootstrap reubicados bajo `_bootstrap{}`.
+    COMPAT: MINOR (solo pipeline_type:takeover · sin impacto pipeline development).
   v1.0 (2026-04-06) — Creación inicial.
     Step T-5 del Pipeline Takeover — cierre del Sprint 0.
     Agente sintetizador: compila outputs de T-1 a T-4 en el Baseline Document.
@@ -266,7 +271,7 @@ y técnico accesible — el cliente no necesita ser técnico para entenderlo.
 **Proyecto:** [nombre]
 **Cliente:** [cliente]
 **Fecha de baseline:** [DATE]
-**Elaborado por:** Experis — SOFIA Sprint 0 Takeover
+**Elaborado por:** GTO agentIA — SOFIA Sprint 0 Takeover
 **Versión:** 1.0
 
 ---
@@ -446,7 +451,7 @@ Estos son los indicadores base para medir la mejora del servicio Experis.
 
 ---
 
-*Elaborado con SOFIA v2.6 · Experis Sprint 0 Takeover*
+*Elaborado con SOFIA v2.6 · GTO agentIA Sprint 0 Takeover*
 *Artefactos de referencia: T1-INVENTORY.md · T2-QUALITY-BASELINE.md ·*
 *T3-FA-DRAFT.md · T4-GOVERNANCE-GAP.md · T4-ADOPTION-ROADMAP.md*
 ```
@@ -571,26 +576,50 @@ y prepara el pipeline para el Sprint 1 estándar de SOFIA.
 7. Registrar en sofia.log: SPRINT-0 CLOSED · GT-5 CLIENTE APROBADO
 ```
 
-**Actualización del org-baseline.json:**
+**Actualización del org-baseline.json (Schema v2 · ADR-006):**
+
+El proyecto recién cerrado se da de alta en `tenant_state.projects` con **estado PENDING**
+(convención alta-sin-métricas · ADR-006 §2.4): aún no tiene ≥1 ciclo medido, por lo que sus
+`PM001`–`PM006` van en `null`/`N/A` y queda **excluido del agregado** `tenant_state.org_baseline`
+hasta el primer ciclo medido. Los datos de bootstrap se preservan bajo `_bootstrap{}`.
 
 ```json
 {
-  "projects": {
-    "[PROYECTO_NUEVO]": {
-      "project": "[nombre]",
-      "client": "[cliente]",
-      "pipeline_type": "takeover",
-      "sprint_zero_completed": true,
-      "sprint_zero_date": "ISO_DATE",
-      "baseline_quality_semaphore": "GREEN|AMBER|RED",
-      "baseline_cmmi_level": N,
-      "baseline_functionalities": N,
-      "baseline_vel_s1_evolutivos": N,
-      "updated_at": "ISO_TIMESTAMP"
+  "tenant_state": {
+    "projects": {
+      "[PROYECTO_NUEVO]": {
+        "project": "[nombre]",
+        "client": "[cliente]",
+        "pipeline_type": "takeover",
+        "metrics_pending": true,
+        "bootstrap_only": true,
+        "registered_in": "[SXX SC-YYY]",
+        "updated_at": "ISO_TIMESTAMP",
+        "PM001": { "mean": null, "p90": null, "trend": "n/a", "current_status": "N/A", "metrics_pending": true },
+        "PM002": { "mean": null, "p90": null, "trend": "n/a", "current_status": "N/A", "metrics_pending": true },
+        "PM003": { "mean": null, "p90": null, "trend": "n/a", "current_status": "N/A", "metrics_pending": true },
+        "PM004": { "mean": null, "p90": null, "trend": "n/a", "current_status": "N/A", "metrics_pending": true },
+        "PM005": { "mean": null, "p90": null, "trend": "n/a", "current_status": "N/A", "metrics_pending": true },
+        "PM006": { "mean": null, "p90": null, "trend": "n/a", "current_status": "N/A", "metrics_pending": true },
+        "_bootstrap": {
+          "sprint_zero_completed": true,
+          "sprint_zero_date": "ISO_DATE",
+          "baseline_quality_semaphore": "GREEN|AMBER|RED",
+          "baseline_cmmi_level": N,
+          "baseline_functionalities": N,
+          "baseline_vel_s1_evolutivos": N
+        }
+      }
     }
   }
 }
 ```
+
+> **Registro doble (obligatorio):** además del alta en `tenant_state.projects`, registrar el
+> tenant en `MANIFEST.multisf.tenant_registry` con `has_metrics:false` y `metrics_pending:true`.
+> **No** tocar el agregado `tenant_state.org_baseline`. **No** escribir en root legacy `projects`
+> (artefacto congelado de ventana de migración). GR-CORE-026: el alta vive en el CORE, no en la
+> sesión del proyecto cliente.
 
 ---
 

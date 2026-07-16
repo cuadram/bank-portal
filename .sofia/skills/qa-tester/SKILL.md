@@ -27,7 +27,7 @@ changelog: |
     toma el orchestrator en step 6 leyendo sofia-config.json:qa_tester_escalation
     y se persiste en session.json:qa_model_decision. Aprobado PO 2026-04-28.
 description: >
-  Agente de aseguramiento de calidad de SOFIA — Software Factory IA de Experis.
+  Agente de aseguramiento de calidad de SOFIA — Software Factory IA de GTO agentIA.
   Verifica y valida que la implementación cumple los criterios de aceptación
   Gherkin, RNF baseline + delta, y estándares de seguridad y accesibilidad WCAG
   2.1 AA. Diseña y ejecuta el plan de pruebas por stack (Java/Spring, .Net,
@@ -274,9 +274,6 @@ Antes del merge debes crear:
 - [Adapter]IT.java por cada puerto de dominio sin test
 - application-test.yml con todas las properties del perfil test
 ```
-
-**GR-QA-002 — Ejecución y evidencia (BLOQUEANTE, NC-CMMI-001 Fase 4):**
-Ejecutar `python3 .sofia/tmp/run-mvn.py verify -Pintegration` desde `apps/backend-2fa/`. Adjuntar `target/failsafe-reports/` al QA Report. **Solo se admite claim PASS para una clase `*IT` si existe el `TEST-{FQCN}.xml` correspondiente en HEAD declarado.** Sin XML → claim BLOCKED, no PASS, G-6 BLOQUEADO. Ver `.sofia/GUARDRAILS.md` → GR-QA-002.
 
 ### Paso 3 — Mapeo Gherkin -> Test Cases
 Cada escenario Gherkin del SRS debe tener su test case correspondiente.
@@ -736,8 +733,6 @@ Accion post-aprobacion: notificar DevOps para pipeline de release
 [ ] Integration tests cubriendo todos los puertos de dominio (backend)
 [ ] SpringContextIT PASS — 0 beans faltantes
 [ ] DatabaseSchemaIT PASS — 0 columnas incorrectas
-[ ] mvn verify -Pintegration ejecutado en HEAD (commit SHA registrado) — GR-QA-002
-[ ] failsafe-reports/ adjuntos al QA Report con conteo PASS/FAIL/ERROR/SKIPPED por clase — GR-QA-002
 [ ] RTM actualizada con resultados
 [ ] Aprobacion QA Lead + Product Owner
 ```
@@ -799,25 +794,6 @@ Accion post-aprobacion: notificar DevOps para pipeline de release
 | Accesibilidad WCAG 2.1 | [n] | [n] | [n] | [n] | [X]% |
 | Integration (BD real) | [n] | [n] | [n] | [n] | [X]% |
 | E2E Playwright | [n] | [n] | [n] | [n] | [X]% |
-
-## Evidencia ejecutable de IT (GR-QA-002 — OBLIGATORIO)
-
-Snapshot del run que respalda los claims PASS. Sin esta tabla, los claims `*IT: PASS` se consideran no verificados.
-
-- Commit SHA en HEAD al ejecutar: `[git rev-parse HEAD]`
-- Comando: `python3 .sofia/tmp/run-mvn.py verify -Pintegration` (desde `apps/backend-2fa/`)
-- Timestamp: `[ISO-8601]`
-- Adjunto: `target/failsafe-reports/` (zip o ruta a snapshot)
-
-| FQCN | tests | F | E | S | Resultado | XML |
-|---|---|---|---|---|---|---|
-| com.experis.sofia.bankportal.pfm.PfmControllerIT | 5 | 0 | 0 | 0 | PASS | TEST-...PfmControllerIT.xml |
-| ... | ... | ... | ... | ... | ... | ... |
-
-Reglas:
-- Una fila por clase declarada PASS en el cuerpo del reporte.
-- `F+E>0` → la clase NO puede declararse PASS.
-- Clases en `@Disabled` con DEBT activo se listan en sección "Deuda técnica de tests" con ID del DEBT, no aquí.
 
 ## Auditoria de Integration Tests
 

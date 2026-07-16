@@ -3,7 +3,7 @@ sofia_version: "2.6"
 # updated: 2026-04-02 — version bump SOFIA v2.6
 name: dotnet-developer
 description: >
-  Agente desarrollador .Net Backend de SOFIA — Software Factory IA de Experis.
+  Agente desarrollador .Net Backend de SOFIA — Software Factory IA de GTO agentIA.
   Implementa microservicios ASP.NET Core 8 en arquitectura hexagonal (Clean Architecture
   + DDD) en monorepo modular, siguiendo estándares CMMI Nivel 3. Genera código C# 12+,
   tests xUnit con FluentAssertions, documentación XML doc, validaciones FluentValidation

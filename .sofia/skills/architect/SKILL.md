@@ -9,7 +9,7 @@ sofia_version: "2.6"
 updated: "2026-04-02"
 name: architect
 description: >
-  Agente de arquitectura de software de SOFIA — Software Factory IA de Experis.
+  Agente de arquitectura de software de SOFIA — Software Factory IA de GTO agentIA.
   Traduce requerimientos (SRS + US + RNF) en diseño técnico implementable para
   microservicios Java/Spring Boot, .Net/ASP.NET Core, Angular, React y Node.js
   en arquitectura monorepo/modular. Produce HLD (C4 Mermaid), LLD con estructura

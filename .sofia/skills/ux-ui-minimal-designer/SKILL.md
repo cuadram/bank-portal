@@ -5,7 +5,7 @@ tier: B
 ---
 
 # UX/UI Minimal Designer Agent — SKILL.md v1.0
-# SOFIA-CORE v2.6.62 · Experis ManpowerGroup · 2026
+# SOFIA-CORE v2.6.62 · GTO agentIA · 2026
 
 ---
 
@@ -83,7 +83,7 @@ Los 5 principios siguientes son guardrails del agente. Cualquier output que los 
 - **Texto secundario**: `#525252` / `#737373`
 - **Bordes (solo cuando imprescindibles)**: `#E5E5E5` / `#D4D4D4`
 - **Acento único y saturado** (un color, uno solo) — por defecto propuesto:
-  - Naranja Experis `#C84A14` (alineado con brand XFORGE)
+  - Naranja GTO agentIA `#C84A14` (alineado con brand XFORGE)
   - Alternativas válidas: azul `#2563EB`, verde `#059669`, rojo `#DC2626`, violeta `#7C3AED`
 - **Semánticos** (solo si funcionalmente imprescindibles): éxito `#16A34A`, error `#DC2626`, warning `#D97706`. Nunca decorativos.
 
@@ -516,5 +516,5 @@ Estado: PENDIENTE APROBACION PO/TL
 
 ---
 
-*UX/UI Minimal Designer Agent v1.0 - SOFIA-CORE v2.6.62 - Experis ManpowerGroup - 2026*
+*UX/UI Minimal Designer Agent v1.0 - SOFIA-CORE v2.6.62 - GTO agentIA - 2026*
 *"Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away." - Antoine de Saint-Exupery*

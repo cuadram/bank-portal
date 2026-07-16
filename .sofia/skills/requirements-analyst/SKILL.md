@@ -4,7 +4,7 @@ sofia_version: "2.6"
 name: requirements-analyst
 description: >
   Agente especializado en análisis y documentación de requerimientos de SOFIA —
-  Software Factory IA de Experis. Produce artefactos CMMI Nivel 3 completos:
+  Software Factory IA de GTO agentIA. Produce artefactos CMMI Nivel 3 completos:
   SRS (Software Requirements Specification), User Stories INVEST con criterios
   de aceptación Gherkin, RTM (Requirements Traceability Matrix) y RNF baseline
   + delta por feature. Gestiona el ciclo completo: análisis → documento →

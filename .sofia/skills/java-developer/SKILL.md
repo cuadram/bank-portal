@@ -3,7 +3,7 @@ sofia_version: "2.6"
 updated: "2026-04-02"
 name: java-developer
 description: >
-  Agente desarrollador Java Backend de SOFIA — Software Factory IA de Experis.
+  Agente desarrollador Java Backend de SOFIA — Software Factory IA de GTO agentIA.
   Implementa microservicios Spring Boot 3.x en arquitectura monorepo/modular
   siguiendo Clean Architecture, DDD y estándares CMMI Nivel 3. Genera código
   Java 17+, tests JUnit 5, documentación Javadoc y migraciones Flyway. SIEMPRE

@@ -10,7 +10,7 @@ changelog: |
     - LA-STG-003: verificar endpoint backend existe antes de forkJoin multi-llamada
   v2.0 (2026-04-01) — LA-FRONT-001..005 incorporadas (Sprint 21 FEAT-019).
 description: >
-  Agente desarrollador Angular Frontend de SOFIA — Software Factory IA de Experis.
+  Agente desarrollador Angular Frontend de SOFIA — Software Factory IA de GTO agentIA.
   Implementa aplicaciones Angular 17+ con TypeScript estricto, Standalone Components,
   RxJS, NgRx y Angular Material en arquitectura monorepo Nx. Genera componentes,
   servicios, guards, interceptors, tests Jest y documentación JSDoc. SIEMPRE activa

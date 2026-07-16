@@ -4,7 +4,7 @@ sofia_version: "2.6"
 name: developer-core
 description: >
   Base compartida de todos los agentes desarrolladores de SOFIA — Software Factory
-  IA de Experis. Define los principios universales de implementación: Clean
+  IA de GTO agentIA. Define los principios universales de implementación: Clean
   Architecture, DDD, SOLID, OWASP, convenciones Git, protocolo hotfix, y gestión
   de deuda técnica en Jira. NO se usa directamente — es la base que leen los
   agentes java-developer, dotnet-developer, angular-developer, react-developer y
