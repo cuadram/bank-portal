@@ -400,7 +400,7 @@ function main() {
   if (!ORG_EXT_PATH) {
     blank();
     log('NOTA: Define SOFIA_ORG_PATH para baseline cross-proyecto externo.');
-    log('      Ej: export SOFIA_ORG_PATH=/Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE/sofia-org');
+    log('      Ej: export SOFIA_ORG_PATH=/Users/cuadram/proyectos/SOFIA-CORE-PROD/sofia-org');
   }
 }
 

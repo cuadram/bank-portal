@@ -27,7 +27,7 @@ LOG     = ROOT / '.sofia' / 'sofia.log'
 # Ruta a SOFIA-CORE (para verificar sincronía de LESSONS_LEARNED_CORE.md)
 CORE_CANDIDATES = [
     _SCRIPT_DIR.parent.parent.parent / 'SOFIA-CORE',                     # OneDrive/WIP/SOFIA-CORE
-    Path.home() / 'Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE',
+    Path.home() / 'proyectos/SOFIA-CORE-PROD',
     Path.home() / 'OneDrive/WIP/SOFIA-CORE',
 ]
 

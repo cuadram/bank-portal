@@ -295,7 +295,7 @@ Skills:    .sofia/skills/fa-agent/SKILL.md (leer para detalle completo)
 
 ## SOFIA-CORE
 
-Framework: /Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE
+Framework: /Users/cuadram/proyectos/SOFIA-CORE-PROD
 
 ## REPOSITORIO GIT
 - **Remote:** https://github.com/cuadram/bank-portal.git

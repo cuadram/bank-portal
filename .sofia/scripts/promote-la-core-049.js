@@ -2,7 +2,7 @@
 const fs = require('fs');
 const now = new Date().toISOString();
 
-const CORE = '/Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE';
+const CORE = '/Users/cuadram/proyectos/SOFIA-CORE-PROD';
 const PROJECT = '/Users/cuadram/proyectos/bank-portal';
 const NEW_VERSION = '2.6.44';
 

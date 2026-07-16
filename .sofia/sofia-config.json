@@ -396,7 +396,7 @@
     ],
     "cmmi_pa": "MA",
     "enables_l4_qpm": true,
-    "sofia_org_path": "/Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE/sofia-org"
+    "sofia_org_path": "/Users/cuadram/proyectos/SOFIA-CORE-PROD/sofia-org"
   },
   "repository": {
     "remote": "https://github.com/cuadram/bank-portal.git",

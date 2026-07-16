@@ -45,7 +45,7 @@ const fs   = require('fs');
 const path = require('path');
 
 // ── Configuración ──────────────────────────────────────────────────────────
-const SOFIA_CORE     = '/Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE';
+const SOFIA_CORE     = '/Users/cuadram/proyectos/SOFIA-CORE-PROD';
 const PROJECT_ROOT   = process.cwd();
 const SOFIA_DIR      = path.join(PROJECT_ROOT, '.sofia');
 const SESSION_PATH   = path.join(SOFIA_DIR, 'session.json');

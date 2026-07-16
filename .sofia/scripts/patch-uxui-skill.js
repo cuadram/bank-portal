@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const CORE = '/Users/cuadram/Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE';
+const CORE = '/Users/cuadram/proyectos/SOFIA-CORE-PROD';
 const PROJECT = '/Users/cuadram/proyectos/bank-portal';
 
 const PASO0_BLOCK = `

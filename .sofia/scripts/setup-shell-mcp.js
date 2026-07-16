@@ -28,7 +28,7 @@ const SOFIA_CORE = path.resolve(__dirname, "..", "..", "..", "..", "SOFIA-CORE")
 // Fallback: ruta conocida si el script se ejecuta desde un proyecto en OneDrive
 const SOFIA_CORE_FALLBACK = path.join(
   process.env.HOME,
-  "Library/CloudStorage/OneDrive-Personal/WIP/SOFIA-CORE"
+  "proyectos/SOFIA-CORE-PROD"
 );
 
 const CORE_DIR = fs.existsSync(SOFIA_CORE) ? SOFIA_CORE : SOFIA_CORE_FALLBACK;
