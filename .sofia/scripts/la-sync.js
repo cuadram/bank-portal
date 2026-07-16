@@ -45,7 +45,16 @@ const fs   = require('fs');
 const path = require('path');
 
 // ── Configuración ──────────────────────────────────────────────────────────
-const SOFIA_CORE     = '/Users/cuadram/proyectos/SOFIA-CORE-PROD';
+// SC-153 (D-S24-G2-APPROVED): resolver SOFIA_CORE por env/config, no hardcode. Precedencia: env -> sofia-config.json.sofia_core_path -> fallback PROD.
+function resolveSofiaCore() {
+  if (process.env.SOFIA_CORE && fs.existsSync(process.env.SOFIA_CORE)) return fs.realpathSync(process.env.SOFIA_CORE);
+  try {
+    const _cfg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'sofia-config.json'), 'utf8'));
+    if (_cfg.sofia_core_path && fs.existsSync(_cfg.sofia_core_path)) return fs.realpathSync(_cfg.sofia_core_path);
+  } catch (_) {}
+  return '/Users/cuadram/proyectos/SOFIA-CORE-PROD';
+}
+const SOFIA_CORE = resolveSofiaCore();
 const PROJECT_ROOT   = process.cwd();
 const SOFIA_DIR      = path.join(PROJECT_ROOT, '.sofia');
 const SESSION_PATH   = path.join(SOFIA_DIR, 'session.json');

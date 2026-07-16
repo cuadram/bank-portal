@@ -1,4 +1,5 @@
 {
+  "sofia_core_path": "/Users/cuadram/proyectos/SOFIA-CORE-PROD",
   "_comment": "SOFIA v2.5 — Configuración del proyecto. Editar con: python3 .sofia/scripts/sofia-wizard.py --update",
   "sofia_version": "2.7",
   "project": "bank-portal",
