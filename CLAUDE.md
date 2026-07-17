@@ -258,6 +258,7 @@ sofia-shell:run_command(command="<comando>")
 - GR-011: Dashboard regenerado en cada gate (gen-global-dashboard.js)
 - GR-012: Step 3b OBLIGATORIO post G-3
 - GR-013: verify-persistence.js BLOQUEANTE en cada step
+- GR-ADV-001 (BLOQUEANTE pre-gate con veredicto): verificacion adversarial OBLIGATORIA antes de solicitar aprobacion de un gate que emite veredicto de calidad/correctness (minimo G-3, G-5, G-6; recomendado G-7). Panel de >=3 subagentes independientes con mandato explicito de REFUTAR el veredicto (lentes: correctness/concurrencia, seguridad, evidencia/QA). Hallazgos CONFIRMADOS bloquean el gate hasta corregirse o registrarse como deuda aceptada por PO; refutados/residuales se documentan. Panel y hallazgos -> session.json.audit_log + report del step. Origen: LA-027-13 (S27: DEBT-067 starvation + DEBT-066 cobertura detectados por panel tras un APROBADO limpio single-pass).
 - GR-016: Application handlers NO importan Infrastructure (Clean Architecture)
 - GR-QA-001: RESERVADO (placeholder NC-CMMI-001, sin contenido funcional)
 - GR-QA-002 (BLOQUEANTE QA Tester G-6, NC-CMMI-001 F4): todo *Test/*IT declarado PASS exige
@@ -269,6 +270,7 @@ sofia-shell:run_command(command="<comando>")
 ## Reglas críticas
 
 - Nunca auto-aprobar un gate HITL
+- GR-ADV-001: verificacion adversarial antes de CADA gate con veredicto — nunca presentar un APROBADO single-pass sin panel de refutacion previo (LA-027-13)
 - Leer session.json desde DISCO en cada sesión (LA-018-01) — nunca desde memoria
 - Gate 8b: 5 pasos OBLIGATORIOS — nunca omitir validate-fa-completeness.py
 - Doc Agent: 17 DOCX + 3 XLSX REALES (nunca .md — LA-022-08)

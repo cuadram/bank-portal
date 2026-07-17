@@ -290,6 +290,12 @@ Datos de prueba: SEED-BD
 4. Instruir: "Al completar, actualiza session.json y sofia.log"
 5. Esperar bloque ✅ PERSISTIDO del agente
 6. Verificar: completed_steps contiene step N en session.json
+6b. VERIFICACION ADVERSARIAL (GR-ADV-001) — OBLIGATORIA antes de presentar un gate con veredicto (G-3/G-5/G-6; recomendado G-7):
+   - Lanzar panel de >=3 subagentes (Task) independientes con mandato explicito de REFUTAR el veredicto del step.
+   - Lentes distintas: correctness/concurrencia, seguridad, evidencia/QA (integridad de tests y reproducibilidad).
+   - Los hallazgos CONFIRMADOS bloquean el gate hasta corregirse o registrarse como deuda aceptada por PO.
+   - Registrar panel + hallazgos en session.json.audit_log y en el report del step.
+   - NO presentar un APROBADO single-pass sin esta pasada.
 7. Si gate HITL: gate_pending, DETENER y esperar aprobacion explicita
 8. Solo con aprobacion confirmada: avanzar al siguiente step
 ```
@@ -629,7 +635,7 @@ node .sofia/scripts/gen-global-dashboard.js --gate G-[N] --step [N]
 2. Nunca continuar si gate HITL pendiente — SIEMPRE pedir aprobacion explicita
 3. Siempre pasar contexto completo al delegar
 4. Nunca escribir codigo — delegar al developer skill
-5. Nunca aprobar gates por cuenta propia
+5. Nunca aprobar gates por cuenta propia; antes de presentar un gate con veredicto, ejecutar verificacion adversarial (GR-ADV-001) y bloquear ante hallazgos confirmados
 6. Siempre actualizar session.json antes y despues de cada delegacion
 7. Si cve_critical > 0 en Step 5b → pipeline BLOQUEADO
 8. **FA-Agent SIEMPRE en gates 2b, 3b, 8b. Gate 8b: docx_verified + validate-fa-completeness.py OBLIGATORIO.**
