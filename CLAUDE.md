@@ -123,42 +123,37 @@ Si una feature exige un servicio independiente real, debe abrirse ADR explícito
 ## Estado actual del proyecto
 
 ```
-Sprint 26 CERRADO · FEAT-024 Objetivos de Ahorro · v1.26.0 · 24/24 SP · 617 SP acumulados
-- Tests: 147 backend + 6 E2E PASS · 1.189 acumulados · cobertura 87,2% línea / 84,3% instrucciones
-- Defectos en producción: 0 (27 sprints consecutivos)
-- CMMI L3: 9/9 PAs evidenciadas · 17 DOCX + 3 XLSX + 1 JSON entregables Step 8
-- Hallazgos Step 7 (verificación visual PO): 4/4 resueltos en sprint · 0 deferred a S26 cliente
-  - DR-S26-007 (B.4 retry 409) · DR-S26-008 (auth guard + multi-cuenta selector)
-  - DEBT-Q-073 + DEBT-FE-074 + DEBT-FE-075 abiertas para S27
-- Lessons Learned: 11 LAs (LA-026-01..11)
-  - 3 promovidas a SOFIA-CORE (LA-CORE-065/066/067)
-  - 5 candidatas previas pendientes decision=None (LA-026-04..08)
-  - 3 NUEVAS sofia_core_candidate=true desde NC-CMMI-001 F5 (LA-026-09/10/11)
-  - 2 guardrail-proposals deferred S04 SOFIA-CORE (GR-SHELL-002, GR-FE-002)
-- Confluence: páginas 24805378 (Resultados) + 24838145 (Retrospectiva)
-- FA-Agent: FA Word v0.13 · 88,7 KB · 108 funcionalidades · 248 reglas de negocio · S1–S26
-- Jira sprint 497: cierre vía UI manual por PO (LA-025-10 / GR-ATLASSIAN-001)
+Sprint 27 EN CURSO (in_progress) · Feature "S27-saneamiento+deudas" · Step 4 (DEVELOP) · SOFIA v2.7
+Objetivo: estabilizar la suite de integración y la config multi-perfil post NC-CMMI-001; saldar
+deuda priorizada; dejar el pipeline listo para feature en S28.
+Capacidad 14 SP (23 SP planificados en Jira · tablero Sprint 27 activo, id 1091).
+Sin gate pendiente · release NO bloqueado · rama activa: develop
 
+Trabajo en curso — tech debts SCRUM-175..180:
+- 175 · DEBT-062  acta de cierre del lifecycle IT
+- 176 · DEBT-064  migrar 4 IT Testcontainers → integration-compose (BLOQUEADA, fallback S28)
+- 177 · DEBT-065  renombrar 5 *IT → *Test
+- 178 · DEBT-054  validador YAML de profiles + bloqueo G-4b
+- 179 · DEBT-053  paginación AutoContributionScheduler
+- 180 · DEBT-059  mensaje de excepción en savings (CWE-209)
+Camino restante hasta cierre: G-5 Code Review → G-5b Security → G-6 QA (BLOQUEANTE,
+  mvn verify -Pintegration con evidencia) → G-7 → G-8 → Step 9.
+BUG-PO FEAT-023: campaña completa y pusheada (origin/develop=87a5d32).
+  Jira SCRUM-181 (menores) + SCRUM-182 (mayores) → Finalizadas (DoD verificado por PO).
+
+Métricas acumuladas: 617 SP · 1.189 tests · 87,2% cobertura línea / 84,3% instrucciones ·
+  0 defectos en producción · 0 NC el último sprint
+Seguridad: semáforo VERDE · 0 CVE crítico/alto · PCI-DSS + GDPR OK (última auditoría 2026-05-08)
+CMMI L3 activo · última auditoría 48/49 (98%) APPROVED · 9/9 PAs de proyecto evidenciadas
+Deudas: 18 abiertas · Dashboard: docs/dashboard/bankportal-dashboard.html (regenerado 2026-07-16)
+
+--- Contexto histórico: Sprint 26 CERRADO ---
+Sprint 26 CERRADO · FEAT-024 Objetivos de Ahorro · v1.26.0 · 24/24 SP
 NC-CMMI-001 CERRADA end-to-end 2026-05-28 (Major, 6 fases, 9 commits 346cb26→e6c28f4)
-- Causa raíz: maven-failsafe-plugin ausente + Jenkinsfile -Pintegration-tests perfil fantasma
-  → 22/22 *IT.java huérfanos del lifecycle en S18-S26 (S20/S23 limpios; S25 falsificado DEBT-055)
-- Impacto producto NULO. Post-remediación: 22/22 IT ejecutables, 13 PASS / 44 @Test verdes /
-  9 @Disabled con DEBT registrada / 0 fail / 0 err. Build verde mvn verify -Pintegration.
-- origin/develop=205e171 (merge --no-ff hotfix/qa-audit-s18-s26) · tag audit/NC-CMMI-001-closed
-- Rama hotfix/qa-audit-s18-s26 conservada local+remoto (mantener 1-2 sprints, luego borrar)
-- Cliente Banco Meridian notificado por email daniel@nemtec.es 2026-05-28T21:45Z (variante A)
-- Acta formal: docs/audit/QA-AUDIT-S18-S26/06-nc-closure.md
-
-Balance debts post-NC: 8 OPEN / 6 CLOSED de 15
-- Cerradas NC: DEBT-055, DEBT-056, DEBT-061, DEBT-062
-- Diferidas S27: DEBT-063 (TIN/TAE gate legal offline), DEBT-064 (4 IT Testcontainers vs daemon
-  29.4.1, migrar a integration-compose), DEBT-065 (5 @WebMvcTest renombrar a *Test surefire)
-
-Sprint 27 pendiente definición PO · FEAT-025 TBD
-- Inputs S27 identificados: DEBT-Q-073/FE-074/FE-075 + DEBT-063/064/065 + 21 BUG-PO diferidos
-  S26 + decisión 9 ramas obsoletas feature/FEAT-XXX-sprintNN S2-S14 mergeadas
-- Acción pendiente sesión dedicada: promoción LA-026-09/10/11 a SOFIA-CORE
-  (sofia-contribute.py --accept) cuando SOFIA-CORE limpio (hoy feature/sprint-arq-S14 in-flight)
+- Causa raíz: maven-failsafe-plugin ausente + perfil fantasma -Pintegration-tests en Jenkinsfile
+  → 22/22 *IT.java huérfanos del lifecycle en S18-S26 (S25 falsificado, DEBT-055). Impacto producto NULO.
+- Post-remediación: 22/22 IT ejecutables, build verde mvn verify -Pintegration. Cliente notificado 2026-05-28.
+FA-Agent: FA Word v0.13 · 108 funcionalidades · 248 reglas de negocio · S1–S26
 ```
 
 ## ⚠️ PROTOCOLO OBLIGATORIO — STEP 8b (FA-Agent Gate 8b)
@@ -302,7 +297,7 @@ Framework: /Users/cuadram/proyectos/SOFIA-CORE-PROD
 - **Provider:** GitHub (public)
 - **Rama main:** main
 - **Rama develop:** develop
-- **Rama activa sprint:** develop (Sprint 26 cerrado · v1.26.0 release · próximo S27 abre rama feature/FEAT-025-sprint27 desde develop tras planning PO)
+- **Rama activa sprint:** develop (Sprint 27 en curso · saneamiento+deudas · tech debts SCRUM-175..180 · sin gate pendiente)
 - **Branching model:** feature/FEAT-XXX-sprintYY desde develop
 - **Guardrail:** GR-CORE-030 (Gate 1 bloqueante)
 
