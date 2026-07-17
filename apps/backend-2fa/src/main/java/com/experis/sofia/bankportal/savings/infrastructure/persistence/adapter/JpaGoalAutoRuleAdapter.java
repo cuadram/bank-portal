@@ -6,23 +6,17 @@ import com.experis.sofia.bankportal.savings.infrastructure.persistence.entity.Go
 import com.experis.sofia.bankportal.savings.infrastructure.persistence.jpa.JpaGoalAutoRuleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Adapter JPA — implementa {@link GoalAutoRuleRepositoryPort}.
- *
- * <p>{@code findDueForExecution(now)} se mapea a la query derivada
- * {@code findByActiveTrueAndNextExecutionAtLessThanEqual} (LLD §6.2: el
- * scheduler procesa todas las reglas con next_execution_at &lt;= now).</p>
- *
- * @author SOFIA Developer Agent · FEAT-024 Sprint 26 · Fase D
+ * Adapter JPA que implementa GoalAutoRuleRepositoryPort.
+ * findDueForExecutionAfter usa keyset (seek) via findDueAfterCursor (DEBT-067).
  */
 @Component
 @Primary
@@ -48,17 +42,15 @@ public class JpaGoalAutoRuleAdapter implements GoalAutoRuleRepositoryPort {
     }
 
     @Override
-    public Page<GoalAutoRule> findDueForExecution(Instant now, Pageable pageable) {
-        return jpa.findByActiveTrueAndNextExecutionAtLessThanEqual(now, pageable)
-                .map(this::toDomain);
+    public List<GoalAutoRule> findDueForExecutionAfter(Instant now, Instant afterNextExec, UUID afterId, int limit) {
+        return jpa.findDueAfterCursor(now, afterNextExec, afterId, PageRequest.of(0, limit))
+                .stream().map(this::toDomain).toList();
     }
 
     @Override
     public void deleteById(UUID id) {
         jpa.deleteById(id);
     }
-
-    // ── Mapeo Entity ↔ Domain ────────────────────────────────────────────────
 
     private GoalAutoRule toDomain(GoalAutoRuleEntity e) {
         GoalAutoRule r = new GoalAutoRule();

@@ -9,17 +9,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -28,30 +23,27 @@ import java.util.UUID;
  * <p>Cada noche a las 02:00 UTC busca las reglas activas con
  * {@code next_execution_at <= now()} y delega cada una en
  * {@link ProcessAutoRuleUseCase}. La proteccion por replica viene de ShedLock
- * sobre la tabla {@code shedlock} (V31, originalmente V18c).</p>
+ * sobre la tabla {@code shedlock} (V31).</p>
  *
- * <p><b>Diseno de iteracion (DEBT-053, LLD §11):</b> lectura paginada via
- * {@link GoalAutoRuleRepositoryPort#findDueForExecution(Instant, Pageable)}
- * con tamano {@code bank.savings.auto.page-size}. Como procesar una regla
- * avanza su {@code next_execution_at} (sale del conjunto due), el bucle
- * <b>drena re-leyendo la pagina 0</b> hasta agotar; NO usa
- * {@code page.nextPageable()} (que saltaria reglas al encoger el conjunto; LA-027-06).
- * Un {@code Set<UUID>} de reglas ya intentadas evita reprocesar en bucle las que
- * fallan (no avanzan su next_execution_at por el rollback REQUIRES_NEW). Cada
- * regla se procesa en una transaccion REQUIRES_NEW propia (LLD §9): un fallo
- * aislado no aborta el ciclo (RN-F024-04).</p>
+ * <p><b>Diseno de iteracion (DEBT-053 + DEBT-067, LLD 11):</b> paginacion por
+ * <b>keyset (seek)</b> sobre la clave {@code (next_execution_at, id)}. El cursor
+ * avanza SIEMPRE hacia delante, asi que cada regla due se intenta exactamente una
+ * vez y las reglas <i>pegajosas</i> (las que no avanzan su next_execution_at:
+ * goal inactivo, excepcion con rollback REQUIRES_NEW, idempotencia) quedan detras
+ * del cursor y no vuelven a materializarse en la pagina. Esto elimina la
+ * <b>starvation</b> del drain-pagina-0 anterior (LA-027-06): ninguna regla sana
+ * queda sin intentar aunque haya mas de page-size reglas pegajosas en cabeza del
+ * orden. Cada regla se procesa en una transaccion REQUIRES_NEW propia (LLD 9):
+ * un fallo aislado no aborta el ciclo (RN-F024-04).</p>
  *
- * <p><b>Cota conocida:</b> con &gt; page-size reglas de fallo persistente en
- * cabeza del orden, las posteriores se difieren al siguiente ciclo nocturno
- * (sin perdida; siguen due). Para escala extrema la evolucion seria un cursor
- * keyset por (next_execution_at, id). Ver LA-027-06.</p>
- *
- * @author SOFIA Developer Agent · FEAT-024 Sprint 26 · Fase D
+ * @author SOFIA Developer Agent · FEAT-024 Sprint 26 · Fase D · DEBT-067 Sprint 27
  */
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class AutoContributionScheduler {
+
+    private static final UUID MIN_UUID = new UUID(0L, 0L);
 
     private final GoalAutoRuleRepositoryPort ruleRepo;
     private final ProcessAutoRuleUseCase processRule;
@@ -59,11 +51,6 @@ public class AutoContributionScheduler {
     @Value("${bank.savings.auto.page-size:200}")
     private int pageSize;
 
-    /**
-     * Ejecucion programada diaria. El cron se externaliza a
-     * {@code bank.savings.auto.cron} (LLD §10) para permitir override en
-     * tests de integracion.
-     */
     @Scheduled(cron = "${bank.savings.auto.cron}")
     @SchedulerLock(
             name = "savings-auto-contribution",
@@ -74,20 +61,24 @@ public class AutoContributionScheduler {
         Instant start = Instant.now();
         int processed = 0;
         int failed = 0;
-        Set<UUID> seen = new HashSet<>();
-        Pageable firstPage = PageRequest.of(0, pageSize, Sort.by("nextExecutionAt", "id"));
+        int attempted = 0;
 
-        // Drenaje por pagina 0: al procesarse, la regla avanza next_execution_at y
-        // sale del conjunto due, asi que re-leer la pagina 0 trae el siguiente lote.
-        // El Set corta el bucle cuando solo quedan reglas ya intentadas (fallidas).
+        // Cursor keyset: arranca por debajo de cualquier clave real.
+        Instant cursorNext = Instant.EPOCH;
+        UUID cursorId = MIN_UUID;
+
         while (true) {
-            Page<GoalAutoRule> page = ruleRepo.findDueForExecution(start, firstPage);
-            boolean progress = false;
-            for (GoalAutoRule rule : page) {
-                if (!seen.add(rule.getId())) {
-                    continue; // ya intentada en este ciclo
-                }
-                progress = true;
+            List<GoalAutoRule> batch =
+                    ruleRepo.findDueForExecutionAfter(start, cursorNext, cursorId, pageSize);
+            if (batch.isEmpty()) {
+                break;
+            }
+            for (GoalAutoRule rule : batch) {
+                // Capturar la clave del cursor ANTES de execute: el use case muta
+                // el objeto (updateRuleNextExecution) en las rutas que avanzan.
+                Instant keyNext = rule.getNextExecutionAt();
+                UUID keyId = rule.getId();
+                attempted++;
                 try {
                     ProcessAutoRuleResult r = processRule.execute(rule);
                     if (r.status() == AllocationStatus.SUCCESS) {
@@ -102,14 +93,16 @@ public class AutoContributionScheduler {
                     log.warn("savings.auto.scheduler rule_failed ruleId={} reason={}",
                             rule.getId(), e.getMessage());
                 }
+                cursorNext = keyNext;
+                cursorId = keyId;
             }
-            if (page.isEmpty() || !progress) {
-                break; // conjunto agotado o solo quedan reglas ya intentadas
+            if (batch.size() < pageSize) {
+                break; // ultima pagina
             }
         }
 
         log.info("savings.auto.scheduler done attempted={} processed={} failed={} elapsed_ms={}",
-                seen.size(), processed, failed,
+                attempted, processed, failed,
                 Duration.between(start, Instant.now()).toMillis());
     }
 }
