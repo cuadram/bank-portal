@@ -24,3 +24,7 @@ Revision inicial single-pass = APROBADO limpio. El panel adversarial REFUTO ese 
 
 ---
 _Rev.2 generada tras verificacion adversarial · 2026-07-17 · Veredicto APROBADO con RV-001 corregido y RV-002 registrado (DEBT-066)_
+
+
+## Addendum rev.3 (DEBT-066 resuelto)
+RV-002 cerrado via Opcion B: los 5 tests de endpoints sensibles se re-habilitaron como IT de contexto completo (perimetro de seguridad, sin token -> 401), restaurando cobertura ejecutable (22 IT/76/0). El modelo de authz por scope que asumian NO existe en la app y queda como SEC-OBS-S27-01 (decision S28). 13 unit skipped restantes (Amortization/Session/Notification) ajenos a seguridad -> DEBT S28.

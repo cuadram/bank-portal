@@ -34,3 +34,10 @@ CORRECCION vs rev.1: la rev.1 declaraba "22 XML / 85 / 15 @Disabled" — inflado
 
 ---
 _Rev.2 tras panel adversarial + clean verify · 2026-07-17 · APROBADO CON CONDICIONES_
+
+
+## Addendum rev.3 — evidencia final
+mvn -Pintegration-compose clean verify: BUILD SUCCESS. **22 IT / 76 tests / 0 fallos / 0 skipped** + 648 unit / 0 fallos / 13 skipped.
+- DEBT-066 CLOSED: 5 endpoints sensibles con cobertura de perimetro (401). SEC-OBS-S27-01 (authz por scope) -> S28.
+- 13 unit skipped ajenos a seguridad (Amortization 2, Session 5, Notification 6) -> DEBT S28.
+Veredicto: APROBADO CON CONDICIONES (C1 y DEBT-066 resueltas; C3 skipped y decision scope -> S28).
